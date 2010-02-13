@@ -12,10 +12,11 @@ public class Box {
     public int clueNumber;
     public boolean cheated;
     public char solution;
-    public char response;
+    public char response = ' ';
     public boolean down;
     public boolean across;
-
+    public String responder;
+    
     @Override
     public String toString() {
         return FORMAT.format(this.clueNumber) + this.solution+" ";
