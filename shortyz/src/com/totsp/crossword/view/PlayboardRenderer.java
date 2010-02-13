@@ -10,10 +10,10 @@ import android.graphics.Paint.Align;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 
-import com.totsp.crossword.Playboard;
-import com.totsp.crossword.Playboard.Position;
-import com.totsp.crossword.Playboard.Word;
 import com.totsp.crossword.puz.Box;
+import com.totsp.crossword.puz.Playboard;
+import com.totsp.crossword.puz.Playboard.Position;
+import com.totsp.crossword.puz.Playboard.Word;
 import com.totsp.crossword.view.ScrollingImageView.Point;
 
 import java.util.logging.Logger;

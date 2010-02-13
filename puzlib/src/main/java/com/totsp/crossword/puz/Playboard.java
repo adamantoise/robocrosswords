@@ -1,7 +1,5 @@
-package com.totsp.crossword;
+package com.totsp.crossword.puz;
 
-import com.totsp.crossword.puz.Box;
-import com.totsp.crossword.puz.Puzzle;
 
 
 public class Playboard {

@@ -1,7 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android">
-<PreferenceCategory>
-	<CheckBoxPreference></CheckBoxPreference>
+<PreferenceCategory
+	android:title="Free Puzzle Downloads">
+	<CheckBoxPreference
+	android:title="Boston Globe"
+	android:defaultValue="true"
+	android:summary="Boston Globe Daily Puzzle"
+	android:key="downloadGlobe"
+	/>
+	<CheckBoxPreference
+	android:title="Houston Chronicle"
+	android:defaultValue="true"
+	android:summary="Houston Chronicle Daily Puzzle"
+	android:key="downloadChron"
+	/>
+	<CheckBoxPreference
+	android:title="Los Angeles Times"
+	android:defaultValue="true"
+	android:summary="Los Angeles Times Daily Puzzle"
+	android:key="downloadLat"
+	/>
+	<CheckBoxPreference
+	android:title="Thinks.com"
+	android:defaultValue="true"
+	android:summary="Thinks.com Daily Puzzle"
+	android:key="downloadThinks"
+	/>
+	<CheckBoxPreference
+	android:title="The Onion AV Club"
+	android:defaultValue="true"
+	android:summary="The Onion AV Club Wednesday Puzzle"
+	android:key="downloadAvClub"
+	/>
+	
 </PreferenceCategory>
 </PreferenceScreen>

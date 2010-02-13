@@ -1,36 +1,31 @@
 package com.totsp.crossword;
 
+import java.io.IOException;
+
 import android.app.Activity;
-
+import android.content.Intent;
 import android.content.res.Configuration;
-
 import android.os.Bundle;
-
 import android.util.DisplayMetrics;
-
 import android.view.ContextMenu;
-
-import android.view.ContextMenu.ContextMenuInfo;
-
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.TextView;
 
-import com.totsp.crossword.Playboard.Clue;
-import com.totsp.crossword.Playboard.Position;
-import com.totsp.crossword.Playboard.Word;
 import com.totsp.crossword.puz.IO;
+import com.totsp.crossword.puz.Playboard;
 import com.totsp.crossword.puz.Puzzle;
+import com.totsp.crossword.puz.Playboard.Clue;
+import com.totsp.crossword.puz.Playboard.Position;
+import com.totsp.crossword.puz.Playboard.Word;
 import com.totsp.crossword.view.PlayboardRenderer;
 import com.totsp.crossword.view.ScrollingImageView;
 import com.totsp.crossword.view.ScrollingImageView.ClickListener;
 import com.totsp.crossword.view.ScrollingImageView.Point;
-
-import java.io.IOException;
 
 
 public class PlayActivity extends Activity {
@@ -225,6 +220,10 @@ public class PlayActivity extends Activity {
             this.render();
 
             return true;
+        } else if (item.getTitle().equals("Settings")){
+        	Intent i = new Intent(this, PreferencesActivity.class);
+        	this.startActivity(i);
+        	return true;
         }
 
         return false;
