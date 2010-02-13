@@ -2,6 +2,8 @@ package com.totsp.crossword;
 
 import android.app.Activity;
 
+import android.content.res.Configuration;
+
 import android.os.Bundle;
 
 import android.util.DisplayMetrics;
@@ -33,10 +35,16 @@ import java.io.IOException;
 
 public class PlayActivity extends Activity {
     private static final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private Configuration configuration;
     private Playboard board;
     private PlayboardRenderer renderer;
     private ScrollingImageView boardView;
     private TextView clue;
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        this.configuration = newConfig;
+    }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
@@ -68,6 +76,7 @@ public class PlayActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.configuration = getBaseContext().getResources().getConfiguration();
 
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -117,7 +126,8 @@ public class PlayActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add("Show Errors").setIcon(android.R.drawable.ic_menu_view);
+        menu.add("Show Errors").setIcon(android.R.drawable.ic_menu_view)
+            .setCheckable(true);
 
         Menu reveal = menu.addSubMenu("Reveal")
                           .setIcon(android.R.drawable.ic_menu_view);
@@ -127,6 +137,7 @@ public class PlayActivity extends Activity {
         menu.add("Info").setIcon(android.R.drawable.ic_menu_info_details);
         menu.add("Help").setIcon(android.R.drawable.ic_menu_help);
         menu.add("Settings").setIcon(android.R.drawable.ic_menu_preferences);
+
         return true;
     }
 
@@ -170,6 +181,12 @@ public class PlayActivity extends Activity {
             this.render(previous);
 
             return true;
+
+        case KeyEvent.KEYCODE_DEL:
+            previous = this.board.deleteLetter();
+            this.render(previous);
+
+            return true;
         }
 
         char c = Character.toUpperCase(event.getDisplayLabel());
@@ -183,6 +200,34 @@ public class PlayActivity extends Activity {
 
         // TODO Auto-generated method stub
         return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+        if (item.getTitle().equals("Letter")) {
+            this.board.revealLetter();
+            this.render();
+
+            return true;
+        } else if (item.getTitle().equals("Word")) {
+            this.board.revealWord();
+            this.render();
+
+            return true;
+        } else if (item.getTitle().equals("Puzzle")) {
+            this.board.revealPuzzle();
+            this.render();
+
+            return true;
+        } else if (item.getTitle().equals("Show Errors")) {
+            this.board.toggleShowErrors();
+            item.setChecked(this.board.isShowErrors());
+            this.render();
+
+            return true;
+        }
+
+        return false;
     }
 
     private void render() {

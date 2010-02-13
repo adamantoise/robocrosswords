@@ -1,7 +1,5 @@
 package com.totsp.crossword;
 
-import android.util.Log;
-
 import com.totsp.crossword.puz.Box;
 import com.totsp.crossword.puz.Puzzle;
 
@@ -11,6 +9,7 @@ public class Playboard {
     Puzzle puzzle;
     Box[][] boxes;
     boolean across = true;
+    private boolean showErrors;
 
     public Playboard(Puzzle puzzle) {
         this.puzzle = puzzle;
@@ -46,13 +45,23 @@ public class Playboard {
         return c;
     }
 
+    public Word getCurrentWord() {
+        Word w = new Word();
+        w.start = this.getCurrentWordStart();
+        w.across = this.across;
+        w.length = this.getWordRange();
+
+        return w;
+    }
+
     public Position getCurrentWordStart() {
         if (this.isAcross()) {
             int col = this.highlightLetter.across;
             Box b = null;
 
             while (b == null) {
-                if (boxes[col][this.highlightLetter.down] != null && boxes[col][this.highlightLetter.down].across) {
+                if ((boxes[col][this.highlightLetter.down] != null) &&
+                        boxes[col][this.highlightLetter.down].across) {
                     b = boxes[col][this.highlightLetter.down];
                 } else {
                     col--;
@@ -63,9 +72,10 @@ public class Playboard {
         } else {
             int row = this.highlightLetter.down;
             Box b = null;
-            
+
             while (b == null) {
-                if (boxes[this.highlightLetter.across][row] != null && boxes[this.highlightLetter.across][row].down) {
+                if ((boxes[this.highlightLetter.across][row] != null) &&
+                        boxes[this.highlightLetter.across][row].down) {
                     b = boxes[this.highlightLetter.across][row];
                 } else {
                     row--;
@@ -77,30 +87,27 @@ public class Playboard {
     }
 
     public Word setHighlightLetter(Position highlightLetter) {
-    	Word w = this.getCurrentWord();
-    	if(highlightLetter.equals(this.highlightLetter) ){
-    		this.toggleDirection();
-    	} else {
-    		
-    		if(this.boxes.length > highlightLetter.across && 
-    				this.boxes[highlightLetter.across].length > highlightLetter.down &&
-    				this.boxes[highlightLetter.across][highlightLetter.down] != null){
-    			this.highlightLetter = highlightLetter;
-    		}
-    	}
-    	return w;
+        Word w = this.getCurrentWord();
+
+        if (highlightLetter.equals(this.highlightLetter)) {
+            this.toggleDirection();
+        } else {
+            if ((this.boxes.length > highlightLetter.across) &&
+                    (this.boxes[highlightLetter.across].length > highlightLetter.down) &&
+                    (this.boxes[highlightLetter.across][highlightLetter.down] != null)) {
+                this.highlightLetter = highlightLetter;
+            }
+        }
+
+        return w;
     }
 
     public Position getHighlightLetter() {
         return highlightLetter;
     }
-    
-    public Word getCurrentWord(){
-    	Word w = new Word();
-    	w.start = this.getCurrentWordStart();
-    	w.across = this.across;
-    	w.length = this.getWordRange();
-    	return w;
+
+    public boolean isShowErrors() {
+        return this.showErrors;
     }
 
     public int getWordRange() {
@@ -143,8 +150,14 @@ public class Playboard {
         }
     }
 
+    public Word deleteLetter() {
+        this.boxes[this.highlightLetter.across][this.highlightLetter.down].response = ' ';
+
+        return this.previousLetter();
+    }
+
     public Word moveDown() {
-    	Word w = this.getCurrentWord();
+        Word w = this.getCurrentWord();
         Box b = null;
         int checkRow = this.highlightLetter.down;
 
@@ -157,11 +170,12 @@ public class Playboard {
 
         this.highlightLetter = new Position(this.highlightLetter.across,
                 checkRow);
+
         return w;
     }
 
     public Word moveLeft() {
-    	Word w = this.getCurrentWord();
+        Word w = this.getCurrentWord();
         Box b = null;
         int checkCol = this.highlightLetter.across;
 
@@ -173,11 +187,12 @@ public class Playboard {
         }
 
         this.highlightLetter = new Position(checkCol, this.highlightLetter.down);
+
         return w;
     }
 
     public Word moveRight() {
-    	Word w = this.getCurrentWord();
+        Word w = this.getCurrentWord();
         Box b = null;
         int checkCol = this.highlightLetter.across;
 
@@ -191,11 +206,12 @@ public class Playboard {
         }
 
         this.highlightLetter = new Position(checkCol, this.highlightLetter.down);
+
         return w;
     }
 
     public Word movieUp() {
-    	Word w = this.getCurrentWord();
+        Word w = this.getCurrentWord();
         Box b = null;
         int checkRow = this.highlightLetter.down;
 
@@ -208,28 +224,75 @@ public class Playboard {
 
         this.highlightLetter = new Position(this.highlightLetter.across,
                 checkRow);
+
         return w;
     }
 
     public Word nextLetter() {
-        if(across){
-        	return this.moveRight();
+        if (across) {
+            return this.moveRight();
         } else {
-        	return this.moveDown();
+            return this.moveDown();
         }
     }
-    
-    public Word playLetter(char letter){
-    	Box b = this.boxes[this.highlightLetter.across][this.highlightLetter.down];
-    	b.response = letter;
-    	return this.nextLetter();
-    	
+
+    public Word playLetter(char letter) {
+        Box b = this.boxes[this.highlightLetter.across][this.highlightLetter.down];
+        b.response = letter;
+
+        return this.nextLetter();
+    }
+
+    public Word previousLetter() {
+        if (across) {
+            return this.moveLeft();
+        } else {
+            return this.movieUp();
+        }
+    }
+
+    public void revealLetter() {
+        Box b = this.boxes[this.highlightLetter.across][this.highlightLetter.down];
+
+        if ((b != null) && (b.solution != b.response)) {
+            b.cheated = true;
+            b.response = b.solution;
+        }
+    }
+
+    public void revealPuzzle() {
+        for (Box[] row : this.boxes) {
+            for (Box b : row) {
+                if ((b != null) && (b.solution != b.response)) {
+                    b.cheated = true;
+                    b.response = b.solution;
+                }
+            }
+        }
+    }
+
+    public void revealWord() {
+        Position oldHighlight = this.highlightLetter;
+        Word w = this.getCurrentWord();
+        this.highlightLetter = w.start;
+
+        for (int i = 0; i < w.length; i++) {
+            revealLetter();
+            nextLetter();
+        }
+
+        this.highlightLetter = oldHighlight;
     }
 
     public Word toggleDirection() {
-    	Word w = this.getCurrentWord();
+        Word w = this.getCurrentWord();
         this.across = !across;
+
         return w;
+    }
+
+    public void toggleShowErrors() {
+        this.showErrors = !showErrors;
     }
 
     public static class Clue {
@@ -245,19 +308,21 @@ public class Playboard {
             this.down = down;
             this.across = across;
         }
-        
+
         @Override
         public boolean equals(Object o) {
-        	if(o.getClass() != this.getClass() ){
-        		return false;
-        	}
-        	Position p = (Position) o;
-        	return (p.down == this.down && p.across == this.across );
+            if (o.getClass() != this.getClass()) {
+                return false;
+            }
+
+            Position p = (Position) o;
+
+            return ((p.down == this.down) && (p.across == this.across));
         }
-        
+
         @Override
-        public int hashCode(){
-        	return this.across ^ this.down;
+        public int hashCode() {
+            return this.across ^ this.down;
         }
 
         public String toString() {
@@ -269,16 +334,16 @@ public class Playboard {
         public Position start;
         public boolean across;
         public int length;
-        
-        public boolean checkInWord(int across, int down){
-        	int ranging = this.across ? across : down;
-            boolean offRanging = this.across
-                ? (down == start.down) : (across == start.across);
+
+        public boolean checkInWord(int across, int down) {
+            int ranging = this.across ? across : down;
+            boolean offRanging = this.across ? (down == start.down)
+                                             : (across == start.across);
 
             int startPos = this.across ? start.across : start.down;
 
             return (offRanging && (startPos <= ranging) &&
-                    ((startPos + length) > ranging));
+            ((startPos + length) > ranging));
         }
     }
 }

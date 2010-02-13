@@ -31,6 +31,7 @@ public class PlayboardRenderer {
     Paint letterText = new Paint();
     Paint numberText = new Paint();
     Paint white = new Paint();
+    Paint red = new Paint();
     private Bitmap bitmap;
     private Playboard board;
     private float scale = 1.0F;
@@ -59,7 +60,9 @@ public class PlayboardRenderer {
         currentLetterBox.setStrokeWidth(2.0F);
 
         white.setColor(Color.WHITE);
-        this.cheated.setColor(Color.parseColor("#FFCCCC"));
+        red.setColor(Color.RED);
+        
+        this.cheated.setColor(Color.parseColor("#FFE0E0"));
     }
 
     public Bitmap draw(Word reset) {
@@ -141,6 +144,8 @@ public class PlayboardRenderer {
                             canvas.drawRect(r, this.currentWordHighlight);
                         } else if (boxes[col][row].cheated) {
                             canvas.drawRect(r, this.cheated);
+                        } else if(this.board.isShowErrors() && boxes[col][row].solution != boxes[col][row].response ){
+                        	canvas.drawRect(r, this.red);
                         } else {
                             canvas.drawRect(r, this.white);
                         }
