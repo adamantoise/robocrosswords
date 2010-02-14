@@ -49,31 +49,7 @@ public class PlayActivity extends Activity {
         this.configuration = newConfig;
     }
 
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        if (item.getTitle().equals("Zoom In")) {
-            this.boardView.scrollTo(0, 0);
-            this.renderer.zoomIn();
-            this.render();
-
-            return true;
-        } else if (item.getTitle().equals("Zoom Out")) {
-            this.boardView.scrollTo(0, 0);
-            this.renderer.zoomOut();
-            this.render();
-
-            return true;
-        } else if (item.getTitle().equals("Zoom Reset")) {
-            this.renderer.zoomReset();
-            this.render();
-            this.boardView.scrollTo(0, 0);
-
-            return true;
-        }
-
-        return false;
-    }
-
+   
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -218,6 +194,7 @@ public class PlayActivity extends Activity {
 
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
+    	System.out.println(item.getTitle());
         if (item.getTitle().equals("Letter")) {
             this.board.revealLetter();
             this.render();
@@ -243,6 +220,24 @@ public class PlayActivity extends Activity {
         	Intent i = new Intent(this, PreferencesActivity.class);
         	this.startActivity(i);
         	return true;
+        } else if (item.getTitle().equals("Zoom In")) {
+            this.boardView.scrollTo(0, 0);
+            this.renderer.zoomIn();
+            this.render();
+
+            return true;
+        } else if (item.getTitle().equals("Zoom Out")) {
+            this.boardView.scrollTo(0, 0);
+            this.renderer.zoomOut();
+            this.render();
+
+            return true;
+        } else if (item.getTitle().equals("Zoom Reset")) {
+            this.renderer.zoomReset();
+            this.render();
+            this.boardView.scrollTo(0, 0);
+
+            return true;
         }
 
         return false;

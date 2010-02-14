@@ -71,6 +71,7 @@ public class PlayboardRenderer {
             boolean renderAll = reset == null;
 
             if (bitmap == null) {
+            	LOG.warning("New bitmap");
                 bitmap = Bitmap.createBitmap((int) (boxes.length * BOX_SIZE * scale),
                         (int) (boxes[0].length * BOX_SIZE * scale),
                         Bitmap.Config.RGB_565);
