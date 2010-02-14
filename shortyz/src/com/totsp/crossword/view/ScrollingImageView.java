@@ -43,7 +43,7 @@ public class ScrollingImageView extends AbsoluteLayout
             this.removeView(imageView);
         }
 
-        LOG.info("New Bitmap Size: " + bitmap.getWidth() + " x " +
+        LOG.finest("New Bitmap Size: " + bitmap.getWidth() + " x " +
             bitmap.getHeight());
         imageView.setImageBitmap(bitmap);
 
@@ -210,17 +210,17 @@ public class ScrollingImageView extends AbsoluteLayout
     	int currentMinY = this.getScrollY();
     	int currentMaxY = this.getHeight() + this.getScrollY();
     	
-    	LOG.info("X range "+currentMinX+" to "+currentMaxX);
-    	LOG.info("Desired X:"+x);
-    	LOG.info("Y range "+currentMinY+" to "+currentMaxY);
-    	LOG.info("Desired Y:"+y);
+    	LOG.finest("X range "+currentMinX+" to "+currentMaxX);
+    	LOG.finest("Desired X:"+x);
+    	LOG.finest("Y range "+currentMinY+" to "+currentMaxY);
+    	LOG.finest("Desired Y:"+y);
     	
     	
     	if( x < currentMinX || x > currentMaxX ){
     		this.scrollTo(x > maxScrollX ? maxScrollX : x + 5, this.getScrollY() );
     	}
     	if( y < currentMinY || y > currentMaxY ){
-    		LOG.info("Y adjust");
+    		LOG.finest("Y adjust");
     		this.scrollTo(this.getScrollX(), y > maxScrollY ? maxScrollY : y + 5);
     	}
     }

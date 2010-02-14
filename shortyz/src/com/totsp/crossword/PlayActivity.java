@@ -1,11 +1,18 @@
 package com.totsp.crossword;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
@@ -16,6 +23,7 @@ import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.TextView;
 
+import com.totsp.crossword.net.Downloaders;
 import com.totsp.crossword.puz.IO;
 import com.totsp.crossword.puz.Playboard;
 import com.totsp.crossword.puz.Puzzle;
@@ -29,7 +37,7 @@ import com.totsp.crossword.view.ScrollingImageView.Point;
 
 
 public class PlayActivity extends Activity {
-    private static final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	private static final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private Configuration configuration;
     private Playboard board;
     private PlayboardRenderer renderer;
@@ -105,6 +113,17 @@ public class PlayActivity extends Activity {
         }
 
         this.render();
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        final NotificationManager nm = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        new Thread(new Runnable(){
+
+			public void run() {
+				Downloaders dls = new Downloaders(prefs, nm, PlayActivity.this);
+				dls.download(new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000)));
+			}
+        	
+        }).start();
+        
     }
 
     @Override
