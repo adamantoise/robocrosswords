@@ -8,7 +8,7 @@ package com.totsp.crossword.puz;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.Arrays;
+import java.util.Date;
 
 import junit.framework.TestCase;
 
@@ -72,6 +72,17 @@ public class IOTest extends TestCase {
         }
         
         assertEquals( puz, puz2);
+        
+        Puzzle p = IO.load(tmp);
+        p.setDate(new Date());
+        p.setSource("Unit Test");
+        
+        IO.save(p, tmp);
+        
+        PuzzleMeta m = IO.meta(tmp);
+        
+        System.out.println(m.title +"\n"+m.source+"\n"+m.percentComplete);
+        
         
     }
 

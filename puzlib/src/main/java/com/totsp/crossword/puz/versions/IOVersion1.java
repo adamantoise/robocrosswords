@@ -22,6 +22,9 @@ public class IOVersion1 implements IOVersion {
 		Box[][] boxes = puz.getBoxes();
 		for(Box[] row : boxes ){
 			for(Box b : row){
+				if(b == null){
+					continue;
+				}
 				b.cheated = dis.readBoolean();
 				b.responder = IO.readNullTerminatedString(dis);
 			}
@@ -47,11 +50,14 @@ public class IOVersion1 implements IOVersion {
 		IO.writeNullTerminatedString(dos, puz.getAuthor());
 		IO.writeNullTerminatedString(dos, puz.getSource());
 		IO.writeNullTerminatedString(dos, puz.getTitle());
-		dos.writeLong(puz.getDate().getTime());
+		dos.writeLong(puz.getDate() == null ? 0 : puz.getDate().getTime());
 		dos.writeInt(puz.getPercentComplete());
 		Box[][] boxes = puz.getBoxes();
 		for(Box[] row : boxes ){
 			for(Box b : row){
+				if(b == null){
+					continue;
+				}
 				dos.writeBoolean(b.cheated);
 				IO.writeNullTerminatedString(dos, b.responder);
 			}
