@@ -3,6 +3,8 @@ package com.totsp.crossword;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import android.app.Activity;
 import android.app.NotificationManager;
@@ -10,8 +12,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.view.ContextMenu;
@@ -37,12 +39,15 @@ import com.totsp.crossword.view.ScrollingImageView.Point;
 
 
 public class PlayActivity extends Activity {
+	private static final Logger LOG = Logger.getLogger("com.totsp.crossword");
 	private static final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private Configuration configuration;
     private Playboard board;
     private PlayboardRenderer renderer;
     private ScrollingImageView boardView;
     private TextView clue;
+    private Puzzle puz;
+    private File baseFile;
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -61,8 +66,17 @@ public class PlayActivity extends Activity {
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
         try {
-            Puzzle puz = IO.loadNative(this.getResources()
+        	Uri u = this.getIntent().getData();
+        	if(u != null){
+        		if(u.getScheme().equals("file")){
+        			baseFile = new File(u.getPath());
+        			puz = IO.load(baseFile);
+        		}
+        	}
+        	if(puz == null){
+        		puz = IO.loadNative(this.getResources()
                                            .openRawResource(R.raw.test));
+        	}
 
             board = new Playboard(puz);
             this.renderer = new PlayboardRenderer(board, metrics.density);
@@ -190,6 +204,18 @@ public class PlayActivity extends Activity {
 
         // TODO Auto-generated method stub
         return super.onKeyUp(keyCode, event);
+    }
+    
+    @Override
+    protected void onPause() {
+    	try{
+    		if(puz != null && baseFile != null)
+    			IO.save(puz, baseFile);
+    	} catch(IOException ioe){
+    		LOG.log(Level.SEVERE, null, ioe);
+    	}
+    	// TODO Auto-generated method stub
+    	super.onPause();
     }
 
     @Override

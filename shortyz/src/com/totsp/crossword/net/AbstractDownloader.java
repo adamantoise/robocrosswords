@@ -32,7 +32,9 @@ public abstract class AbstractDownloader implements Downloader{
 		LOG.info("Mkdirs: "+this.downloadDirectory.mkdirs());
 		LOG.info("Exist: "+this.downloadDirectory.exists());
 		File downloadTo = new File(this.downloadDirectory, this.createFileName(date));
-		
+		if(downloadTo.exists()){
+			return null;
+		}
 		try{
 			downloadTo.createNewFile();
 			URL u = new URL(this.baseUrl+urlSuffix);

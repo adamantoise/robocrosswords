@@ -33,6 +33,12 @@
 	android:summary="The Onion AV Club Wednesday Puzzle"
 	android:key="downloadAvClub"
 	/>
+	<CheckBoxPreference
+	android:title="The Wall Street Journal"
+	android:defaultValue="true"
+	android:summary="The WSJ Friday Puzzle"
+	android:key="downloadWsj"
+	/>
 	
 </PreferenceCategory>
 </PreferenceScreen>
