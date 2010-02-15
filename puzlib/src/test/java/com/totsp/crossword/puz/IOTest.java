@@ -5,6 +5,11 @@
 
 package com.totsp.crossword.puz;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.Arrays;
+
 import junit.framework.TestCase;
 
 /**
@@ -44,6 +49,30 @@ public class IOTest extends TestCase {
         System.out.println("14  across: "+ puz.findAcrossClue(14));
         System.out.println("18  down  : "+ puz.findDownClue(18));
         System.out.println("2 down: "+puz.findDownClue(2));
+    }
+    
+    public void testSave() throws Exception {
+    	Puzzle puz = IO.loadNative(IOTest.class.getResourceAsStream("/test.puz"));
+        System.out.println("Loaded.");
+        File tmp = File.createTempFile("test", ".puz");
+        tmp.deleteOnExit();
+        IO.saveNative(puz, new FileOutputStream(tmp));
+        
+        Puzzle puz2 = IO.loadNative(new FileInputStream(tmp));
+//        System.out.println(puz.acrossClues[puz2.acrossClues.length -1 ]+" \n"+puz2.acrossClues[puz2.acrossClues.length -1 ]);
+//        System.out.println(puz.acrossClues.length +" == "+puz2.acrossClues.length);
+//        System.out.println(Arrays.equals(puz.acrossClues, puz2.acrossClues));
+        Box[][] b1 = puz.getBoxes();
+        Box[][] b2 = puz2.getBoxes();
+        
+        for(int x=0; x < b1.length; x++ ){
+        	for(int y=0; y<b1[x].length; y++){
+        		System.out.println(b1[x][y] +" == "+ b2[x][y] );
+        	}
+        }
+        
+        assertEquals( puz, puz2);
+        
     }
 
     

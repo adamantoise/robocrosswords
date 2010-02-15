@@ -16,6 +16,77 @@ public class IO {
 	public static void saveNative(Puzzle puz, OutputStream os) throws IOException {
 		DataOutputStream dos = new DataOutputStream(os);
 		dos.writeShort(puz.fileChecksum);
+		for(char c : puz.fileMagic.toCharArray()){
+			dos.writeByte(c);
+		}
+		dos.writeByte(0);
+		dos.writeShort(puz.cibChecksum);
+		dos.write(puz.maskedLowChecksums);
+		dos.write(puz.maskedHighChecksums);
+		dos.writeBytes(puz.versionString);
+		dos.writeByte(0);
+		
+//		puz.reserved1C = input.readShort();
+		dos.writeShort(puz.reserved1C);
+//        puz.unknown = input.readShort();
+		dos.writeShort(puz.unknown);
+		
+//        puz.reserved20 = new byte[0xC];
+		dos.write(puz.reserved20);
+		
+//		puz.setWidth(0xFFFF & input.readByte());
+		dos.writeByte(puz.getWidth());
+		
+//        puz.setHeight(0xFFFF & input.readByte());
+		dos.writeByte(puz.getHeight());
+//        puz.numberOfClues = (int) input.readByte() +
+//            ((int) input.readByte() >> 8);
+		
+		dos.writeByte(puz.numberOfClues);
+		dos.writeByte(puz.numberOfClues << 8 );
+//        puz.unknown30 = input.readShort();
+		dos.writeShort(puz.unknown30);
+//        puz.unknown32 = input.readShort();
+		dos.writeShort(puz.unknown32);
+		
+		Box[][] boxes = puz.getBoxes();
+		for (int x = 0; x < boxes.length; x++) {
+            for (int y = 0; y < boxes[x].length; y++) {
+                if(boxes[x][y] == null ){
+                	dos.writeByte('.');
+                } else {
+                	dos.writeByte(boxes[x][y].solution);
+                }
+            }
+        }
+
+        for (int x = 0; x < boxes.length; x++) {
+            for (int y = 0; y < boxes[x].length; y++) {
+            	if(boxes[x][y] == null ){
+                	dos.writeByte('.');
+                } else {
+                	dos.writeByte(boxes[x][y].response == ' ' ? '-' : boxes[x][y].response);
+                }
+            }
+        }
+        writeNullTerminatedString(dos, puz.title);
+        writeNullTerminatedString(dos, puz.author);
+        writeNullTerminatedString(dos, puz.copyright);
+        
+        for(String clue: puz.rawClues){
+        	writeNullTerminatedString(dos, clue);
+        }
+        
+        writeNullTerminatedString(dos, puz.notes);
+		
+		
+	}
+	
+	private static void writeNullTerminatedString(OutputStream os , String value) throws IOException {
+		for(char c : value.toCharArray() ){
+			os.write(c);
+		}
+		os.write(0);
 	}
 	
 	
@@ -135,6 +206,7 @@ public class IO {
         ArrayList<Integer> acrossCluesLookup = new ArrayList<Integer>();
         ArrayList<Integer> downCluesLookup = new ArrayList<Integer>();
         ArrayList<String> downClues = new ArrayList<String>();
+        ArrayList<String> rawClues = new ArrayList<String>();
 
         for (int x = 0; x < boxes.length; x++) {
             for (int y = 0; y < boxes[x].length; y++) {
@@ -153,7 +225,9 @@ public class IO {
                     }
 
                     acrossCluesLookup.add(boxes[x][y].clueNumber);
-                    acrossClues.add(acrossClue.toString());
+                    String value = acrossClue.toString();
+                    acrossClues.add(value);
+                    rawClues.add(value);
                 }
 
                 if (boxes[x][y].down && (boxes[x][y].clueNumber != 0)) {
@@ -167,7 +241,9 @@ public class IO {
                     }
 
                     downCluesLookup.add(boxes[x][y].clueNumber);
-                    downClues.add(downClue.toString());
+                    String value = downClue.toString();
+                    downClues.add(value);
+                    rawClues.add(value);
                 }
             }
         }
@@ -176,7 +252,7 @@ public class IO {
         puz.downCluesLookup = downCluesLookup.toArray(new Integer[downCluesLookup.size()]);
         puz.acrossClues = acrossClues.toArray(new String[acrossClues.size()]);
         puz.acrossCluesLookup = acrossCluesLookup.toArray(new Integer[acrossCluesLookup.size()]);
-
+        puz.rawClues = rawClues.toArray(new String[rawClues.size()]);
         StringBuilder notes = new StringBuilder();
 
         for (byte nextChar = input.readByte(); nextChar != 0x0;
@@ -185,6 +261,7 @@ public class IO {
                 notes.append((char) nextChar);
             }
         }
+        puz.notes = notes.toString();
 
         boolean eof = false;
 
