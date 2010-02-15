@@ -1,6 +1,7 @@
 package com.totsp.crossword.puz;
 
 import java.util.Arrays;
+import java.util.Date;
 
 
 public class Puzzle {
@@ -29,8 +30,76 @@ public class Puzzle {
     int height;
     private int width; //one byte;
     String[] rawClues;
+    String source;
+    Date date;
+   
 
-    public void setBoxes(Box[][] boxes) {
+    public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
+	public String getCopyright() {
+		return copyright;
+	}
+
+	public void setCopyright(String copyright) {
+		this.copyright = copyright;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public int getPercentComplete() {
+		int total = 0;
+		int correct = 0;
+		for(int x=0; x < boxes.length; x++){
+			for(int y=0; y < boxes[x].length; y++){
+				if(boxes[x][y] != null){
+					total++;
+					if(boxes[x][y].response == boxes[x][y].solution){
+						correct++;
+					}
+				}
+			}
+		}
+		return (correct * 100)/(total * 100);
+	}
+
+
+	public void setBoxes(Box[][] boxes) {
         this.boxes = boxes;
 
         int clueCount = 1;

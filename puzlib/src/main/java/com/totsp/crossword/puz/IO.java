@@ -26,27 +26,17 @@ public class IO {
 		dos.writeBytes(puz.versionString);
 		dos.writeByte(0);
 		
-//		puz.reserved1C = input.readShort();
 		dos.writeShort(puz.reserved1C);
-//        puz.unknown = input.readShort();
 		dos.writeShort(puz.unknown);
 		
-//        puz.reserved20 = new byte[0xC];
 		dos.write(puz.reserved20);
-		
-//		puz.setWidth(0xFFFF & input.readByte());
 		dos.writeByte(puz.getWidth());
 		
-//        puz.setHeight(0xFFFF & input.readByte());
 		dos.writeByte(puz.getHeight());
-//        puz.numberOfClues = (int) input.readByte() +
-//            ((int) input.readByte() >> 8);
 		
 		dos.writeByte(puz.numberOfClues);
 		dos.writeByte(puz.numberOfClues << 8 );
-//        puz.unknown30 = input.readShort();
 		dos.writeShort(puz.unknown30);
-//        puz.unknown32 = input.readShort();
 		dos.writeShort(puz.unknown32);
 		
 		Box[][] boxes = puz.getBoxes();
@@ -82,11 +72,26 @@ public class IO {
 		
 	}
 	
-	private static void writeNullTerminatedString(OutputStream os , String value) throws IOException {
+	public static void writeNullTerminatedString(OutputStream os , String value) throws IOException {
+		value = value == null ? "" : value;
 		for(char c : value.toCharArray() ){
 			os.write(c);
 		}
 		os.write(0);
+	}
+	
+	public static String readNullTerminatedString(InputStream is) throws IOException {
+		StringBuilder sb = new StringBuilder();
+
+        for (byte nextByte = (byte) is.read(); nextByte != 0x0;
+                nextByte = (byte) is.read()) {
+            if (nextByte != 0x0) {
+                sb.append((char) nextByte);
+            }
+        }
+        
+        return sb.length() ==0 ? null : sb.toString();
+
 	}
 	
 	
