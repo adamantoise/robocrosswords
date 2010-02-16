@@ -95,7 +95,7 @@ public class Puzzle {
 				}
 			}
 		}
-		return (correct * 100)/(total * 100);
+		return (correct * 100)/(total);
 	}
 
 
