@@ -61,21 +61,10 @@ public class BrowseActivity extends ListActivity {
                 int dayOfMonth) {
                 System.out.println(year + " " + monthOfYear + " " + dayOfMonth);
 
-                final Date d = new Date(year - 1900, monthOfYear, dayOfMonth);
-                System.out.println(d);
+                Date d = new Date(year - 1900, monthOfYear, dayOfMonth);
+                download(d);
 
-                new Thread(new Runnable() {
-                        public void run() {
-                            Downloaders dls = new Downloaders(prefs, nm,
-                                    BrowseActivity.this);
-                            dls.download(d);
-                            handler.post(new Runnable() {
-                                    public void run() {
-                                        BrowseActivity.this.render();
-                                    }
-                                });
-                        }
-                    }).start();
+                
             }
         };
 
@@ -84,6 +73,22 @@ public class BrowseActivity extends ListActivity {
             "crosswords");
     private boolean viewArchive;
 
+    
+    private void download(final Date d){
+    	new Thread(new Runnable() {
+            public void run() {
+                Downloaders dls = new Downloaders(prefs, nm,
+                        BrowseActivity.this);
+                dls.download(d);
+                handler.post(new Runnable() {
+                        public void run() {
+                            BrowseActivity.this.render();
+                        }
+                    });
+            }
+        }).start();
+    }
+    
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         File meta = new File(this.contextFile.getParent(),
@@ -177,6 +182,9 @@ public class BrowseActivity extends ListActivity {
         setDefaultKeyMode(DEFAULT_KEYS_SHORTCUT);
         getListView().setOnCreateContextMenuListener(this);
         this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if(prefs.getBoolean("dlOnStartup", true) ){
+        	this.download(new Date());
+        }
         this.nm = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         render();
     }

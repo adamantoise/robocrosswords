@@ -1,6 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android">
+  <PreferenceCategory
+	android:title="Application Settings">
+	<CheckBoxPreference
+	android:title="Download on Startup"
+	android:defaultValue="true"
+	android:summary="Download today's puzzles when starting the application"
+	android:key="dlOnStartup"
+	/>
+	
+	<!--  <CheckBoxPreference
+	android:title="Background Service"
+	android:defaultValue="true"
+	android:summary="Download new puzzles in the background"
+	android:key="runService"
+	/>-->
+	
+	<CheckBoxPreference
+	android:title="Delete on Cleanup"
+	android:defaultValue="false"
+	android:summary="Delete rather than archive old puzzles"
+	android:key="deleteOnCleanup"
+	/>
+	
+	
+	
+ </PreferenceCategory>
 <PreferenceCategory
 	android:title="Free Puzzle Downloads">
 	<CheckBoxPreference

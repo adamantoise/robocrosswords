@@ -91,44 +91,50 @@ public class ScrollingImageView extends AbsoluteLayout
 
         int scrollWidth = imageView.getWidth() - this.getWidth() + 10;
 
-        if ((this.getScrollX() >= 0) && (this.getScrollX() <= scrollWidth) &&
-                (scrollWidth > 0)) {
-            int moveX = (int) distanceX;
-
-            if (((moveX + this.getScrollX()) >= 0) &&
-                    ((Math.abs(moveX) + Math.abs(this.getScrollX())) <= scrollWidth)) {
-                this.scrollBy(moveX, 0);
-            } else {
-                if (distanceX >= 0) {
-                    int xScroll = scrollWidth -
-                        Math.max(Math.abs(moveX), Math.abs(this.getScrollX()));
-                    this.scrollBy(xScroll, 0);
-                } else {
-                    this.scrollBy(-Math.min(Math.abs(moveX),
-                            Math.abs(this.getScrollX())), 0);
-                }
-            }
+        if(imageView.getWidth() + 5 > this.getWidth()){
+        
+	        if ((this.getScrollX() >= 0) && (this.getScrollX() <= scrollWidth) &&
+	                (scrollWidth > 0)) {
+	            int moveX = (int) distanceX;
+	
+	            if (((moveX + this.getScrollX()) >= 0) &&
+	                    ((Math.abs(moveX) + Math.abs(this.getScrollX())) <= scrollWidth)) {
+	                this.scrollBy(moveX, 0);
+	            } else {
+	                if (distanceX >= 0) {
+	                    int xScroll = scrollWidth -
+	                        Math.max(Math.abs(moveX), Math.abs(this.getScrollX()));
+	                    this.scrollBy(xScroll, 0);
+	                } else {
+	                    this.scrollBy(-Math.min(Math.abs(moveX),
+	                            Math.abs(this.getScrollX())), 0);
+	                }
+	            }
+	        }
         }
 
         int scrollHeight = imageView.getHeight() - this.getHeight() + 10;
 
-        if ((this.getScrollY() >= 0) && (this.getScrollY() <= scrollHeight) &&
-                (scrollHeight > 0)) {
-            int moveY = (int) distanceY;
-
-            if (((moveY + this.getScrollY()) >= 0) &&
-                    ((Math.abs(moveY) + Math.abs(this.getScrollY())) <= scrollHeight)) {
-                this.scrollBy(0, moveY);
-            } else {
-                if (distanceY >= 0) {
-                    this.scrollBy(0,
-                        scrollHeight -
-                        Math.max(Math.abs(moveY), Math.abs(this.getScrollY())));
-                } else {
-                    this.scrollBy(0,
-                        -Math.min(Math.abs(moveY), Math.abs(this.getScrollY())));
-                }
-            }
+        if(imageView.getHeight() + 5 > this.getHeight() ){
+	        
+	        if ((this.getScrollY() >= 0) && (this.getScrollY() <= scrollHeight) &&
+	                (scrollHeight > 0)) {
+	            int moveY = (int) distanceY;
+	
+	            if (((moveY + this.getScrollY()) >= 0) &&
+	                    ((Math.abs(moveY) + Math.abs(this.getScrollY())) <= scrollHeight)) {
+	                this.scrollBy(0, moveY);
+	            } else {
+	                if (distanceY >= 0) {
+	                    this.scrollBy(0,
+	                        scrollHeight -
+	                        Math.max(Math.abs(moveY), Math.abs(this.getScrollY())));
+	                } else {
+	                    this.scrollBy(0,
+	                        -Math.min(Math.abs(moveY), Math.abs(this.getScrollY())));
+	                }
+	            }
+	        }
         }
 
         this.xScrollPercent = (double) this.getScrollX() / (double) (this.getWidth());
@@ -138,7 +144,20 @@ public class ScrollingImageView extends AbsoluteLayout
     }
     
     public void scrollBy(int x, int y){
-    	super.scrollBy(x, y);
+    	int scrollWidth = imageView.getWidth() - this.getWidth() + 5;
+    	int scrollHeight = imageView.getHeight() - this.getHeight() + 5;
+    	if(this.getScrollX() + x < 0 ){
+    		x=0;
+    	} else if( this.getScrollX() + x > scrollWidth ){
+    		x = scrollWidth;
+    	}
+    	if(this.getScrollY() + y < 0) {
+    		y=0;
+    	} else if (this.getScrollY() + y > scrollHeight){
+    		y = scrollHeight;
+    	}
+    	System.out.println("scrollBy("+x+","+y+")");
+    	super.scrollTo(this.getScrollX() + x, this.getScrollY() +y);
     	if(this.getScrollX() < 0 ){
     		this.scrollTo(0, this.getScrollY());
     	} else if( this.getScrollX() > this.imageView.getWidth() - this.getWidth() + 10 ){
