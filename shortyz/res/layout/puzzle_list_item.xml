@@ -31,7 +31,7 @@ Jan 2, 2001"/>
 	android:textColor="#FFFFFF"
 	android:text="New York Times"
 	android:gravity="center_vertical"
-	android:paddingTop="5dp"
+	android:paddingTop="2dp"
 	android:paddingLeft="20dp"
 	/>
 	<TextView

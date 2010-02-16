@@ -6,7 +6,10 @@
     <application android:icon="@drawable/icon" android:label="@string/app_name">
         <activity android:name=".PlayActivity"
                   android:label="@string/app_name">
-            
+        	<intent-filter>
+        		<action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.EDIT" />
+            </intent-filter>
         </activity>
 		<activity
 			android:name=".PreferencesActivity"
@@ -14,7 +17,7 @@
 		</activity>
 		<activity
 			android:name=".BrowseActivity"
-			android:label="Select Puzzle">
+			android:label="@string/app_name">
 			<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -1,14 +1,21 @@
 package com.totsp.crossword;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.ListActivity;
+import android.app.NotificationManager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 
 import android.net.Uri;
 
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+
+import android.preference.PreferenceManager;
 
 import android.util.Log;
 
@@ -17,16 +24,19 @@ import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.totsp.crossword.net.Downloaders;
 import com.totsp.crossword.puz.IO;
 import com.totsp.crossword.puz.PuzzleMeta;
 
@@ -40,12 +50,62 @@ import java.util.Date;
 
 
 public class BrowseActivity extends ListActivity {
+    private static final int DATE_DIALOG_ID = 0;
+    SharedPreferences prefs;
+    private File archiveFolder = new File(Environment.getExternalStorageDirectory(),
+            "crosswords/archive");
+    private Handler handler = new Handler();
+    private NotificationManager nm;
+    private DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                int dayOfMonth) {
+                System.out.println(year + " " + monthOfYear + " " + dayOfMonth);
+
+                final Date d = new Date(year - 1900, monthOfYear, dayOfMonth);
+                System.out.println(d);
+
+                new Thread(new Runnable() {
+                        public void run() {
+                            Downloaders dls = new Downloaders(prefs, nm,
+                                    BrowseActivity.this);
+                            dls.download(d);
+                            handler.post(new Runnable() {
+                                    public void run() {
+                                        BrowseActivity.this.render();
+                                    }
+                                });
+                        }
+                    }).start();
+            }
+        };
+
     private File contextFile;
+    private File crosswordsFolder = new File(Environment.getExternalStorageDirectory(),
+            "crosswords");
+    private boolean viewArchive;
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+        File meta = new File(this.contextFile.getParent(),
+                contextFile.getName()
+                           .substring(0, contextFile.getName().lastIndexOf(".")) +
+                ".shortyz");
+
         if (item.getTitle().equals("Delete")) {
             this.contextFile.delete();
+
+            if (meta.exists()) {
+                meta.delete();
+            }
+
+            render();
+
+            return true;
+        } else if (item.getTitle().equals("Archive")) {
+            this.archiveFolder.mkdirs();
+            this.contextFile.renameTo(new File(this.archiveFolder,
+                    this.contextFile.getName()));
+            meta.renameTo(new File(this.archiveFolder, meta.getName()));
             render();
 
             return true;
@@ -71,15 +131,68 @@ public class BrowseActivity extends ListActivity {
         menu.setHeaderTitle(contextFile.getName());
 
         MenuItem i = menu.add("Delete");
+        menu.add("Archive");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+        menu.add("Download").setIcon(android.R.drawable.ic_menu_rotate);
+        menu.add("Help").setIcon(android.R.drawable.ic_menu_help);
+        menu.add("Settings").setIcon(android.R.drawable.ic_menu_preferences);
+        menu.add("Archive").setIcon(android.R.drawable.ic_menu_view);
+        menu.add("Cleanup").setIcon(android.R.drawable.ic_menu_manage);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getTitle().equals("Download")) {
+            showDialog(DATE_DIALOG_ID);
+
+            return true;
+        } else if (item.getTitle().equals("Settings")) {
+            Intent i = new Intent(this, PreferencesActivity.class);
+            this.startActivity(i);
+
+            return true;
+        } else if (item.getTitle().equals("Crosswords") ||
+                item.getTitle().equals("Archive")) {
+            this.viewArchive = !viewArchive;
+            item.setTitle(viewArchive ? "Crosswords" : "Archive");
+            render();
+
+            return true;
+        }
+
+        return false;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        this.setTitle("Select Puzzle:");
         setDefaultKeyMode(DEFAULT_KEYS_SHORTCUT);
         getListView().setOnCreateContextMenuListener(this);
+        this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        this.nm = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         render();
+    }
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+        case DATE_DIALOG_ID:
+
+            Date d = new Date();
+
+            return new DatePickerDialog(this, dateSetListener,
+                d.getYear() + 1900, d.getMonth(), d.getDate());
+        }
+
+        return null;
     }
 
     @Override
@@ -90,9 +203,15 @@ public class BrowseActivity extends ListActivity {
         this.startActivity(i);
     }
 
+    @Override
+    protected void onResume() {
+        this.render();
+        super.onResume();
+    }
+
     private void render() {
-        this.setListAdapter(new FileAdapter(
-                new File(Environment.getExternalStorageDirectory(), "crosswords")));
+        this.setListAdapter(new FileAdapter(viewArchive ? this.archiveFolder
+                                                        : this.crosswordsFolder));
 
         // getListView().setOnCreateContextMenuListener(this);
     }
@@ -103,6 +222,8 @@ public class BrowseActivity extends ListActivity {
         File[] puzFiles;
 
         public FileAdapter(File directory) {
+            directory.mkdirs();
+
             ArrayList<File> files = new ArrayList<File>();
 
             for (File f : directory.listFiles()) {

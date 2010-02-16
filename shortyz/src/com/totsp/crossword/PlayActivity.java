@@ -103,16 +103,7 @@ public class PlayActivity extends Activity {
         }
 
         this.render();
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        final NotificationManager nm = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        new Thread(new Runnable(){
-
-			public void run() {
-				Downloaders dls = new Downloaders(prefs, nm, PlayActivity.this);
-				dls.download(new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000)));
-			}
-        	
-        }).start();
+        
         
     }
 
