@@ -31,7 +31,7 @@ public class Puzzle {
     private int width; //one byte;
     String[] rawClues;
     String source;
-    Date date;
+    Date date = new Date();
    
 
     public String getAuthor() {

@@ -292,6 +292,21 @@ public class Playboard {
     public void toggleShowErrors() {
         this.showErrors = !showErrors;
     }
+    
+    public Box[] getCurrentWordBoxes(){
+    	Word currentWord = this.getCurrentWord();
+    	Box[] result = new Box[currentWord.length];
+    	for(int i=0; i < result.length; i++){
+    		Position pos = new Position(currentWord.start.across, currentWord.start.down);
+    		if(currentWord.across ){
+    			pos.across+=i;
+    		} else {
+    			pos.down+=i;
+    		}
+    		result[i] = this.boxes[pos.across][pos.down];
+    	}
+    	return result;
+    }
 
     public static class Clue {
         public String hint;
