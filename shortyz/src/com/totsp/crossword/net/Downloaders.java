@@ -56,10 +56,11 @@ public class Downloaders {
 			Intent notificationIntent = new Intent(context, PlayActivity.class);
 			PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 			not.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
-			this.notificationManager.notify(0, not);
+			if(this.notificationManager != null){
+				this.notificationManager.notify(0, not);
+			}
 			File downloaded = d.download(date);
 			if(downloaded != null){
-				
 				try{
 					Puzzle puz = IO.load(downloaded);
 					puz.setDate(date);
@@ -75,7 +76,9 @@ public class Downloaders {
 			}
 			i++;
 		}
-		this.notificationManager.cancel(0);
+		if(this.notificationManager != null){
+			this.notificationManager.cancel(0);
+		}
 	}
 	
 	private void postDownloadedNotification(int i, String name, File puzFile){

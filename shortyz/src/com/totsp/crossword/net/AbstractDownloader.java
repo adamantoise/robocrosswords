@@ -44,6 +44,7 @@ public abstract class AbstractDownloader implements Downloader{
 			fos.close();
 		} catch(IOException ioe){
 			LOG.log(Level.SEVERE, "Exception downloading puzzle", ioe);
+			downloadTo.delete();
 			return null;
 		}
 		

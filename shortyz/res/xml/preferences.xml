@@ -30,12 +30,6 @@
 <PreferenceCategory
 	android:title="Free Puzzle Downloads">
 	<CheckBoxPreference
-	android:title="Boston Globe"
-	android:defaultValue="true"
-	android:summary="Boston Globe Daily Puzzle"
-	android:key="downloadGlobe"
-	/>
-	<CheckBoxPreference
 	android:title="Houston Chronicle"
 	android:defaultValue="true"
 	android:summary="Houston Chronicle Daily Puzzle"
@@ -64,6 +58,12 @@
 	android:defaultValue="true"
 	android:summary="The WSJ Friday Puzzle"
 	android:key="downloadWsj"
+	/>
+	<CheckBoxPreference
+	android:title="Boston Globe"
+	android:defaultValue="true"
+	android:summary="Boston Globe Sunday Puzzle"
+	android:key="downloadGlobe"
 	/>
 	
 </PreferenceCategory>

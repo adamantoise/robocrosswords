@@ -46,6 +46,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 
@@ -132,7 +133,7 @@ public class BrowseActivity extends ListActivity {
             return;
         }
 
-        contextFile = (File) getListAdapter().getItem(info.position);
+        contextFile =( (FileHandle) getListAdapter().getItem(info.position)).file;
         menu.setHeaderTitle(contextFile.getName());
 
         MenuItem i = menu.add("Delete");
@@ -205,7 +206,7 @@ public class BrowseActivity extends ListActivity {
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
-        File puzFile = (File) v.getTag();
+        File puzFile = ((FileHandle) v.getTag()).file;
         Intent i = new Intent(Intent.ACTION_EDIT, Uri.fromFile(puzFile), this,
                 PlayActivity.class);
         this.startActivity(i);
@@ -226,31 +227,28 @@ public class BrowseActivity extends ListActivity {
 
     private class FileAdapter extends BaseAdapter {
         SimpleDateFormat df = new SimpleDateFormat("EEEEEEEEE\n MMM dd, yyyy");
-        PuzzleMeta[] metas;
-        File[] puzFiles;
+        FileHandle[] puzFiles;
 
         public FileAdapter(File directory) {
             directory.mkdirs();
 
-            ArrayList<File> files = new ArrayList<File>();
+            ArrayList<FileHandle> files = new ArrayList<FileHandle>();
 
             for (File f : directory.listFiles()) {
                 if (f.getName().endsWith(".puz")) {
-                    files.add(f);
+                	PuzzleMeta m = null;
+                    try {
+						 m = IO.meta(f);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						//e.printStackTrace();
+					}
+                    files.add(new FileHandle(f, m));
                 }
             }
 
-            puzFiles = files.toArray(new File[files.size()]);
-            metas = new PuzzleMeta[puzFiles.length];
-
-            for (int i = 0; i < puzFiles.length; i++) {
-                try {
-                    metas[i] = IO.meta(puzFiles[i]);
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
+            this.puzFiles = files.toArray(new FileHandle[files.size()]);
+            Arrays.sort(puzFiles);
         }
 
         public int getCount() {
@@ -276,37 +274,56 @@ public class BrowseActivity extends ListActivity {
 
             TextView date = (TextView) view.findViewById(R.id.puzzle_date);
 
-            if (metas[i] != null) {
-                date.setText(df.format(metas[i].date));
-            } else {
-                date.setText(df.format(new Date(puzFiles[i].lastModified())));
-            }
-
+            date.setText(df.format(puzFiles[i].getDate()));
+            
             TextView title = (TextView) view.findViewById(R.id.puzzle_name);
 
-            if (metas[i] != null) {
-                title.setText(metas[i].source);
-            } else {
-                title.setText(puzFiles[i].getName());
-            }
-
+            title.setText(puzFiles[i].getTitle());
+           
             ProgressBar bar = (ProgressBar) view.findViewById(R.id.puzzle_progress);
 
-            if (metas[i] != null) {
-                bar.setProgress(metas[i].percentComplete);
-            } else {
-                bar.setProgress(0);
-            }
+            
+            bar.setProgress(puzFiles[i].getProgress());
+           
 
             TextView caption = (TextView) view.findViewById(R.id.puzzle_caption);
 
-            if (metas[i] != null) {
-                caption.setText(metas[i].title);
-            } else {
-                caption.setText("");
-            }
-
+            caption.setText(puzFiles[i].getCaption());
+           
             return view;
         }
+    }
+    
+    private static class FileHandle implements Comparable {
+    	File file;
+    	PuzzleMeta meta;
+    	
+    	FileHandle(File f, PuzzleMeta meta){
+    		this.file = f;
+    		this.meta = meta;
+    	}
+    	
+    	String getCaption(){
+    		return meta == null ? "" : meta.title;
+    	}
+    	
+    	int getProgress(){
+    		return meta == null ? 0 : meta.percentComplete;
+    	}
+    	
+    	Date getDate() {
+    		return meta == null ? new Date(file.lastModified()) : meta.date;
+    	}
+    	
+    	String getTitle(){
+    		return meta == null || meta.source == null || meta.source.length() == 0 ? file.getName().substring(0, file.getName().lastIndexOf(".")) : meta.source;
+    	}
+
+		public int compareTo(Object another) {
+			FileHandle h = (FileHandle) another;
+			return h.getDate().compareTo(this.getDate());
+		}
+    	
+    	
     }
 }
