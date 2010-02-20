@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.totsp.crossword.puz.IO;
@@ -47,6 +49,12 @@ public class PlayActivity extends Activity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         this.configuration = newConfig;
+        if(this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES || 
+    			this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED){
+    	InputMethodManager imm = (InputMethodManager)getSystemService (Context.INPUT_METHOD_SERVICE);
+    	
+    		imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+    	}
     }
     
     protected void onActivityResult(int requestCode, int resultCode,
@@ -276,15 +284,21 @@ public class PlayActivity extends Activity {
     }
 
     private void render(Word previous) {
+    	if(this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES || 
+    			this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED){
+    	InputMethodManager imm = (InputMethodManager)getSystemService (Context.INPUT_METHOD_SERVICE);
+    	
+    		imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+    	}
         this.boardView.setBitmap(RENDERER.draw(previous));
 
-        Point topLeft = RENDERER.findPointTopLeft(this.BOARD.getHighlightLetter());
-        Point bottomRight = RENDERER.findPointBottomRight(this.BOARD.getHighlightLetter());
+        Point topLeft = RENDERER.findPointTopLeft(PlayActivity.BOARD.getHighlightLetter());
+        Point bottomRight = RENDERER.findPointBottomRight(PlayActivity.BOARD.getHighlightLetter());
         this.boardView.ensureVisible(bottomRight);
         this.boardView.ensureVisible(topLeft);
 
-        Clue c = this.BOARD.getClue();
-        this.clue.setText("(" + (this.BOARD.isAcross() ? "across" : "down") +
+        Clue c = PlayActivity.BOARD.getClue();
+        this.clue.setText("(" + (PlayActivity.BOARD.isAcross() ? "across" : "down") +
             ") " + c.number + ". " + c.hint);
     }
 }
