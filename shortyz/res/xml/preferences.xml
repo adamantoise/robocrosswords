@@ -65,6 +65,12 @@
 	android:summary="Boston Globe Sunday Puzzle"
 	android:key="downloadGlobe"
 	/>
+	<CheckBoxPreference
+	android:title="InkWell.com"
+	android:defaultValue="true"
+	android:summary="InkWell.com Friday Puzzle"
+	android:key="downloadInkwell"
+	/>
 	
 </PreferenceCategory>
 </PreferenceScreen>

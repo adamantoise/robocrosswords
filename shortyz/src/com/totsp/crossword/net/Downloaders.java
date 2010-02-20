@@ -43,6 +43,9 @@ public class Downloaders {
 		if(prefs.getBoolean("downloadWsj", true)){
 			downloaders.add(new WSJDownloader() );
 		}
+		if(prefs.getBoolean("downloadInkwell", true)){
+			downloaders.add(new InkwellDownloader() );
+		}
 	}
 
 	public void download(Date date){

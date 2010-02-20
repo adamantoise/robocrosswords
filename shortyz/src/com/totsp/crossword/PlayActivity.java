@@ -2,19 +2,14 @@ package com.totsp.crossword;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import android.app.Activity;
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
@@ -23,9 +18,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnClickListener;
 import android.widget.TextView;
 
-import com.totsp.crossword.net.Downloaders;
 import com.totsp.crossword.puz.IO;
 import com.totsp.crossword.puz.Playboard;
 import com.totsp.crossword.puz.Puzzle;
@@ -40,10 +35,10 @@ import com.totsp.crossword.view.ScrollingImageView.Point;
 
 public class PlayActivity extends Activity {
 	private static final Logger LOG = Logger.getLogger("com.totsp.crossword");
-	private static final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	static final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private Configuration configuration;
-    private Playboard board;
-    private PlayboardRenderer renderer;
+    static  Playboard BOARD;
+    static PlayboardRenderer RENDERER;
     private ScrollingImageView boardView;
     private TextView clue;
     private Puzzle puz;
@@ -52,6 +47,11 @@ public class PlayActivity extends Activity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         this.configuration = newConfig;
+    }
+    
+    protected void onActivityResult(int requestCode, int resultCode,
+            Intent data) {
+        this.render();
     }
 
    
@@ -78,23 +78,34 @@ public class PlayActivity extends Activity {
                                            .openRawResource(R.raw.test));
         	}
 
-            board = new Playboard(puz);
-            this.renderer = new PlayboardRenderer(board, metrics.density);
+            BOARD = new Playboard(puz);
+            RENDERER = new PlayboardRenderer(BOARD, metrics.density);
             setContentView(R.layout.main);
             this.clue = (TextView) this.findViewById(R.id.clueLine);
+            
+            this.clue.setClickable(true);
+            this.clue.setOnClickListener(new OnClickListener(){
+
+				public void onClick(View arg0) {
+					Intent i = new Intent(PlayActivity.this, ClueListActivity.class);
+		        	PlayActivity.this.startActivityForResult(i, 0);
+				}
+            	
+            });
+            
             boardView = (ScrollingImageView) this.findViewById(R.id.board);
 
             this.registerForContextMenu(boardView);
             boardView.setContextMenuListener(new ClickListener() {
                     public void onContextMenu(Point e) {
-                        Position p = PlayActivity.this.renderer.findBox(e);
-                        PlayActivity.this.board.setHighlightLetter(p);
+                        Position p = PlayActivity.RENDERER.findBox(e);
+                        PlayActivity.this.BOARD.setHighlightLetter(p);
                         PlayActivity.this.openContextMenu(boardView);
                     }
 
                     public void onTap(Point e) {
-                        Position p = PlayActivity.this.renderer.findBox(e);
-                        Word old = PlayActivity.this.board.setHighlightLetter(p);
+                        Position p = PlayActivity.RENDERER.findBox(e);
+                        Word old = PlayActivity.this.BOARD.setHighlightLetter(p);
                         PlayActivity.this.render(old);
                     }
                 });
@@ -142,43 +153,43 @@ public class PlayActivity extends Activity {
 
         switch (keyCode) {
         case KeyEvent.KEYCODE_DPAD_DOWN:
-            previous = this.board.moveDown();
+            previous = this.BOARD.moveDown();
             this.render(previous);
 
             return true;
 
         case KeyEvent.KEYCODE_DPAD_UP:
-            previous = this.board.movieUp();
+            previous = this.BOARD.movieUp();
             this.render(previous);
 
             return true;
 
         case KeyEvent.KEYCODE_DPAD_LEFT:
-            previous = this.board.moveLeft();
+            previous = this.BOARD.moveLeft();
             this.render(previous);
 
             return true;
 
         case KeyEvent.KEYCODE_DPAD_RIGHT:
-            previous = this.board.moveRight();
+            previous = this.BOARD.moveRight();
             this.render(previous);
 
             return true;
 
         case KeyEvent.KEYCODE_DPAD_CENTER:
-            previous = this.board.toggleDirection();
+            previous = this.BOARD.toggleDirection();
             this.render(previous);
 
             return true;
 
         case KeyEvent.KEYCODE_SPACE:
-            previous = this.board.toggleDirection();
+            previous = this.BOARD.toggleDirection();
             this.render(previous);
 
             return true;
 
         case KeyEvent.KEYCODE_DEL:
-            previous = this.board.deleteLetter();
+            previous = this.BOARD.deleteLetter();
             this.render(previous);
 
             return true;
@@ -187,7 +198,7 @@ public class PlayActivity extends Activity {
         char c = Character.toUpperCase(event.getDisplayLabel());
 
         if (ALPHA.indexOf(c) != -1) {
-            previous = this.board.playLetter(c);
+            previous = this.BOARD.playLetter(c);
             this.render(previous);
 
             return true;
@@ -213,23 +224,23 @@ public class PlayActivity extends Activity {
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
     	System.out.println(item.getTitle());
         if (item.getTitle().equals("Letter")) {
-            this.board.revealLetter();
+            this.BOARD.revealLetter();
             this.render();
 
             return true;
         } else if (item.getTitle().equals("Word")) {
-            this.board.revealWord();
+            this.BOARD.revealWord();
             this.render();
 
             return true;
         } else if (item.getTitle().equals("Puzzle")) {
-            this.board.revealPuzzle();
+            this.BOARD.revealPuzzle();
             this.render();
 
             return true;
         } else if (item.getTitle().equals("Show Errors")) {
-            this.board.toggleShowErrors();
-            item.setChecked(this.board.isShowErrors());
+            this.BOARD.toggleShowErrors();
+            item.setChecked(this.BOARD.isShowErrors());
             this.render();
 
             return true;
@@ -239,18 +250,18 @@ public class PlayActivity extends Activity {
         	return true;
         } else if (item.getTitle().equals("Zoom In")) {
             this.boardView.scrollTo(0, 0);
-            this.renderer.zoomIn();
+            RENDERER.zoomIn();
             this.render();
 
             return true;
         } else if (item.getTitle().equals("Zoom Out")) {
             this.boardView.scrollTo(0, 0);
-            this.renderer.zoomOut();
+            RENDERER.zoomOut();
             this.render();
 
             return true;
         } else if (item.getTitle().equals("Zoom Reset")) {
-            this.renderer.zoomReset();
+        	RENDERER.zoomReset();
             this.render();
             this.boardView.scrollTo(0, 0);
 
@@ -265,15 +276,15 @@ public class PlayActivity extends Activity {
     }
 
     private void render(Word previous) {
-        this.boardView.setBitmap(this.renderer.draw(previous));
+        this.boardView.setBitmap(RENDERER.draw(previous));
 
-        Point topLeft = this.renderer.findPointTopLeft(this.board.getHighlightLetter());
-        Point bottomRight = this.renderer.findPointBottomRight(this.board.getHighlightLetter());
+        Point topLeft = RENDERER.findPointTopLeft(this.BOARD.getHighlightLetter());
+        Point bottomRight = RENDERER.findPointBottomRight(this.BOARD.getHighlightLetter());
         this.boardView.ensureVisible(bottomRight);
         this.boardView.ensureVisible(topLeft);
 
-        Clue c = this.board.getClue();
-        this.clue.setText("(" + (this.board.isAcross() ? "across" : "down") +
+        Clue c = this.BOARD.getClue();
+        this.clue.setText("(" + (this.BOARD.isAcross() ? "across" : "down") +
             ") " + c.number + ". " + c.hint);
     }
 }

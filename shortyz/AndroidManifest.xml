@@ -16,6 +16,10 @@
 			android:label="Settings">
 		</activity>
 		<activity
+			android:name=".ClueListActivity"
+			android:label="Clues">
+		</activity>
+		<activity
 			android:name=".BrowseActivity"
 			android:label="@string/app_name">
 			<intent-filter>
