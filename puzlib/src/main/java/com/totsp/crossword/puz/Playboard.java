@@ -1,5 +1,7 @@
 package com.totsp.crossword.puz;
 
+import java.util.HashMap;
+
 
 
 public class Playboard {
@@ -8,6 +10,8 @@ public class Playboard {
     Box[][] boxes;
     boolean across = true;
     private boolean showErrors;
+    private HashMap<Integer, Position> acrossWordStarts = new HashMap<Integer, Position>();
+    private HashMap<Integer, Position> downWordStarts = new HashMap<Integer, Position>();
 
     public Playboard(Puzzle puzzle) {
         this.puzzle = puzzle;
@@ -17,9 +21,17 @@ public class Playboard {
         for (int x = 0; x < puzzle.getBoxes().length; x++) {
             for (int y = 0; y < puzzle.getBoxes()[x].length; y++) {
                 boxes[y][x] = puzzle.getBoxes()[x][y];
+                if(boxes[y][x] != null && boxes[y][x].across){
+                	acrossWordStarts.put(boxes[y][x].clueNumber, new Position(y,x));
+                }
+                if(boxes[y][x] != null && boxes[y][x].down){
+                	downWordStarts.put(boxes[y][x].clueNumber, new Position(y,x));
+                }
             }
         }
     }
+    
+    
 
     public void setAcross(boolean across) {
         this.across = across;
@@ -50,6 +62,10 @@ public class Playboard {
         w.length = this.getWordRange();
 
         return w;
+    }
+    
+    public Box getCurrentBox(){
+    	return this.boxes[this.highlightLetter.across][this.highlightLetter.down];
     }
 
     public Position getCurrentWordStart() {
@@ -293,6 +309,17 @@ public class Playboard {
         this.showErrors = !showErrors;
     }
     
+    public void jumpTo(int clueIndex, boolean across){
+    	this.across = across;
+    	if(across){
+    		this.setHighlightLetter(this.acrossWordStarts.get(this.puzzle.acrossCluesLookup[clueIndex]));
+    	} else {
+    		this.setHighlightLetter(this.downWordStarts.get(this.puzzle.downCluesLookup[clueIndex]));
+    	}
+    }
+    
+    
+    
     public Box[] getCurrentWordBoxes(){
     	Word currentWord = this.getCurrentWord();
     	Box[] result = new Box[currentWord.length];
@@ -307,10 +334,34 @@ public class Playboard {
     	}
     	return result;
     }
+    
+    public Clue[] getDownClues() {
+    	Clue[] clues = new Clue[puzzle.downClues.length];
+    	for(int i=0; i< clues.length; i++){
+    		clues[i] = new Clue();
+    		clues[i].hint = puzzle.downClues[i];
+    		clues[i].number = puzzle.downCluesLookup[i];
+    	}
+    	return clues;
+    }
+    
+    public Clue[] getAcrossClues() {
+    	Clue[] clues = new Clue[puzzle.acrossClues.length];
+    	for(int i=0; i< clues.length; i++){
+    		clues[i] = new Clue();
+    		clues[i].hint = puzzle.acrossClues[i];
+    		clues[i].number = puzzle.acrossCluesLookup[i];
+    	}
+    	return clues;
+    }
 
     public static class Clue {
         public String hint;
         public int number;
+        
+        public String toString(){
+        	return number+". "+hint;
+        }
     }
 
     public static class Position {
