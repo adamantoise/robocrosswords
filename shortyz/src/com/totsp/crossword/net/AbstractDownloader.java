@@ -16,8 +16,8 @@ public abstract class AbstractDownloader implements Downloader{
 	private static final Logger LOG = Logger.getLogger("com.totsp.crossword");
 	public static File DOWNLOAD_DIR = new File(Environment.getExternalStorageDirectory(), "crosswords");
 	public static final int DEFAULT_BUFFER_SIZE = 1024;
-	private String baseUrl;
-	private File downloadDirectory;
+	protected String baseUrl;
+	protected File downloadDirectory;
 	private String downloaderName;
 	
 	protected AbstractDownloader(String baseUrl, File downloadDirectory, String downloaderName){
@@ -52,7 +52,7 @@ public abstract class AbstractDownloader implements Downloader{
 	
 	}
 	
-	private String createFileName(Date date){
+	protected String createFileName(Date date){
 		return (date.getYear()+1900)+"-"+date.getMonth()+"-"+date.getDate()+"-"+this.downloaderName.replaceAll(" ", "")+".puz";
 	}
 	

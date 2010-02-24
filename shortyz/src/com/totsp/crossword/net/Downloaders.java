@@ -45,6 +45,9 @@ public class Downloaders {
 		}
 		if(prefs.getBoolean("downloadInkwell", true)){
 			downloaders.add(new InkwellDownloader() );
+		} 
+		if(prefs.getBoolean("", true)){
+			downloaders.add(new LATDownloader());
 		}
 	}
 
@@ -90,6 +93,8 @@ public class Downloaders {
 		Intent notificationIntent = new Intent(Intent.ACTION_EDIT, Uri.fromFile(puzFile), context, PlayActivity.class);
 		PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 		not.setLatestEventInfo(context, contentTitle, puzFile.getName(), contentIntent);
-		this.notificationManager.notify(i, not);
+		if(this.notificationManager != null){
+			this.notificationManager.notify(i, not);
+		}
 	}
 }
