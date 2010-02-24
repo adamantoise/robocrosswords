@@ -73,4 +73,22 @@
 	/>
 	
 </PreferenceCategory>
+<PreferenceCategory
+	android:title="New York Times Select Membership">
+	<CheckBoxPreference
+	android:title="NYT.com"
+	android:defaultValue="false"
+	android:summary="New York Times Daily Puzzle"
+	android:key="downloadNYT"
+	/>
+	<EditTextPreference
+	android:title="Username"
+	android:summary="NYT Username or Email Address"
+	android:key="nytUsername" />
+	<EditTextPreference
+	android:title="Password"
+	android:summary="NYT Password"
+	android:key="nytPassword" 
+	/>
+	</PreferenceCategory>
 </PreferenceScreen>

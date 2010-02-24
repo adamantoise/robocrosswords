@@ -46,8 +46,11 @@ public class Downloaders {
 		if(prefs.getBoolean("downloadInkwell", true)){
 			downloaders.add(new InkwellDownloader() );
 		} 
-		if(prefs.getBoolean("", true)){
+		if(prefs.getBoolean("downloadLAT", true)){
 			downloaders.add(new LATDownloader());
+		}
+		if(prefs.getBoolean("downloadNYT", false) ){
+			downloaders.add(new NYTDownloader(prefs.getString("nytUsername", ""), prefs.getString("nytPassword", "")));
 		}
 	}
 
@@ -74,7 +77,7 @@ public class Downloaders {
 					IO.save(puz, downloaded);
 					this.postDownloadedNotification(i,d.getName(), downloaded);
 					
-				} catch(IOException ioe){
+				} catch(Exception ioe){
 					LOG.log(Level.WARNING, "Exception reading "+downloaded, ioe);
 					downloaded.delete();
 				}
