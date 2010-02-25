@@ -8,5 +8,7 @@ public interface Downloader {
 	public String getName();
 	
 	public File download(Date date);
+	
+	public String createFileName(Date date);
 
 }

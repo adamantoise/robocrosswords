@@ -52,7 +52,7 @@ public abstract class AbstractDownloader implements Downloader{
 	
 	}
 	
-	protected String createFileName(Date date){
+	public String createFileName(Date date){
 		return (date.getYear()+1900)+"-"+(date.getMonth()+1)+"-"+date.getDate()+"-"+this.downloaderName.replaceAll(" ", "")+".puz";
 	}
 	

@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Environment;
 
 import com.totsp.crossword.PlayActivity;
 import com.totsp.crossword.puz.IO;
@@ -68,7 +69,12 @@ public class Downloaders {
 			if(this.notificationManager != null){
 				this.notificationManager.notify(0, not);
 			}
-			File downloaded = d.download(date);
+			
+			File downloaded = new File(Environment.getExternalStorageDirectory(), "crosswords/"+d.createFileName(date));
+			if(downloaded.exists()){
+				continue;
+			}
+			downloaded = d.download(date);
 			if(downloaded != null){
 				try{
 					Puzzle puz = IO.load(downloaded);

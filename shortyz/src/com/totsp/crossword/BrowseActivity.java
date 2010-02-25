@@ -119,6 +119,54 @@ public class BrowseActivity extends ListActivity {
 
         return super.onContextItemSelected(item);
     }
+    
+    private void cleanup(){
+    	File directory = new File(Environment.getExternalStorageDirectory(),
+                "crosswords");
+    	 ArrayList<FileHandle> files = new ArrayList<FileHandle>();
+    	 FileHandle[] puzFiles = null;
+         for (File f : directory.listFiles()) {
+             if (f.getName().endsWith(".puz")) {
+             	PuzzleMeta m = null;
+                 try {
+						 m = IO.meta(f);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						//e.printStackTrace();
+					}
+                 files.add(new FileHandle(f, m));
+             }
+         }
+
+         puzFiles = files.toArray(new FileHandle[files.size()]);
+         ArrayList<FileHandle> toCleanup = new ArrayList<FileHandle>();
+         Arrays.sort(puzFiles);
+         files.clear();
+         for(FileHandle h : puzFiles){
+        	 if(h.getProgress() == 100){
+        		 toCleanup.add(h);
+        	 } else {
+        		 files.add(h);
+        	 }
+         }
+         
+         for(int i=9; i < files.size(); i++){
+        	 toCleanup.add(files.get(i));
+         }
+         for(FileHandle h: toCleanup){
+        	 File meta = new File(directory, h.file.getName().substring(0, h.file.getName().lastIndexOf("."))+".shortyz");
+        	 if(prefs.getBoolean("deleteOnCleanup", false)){
+        		 h.file.delete();
+        		 meta.delete();
+        	 } else {
+        		 h.file.renameTo( new File(this.archiveFolder, h.file.getName()));
+        		 meta.renameTo(new File(this.archiveFolder, meta.getName()));
+        	 }
+         }
+         
+         render();
+    	
+    }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View view,
@@ -171,6 +219,9 @@ public class BrowseActivity extends ListActivity {
             render();
 
             return true;
+        } else if(item.getTitle().equals("Cleanup") ){
+        	this.cleanup();
+        	return true;
         }
 
         return false;
