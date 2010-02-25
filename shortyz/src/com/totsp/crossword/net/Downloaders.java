@@ -17,7 +17,6 @@ import com.totsp.crossword.puz.IO;
 import com.totsp.crossword.puz.Puzzle;
 
 import java.io.File;
-import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Date;

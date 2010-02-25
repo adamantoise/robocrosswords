@@ -91,4 +91,11 @@
 	android:key="nytPassword" 
 	/>
 	</PreferenceCategory>
+	<PreferenceCategory
+	android:title="About Shortyz">
+	<Preference
+ 	android:title="Release Notes" 
+ 	android:key="releaseNotes"/>
+ 	
+	</PreferenceCategory>
 </PreferenceScreen>

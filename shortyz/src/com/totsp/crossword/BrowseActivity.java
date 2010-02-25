@@ -1,34 +1,33 @@
 package com.totsp.crossword;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.NotificationManager;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-
+import android.content.SharedPreferences.Editor;
 import android.net.Uri;
-
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-
 import android.preference.PreferenceManager;
-
 import android.util.Log;
-
 import android.view.ContextMenu;
-
-import android.view.ContextMenu.ContextMenuInfo;
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.DatePicker;
@@ -39,15 +38,6 @@ import android.widget.TextView;
 import com.totsp.crossword.net.Downloaders;
 import com.totsp.crossword.puz.IO;
 import com.totsp.crossword.puz.PuzzleMeta;
-
-import java.io.File;
-import java.io.IOException;
-
-import java.text.SimpleDateFormat;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 
 
 public class BrowseActivity extends ListActivity {
@@ -170,11 +160,22 @@ public class BrowseActivity extends ListActivity {
         getListView().setOnCreateContextMenuListener(this);
         this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
+        this.nm = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        
         if (prefs.getBoolean("dlOnStartup", true)) {
             this.download(new Date());
         }
+        if(prefs.getBoolean("release_2.0", true) ){
+        	
+        	Editor e = prefs.edit();
+        	e.putBoolean("release_2.0", false);
+        	e.commit();
+        	
+        	Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/release.html"), this,
+	                HTMLActivity.class);
+			this.startActivity(i);
+        }
 
-        this.nm = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         render();
     }
 
