@@ -325,10 +325,10 @@ public class Playboard {
 	public void jumpTo(int clueIndex, boolean across) {
 		this.across = across;
 		if (across) {
-			this.setHighlightLetter(this.acrossWordStarts
+			this.highlightLetter = (this.acrossWordStarts
 					.get(this.puzzle.acrossCluesLookup[clueIndex]));
 		} else {
-			this.setHighlightLetter(this.downWordStarts
+			this.highlightLetter= (this.downWordStarts
 					.get(this.puzzle.downCluesLookup[clueIndex]));
 		}
 	}

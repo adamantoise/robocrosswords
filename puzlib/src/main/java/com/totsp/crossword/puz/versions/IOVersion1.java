@@ -67,6 +67,7 @@ public class IOVersion1 implements IOVersion {
 				IO.writeNullTerminatedString(dos, b.responder);
 			}
 		}
+		dos.writeLong(puz.getTime());
 	}
 
 }
