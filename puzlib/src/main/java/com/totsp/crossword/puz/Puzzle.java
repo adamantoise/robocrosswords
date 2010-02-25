@@ -32,6 +32,15 @@ public class Puzzle {
     String[] rawClues;
     String source;
     Date date = new Date();
+    long time;
+    
+    public void setTime(long time){
+    	this.time = time;
+    }
+    
+    public long getTime(){
+    	return this.time;
+    }
    
 
     public String getAuthor() {

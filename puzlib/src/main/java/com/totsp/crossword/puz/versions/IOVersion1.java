@@ -30,6 +30,8 @@ public class IOVersion1 implements IOVersion {
 			}
 		}
 		
+		puz.setTime(dis.readLong());
+		
 		
 	}
 
