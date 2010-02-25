@@ -15,6 +15,9 @@ public class BostonGlobeDownloader extends AbstractDownloader {
 	}
 	
 	public File download(Date date) {
+		if(date.getDay()!= 0){
+			return null;
+		}
 		String name = "boston_"+nf.format(date.getMonth() +1)+
 					nf.format(date.getDate())+
 					(date.getYear()+ 1900)
