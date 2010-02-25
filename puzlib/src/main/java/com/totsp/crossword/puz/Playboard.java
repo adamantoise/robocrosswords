@@ -30,6 +30,10 @@ public class Playboard {
 			}
 		}
 	}
+	
+	public Puzzle getPuzzle(){
+		return this.puzzle;
+	}
 
 	public void setAcross(boolean across) {
 		this.across = across;

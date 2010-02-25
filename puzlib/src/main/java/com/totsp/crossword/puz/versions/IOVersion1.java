@@ -29,8 +29,11 @@ public class IOVersion1 implements IOVersion {
 				b.responder = IO.readNullTerminatedString(dis);
 			}
 		}
-		
-		puz.setTime(dis.readLong());
+		try{
+			puz.setTime(dis.readLong());
+		}catch(IOException ioe){
+			ioe.printStackTrace();
+		}
 		
 		
 	}
