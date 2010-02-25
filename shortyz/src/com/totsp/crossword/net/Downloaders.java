@@ -87,8 +87,10 @@ public class Downloaders {
 
             File downloaded = new File(Environment.getExternalStorageDirectory(),
                     "crosswords/" + d.createFileName(date));
+            File archived  = new File(Environment.getExternalStorageDirectory(),
+                    "crosswords/archive" + d.createFileName(date));
 
-            if (downloaded.exists()) {
+            if (downloaded.exists() || archived.exists()) {
                 continue;
             }
 
