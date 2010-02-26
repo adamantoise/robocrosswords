@@ -39,120 +39,122 @@ import com.totsp.crossword.net.Downloaders;
 import com.totsp.crossword.puz.IO;
 import com.totsp.crossword.puz.PuzzleMeta;
 
-
 public class BrowseActivity extends ListActivity {
-    private static final int DATE_DIALOG_ID = 0;
-    SharedPreferences prefs;
-    private DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                int dayOfMonth) {
-                System.out.println(year + " " + monthOfYear + " " + dayOfMonth);
+	private static final int DATE_DIALOG_ID = 0;
+	SharedPreferences prefs;
+	private DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+		public void onDateSet(DatePicker view, int year, int monthOfYear,
+				int dayOfMonth) {
+			System.out.println(year + " " + monthOfYear + " " + dayOfMonth);
 
-                Date d = new Date(year - 1900, monthOfYear, dayOfMonth);
-                download(d);
-            }
-        };
+			Date d = new Date(year - 1900, monthOfYear, dayOfMonth);
+			download(d);
+		}
+	};
 
-    private File archiveFolder = new File(Environment.getExternalStorageDirectory(),
-            "crosswords/archive");
-    private File contextFile;
-    private File crosswordsFolder = new File(Environment.getExternalStorageDirectory(),
-            "crosswords");
-    private Handler handler = new Handler();
-    private NotificationManager nm;
-    private boolean viewArchive;
+	private File archiveFolder = new File(Environment
+			.getExternalStorageDirectory(), "crosswords/archive");
+	private File contextFile;
+	private File crosswordsFolder = new File(Environment
+			.getExternalStorageDirectory(), "crosswords");
+	private Handler handler = new Handler();
+	private NotificationManager nm;
+	private boolean viewArchive;
 
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        File meta = new File(this.contextFile.getParent(),
-                contextFile.getName()
-                           .substring(0, contextFile.getName().lastIndexOf(".")) +
-                ".shortyz");
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		File meta = new File(this.contextFile.getParent(), contextFile
+				.getName().substring(0, contextFile.getName().lastIndexOf("."))
+				+ ".shortyz");
 
-        if (item.getTitle().equals("Delete")) {
-            this.contextFile.delete();
+		if (item.getTitle().equals("Delete")) {
+			this.contextFile.delete();
 
-            if (meta.exists()) {
-                meta.delete();
-            }
+			if (meta.exists()) {
+				meta.delete();
+			}
 
-            render();
+			render();
 
-            return true;
-        } else if (item.getTitle().equals("Archive")) {
-            this.archiveFolder.mkdirs();
-            this.contextFile.renameTo(new File(this.archiveFolder,
-                    this.contextFile.getName()));
-            meta.renameTo(new File(this.archiveFolder, meta.getName()));
-            render();
+			return true;
+		} else if (item.getTitle().equals("Archive")) {
+			this.archiveFolder.mkdirs();
+			this.contextFile.renameTo(new File(this.archiveFolder,
+					this.contextFile.getName()));
+			meta.renameTo(new File(this.archiveFolder, meta.getName()));
+			render();
 
-            return true;
-        }
+			return true;
+		}
 
-        return super.onContextItemSelected(item);
-    }
+		return super.onContextItemSelected(item);
+	}
 
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View view,
-        ContextMenuInfo menuInfo) {
-        AdapterView.AdapterContextMenuInfo info;
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View view,
+			ContextMenuInfo menuInfo) {
+		AdapterView.AdapterContextMenuInfo info;
 
-        try {
-            info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-        } catch (ClassCastException e) {
-            Log.e("com.totsp.crossword", "bad menuInfo", e);
+		try {
+			info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+		} catch (ClassCastException e) {
+			Log.e("com.totsp.crossword", "bad menuInfo", e);
 
-            return;
-        }
+			return;
+		}
 
-        contextFile = ((FileHandle) getListAdapter().getItem(info.position)).file;
-        menu.setHeaderTitle(contextFile.getName());
+		contextFile = ((FileHandle) getListAdapter().getItem(info.position)).file;
+		menu.setHeaderTitle(contextFile.getName());
 
-        MenuItem i = menu.add("Delete");
-        menu.add("Archive");
-    }
+		menu.add("Delete");
+		menu.add("Archive");
+	}
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
 
-        menu.add("Download").setIcon(android.R.drawable.ic_menu_rotate);
-        menu.add("Help").setIcon(android.R.drawable.ic_menu_help);
-        menu.add("Settings").setIcon(android.R.drawable.ic_menu_preferences);
-        menu.add("Archive").setIcon(android.R.drawable.ic_menu_view);
-        menu.add("Cleanup").setIcon(android.R.drawable.ic_menu_manage);
+		menu.add("Download").setIcon(android.R.drawable.ic_menu_rotate);
+		menu.add("Cleanup").setIcon(android.R.drawable.ic_menu_manage);
+		menu.add("Archive").setIcon(android.R.drawable.ic_menu_view);
+		menu.add("Help").setIcon(android.R.drawable.ic_menu_help);
+		menu.add("Settings").setIcon(android.R.drawable.ic_menu_preferences);
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getTitle().equals("Download")) {
-            showDialog(DATE_DIALOG_ID);
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getTitle().equals("Download")) {
+			showDialog(DATE_DIALOG_ID);
 
-            return true;
-        } else if (item.getTitle().equals("Settings")) {
-            Intent i = new Intent(this, PreferencesActivity.class);
-            this.startActivity(i);
+			return true;
+		} else if (item.getTitle().equals("Settings")) {
+			Intent i = new Intent(this, PreferencesActivity.class);
+			this.startActivity(i);
 
-            return true;
-        } else if (item.getTitle().equals("Crosswords") ||
-                item.getTitle().equals("Archive")) {
-            this.viewArchive = !viewArchive;
-            item.setTitle(viewArchive ? "Crosswords" : "Archive");
-            render();
+			return true;
+		} else if (item.getTitle().equals("Crosswords")
+				|| item.getTitle().equals("Archive")) {
+			this.viewArchive = !viewArchive;
+			item.setTitle(viewArchive ? "Crosswords" : "Archive");
+			render();
 
-            return true;
-        } else if (item.getTitle().equals("Cleanup")) {
-            this.cleanup();
+			return true;
+		} else if (item.getTitle().equals("Cleanup")) {
+			this.cleanup();
 
-            return true;
-        }
+			return true;
+		} else if( item.getTitle().equals("Help")){
+			Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/filescreen.html"), this,
+	                HTMLActivity.class);
+			this.startActivity(i);
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    @Override
+	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setTitle("Select Puzzle:");
@@ -174,219 +176,246 @@ public class BrowseActivity extends ListActivity {
         	Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/release.html"), this,
 	                HTMLActivity.class);
 			this.startActivity(i);
+        } else if( !crosswordsFolder.exists() ){
+        	this.downloadTen();
+    		Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/welcome.html"), this,
+	                HTMLActivity.class);
+			this.startActivity(i);
         }
 
         render();
     }
 
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        switch (id) {
-        case DATE_DIALOG_ID:
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case DATE_DIALOG_ID:
 
-            Date d = new Date();
+			Date d = new Date();
 
-            return new DatePickerDialog(this, dateSetListener,
-                d.getYear() + 1900, d.getMonth(), d.getDate());
-        }
+			return new DatePickerDialog(this, dateSetListener,
+					d.getYear() + 1900, d.getMonth(), d.getDate());
+		}
 
-        return null;
-    }
+		return null;
+	}
 
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        File puzFile = ((FileHandle) v.getTag()).file;
-        Intent i = new Intent(Intent.ACTION_EDIT, Uri.fromFile(puzFile), this,
-                PlayActivity.class);
-        this.startActivity(i);
-    }
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		File puzFile = ((FileHandle) v.getTag()).file;
+		Intent i = new Intent(Intent.ACTION_EDIT, Uri.fromFile(puzFile), this,
+				PlayActivity.class);
+		this.startActivity(i);
+	}
 
-    @Override
-    protected void onResume() {
-        this.render();
-        super.onResume();
-    }
+	@Override
+	protected void onResume() {
+		this.render();
+		super.onResume();
+	}
 
-    private void cleanup() {
-        File directory = new File(Environment.getExternalStorageDirectory(),
-                "crosswords");
-        ArrayList<FileHandle> files = new ArrayList<FileHandle>();
-        FileHandle[] puzFiles = null;
+	private void cleanup() {
+		File directory = new File(Environment.getExternalStorageDirectory(),
+				"crosswords");
+		ArrayList<FileHandle> files = new ArrayList<FileHandle>();
+		FileHandle[] puzFiles = null;
 
-        for (File f : directory.listFiles()) {
-            if (f.getName().endsWith(".puz")) {
-                PuzzleMeta m = null;
+		for (File f : directory.listFiles()) {
+			if (f.getName().endsWith(".puz")) {
+				PuzzleMeta m = null;
 
-                try {
-                    m = IO.meta(f);
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    //e.printStackTrace();
-                }
+				try {
+					m = IO.meta(f);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					// e.printStackTrace();
+				}
 
-                files.add(new FileHandle(f, m));
-            }
-        }
+				files.add(new FileHandle(f, m));
+			}
+		}
 
-        puzFiles = files.toArray(new FileHandle[files.size()]);
+		puzFiles = files.toArray(new FileHandle[files.size()]);
 
-        ArrayList<FileHandle> toCleanup = new ArrayList<FileHandle>();
-        Arrays.sort(puzFiles);
-        files.clear();
+		ArrayList<FileHandle> toCleanup = new ArrayList<FileHandle>();
+		Arrays.sort(puzFiles);
+		files.clear();
 
-        for (FileHandle h : puzFiles) {
-            if (h.getProgress() == 100) {
-                toCleanup.add(h);
-            } else {
-                files.add(h);
-            }
-        }
+		for (FileHandle h : puzFiles) {
+			if (h.getProgress() == 100) {
+				toCleanup.add(h);
+			} else {
+				files.add(h);
+			}
+		}
 
-        for (int i = 9; i < files.size(); i++) {
-            toCleanup.add(files.get(i));
-        }
+		for (int i = 9; i < files.size(); i++) {
+			toCleanup.add(files.get(i));
+		}
 
-        for (FileHandle h : toCleanup) {
-            File meta = new File(directory,
-                    h.file.getName()
-                          .substring(0, h.file.getName().lastIndexOf(".")) +
-                    ".shortyz");
+		for (FileHandle h : toCleanup) {
+			File meta = new File(directory, h.file.getName().substring(0,
+					h.file.getName().lastIndexOf("."))
+					+ ".shortyz");
 
-            if (prefs.getBoolean("deleteOnCleanup", false)) {
-                h.file.delete();
-                meta.delete();
-            } else {
-                h.file.renameTo(new File(this.archiveFolder, h.file.getName()));
-                meta.renameTo(new File(this.archiveFolder, meta.getName()));
-            }
-        }
+			if (prefs.getBoolean("deleteOnCleanup", false)) {
+				h.file.delete();
+				meta.delete();
+			} else {
+				h.file.renameTo(new File(this.archiveFolder, h.file.getName()));
+				meta.renameTo(new File(this.archiveFolder, meta.getName()));
+			}
+		}
 
-        render();
-    }
+		render();
+	}
 
-    private void download(final Date d) {
-        new Thread(new Runnable() {
-                public void run() {
-                    Downloaders dls = new Downloaders(prefs, nm,
-                            BrowseActivity.this);
-                    dls.download(d);
-                    handler.post(new Runnable() {
-                            public void run() {
-                                BrowseActivity.this.render();
-                            }
-                        });
-                }
-            }).start();
-    }
+	private static final long DAY = 24L * 60L * 60L * 1000L;
 
-    private void render() {
-        this.setListAdapter(new FileAdapter(viewArchive ? this.archiveFolder
-                                                        : this.crosswordsFolder));
+	private void downloadTen() {
+		new Thread(new Runnable() {
+			public void run() {
+				Downloaders dls = new Downloaders(prefs, nm,
+						BrowseActivity.this);
+				Date d = new Date();
+				for (int i = 0; i < 10; i++) {
+					d = new Date(d.getTime() - DAY);
+					dls.download(d);
+					handler.post(new Runnable() {
+						public void run() {
+							BrowseActivity.this.render();
+						}
+					});
+				}
+			}
+		}).start();
+	}
 
-        // getListView().setOnCreateContextMenuListener(this);
-    }
+	private void download(final Date d) {
+		new Thread(new Runnable() {
+			public void run() {
+				Downloaders dls = new Downloaders(prefs, nm,
+						BrowseActivity.this);
+				dls.download(d);
+				handler.post(new Runnable() {
+					public void run() {
+						BrowseActivity.this.render();
+					}
+				});
+			}
+		}).start();
+	}
 
-    private class FileAdapter extends BaseAdapter {
-        SimpleDateFormat df = new SimpleDateFormat("EEEEEEEEE\n MMM dd, yyyy");
-        FileHandle[] puzFiles;
+	private void render() {
+		this.setListAdapter(new FileAdapter(viewArchive ? this.archiveFolder
+				: this.crosswordsFolder));
 
-        public FileAdapter(File directory) {
-            directory.mkdirs();
+		// getListView().setOnCreateContextMenuListener(this);
+	}
 
-            ArrayList<FileHandle> files = new ArrayList<FileHandle>();
+	private class FileAdapter extends BaseAdapter {
+		SimpleDateFormat df = new SimpleDateFormat("EEEEEEEEE\n MMM dd, yyyy");
+		FileHandle[] puzFiles;
 
-            for (File f : directory.listFiles()) {
-                if (f.getName().endsWith(".puz")) {
-                    PuzzleMeta m = null;
+		public FileAdapter(File directory) {
+			directory.mkdirs();
 
-                    try {
-                        m = IO.meta(f);
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        //e.printStackTrace();
-                    }
+			ArrayList<FileHandle> files = new ArrayList<FileHandle>();
 
-                    files.add(new FileHandle(f, m));
-                }
-            }
+			for (File f : directory.listFiles()) {
+				if (f.getName().endsWith(".puz")) {
+					PuzzleMeta m = null;
 
-            this.puzFiles = files.toArray(new FileHandle[files.size()]);
-            Arrays.sort(puzFiles);
-        }
+					try {
+						m = IO.meta(f);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						// e.printStackTrace();
+					}
 
-        public int getCount() {
-            return puzFiles.length;
-        }
+					files.add(new FileHandle(f, m));
+				}
+			}
 
-        public Object getItem(int i) {
-            return puzFiles[i];
-        }
+			this.puzFiles = files.toArray(new FileHandle[files.size()]);
+			Arrays.sort(puzFiles);
+		}
 
-        public long getItemId(int arg0) {
-            return arg0;
-        }
+		public int getCount() {
+			return puzFiles.length;
+		}
 
-        public View getView(int i, View view, ViewGroup group) {
-            if (view == null) {
-                LayoutInflater inflater = (LayoutInflater) BrowseActivity.this.getApplicationContext()
-                                                                              .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.puzzle_list_item, null);
-            }
+		public Object getItem(int i) {
+			return puzFiles[i];
+		}
 
-            view.setTag(puzFiles[i]);
+		public long getItemId(int arg0) {
+			return arg0;
+		}
 
-            TextView date = (TextView) view.findViewById(R.id.puzzle_date);
+		public View getView(int i, View view, ViewGroup group) {
+			if (view == null) {
+				LayoutInflater inflater = (LayoutInflater) BrowseActivity.this
+						.getApplicationContext().getSystemService(
+								Context.LAYOUT_INFLATER_SERVICE);
+				view = inflater.inflate(R.layout.puzzle_list_item, null);
+			}
 
-            date.setText(df.format(puzFiles[i].getDate()));
+			view.setTag(puzFiles[i]);
 
-            TextView title = (TextView) view.findViewById(R.id.puzzle_name);
+			TextView date = (TextView) view.findViewById(R.id.puzzle_date);
 
-            title.setText(puzFiles[i].getTitle());
+			date.setText(df.format(puzFiles[i].getDate()));
 
-            ProgressBar bar = (ProgressBar) view.findViewById(R.id.puzzle_progress);
+			TextView title = (TextView) view.findViewById(R.id.puzzle_name);
 
-            bar.setProgress(puzFiles[i].getProgress());
+			title.setText(puzFiles[i].getTitle());
 
-            TextView caption = (TextView) view.findViewById(R.id.puzzle_caption);
+			ProgressBar bar = (ProgressBar) view
+					.findViewById(R.id.puzzle_progress);
 
-            caption.setText(puzFiles[i].getCaption());
+			bar.setProgress(puzFiles[i].getProgress());
 
-            return view;
-        }
-    }
+			TextView caption = (TextView) view
+					.findViewById(R.id.puzzle_caption);
 
-    private static class FileHandle implements Comparable {
-        File file;
-        PuzzleMeta meta;
+			caption.setText(puzFiles[i].getCaption());
 
-        FileHandle(File f, PuzzleMeta meta) {
-            this.file = f;
-            this.meta = meta;
-        }
+			return view;
+		}
+	}
 
-        public int compareTo(Object another) {
-            FileHandle h = (FileHandle) another;
+	private static class FileHandle implements Comparable {
+		File file;
+		PuzzleMeta meta;
 
-            return h.getDate().compareTo(this.getDate());
-        }
+		FileHandle(File f, PuzzleMeta meta) {
+			this.file = f;
+			this.meta = meta;
+		}
 
-        String getCaption() {
-            return (meta == null) ? "" : meta.title;
-        }
+		public int compareTo(Object another) {
+			FileHandle h = (FileHandle) another;
 
-        Date getDate() {
-            return (meta == null) ? new Date(file.lastModified()) : meta.date;
-        }
+			return h.getDate().compareTo(this.getDate());
+		}
 
-        int getProgress() {
-            return (meta == null) ? 0 : meta.percentComplete;
-        }
+		String getCaption() {
+			return (meta == null) ? "" : meta.title;
+		}
 
-        String getTitle() {
-            return ((meta == null) || (meta.source == null) ||
-            (meta.source.length() == 0))
-            ? file.getName().substring(0, file.getName().lastIndexOf("."))
-            : meta.source;
-        }
-    }
+		Date getDate() {
+			return (meta == null) ? new Date(file.lastModified()) : meta.date;
+		}
+
+		int getProgress() {
+			return (meta == null) ? 0 : meta.percentComplete;
+		}
+
+		String getTitle() {
+			return ((meta == null) || (meta.source == null) || (meta.source
+					.length() == 0)) ? file.getName().substring(0,
+					file.getName().lastIndexOf(".")) : meta.source;
+		}
+	}
 }

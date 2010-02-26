@@ -315,7 +315,11 @@ public class PlayActivity extends Activity {
                     ClueListActivity.class);
             PlayActivity.this.startActivityForResult(i, 0);
             return true;
-        }
+        } else if( item.getTitle().equals("Help")){
+			Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/filescreen.html"), this,
+	                HTMLActivity.class);
+			this.startActivity(i);
+		}
 
         return false;
     }
