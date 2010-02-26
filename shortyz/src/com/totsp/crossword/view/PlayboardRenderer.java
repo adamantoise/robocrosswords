@@ -120,7 +120,7 @@ public class PlayboardRenderer {
 			}
 
 			canvas.drawText(Character.toString(word[col].response), startX
-					+ (boxSize / 2), startY + (int) (letterTextSize * 1.25),
+					+ (BOX_SIZE / 2), startY + (int) ((this.logicalDensity * 20F) * 1.25),
 					this.letterText);
 		}
 

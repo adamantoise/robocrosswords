@@ -317,7 +317,7 @@ public class PlayActivity extends Activity {
             PlayActivity.this.startActivityForResult(i, 0);
             return true;
         } else if( item.getTitle().equals("Help")){
-			Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/filescreen.html"), this,
+			Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/playscreen.html"), this,
 	                HTMLActivity.class);
 			this.startActivity(i);
 		}
