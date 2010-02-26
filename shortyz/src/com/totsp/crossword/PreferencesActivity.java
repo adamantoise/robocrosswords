@@ -7,6 +7,8 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.Preference.OnPreferenceClickListener;
 
+import com.totsp.crossword.shortyz.R;
+
 
 public class PreferencesActivity extends PreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {

@@ -8,6 +8,8 @@ import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.Button;
 
+import com.totsp.crossword.shortyz.R;
+
 public class HTMLActivity extends Activity {
 
 	@Override

@@ -38,6 +38,7 @@ import android.widget.TextView;
 import com.totsp.crossword.net.Downloaders;
 import com.totsp.crossword.puz.IO;
 import com.totsp.crossword.puz.PuzzleMeta;
+import com.totsp.crossword.shortyz.R;
 
 public class BrowseActivity extends ListActivity {
 	private static final int DATE_DIALOG_ID = 0;

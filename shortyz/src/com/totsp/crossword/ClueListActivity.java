@@ -16,6 +16,7 @@ import com.totsp.crossword.puz.Box;
 import com.totsp.crossword.puz.Playboard.Clue;
 import com.totsp.crossword.puz.Playboard.Position;
 import com.totsp.crossword.puz.Playboard.Word;
+import com.totsp.crossword.shortyz.R;
 import com.totsp.crossword.view.ScrollingImageView;
 
 
