@@ -24,7 +24,7 @@ public class LATDownloader extends AbstractDownloader {
     }
 
     public String getName() {
-        return this.NAME;
+        return LATDownloader.NAME;
     }
 
     public File download(Date date) {

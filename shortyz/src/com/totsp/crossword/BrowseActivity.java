@@ -386,7 +386,7 @@ public class BrowseActivity extends ListActivity {
 		}
 	}
 
-	private static class FileHandle implements Comparable {
+	private static class FileHandle implements Comparable<FileHandle> {
 		File file;
 		PuzzleMeta meta;
 
@@ -395,7 +395,7 @@ public class BrowseActivity extends ListActivity {
 			this.meta = meta;
 		}
 
-		public int compareTo(Object another) {
+		public int compareTo(FileHandle another) {
 			FileHandle h = (FileHandle) another;
 
 			return h.getDate().compareTo(this.getDate());

@@ -52,7 +52,7 @@ public class NYTDownloader extends AbstractDownloader {
     }
 
     public String getName() {
-        return this.NAME;
+        return NYTDownloader.NAME;
     }
 
     public File download(Date date) {
