@@ -176,8 +176,11 @@ public class Playboard {
 	}
 
 	public Word deleteLetter() {
-		this.boxes[this.highlightLetter.across][this.highlightLetter.down].response = ' ';
-
+		try{
+			this.boxes[this.highlightLetter.across][this.highlightLetter.down].response = ' ';
+		} catch(NullPointerException npe){
+			npe.printStackTrace();
+		}
 		return this.previousLetter();
 	}
 
