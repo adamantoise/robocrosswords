@@ -55,7 +55,7 @@ public class Downloaders {
             downloaders.add(new InkwellDownloader());
         }
 
-        if (prefs.getBoolean("downloadLAT", true)) {
+        if (prefs.getBoolean("downloadLat", true)) {
             downloaders.add(new LATDownloader());
         }
         if (prefs.getBoolean("downloadAvClub", true)) {
