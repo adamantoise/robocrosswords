@@ -11,9 +11,12 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
@@ -47,6 +50,7 @@ public class PlayActivity extends Activity {
     static final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     static Playboard BOARD;
     static PlayboardRenderer RENDERER;
+    private Handler handler = new Handler();
     private Configuration configuration;
     private File baseFile;
     private ImaginaryTimer timer;
@@ -55,7 +59,7 @@ public class PlayActivity extends Activity {
     private TextView clue;
     private Dialog dialog;
     private AlertDialog completeDialog;
-
+    private SharedPreferences prefs;
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         this.configuration = newConfig;
@@ -75,7 +79,7 @@ public class PlayActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.configuration = getBaseContext().getResources().getConfiguration();
-
+        this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
@@ -96,6 +100,7 @@ public class PlayActivity extends Activity {
 
             BOARD = new Playboard(puz);
             RENDERER = new PlayboardRenderer(BOARD, metrics.density);
+            BOARD.setSkipCompletedLetters(this.prefs.getBoolean("skipFilled", false));
             if(puz.getPercentComplete() != 100){
 	            this.timer = new ImaginaryTimer(puz.getTime());
 	            this.timer.start();
@@ -116,10 +121,18 @@ public class PlayActivity extends Activity {
 
             this.registerForContextMenu(boardView);
             boardView.setContextMenuListener(new ClickListener() {
-                    public void onContextMenu(Point e) {
-                        Position p = PlayActivity.RENDERER.findBox(e);
-                        PlayActivity.BOARD.setHighlightLetter(p);
-                        PlayActivity.this.openContextMenu(boardView);
+                    public void onContextMenu(final Point e) {
+                    	handler.post( new Runnable(){
+
+							public void run() {
+								 Position p = PlayActivity.RENDERER.findBox(e);
+								 	Word w = PlayActivity.BOARD.setHighlightLetter(p);
+								 	PlayActivity.RENDERER.draw(w);
+			                        PlayActivity.this.openContextMenu(boardView);
+							}
+                    		
+                    	});
+                       
                     }
 
                     public void onTap(Point e) {
@@ -365,6 +378,7 @@ public class PlayActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        BOARD.setSkipCompletedLetters(this.prefs.getBoolean("skipFilled", false));
         if(puz.getPercentComplete() != 100){
 	        timer = new ImaginaryTimer(this.puz.getTime());
 	        timer.start();
@@ -388,8 +402,10 @@ public class PlayActivity extends Activity {
 
         Point topLeft = RENDERER.findPointTopLeft(PlayActivity.BOARD.getHighlightLetter());
         Point bottomRight = RENDERER.findPointBottomRight(PlayActivity.BOARD.getHighlightLetter());
-        this.boardView.ensureVisible(bottomRight);
-        this.boardView.ensureVisible(topLeft);
+        if(this.prefs.getBoolean("ensureVisible", true)){
+	        this.boardView.ensureVisible(bottomRight);
+	        this.boardView.ensureVisible(topLeft);
+        }
 
         Clue c = PlayActivity.BOARD.getClue();
         this.clue.setText("(" +

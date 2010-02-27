@@ -25,7 +25,19 @@
 	/>
 	
 	
+	<CheckBoxPreference
+	android:title="Snap to Current Word"
+	android:defaultValue="true"
+	android:summary="Toggles the auto-scrolling of the playboard to the current play position"
+	android:key="ensureVisible"
+	/>
 	
+	<!-- CheckBoxPreference
+	android:title="Skip Filled Squares"
+	android:defaultValue="false"
+	android:summary="Toggles the skipping of filled squares when filling in boxes"
+	android:key="skipFilled"
+	/-->
  </PreferenceCategory>
 <PreferenceCategory
 	android:title="Free Puzzle Downloads">

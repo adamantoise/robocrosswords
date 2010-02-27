@@ -210,7 +210,7 @@ public class PlayboardRenderer {
 							canvas.drawRect(r, this.currentWordHighlight);
 						} else if (boxes[col][row].cheated) {
 							canvas.drawRect(r, this.cheated);
-						} else if (this.board.isShowErrors()
+						} else if (this.board.isShowErrors() && boxes[col][row].response != ' ' 
 								&& boxes[col][row].solution != boxes[col][row].response) {
 							canvas.drawRect(r, this.red);
 						} else {

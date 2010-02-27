@@ -1,22 +1,17 @@
 package com.totsp.crossword.view;
 
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.Logger;
+
 import android.content.Context;
-
 import android.graphics.Bitmap;
-
 import android.util.AttributeSet;
-
 import android.view.GestureDetector;
-
-import android.view.GestureDetector.OnGestureListener;
-
 import android.view.MotionEvent;
-
+import android.view.GestureDetector.OnGestureListener;
 import android.widget.AbsoluteLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-
-import java.util.logging.Logger;
 
 
 public class ScrollingImageView extends AbsoluteLayout
@@ -28,7 +23,7 @@ public class ScrollingImageView extends AbsoluteLayout
     private ImageView imageView;
     private double xScrollPercent;
     private double yScrollPercent;
-    private long downIncept = System.currentTimeMillis();
+    private Timer longTouchTimer = new Timer();
 
     public ScrollingImageView(Context context, AttributeSet as) {
         super(context, as);
@@ -68,10 +63,25 @@ public class ScrollingImageView extends AbsoluteLayout
     }
 
     public boolean onDown(MotionEvent e) {
-        System.out.println("On down.");
-        this.downIncept = System.currentTimeMillis();
+        final Point p = new Point();
+        p.x = (int) (e.getX() + this.getScrollX());
+        p.y = (int) (e.getY() + this.getScrollY());
+        this.longTouchTimer = new Timer();
+        TimerTask longTouchTask = new TimerTask(){
 
-        return false;
+    		@Override
+    		public void run() {
+    			LOG.info("LONG FIRED");
+    			if(ScrollingImageView.this.ctxListener != null){
+    				ScrollingImageView.this.ctxListener.onContextMenu(p);
+    				ScrollingImageView.this.longTouched = true;
+    			}
+    		}
+        	
+        };
+        this.longTouchTimer.schedule(longTouchTask, 750);
+        
+        return true;
     }
 
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
@@ -87,8 +97,8 @@ public class ScrollingImageView extends AbsoluteLayout
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
         float distanceY) {
         System.out.println(distanceX + " " + distanceY);
-        this.downIncept = System.currentTimeMillis();
-
+        this.longTouchTimer.cancel();
+        this.longTouched = false;
         int scrollWidth = imageView.getWidth() - this.getWidth() + 10;
 
         if(imageView.getWidth() + 5 > this.getWidth()){
@@ -173,21 +183,22 @@ public class ScrollingImageView extends AbsoluteLayout
     public void onShowPress(MotionEvent e) {
         // TODO Auto-generated method stub 
     }
+    
+    private boolean longTouched;
 
     public boolean onSingleTapUp(MotionEvent e) {
         Point p = new Point();
         p.x = (int) (e.getX() + this.getScrollX());
         p.y = (int) (e.getY() + this.getScrollY());
-
-        if (((System.currentTimeMillis() - downIncept) > 500) &&
-                (this.ctxListener != null)) {
-            System.out.println("Menus");
-
-            this.ctxListener.onContextMenu(p);
+        this.longTouchTimer.cancel();
+        if(this.longTouched == true){
+        	this.longTouched = false;
         } else {
-            this.ctxListener.onTap(p);
+        	if(this.ctxListener != null){
+        		this.ctxListener.onTap(p);
+        	}
         }
-
+        
         return true;
     }
 
