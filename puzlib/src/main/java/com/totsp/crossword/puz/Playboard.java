@@ -7,6 +7,16 @@ public class Playboard {
 	Puzzle puzzle;
 	Box[][] boxes;
 	boolean across = true;
+	boolean skipCompletedLetters;
+	
+	public boolean isSkipCompletedLetters() {
+		return skipCompletedLetters;
+	}
+
+	public void setSkipCompletedLetters(boolean skipCompletedLetters) {
+		this.skipCompletedLetters = skipCompletedLetters;
+	}
+
 	private boolean showErrors;
 	private HashMap<Integer, Position> acrossWordStarts = new HashMap<Integer, Position>();
 	private HashMap<Integer, Position> downWordStarts = new HashMap<Integer, Position>();
