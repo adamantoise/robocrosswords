@@ -224,7 +224,6 @@ public class PlayActivity extends Activity {
         case KeyEvent.KEYCODE_DEL:
             previous = PlayActivity.BOARD.deleteLetter();
             this.render(previous);
-
             return true;
         }
 
