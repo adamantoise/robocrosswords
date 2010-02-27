@@ -58,6 +58,9 @@ public class Downloaders {
         if (prefs.getBoolean("downloadLAT", true)) {
             downloaders.add(new LATDownloader());
         }
+        if (prefs.getBoolean("downloadAvClub", true)) {
+            downloaders.add(new AVClubDownloader());
+        }
 
         if (prefs.getBoolean("downloadNYT", false)) {
             downloaders.add(new NYTDownloader(prefs.getString("nytUsername", ""),
