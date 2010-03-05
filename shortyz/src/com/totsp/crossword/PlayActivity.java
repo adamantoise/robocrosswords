@@ -30,7 +30,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.totsp.crossword.puz.IO;
+import com.totsp.crossword.io.IO;
 import com.totsp.crossword.puz.Playboard;
 import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.puz.Playboard.Clue;

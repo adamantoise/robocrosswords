@@ -13,7 +13,7 @@ import android.net.Uri;
 import android.os.Environment;
 
 import com.totsp.crossword.PlayActivity;
-import com.totsp.crossword.puz.IO;
+import com.totsp.crossword.io.IO;
 import com.totsp.crossword.puz.Puzzle;
 
 import java.io.File;

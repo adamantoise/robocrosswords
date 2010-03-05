@@ -36,7 +36,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.totsp.crossword.net.Downloaders;
-import com.totsp.crossword.puz.IO;
+import com.totsp.crossword.io.IO;
 import com.totsp.crossword.puz.PuzzleMeta;
 import com.totsp.crossword.shortyz.R;
 

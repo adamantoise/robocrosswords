@@ -2,8 +2,10 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
-  android:layout_height="60dp"
-  android:orientation="vertical">
+  android:layout_height="70dp"
+  android:orientation="vertical"
+  android:gravity="center_horizontal|center_vertical"
+  android:background="#181818">
   <LinearLayout
   	 android:layout_width="fill_parent"
   	android:layout_height="fill_parent"
@@ -18,10 +20,12 @@
   	android:gravity="center_horizontal|center_vertical"
   	android:text="Wed
 Jan 2, 2001"/>
+
 	<LinearLayout
 		 android:layout_width="fill_parent"
   	android:layout_height="fill_parent"
-  	android:orientation="vertical">
+  	android:orientation="vertical"
+  	android:gravity="center_horizontal|center_vertical">
 	
 	<TextView
 	android:id="@+id/puzzle_name"
