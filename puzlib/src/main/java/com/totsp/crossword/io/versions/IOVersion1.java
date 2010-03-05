@@ -1,4 +1,4 @@
-package com.totsp.crossword.puz.versions;
+package com.totsp.crossword.io.versions;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -7,8 +7,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
 
+import com.totsp.crossword.io.IO;
 import com.totsp.crossword.puz.Box;
-import com.totsp.crossword.puz.IO;
 import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.puz.PuzzleMeta;
 

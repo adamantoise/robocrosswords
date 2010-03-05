@@ -5,34 +5,33 @@ import java.util.Date;
 
 
 public class Puzzle {
-    String author;
-    String copyright;
-    String fileMagic;
-    String notes;
-    String title;
-    String versionString; // 4bytes
-    String[] acrossClues;
-    Integer[] acrossCluesLookup;
-    String[] downClues;
-    Integer[] downCluesLookup;
-    byte[] maskedHighChecksums; //4bytes
-    byte[] maskedLowChecksums; //4bytes
-    byte[] reserved20; //0xC bytes;
-    int numberOfClues; //2 bytes;
-    short cibChecksum;
-    short fileChecksum;
-    short reserved1C; //2bytes
-    short unknown; //2bytes
-    short unknown30; //2bytes
-    short unknown32; //2bytes;
+    private String author;
+    private String copyright;
+    private String fileMagic;
+    private String notes;
+    private String title;
+    private String versionString; // 4bytes
+    private String[] acrossClues;
+    private Integer[] acrossCluesLookup;
+    private String[] downClues;
+    private Integer[] downCluesLookup;
+    private byte[] maskedHighChecksums; //4bytes
+    private byte[] maskedLowChecksums; //4bytes
+    private byte[] reserved20; //0xC bytes;
+    private int numberOfClues; //2 bytes;
+    private short cibChecksum;
+    private short fileChecksum;
+    private short reserved1C; //2bytes
+    private short unknown; //2bytes
+    private short unknown30; //2bytes
+    private short unknown32; //2bytes;
     private Box[][] boxes;
-    private //one byte;
-    int height;
+    private int height; //on byte
     private int width; //one byte;
-    String[] rawClues;
-    String source;
-    Date date = new Date();
-    long time;
+    private String[] rawClues;
+    private String source;
+    private Date date = new Date();
+    private long time;
     
     public void setTime(long time){
     	this.time = time;
@@ -228,7 +227,7 @@ public class Puzzle {
         	return false;
         }
 
-        if (cibChecksum != other.cibChecksum) {
+        if (getCibChecksum() != other.getCibChecksum()) {
             return false;
         }
 
@@ -250,7 +249,7 @@ public class Puzzle {
             return false;
         }
 
-        if (fileChecksum != other.fileChecksum) {
+        if (getFileChecksum() != other.getFileChecksum()) {
         	System.out.println("fileChecksum");
             return false;
         }
@@ -279,7 +278,7 @@ public class Puzzle {
             return false;
         }
 
-        if (numberOfClues != other.numberOfClues) {
+        if (getNumberOfClues() != other.getNumberOfClues()) {
         	System.out.println("numberOfClues");
             return false;
         }
@@ -343,21 +342,21 @@ public class Puzzle {
         result = (prime * result) + Arrays.hashCode(acrossCluesLookup);
         result = (prime * result) + ((author == null) ? 0 : author.hashCode());
         result = (prime * result) + Arrays.hashCode(boxes);
-        result = (prime * result) + cibChecksum;
+        result = (prime * result) + getCibChecksum();
         result = (prime * result) +
             ((copyright == null) ? 0 : copyright.hashCode());
         result = (prime * result) + Arrays.hashCode(downClues);
         result = (prime * result) + Arrays.hashCode(downCluesLookup);
-        result = (prime * result) + fileChecksum;
+        result = (prime * result) + getFileChecksum();
         result = (prime * result) +
             ((fileMagic == null) ? 0 : fileMagic.hashCode());
         result = (prime * result) + height;
-        result = (prime * result) + Arrays.hashCode(maskedHighChecksums);
-        result = (prime * result) + Arrays.hashCode(maskedLowChecksums);
+        result = (prime * result) + Arrays.hashCode(getMaskedHighChecksums());
+        result = (prime * result) + Arrays.hashCode(getMaskedLowChecksums());
         result = (prime * result) + ((notes == null) ? 0 : notes.hashCode());
-        result = (prime * result) + numberOfClues;
+        result = (prime * result) + getNumberOfClues();
         result = (prime * result) + reserved1C;
-        result = (prime * result) + Arrays.hashCode(reserved20);
+        result = (prime * result) + Arrays.hashCode(getReserved20());
         result = (prime * result) + ((title == null) ? 0 : title.hashCode());
         result = (prime * result) + unknown;
         result = (prime * result) + unknown30;
@@ -368,4 +367,140 @@ public class Puzzle {
 
         return result;
     }
+
+	public void setFileChecksum(short fileChecksum) {
+		this.fileChecksum = fileChecksum;
+	}
+
+	public short getFileChecksum() {
+		return fileChecksum;
+	}
+
+	public void setCibChecksum(short cibChecksum) {
+		this.cibChecksum = cibChecksum;
+	}
+
+	public short getCibChecksum() {
+		return cibChecksum;
+	}
+
+	public void setNumberOfClues(int numberOfClues) {
+		this.numberOfClues = numberOfClues;
+	}
+
+	public int getNumberOfClues() {
+		return numberOfClues;
+	}
+
+	public void setReserved20(byte[] reserved20) {
+		this.reserved20 = reserved20;
+	}
+
+	public byte[] getReserved20() {
+		return reserved20;
+	}
+
+	public void setMaskedLowChecksums(byte[] maskedLowChecksums) {
+		this.maskedLowChecksums = maskedLowChecksums;
+	}
+
+	public byte[] getMaskedLowChecksums() {
+		return maskedLowChecksums;
+	}
+
+	public void setMaskedHighChecksums(byte[] maskedHighChecksums) {
+		this.maskedHighChecksums = maskedHighChecksums;
+	}
+
+	public byte[] getMaskedHighChecksums() {
+		return maskedHighChecksums;
+	}
+
+	public void setDownCluesLookup(Integer[] downCluesLookup) {
+		this.downCluesLookup = downCluesLookup;
+	}
+
+	public Integer[] getDownCluesLookup() {
+		return downCluesLookup;
+	}
+
+	public void setDownClues(String[] downClues) {
+		this.downClues = downClues;
+	}
+
+	public String[] getDownClues() {
+		return downClues;
+	}
+
+	public void setAcrossCluesLookup(Integer[] acrossCluesLookup) {
+		this.acrossCluesLookup = acrossCluesLookup;
+	}
+
+	public Integer[] getAcrossCluesLookup() {
+		return acrossCluesLookup;
+	}
+
+	public void setAcrossClues(String[] acrossClues) {
+		this.acrossClues = acrossClues;
+	}
+
+	public String[] getAcrossClues() {
+		return acrossClues;
+	}
+
+	public void setVersionString(String versionString) {
+		this.versionString = versionString;
+	}
+
+	public String getVersionString() {
+		return versionString;
+	}
+
+	public void setFileMagic(String fileMagic) {
+		this.fileMagic = fileMagic;
+	}
+
+	public String getFileMagic() {
+		return fileMagic;
+	}
+
+	public void setReserved1C(short reserved1C) {
+		this.reserved1C = reserved1C;
+	}
+
+	public short getReserved1C() {
+		return reserved1C;
+	}
+
+	public void setUnknown(short unknown) {
+		this.unknown = unknown;
+	}
+
+	public short getUnknown() {
+		return unknown;
+	}
+
+	public void setUnknown30(short unknown30) {
+		this.unknown30 = unknown30;
+	}
+
+	public short getUnknown30() {
+		return unknown30;
+	}
+
+	public void setUnknown32(short unknown32) {
+		this.unknown32 = unknown32;
+	}
+
+	public short getUnknown32() {
+		return unknown32;
+	}
+
+	public void setRawClues(String[] rawClues) {
+		this.rawClues = rawClues;
+	}
+
+	public String[] getRawClues() {
+		return rawClues;
+	}
 }

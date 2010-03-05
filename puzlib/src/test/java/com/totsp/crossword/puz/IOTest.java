@@ -10,6 +10,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Date;
 
+import com.totsp.crossword.io.IO;
+
 import junit.framework.TestCase;
 
 /**

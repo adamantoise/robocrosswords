@@ -8,7 +8,7 @@ public class Playboard {
 	Box[][] boxes;
 	boolean across = true;
 	boolean skipCompletedLetters;
-	
+
 	public boolean isSkipCompletedLetters() {
 		return skipCompletedLetters;
 	}
@@ -40,8 +40,8 @@ public class Playboard {
 			}
 		}
 	}
-	
-	public Puzzle getPuzzle(){
+
+	public Puzzle getPuzzle() {
 		return this.puzzle;
 	}
 
@@ -59,13 +59,13 @@ public class Playboard {
 
 	public Clue getClue() {
 		Clue c = new Clue();
-		try{
+		try {
 			Position start = this.getCurrentWordStart();
 			c.number = this.getBoxes()[start.across][start.down].clueNumber;
 			c.hint = this.across ? this.puzzle.findAcrossClue(c.number)
 					: this.puzzle.findDownClue(c.number);
-		} catch(Exception e){
-			
+		} catch (Exception e) {
+
 		}
 		return c;
 	}
@@ -109,11 +109,15 @@ public class Playboard {
 			Box b = null;
 
 			while (b == null) {
-				if ((boxes[this.highlightLetter.across][row] != null)
-						&& boxes[this.highlightLetter.across][row].down) {
-					b = boxes[this.highlightLetter.across][row];
-				} else {
-					row--;
+				try {
+					if ((boxes[this.highlightLetter.across][row] != null)
+							&& boxes[this.highlightLetter.across][row].down) {
+						b = boxes[this.highlightLetter.across][row];
+					} else {
+						row--;
+					}
+				} catch (Exception e) {
+					break;
 				}
 			}
 
@@ -186,9 +190,9 @@ public class Playboard {
 	}
 
 	public Word deleteLetter() {
-		try{
+		try {
 			this.boxes[this.highlightLetter.across][this.highlightLetter.down].response = ' ';
-		} catch(NullPointerException npe){
+		} catch (NullPointerException npe) {
 			npe.printStackTrace();
 		}
 		return this.previousLetter();
@@ -221,7 +225,8 @@ public class Playboard {
 			try {
 				b = this.getBoxes()[--checkCol][this.highlightLetter.down];
 			} catch (RuntimeException e) {
-				this.highlightLetter = new Position(checkCol++, this.highlightLetter.down);
+				this.highlightLetter = new Position(checkCol++,
+						this.highlightLetter.down);
 				return this.moveRight();
 			}
 		}
@@ -339,10 +344,10 @@ public class Playboard {
 		this.across = across;
 		if (across) {
 			this.highlightLetter = (this.acrossWordStarts
-					.get(this.puzzle.acrossCluesLookup[clueIndex]));
+					.get(this.puzzle.getAcrossCluesLookup()[clueIndex]));
 		} else {
-			this.highlightLetter= (this.downWordStarts
-					.get(this.puzzle.downCluesLookup[clueIndex]));
+			this.highlightLetter = (this.downWordStarts
+					.get(this.puzzle.getDownCluesLookup()[clueIndex]));
 		}
 	}
 
@@ -363,21 +368,21 @@ public class Playboard {
 	}
 
 	public Clue[] getDownClues() {
-		Clue[] clues = new Clue[puzzle.downClues.length];
+		Clue[] clues = new Clue[puzzle.getDownClues().length];
 		for (int i = 0; i < clues.length; i++) {
 			clues[i] = new Clue();
-			clues[i].hint = puzzle.downClues[i];
-			clues[i].number = puzzle.downCluesLookup[i];
+			clues[i].hint = puzzle.getDownClues()[i];
+			clues[i].number = puzzle.getDownCluesLookup()[i];
 		}
 		return clues;
 	}
 
 	public Clue[] getAcrossClues() {
-		Clue[] clues = new Clue[puzzle.acrossClues.length];
+		Clue[] clues = new Clue[puzzle.getAcrossClues().length];
 		for (int i = 0; i < clues.length; i++) {
 			clues[i] = new Clue();
-			clues[i].hint = puzzle.acrossClues[i];
-			clues[i].number = puzzle.acrossCluesLookup[i];
+			clues[i].hint = puzzle.getAcrossClues()[i];
+			clues[i].number = puzzle.getAcrossCluesLookup()[i];
 		}
 		return clues;
 	}

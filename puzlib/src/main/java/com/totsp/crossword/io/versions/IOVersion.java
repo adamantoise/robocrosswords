@@ -1,4 +1,4 @@
-package com.totsp.crossword.puz.versions;
+package com.totsp.crossword.io.versions;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,4 +1,4 @@
-package com.totsp.crossword.puz;
+package com.totsp.crossword.io;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -11,15 +11,18 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
-import com.totsp.crossword.puz.versions.IOVersion;
-import com.totsp.crossword.puz.versions.IOVersion1;
+import com.totsp.crossword.io.versions.IOVersion;
+import com.totsp.crossword.io.versions.IOVersion1;
+import com.totsp.crossword.puz.Box;
+import com.totsp.crossword.puz.Puzzle;
+import com.totsp.crossword.puz.PuzzleMeta;
 
 
 public class IO {
     public static Puzzle loadNative(InputStream is) throws IOException {
         DataInputStream input = new DataInputStream(is);
         Puzzle puz = new Puzzle();
-        puz.fileChecksum = input.readShort();
+        puz.setFileChecksum(input.readShort());
 
         byte[] fileMagic = new byte[0xB];
 
@@ -28,19 +31,19 @@ public class IO {
         }
 
         input.skipBytes(1);
-        puz.fileMagic = new String(fileMagic);
-        assert puz.fileMagic.equals("ACROSS&DOWN");
-        puz.cibChecksum = input.readShort();
-        puz.maskedLowChecksums = new byte[4];
+        puz.setFileMagic(new String(fileMagic));
+        assert puz.getFileMagic().equals("ACROSS&DOWN");
+        puz.setCibChecksum(input.readShort());
+        puz.setMaskedLowChecksums(new byte[4]);
 
-        for (int i = 0; i < puz.maskedLowChecksums.length; i++) {
-            puz.maskedLowChecksums[i] = input.readByte();
+        for (int i = 0; i < puz.getMaskedLowChecksums().length; i++) {
+            puz.getMaskedLowChecksums()[i] = input.readByte();
         }
 
-        puz.maskedHighChecksums = new byte[4];
+        puz.setMaskedHighChecksums(new byte[4]);
 
-        for (int i = 0; i < puz.maskedHighChecksums.length; i++) {
-            puz.maskedHighChecksums[i] = input.readByte();
+        for (int i = 0; i < puz.getMaskedHighChecksums().length; i++) {
+            puz.getMaskedHighChecksums()[i] = input.readByte();
         }
 
         byte[] versionString = new byte[3];
@@ -50,21 +53,21 @@ public class IO {
         }
 
         input.skip(1);
-        puz.versionString = new String(versionString);
-        puz.reserved1C = input.readShort();
-        puz.unknown = input.readShort();
-        puz.reserved20 = new byte[0xC];
+        puz.setVersionString(new String(versionString));
+        puz.setReserved1C(input.readShort());
+        puz.setUnknown(input.readShort());
+        puz.setReserved20(new byte[0xC]);
 
-        for (int i = 0; i < puz.reserved20.length; i++) {
-            puz.reserved20[i] = input.readByte();
+        for (int i = 0; i < puz.getReserved20().length; i++) {
+            puz.getReserved20()[i] = input.readByte();
         }
 
         puz.setWidth(0xFFFF & input.readByte());
         puz.setHeight(0xFFFF & input.readByte());
-        puz.numberOfClues = (int) input.readByte() +
-            ((int) input.readByte() >> 8);
-        puz.unknown30 = input.readShort();
-        puz.unknown32 = input.readShort();
+        puz.setNumberOfClues((int) input.readByte() +
+            ((int) input.readByte() >> 8));
+        puz.setUnknown30(input.readShort());
+        puz.setUnknown32(input.readShort());
 
         Box[][] boxes = new Box[puz.getWidth()][puz.getHeight()];
 
@@ -104,7 +107,7 @@ public class IO {
             }
         }
 
-        puz.title = sb.toString();
+        puz.setTitle(sb.toString());
 
         sb = new StringBuffer();
 
@@ -115,7 +118,7 @@ public class IO {
             }
         }
 
-        puz.author = sb.toString();
+        puz.setAuthor(sb.toString());
 
         sb = new StringBuffer();
 
@@ -126,7 +129,7 @@ public class IO {
             }
         }
 
-        puz.copyright = sb.toString();
+        puz.setCopyright(sb.toString());
 
         ArrayList<String> acrossClues = new ArrayList<String>();
         ArrayList<Integer> acrossCluesLookup = new ArrayList<Integer>();
@@ -176,11 +179,11 @@ public class IO {
             }
         }
 
-        puz.downClues = downClues.toArray(new String[downClues.size()]);
-        puz.downCluesLookup = downCluesLookup.toArray(new Integer[downCluesLookup.size()]);
-        puz.acrossClues = acrossClues.toArray(new String[acrossClues.size()]);
-        puz.acrossCluesLookup = acrossCluesLookup.toArray(new Integer[acrossCluesLookup.size()]);
-        puz.rawClues = rawClues.toArray(new String[rawClues.size()]);
+        puz.setDownClues(downClues.toArray(new String[downClues.size()]));
+        puz.setDownCluesLookup(downCluesLookup.toArray(new Integer[downCluesLookup.size()]));
+        puz.setAcrossClues(acrossClues.toArray(new String[acrossClues.size()]));
+        puz.setAcrossCluesLookup(acrossCluesLookup.toArray(new Integer[acrossCluesLookup.size()]));
+        puz.setRawClues(rawClues.toArray(new String[rawClues.size()]));
 
         StringBuilder notes = new StringBuilder();
 
@@ -191,7 +194,7 @@ public class IO {
             }
         }
 
-        puz.notes = notes.toString();
+        puz.setNotes(notes.toString());
 
         boolean eof = false;
 
@@ -266,31 +269,31 @@ public class IO {
     public static void saveNative(Puzzle puz, OutputStream os)
         throws IOException {
         DataOutputStream dos = new DataOutputStream(os);
-        dos.writeShort(puz.fileChecksum);
+        dos.writeShort(puz.getFileChecksum());
 
-        for (char c : puz.fileMagic.toCharArray()) {
+        for (char c : puz.getFileMagic().toCharArray()) {
             dos.writeByte(c);
         }
 
         dos.writeByte(0);
-        dos.writeShort(puz.cibChecksum);
-        dos.write(puz.maskedLowChecksums);
-        dos.write(puz.maskedHighChecksums);
-        dos.writeBytes(puz.versionString);
+        dos.writeShort(puz.getCibChecksum());
+        dos.write(puz.getMaskedLowChecksums());
+        dos.write(puz.getMaskedHighChecksums());
+        dos.writeBytes(puz.getVersionString());
         dos.writeByte(0);
 
-        dos.writeShort(puz.reserved1C);
-        dos.writeShort(puz.unknown);
+        dos.writeShort(puz.getReserved1C());
+        dos.writeShort(puz.getUnknown());
 
-        dos.write(puz.reserved20);
+        dos.write(puz.getReserved20());
         dos.writeByte(puz.getWidth());
 
         dos.writeByte(puz.getHeight());
 
-        dos.writeByte(puz.numberOfClues);
-        dos.writeByte(puz.numberOfClues << 8);
-        dos.writeShort(puz.unknown30);
-        dos.writeShort(puz.unknown32);
+        dos.writeByte(puz.getNumberOfClues());
+        dos.writeByte(puz.getNumberOfClues() << 8);
+        dos.writeShort(puz.getUnknown30());
+        dos.writeShort(puz.getUnknown32());
 
         Box[][] boxes = puz.getBoxes();
 
@@ -315,15 +318,15 @@ public class IO {
             }
         }
 
-        writeNullTerminatedString(dos, puz.title);
-        writeNullTerminatedString(dos, puz.author);
-        writeNullTerminatedString(dos, puz.copyright);
+        writeNullTerminatedString(dos, puz.getTitle());
+        writeNullTerminatedString(dos, puz.getAuthor());
+        writeNullTerminatedString(dos, puz.getCopyright());
 
-        for (String clue : puz.rawClues) {
+        for (String clue : puz.getRawClues()) {
             writeNullTerminatedString(dos, clue);
         }
 
-        writeNullTerminatedString(dos, puz.notes);
+        writeNullTerminatedString(dos, puz.getNotes());
     }
 
     public static void writeNullTerminatedString(OutputStream os, String value)
