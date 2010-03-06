@@ -440,5 +440,14 @@ public class Playboard {
 
 			return (offRanging && (startPos <= ranging) && ((startPos + length) > ranging));
 		}
+		
+		public boolean equals(Object o){
+			if(o.getClass() != Word.class){
+				return false;
+			}
+			
+			Word check = (Word) o;
+			return check.start.equals(this.start) && check.across == this.across && check.length == this.length;
+		}
 	}
 }
