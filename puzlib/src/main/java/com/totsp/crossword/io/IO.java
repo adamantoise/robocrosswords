@@ -261,6 +261,9 @@ public class IO {
             if (nextByte != 0x0) {
                 sb.append((char) nextByte);
             }
+            if(sb.length() > 4096){
+            	throw new IOException("Run on string!");
+            }
         }
 
         return (sb.length() == 0) ? null : sb.toString();
