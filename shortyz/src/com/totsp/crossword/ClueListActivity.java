@@ -150,8 +150,7 @@ public class ClueListActivity extends Activity {
 
         if (PlayActivity.ALPHA.indexOf(c) != -1) {
             PlayActivity.BOARD.playLetter(c);
-            Position p  = PlayActivity.BOARD.getHighlightLetter();
-            if(!w.checkInWord(p.across, p.down) ){
+            if(! PlayActivity.BOARD.getCurrentWord().equals(w) ){
             	PlayActivity.BOARD.setHighlightLetter(last);
             }
             
