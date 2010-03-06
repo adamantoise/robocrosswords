@@ -2,7 +2,7 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
-  android:layout_height="70dp"
+  android:layout_height="90dp"
   android:orientation="vertical"
   android:gravity="center_horizontal|center_vertical"
   android:background="#181818">
@@ -31,19 +31,19 @@ Jan 2, 2001"/>
 	android:id="@+id/puzzle_name"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
-	android:textSize="15dp"
+	android:textSize="25dp"
 	android:textColor="#FFFFFF"
 	android:text="New York Times"
 	android:gravity="center_vertical"
 	android:paddingTop="2dp"
-	android:paddingLeft="20dp"
+	android:paddingLeft="18dp"
 	/>
 	<TextView
   	android:id="@+id/puzzle_caption"
   	android:layout_width="fill_parent"
   	android:layout_height="wrap_content"
   	android:lines="1"
-  	android:textSize="10dp"
+  	android:textSize="15dp"
   	android:gravity="center_vertical"
   	android:paddingLeft="20dp"
   	android:text="Caption text"/>
