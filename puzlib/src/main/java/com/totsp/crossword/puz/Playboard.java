@@ -197,8 +197,12 @@ public class Playboard {
 		}
 		return this.previousLetter();
 	}
+	
+	public Word moveDown(){
+		return this.moveDown(false);
+	}
 
-	public Word moveDown() {
+	public Word moveDown(boolean skipFilled) {
 		Word w = this.getCurrentWord();
 		Box b = null;
 		int checkRow = this.highlightLetter.down;
@@ -206,6 +210,9 @@ public class Playboard {
 		while ((b == null) && (checkRow < (this.getBoxes().length - 1))) {
 			try {
 				b = this.getBoxes()[this.highlightLetter.across][++checkRow];
+				if(skipFilled && b!= null && b.response != ' ' && checkRow < w.start.down + w.length){
+					b = null;
+				}
 			} catch (RuntimeException e) {
 			}
 		}
@@ -235,8 +242,12 @@ public class Playboard {
 
 		return w;
 	}
+	
+	public Word moveRight(){
+		return moveRight(false);
+	}
 
-	public Word moveRight() {
+	public Word moveRight(boolean skipFilled) {
 		Word w = this.getCurrentWord();
 		Box b = null;
 		int checkCol = this.highlightLetter.across;
@@ -245,6 +256,9 @@ public class Playboard {
 				&& (checkCol < (this.getBoxes()[this.highlightLetter.across].length - 1))) {
 			try {
 				b = this.getBoxes()[++checkCol][this.highlightLetter.down];
+				if(skipFilled && b!= null && b.response != ' ' && checkCol < w.start.across + w.length){
+					b = null;
+				}
 			} catch (RuntimeException e) {
 				return w;
 			}
@@ -275,9 +289,9 @@ public class Playboard {
 
 	public Word nextLetter() {
 		if (across) {
-			return this.moveRight();
+			return this.moveRight(this.skipCompletedLetters);
 		} else {
-			return this.moveDown();
+			return this.moveDown(this.skipCompletedLetters);
 		}
 	}
 
