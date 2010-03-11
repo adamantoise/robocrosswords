@@ -168,13 +168,23 @@ public class BrowseActivity extends ListActivity {
         if (prefs.getBoolean("dlOnStartup", true)) {
             this.download(new Date());
         }
-        if(prefs.getBoolean("release_2.0", true) ){
+        if(prefs.getBoolean("release_2.0.8", true) ){
         	
         	Editor e = prefs.edit();
-        	e.putBoolean("release_2.0", false);
+        	e.putBoolean("release_2.0.8", false);
         	e.commit();
         	
         	Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/release.html"), this,
+	                HTMLActivity.class);
+			this.startActivity(i);
+        } else if(prefs.getBoolean("release_2.0", true) ){
+        	
+        	Editor e = prefs.edit();
+        	e.putBoolean("release_2.0", false);
+        	e.putBoolean("release_2.0,8", false);
+        	e.commit();
+        	
+        	Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/upgrade.html"), this,
 	                HTMLActivity.class);
 			this.startActivity(i);
         } else if( !crosswordsFolder.exists() ){

@@ -1,5 +1,17 @@
 package com.totsp.crossword.net;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -12,20 +24,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import java.text.NumberFormat;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map.Entry;
+import com.totsp.crossword.io.IO;
+import com.totsp.crossword.puz.Box;
+import com.totsp.crossword.puz.Puzzle;
 
 
 public class NYTDownloader extends AbstractDownloader {
@@ -151,5 +152,60 @@ public class NYTDownloader extends AbstractDownloader {
         }
 
         return httpclient;
+    }
+    
+    public File update(Date date){
+    	try {
+    		String urlSuffix = MONTHS[date.getMonth()] + this.nf.format(date.getDate()) +
+            this.nf.format(date.getYear() - 100) + ".puz";
+    		
+            URL url = new URL(this.baseUrl + urlSuffix);
+            HttpClient client = this.login();
+
+            HttpGet get = new HttpGet(url.toString());
+            HttpResponse response = client.execute(get);
+
+            if (response.getStatusLine().getStatusCode() == 200) {
+                File f = new File(downloadDirectory, this.createFileName(date)+".tmp");
+                FileOutputStream fos = new FileOutputStream(f);
+                AbstractDownloader.copyStream(response.getEntity().getContent(),
+                    fos);
+                fos.close();
+
+                File original = new File(downloadDirectory, this.createFileName(date));
+                
+                Puzzle oPuz = IO.load(original);
+                Puzzle nPuz = IO.load(f);
+                
+                boolean updated = false;
+                for(int x=0; x < oPuz.getBoxes().length; x++){
+                	for(int y=0; y < oPuz.getBoxes()[x].length; y++){
+                		Box oBox = oPuz.getBoxes()[x][y];
+                		Box nBox = nPuz.getBoxes()[x][y];
+                		if( oBox != null && nBox != null && oBox.solution != nBox.solution){
+                			oBox.solution = nBox.solution;
+                			updated = true;
+                		}
+                	}
+                }
+                if(updated){
+                	IO.save(oPuz, original);
+                	f.delete();
+                } else {
+                	return null;
+                }
+                
+                
+                return original;
+            } else {
+                return null;
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

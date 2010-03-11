@@ -32,12 +32,26 @@
 	android:key="ensureVisible"
 	/>
 	
-	<!-- CheckBoxPreference
-	android:title="Skip Filled Squares"
+	<CheckBoxPreference
+	android:title="Scroll To Clue"
 	android:defaultValue="false"
-	android:summary="Toggles the skipping of filled squares when filling in boxes"
+	android:summary="Toggles the auto-scrolling to the selected clue in the clues list mode. (Works like Shortyz 1)"
+	android:key="snapClue"
+	/>
+	
+	<CheckBoxPreference
+	android:title="Skip Filled Boxes"
+	android:defaultValue="false"
+	android:summary="Toggles the skipping of filled boxes when you enter a new letter."
 	android:key="skipFilled"
-	/-->
+	/>
+	
+	<CheckBoxPreference
+	android:title="No Download Notifications"
+	android:defaultValue="false"
+	android:summary="Prevents a notification for each puzzle downloaded from appearing in the notifications list."
+	android:key="supressMessages"
+	/>
  </PreferenceCategory>
 <PreferenceCategory
 	android:title="Free Puzzle Downloads">

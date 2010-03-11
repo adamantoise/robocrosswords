@@ -247,6 +247,11 @@ public class PlayboardRenderer {
 
 		return new Position(col, row);
 	}
+	
+	public int findBoxNoScale(Point p) {
+		int boxSize = (int)(BOX_SIZE * this.logicalDensity);
+		return p.x  / boxSize;
+	}
 
 	public Point findPointBottomRight(Position p) {
 		int boxSize = (int) (BOX_SIZE * scale);

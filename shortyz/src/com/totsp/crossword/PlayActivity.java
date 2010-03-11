@@ -1,46 +1,60 @@
 package com.totsp.crossword;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+
 import android.content.res.Configuration;
+
 import android.net.Uri;
+
 import android.os.Bundle;
 import android.os.Handler;
+
 import android.preference.PreferenceManager;
+
 import android.util.DisplayMetrics;
+
 import android.view.ContextMenu;
+
+import android.view.ContextMenu.ContextMenuInfo;
+
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.ContextMenu.ContextMenuInfo;
+
 import android.view.View.OnClickListener;
+
+import android.view.Window;
+
 import android.view.inputmethod.InputMethodManager;
+
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.totsp.crossword.io.IO;
 import com.totsp.crossword.puz.Playboard;
-import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.puz.Playboard.Clue;
 import com.totsp.crossword.puz.Playboard.Position;
 import com.totsp.crossword.puz.Playboard.Word;
+import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.shortyz.R;
 import com.totsp.crossword.view.PlayboardRenderer;
 import com.totsp.crossword.view.ScrollingImageView;
 import com.totsp.crossword.view.ScrollingImageView.ClickListener;
 import com.totsp.crossword.view.ScrollingImageView.Point;
+
+import java.io.File;
+import java.io.IOException;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class PlayActivity extends Activity {
@@ -50,16 +64,17 @@ public class PlayActivity extends Activity {
     static final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     static Playboard BOARD;
     static PlayboardRenderer RENDERER;
-    private Handler handler = new Handler();
+    static File BASE_FILE;
+    private AlertDialog completeDialog;
     private Configuration configuration;
-    private File baseFile;
+    private Dialog dialog;
+    private Handler handler = new Handler();
     private ImaginaryTimer timer;
     private Puzzle puz;
     private ScrollingImageView boardView;
-    private TextView clue;
-    private Dialog dialog;
-    private AlertDialog completeDialog;
     private SharedPreferences prefs;
+    private TextView clue;
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         this.configuration = newConfig;
@@ -69,7 +84,7 @@ public class PlayActivity extends Activity {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,
-                InputMethodManager.HIDE_IMPLICIT_ONLY);
+                InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
 
@@ -80,6 +95,7 @@ public class PlayActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.configuration = getBaseContext().getResources().getConfiguration();
         this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
@@ -88,8 +104,8 @@ public class PlayActivity extends Activity {
 
             if (u != null) {
                 if (u.getScheme().equals("file")) {
-                    baseFile = new File(u.getPath());
-                    puz = IO.load(baseFile);
+                    BASE_FILE = new File(u.getPath());
+                    puz = IO.load(BASE_FILE);
                 }
             }
 
@@ -100,11 +116,14 @@ public class PlayActivity extends Activity {
 
             BOARD = new Playboard(puz);
             RENDERER = new PlayboardRenderer(BOARD, metrics.density);
-            BOARD.setSkipCompletedLetters(this.prefs.getBoolean("skipFilled", false));
-            if(puz.getPercentComplete() != 100){
-	            this.timer = new ImaginaryTimer(puz.getTime());
-	            this.timer.start();
+            BOARD.setSkipCompletedLetters(this.prefs.getBoolean("skipFilled",
+                    false));
+
+            if (puz.getPercentComplete() != 100) {
+                this.timer = new ImaginaryTimer(puz.getTime());
+                this.timer.start();
             }
+
             setContentView(R.layout.main);
             this.clue = (TextView) this.findViewById(R.id.clueLine);
 
@@ -122,17 +141,14 @@ public class PlayActivity extends Activity {
             this.registerForContextMenu(boardView);
             boardView.setContextMenuListener(new ClickListener() {
                     public void onContextMenu(final Point e) {
-                    	handler.post( new Runnable(){
-
-							public void run() {
-								 Position p = PlayActivity.RENDERER.findBox(e);
-								 	Word w = PlayActivity.BOARD.setHighlightLetter(p);
-								 	PlayActivity.RENDERER.draw(w);
-			                        PlayActivity.this.openContextMenu(boardView);
-							}
-                    		
-                    	});
-                       
+                        handler.post(new Runnable() {
+                                public void run() {
+                                    Position p = PlayActivity.RENDERER.findBox(e);
+                                    Word w = PlayActivity.BOARD.setHighlightLetter(p);
+                                    PlayActivity.RENDERER.draw(w);
+                                    PlayActivity.this.openContextMenu(boardView);
+                                }
+                            });
                     }
 
                     public void onTap(Point e) {
@@ -145,7 +161,6 @@ public class PlayActivity extends Activity {
             throw new RuntimeException(e);
         }
 
-        
         dialog = new Dialog(this);
         dialog.setTitle("Puzzle Info");
         dialog.setContentView(R.layout.puzzle_info_dialog);
@@ -153,13 +168,15 @@ public class PlayActivity extends Activity {
         completeDialog = new AlertDialog.Builder(this).create();
         completeDialog.setTitle("Puzzle Complete!");
         completeDialog.setMessage("");
-        completeDialog.setButton("OK", new DialogInterface.OnClickListener() {
-          public void onClick(DialogInterface dialog, int which) {
-        	  dialog.dismiss();
-            return;
-          } }); 
+        completeDialog.setButton("OK",
+            new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
 
-        
+                    return;
+                }
+            });
+
         this.render();
     }
 
@@ -237,7 +254,17 @@ public class PlayActivity extends Activity {
         case KeyEvent.KEYCODE_DEL:
             previous = PlayActivity.BOARD.deleteLetter();
             this.render(previous);
+
             return true;
+
+        case KeyEvent.KEYCODE_BACK:
+
+            if ((this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES) ||
+                    (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
+                this.finish();
+
+                return true;
+            }
         }
 
         char c = Character.toUpperCase(event.getDisplayLabel());
@@ -271,9 +298,11 @@ public class PlayActivity extends Activity {
             this.render();
 
             return true;
-        } else if (item.getTitle().equals("Show Errors")) {
+        } else if (item.getTitle().equals("Show Errors") ||
+                item.getTitle().equals("Hide Errors")) {
             PlayActivity.BOARD.toggleShowErrors();
-            item.setChecked(PlayActivity.BOARD.isShowErrors());
+            item.setTitle(PlayActivity.BOARD.isShowErrors() ? "Hide Errors"
+                                                            : "Show Errors");
             this.render();
 
             return true;
@@ -301,38 +330,40 @@ public class PlayActivity extends Activity {
 
             return true;
         } else if (item.getTitle().equals("Info")) {
-        	
-        	TextView view = (TextView) dialog.findViewById(R.id.puzzle_info_title);
+            TextView view = (TextView) dialog.findViewById(R.id.puzzle_info_title);
             view.setText(this.puz.getTitle());
             view = (TextView) dialog.findViewById(R.id.puzzle_info_author);
             view.setText(this.puz.getAuthor());
             view = (TextView) dialog.findViewById(R.id.puzzle_info_copyright);
             view.setText(this.puz.getCopyright());
             view = (TextView) dialog.findViewById(R.id.puzzle_info_time);
-            if(timer != null){
-            	this.timer.stop();
-	            view.setText("Elapsed Time: " + this.timer.time());
-	            this.timer.start();
+
+            if (timer != null) {
+                this.timer.stop();
+                view.setText("Elapsed Time: " + this.timer.time());
+                this.timer.start();
             } else {
-            	view.setText("Elapsed Time: " + new ImaginaryTimer(puz.getTime()).time());
+                view.setText("Elapsed Time: " +
+                    new ImaginaryTimer(puz.getTime()).time());
             }
 
             ProgressBar progress = (ProgressBar) dialog.findViewById(R.id.puzzle_info_progress);
             progress.setProgress(this.puz.getPercentComplete());
-        	
+
             this.showDialog(INFO_DIALOG);
 
             return true;
-        } else if(item.getTitle().equals("Clues")){
-        	Intent i = new Intent(PlayActivity.this,
-                    ClueListActivity.class);
+        } else if (item.getTitle().equals("Clues")) {
+            Intent i = new Intent(PlayActivity.this, ClueListActivity.class);
             PlayActivity.this.startActivityForResult(i, 0);
+
             return true;
-        } else if( item.getTitle().equals("Help")){
-			Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/playscreen.html"), this,
-	                HTMLActivity.class);
-			this.startActivity(i);
-		}
+        } else if (item.getTitle().equals("Help")) {
+            Intent i = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("file:///android_asset/playscreen.html"), this,
+                    HTMLActivity.class);
+            this.startActivity(i);
+        }
 
         return false;
     }
@@ -340,38 +371,43 @@ public class PlayActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         this.render();
     }
-    
-    
 
     protected Dialog onCreateDialog(int id) {
-
         switch (id) {
         case INFO_DIALOG:
             return dialog;
 
         case COMPLETE_DIALOG:
-        	return completeDialog;
+            return completeDialog;
 
         default:
-           return null;
+            return null;
         }
-
     }
 
     @Override
     protected void onPause() {
         try {
-            if ((puz != null) && (baseFile != null)) {
-            	if(puz.getPercentComplete() != 100){
-	                this.timer.stop();
-	                puz.setTime(timer.getElapsed());
-            	}
-                IO.save(puz, baseFile);
+            if ((puz != null) && (BASE_FILE != null)) {
+                if (puz.getPercentComplete() != 100) {
+                    this.timer.stop();
+                    puz.setTime(timer.getElapsed());
+                }
+
+                IO.save(puz, BASE_FILE);
             }
         } catch (IOException ioe) {
             LOG.log(Level.SEVERE, null, ioe);
         }
+
         this.timer = null;
+
+        if ((this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES) ||
+                (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(clue.getWindowToken(), 0);
+        }
+
         super.onPause();
     }
 
@@ -379,9 +415,10 @@ public class PlayActivity extends Activity {
     protected void onResume() {
         super.onResume();
         BOARD.setSkipCompletedLetters(this.prefs.getBoolean("skipFilled", false));
-        if(puz.getPercentComplete() != 100){
-	        timer = new ImaginaryTimer(this.puz.getTime());
-	        timer.start();
+
+        if (puz.getPercentComplete() != 100) {
+            timer = new ImaginaryTimer(this.puz.getTime());
+            timer.start();
         }
     }
 
@@ -402,22 +439,23 @@ public class PlayActivity extends Activity {
 
         Point topLeft = RENDERER.findPointTopLeft(PlayActivity.BOARD.getHighlightLetter());
         Point bottomRight = RENDERER.findPointBottomRight(PlayActivity.BOARD.getHighlightLetter());
-        if(this.prefs.getBoolean("ensureVisible", true)){
-	        this.boardView.ensureVisible(bottomRight);
-	        this.boardView.ensureVisible(topLeft);
+
+        if (this.prefs.getBoolean("ensureVisible", true)) {
+            this.boardView.ensureVisible(bottomRight);
+            this.boardView.ensureVisible(topLeft);
         }
 
         Clue c = PlayActivity.BOARD.getClue();
         this.clue.setText("(" +
             (PlayActivity.BOARD.isAcross() ? "across" : "down") + ") " +
             c.number + ". " + c.hint);
-        
-        if(puz.getPercentComplete() == 100 && timer != null){
-        	timer.stop();
-        	puz.setTime(timer.getElapsed());
-        	this.completeDialog.setMessage("Completed in "+timer.time());
-        	this.showDialog(COMPLETE_DIALOG);
-        	this.timer = null;
+
+        if ((puz.getPercentComplete() == 100) && (timer != null)) {
+            timer.stop();
+            puz.setTime(timer.getElapsed());
+            this.completeDialog.setMessage("Completed in " + timer.time());
+            this.showDialog(COMPLETE_DIALOG);
+            this.timer = null;
         }
     }
 }

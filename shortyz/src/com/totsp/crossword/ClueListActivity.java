@@ -1,9 +1,17 @@
 package com.totsp.crossword;
 
+import java.io.IOException;
+import java.util.logging.Level;
+
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -12,12 +20,16 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.TabHost.TabSpec;
 
+import com.totsp.crossword.io.IO;
 import com.totsp.crossword.puz.Box;
+import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.puz.Playboard.Clue;
 import com.totsp.crossword.puz.Playboard.Position;
 import com.totsp.crossword.puz.Playboard.Word;
 import com.totsp.crossword.shortyz.R;
 import com.totsp.crossword.view.ScrollingImageView;
+import com.totsp.crossword.view.ScrollingImageView.ClickListener;
+import com.totsp.crossword.view.ScrollingImageView.Point;
 
 
 public class ClueListActivity extends Activity {
@@ -26,15 +38,60 @@ public class ClueListActivity extends Activity {
     private ListView down;
     private ScrollingImageView imageView;
     private TabHost tabHost;
+    private SharedPreferences prefs;
+    private Configuration configuration;
+    
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        this.configuration = newConfig;
 
+        if ((this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES) ||
+                (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,
+                InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+    
+    
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+        this.configuration = getBaseContext().getResources().getConfiguration();
+        this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
         this.timer = new ImaginaryTimer(PlayActivity.BOARD.getPuzzle().getTime());
         timer.start();
         setContentView(R.layout.clue_list);
         this.imageView = (ScrollingImageView) this.findViewById(R.id.miniboard);
+        
+        this.imageView.setContextMenuListener(new ClickListener(){
 
+			public void onContextMenu(Point e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void onTap(Point e) {
+				Word current = PlayActivity.BOARD.getCurrentWord();
+				Position p = current.start;
+				int box = PlayActivity.RENDERER.findBoxNoScale(e);
+				System.out.println("box "+box);
+				if(box < current.length){
+					if(tabHost.getCurrentTab() == 0)
+						p.across += box;
+					else
+						p.down += box;
+				}
+				if(!p.equals(PlayActivity.BOARD.getHighlightLetter())){
+	                Word old = PlayActivity.BOARD.setHighlightLetter(p);
+	                //PlayActivity.BOARD.setAcross(tabHost.getCurrentTab() == 0);
+	                ClueListActivity.this.render();
+				}
+			}
+        	
+        });
+        
         this.tabHost = (TabHost) this.findViewById(R.id.tabhost);
         this.tabHost.setup();
 
@@ -69,39 +126,60 @@ public class ClueListActivity extends Activity {
                 public void onItemClick(AdapterView<?> arg0, View arg1,
                     int arg2, long arg3) {
                     PlayActivity.BOARD.jumpTo(arg2, true);
+                    imageView.scrollTo(0, 0);
                     render();
+                    if(prefs.getBoolean("snapClue", false)){
+                    	across.setSelectionFromTop(arg2, 5);
+                    	across.setSelection(arg2);
+                    }
                 }
             });
         across.setOnItemSelectedListener(new OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> arg0, View arg1,
                     int arg2, long arg3) {
                     PlayActivity.BOARD.jumpTo(arg2, true);
+                    imageView.scrollTo(0, 0);
                     render();
+                    if(prefs.getBoolean("snapClue", false)){
+	                    across.setSelectionFromTop(arg2, 5);
+	                    across.setSelection(arg2);
+                    }
                 }
 
                 public void onNothingSelected(AdapterView<?> arg0) {
                    
                 }
-            });
-
+            }); 
         down.setOnItemClickListener(new OnItemClickListener() {
                 public void onItemClick(AdapterView<?> arg0, View arg1,
                     int arg2, long arg3) {
                     PlayActivity.BOARD.jumpTo(arg2, false);
+                    imageView.scrollTo(0, 0);
                     render();
+                    if(prefs.getBoolean("snapClue", false)){
+	                    down.setSelectionFromTop(arg2, 5);
+	                    down.setSelection(arg2);
+                    }
                 }
             });
+        
         down.setOnItemSelectedListener(new OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> arg0, View arg1,
                     int arg2, long arg3) {
                     PlayActivity.BOARD.jumpTo(arg2, false);
+                    imageView.scrollTo(0, 0);
                     render();
+                    if(prefs.getBoolean("snapClue", false)){
+	                    down.setSelectionFromTop(arg2, 5);
+	                    down.setSelection(arg2);
+                    }
                 }
 
                 public void onNothingSelected(AdapterView<?> arg0) {
                     
                 }
             });
+        this.render();
     }
 
     @Override
@@ -181,10 +259,35 @@ public class ClueListActivity extends Activity {
         // TODO Auto-generated method stub
         super.onPause();
         timer.stop();
+        Puzzle puz = PlayActivity.BOARD.getPuzzle();
+        try {
+            if ((puz != null) && (PlayActivity.BASE_FILE != null)) {
+            	if(puz.getPercentComplete() != 100){
+	                this.timer.stop();
+	                puz.setTime(timer.getElapsed());
+            	}
+                IO.save(puz, PlayActivity.BASE_FILE);
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
         PlayActivity.BOARD.getPuzzle().setTime(timer.getElapsed());
+        if ((this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES) ||
+                (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(this.imageView.getWindowToken(), 0);
+        }
+
     }
 
     private void render() {
+    	if ((this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES) ||
+                (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,
+                InputMethodManager.HIDE_IMPLICIT_ONLY);
+        }
         for (Box b : PlayActivity.BOARD.getCurrentWordBoxes()) {
             System.out.print(b + " ");
         }
