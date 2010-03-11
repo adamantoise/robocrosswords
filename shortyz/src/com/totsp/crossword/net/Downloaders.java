@@ -88,8 +88,9 @@ public class Downloaders {
             File downloaded = new File(Environment.getExternalStorageDirectory(),
                     "crosswords/" + d.createFileName(date));
             File archived  = new File(Environment.getExternalStorageDirectory(),
-                    "crosswords/archive" + d.createFileName(date));
+                    "crosswords/archive/" + d.createFileName(date));
 
+            System.out.println(downloaded.getAbsolutePath()+" "+downloaded.exists() + " OR "+archived.getAbsolutePath()+" "+archived.exists());
             if(d instanceof NYTDownloader && downloaded.exists() ){
             	NYTDownloader updater = (NYTDownloader) d;
             	File updated = updater.update(date);
