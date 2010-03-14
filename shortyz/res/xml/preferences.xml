@@ -80,6 +80,12 @@
 	android:key="downloadAvClub"
 	/>
 	<CheckBoxPreference
+	android:title="Ink Well"
+	android:defaultValue="true"
+	android:summary="InkWellXWords.com Friday Puzzle"
+	android:key="downloadInkwell"
+	/>
+	<CheckBoxPreference
 	android:title="The Wall Street Journal"
 	android:defaultValue="true"
 	android:summary="The WSJ Friday Puzzle"
@@ -92,11 +98,12 @@
 	android:key="downloadGlobe"
 	/>
 	<CheckBoxPreference
-	android:title="InkWell.com"
+	android:title="Philadelphia Inquirer"
 	android:defaultValue="true"
-	android:summary="InkWell.com Friday Puzzle"
-	android:key="downloadInkwell"
+	android:summary="Philadelphia Inquirer Sunday Puzzle"
+	android:key="downloadPhilly"
 	/>
+	
 	
 </PreferenceCategory>
 <PreferenceCategory

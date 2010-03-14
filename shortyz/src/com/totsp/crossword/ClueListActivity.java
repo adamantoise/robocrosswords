@@ -228,7 +228,8 @@ public class ClueListActivity extends Activity {
 
         if (PlayActivity.ALPHA.indexOf(c) != -1) {
             PlayActivity.BOARD.playLetter(c);
-            if(! PlayActivity.BOARD.getCurrentWord().equals(w) ){
+            Position p = PlayActivity.BOARD.getHighlightLetter();
+            if(!PlayActivity.BOARD.getCurrentWord().equals(w) || PlayActivity.BOARD.getBoxes()[p.across][p.down] == null ){
             	PlayActivity.BOARD.setHighlightLetter(last);
             }
             
