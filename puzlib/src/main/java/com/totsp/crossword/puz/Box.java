@@ -1,16 +1,12 @@
 package com.totsp.crossword.puz;
 
+import com.totsp.gwittir.client.beans.annotations.Introspectable;
 import java.io.Serializable;
-import java.text.NumberFormat;
 
 
+@Introspectable
 public class Box implements Serializable {
-    private static final NumberFormat FORMAT = NumberFormat.getIntegerInstance();
-
-    static {
-        FORMAT.setMinimumIntegerDigits(3);
-    }
-
+    
     public String responder;
     public boolean across;
     public boolean cheated;
@@ -93,6 +89,6 @@ public class Box implements Serializable {
 
     @Override
     public String toString() {
-        return FORMAT.format(this.clueNumber) + this.solution + " ";
+        return this.clueNumber + this.solution + " ";
     }
 }

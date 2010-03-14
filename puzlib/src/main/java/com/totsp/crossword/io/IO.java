@@ -365,7 +365,8 @@ public class IO {
     	}
     	return puz;
     }
-    
+
+
     public static PuzzleMeta meta(File baseFile) throws IOException {
     	File metaFile = new File(baseFile.getParentFile(), baseFile.getName().substring(0, baseFile.getName().lastIndexOf(".")) + ".shortyz");
     	FileInputStream fis = new FileInputStream(metaFile);

@@ -41,6 +41,12 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+        <groupId>com.totsp.gwittir</groupId>
+        <artifactId>gwittir-core</artifactId>
+        <version>0.5-SNAPSHOT</version>
+    </dependency>
+
   </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

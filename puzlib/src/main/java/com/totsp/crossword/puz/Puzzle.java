@@ -1,10 +1,13 @@
 package com.totsp.crossword.puz;
 
+import com.totsp.gwittir.client.beans.annotations.Introspectable;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 
 
-public class Puzzle {
+@Introspectable
+public class Puzzle implements Serializable  {
     private String author;
     private String copyright;
     private String fileMagic;
