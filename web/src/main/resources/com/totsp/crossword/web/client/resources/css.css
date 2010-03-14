@@ -1,0 +1,37 @@
+.black {
+    color: black;
+    background-color: black;
+    width: 27px;
+    height: 27px;
+}
+
+.square {
+    background-color: white;
+    font-family: Verdana;
+    font-size: 15px;
+    text-align: left;
+    vertical-align: top;
+    width: 27px;
+    height: 27px;
+    border: 1px solid black;
+}
+
+.number {
+    font-family: Verdana;
+    font-size: 8px;
+    height: 15px;
+    width: 25px;
+}
+
+.letter {
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.boxPanel {
+    width: 25px;
+    height: 25px;
+}
+
