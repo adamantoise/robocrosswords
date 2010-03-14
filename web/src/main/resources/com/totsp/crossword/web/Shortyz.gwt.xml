@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to="shortyz">
+    <!-- Inherit the core Web Toolkit stuff.                  -->
+    <inherits name='com.google.gwt.user.User'/>
+    <!-- Inherit the core Web Toolkit stuff.                  -->
+    <inherits name="com.google.gwt.i18n.I18N"/>
+    <!-- Inherit the java.beans.* classes from GWTx           -->
+    <inherits name='com.googlecode.gwtx.Java'/>
+    <inherits name='com.totsp.gwittir.Gwittir' />
+    <inherits name='com.totsp.gwittir.LoggingInfo' />
+    <entry-point class="com.totsp.crossword.web.client.BasicEntryPoint" />
+
+    <source path="client" />
+    <source path="shared" />
+</module>

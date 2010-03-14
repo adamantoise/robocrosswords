@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>CUSTOM-gwt-run</actionName>
+            <displayName>gwt-run</displayName>
+            <goals>
+                <goal>gwt-maven:gwt</goal>
+            </goals>
+        </action>
+    </actions>
