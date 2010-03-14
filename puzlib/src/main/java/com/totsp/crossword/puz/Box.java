@@ -1,9 +1,10 @@
 package com.totsp.crossword.puz;
 
+import java.io.Serializable;
 import java.text.NumberFormat;
 
 
-public class Box {
+public class Box implements Serializable {
     private static final NumberFormat FORMAT = NumberFormat.getIntegerInstance();
 
     static {

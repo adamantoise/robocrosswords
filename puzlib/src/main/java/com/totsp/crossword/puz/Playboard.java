@@ -1,8 +1,9 @@
 package com.totsp.crossword.puz;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class Playboard {
+public class Playboard implements Serializable  {
 	Position highlightLetter = new Position(0, 0);
 	Puzzle puzzle;
 	Box[][] boxes;
