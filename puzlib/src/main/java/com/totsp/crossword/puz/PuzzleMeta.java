@@ -12,6 +12,5 @@ public class PuzzleMeta implements Serializable {
 	public String source;
 	public Date date;
 	public int percentComplete;
-	
 
 }
