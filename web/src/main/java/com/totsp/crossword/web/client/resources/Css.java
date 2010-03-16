@@ -18,5 +18,10 @@ public interface Css extends CssResource {
     String letter();
     String number();
     String boxPanel();
+    String currentHighlightWord();
+    String currentLetterHighlight();
+    String cheated();
+    String clueBox();
+
 
 }

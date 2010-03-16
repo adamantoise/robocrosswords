@@ -45,7 +45,7 @@ public class BoxView extends AbstractBoundWidget<Box> {
        if(value.across || value.down ){
            this.number.setText(Integer.toString(value.clueNumber));
        }
-       letter.setText(Character.toString(value.solution));
+       letter.setText(Character.toString(value.response));
        this.changes.firePropertyChange(PROP_VALUE, this.value, this.value = value);
     }
 

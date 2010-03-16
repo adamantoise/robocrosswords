@@ -35,3 +35,22 @@
     height: 25px;
 }
 
+.currentHighlightWord {
+    background-color: #FFFFC0;
+}
+
+.currentLetterHighlight {
+    background-color: #FFFF00;
+    border: 1px solid #FF6633;
+}
+
+
+.cheated {
+     background-color: #FFCCCC;
+}
+
+
+.clueBox {
+    min-height: 30px;
+    border-bottom: 1px solid silver;
+}
