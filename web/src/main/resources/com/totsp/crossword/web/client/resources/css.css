@@ -58,7 +58,13 @@
     min-height: 30px;
     border-bottom: 1px solid silver;
     font-family: Verdana;
-    font-size: 12pt;
+    font-size: 10pt;
     padding-left: 4px;
     padding-right: 4px;
+    width: 100%;
+}
+
+.clueNumber {
+    font-size: 8pt;
+    width: 15%;
 }

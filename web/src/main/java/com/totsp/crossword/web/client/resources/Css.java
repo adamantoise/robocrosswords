@@ -23,6 +23,7 @@ public interface Css extends CssResource {
     String cheated();
     String clueBox();
     String highlightClue();
+    String clueNumber();
 
 
 }

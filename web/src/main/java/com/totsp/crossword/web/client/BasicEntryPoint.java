@@ -14,6 +14,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.Label;
@@ -163,8 +165,8 @@ public class BasicEntryPoint implements EntryPoint {
         HorizontalPanel hp = new HorizontalPanel();
         hp.add(t);
 
-        this.acrossScroll.setWidth("200px");
-        this.downScroll.setWidth("200px");
+        this.acrossScroll.setWidth("155px");
+        this.downScroll.setWidth("155px");
 
         VerticalPanel list = new VerticalPanel();
 
@@ -173,12 +175,17 @@ public class BasicEntryPoint implements EntryPoint {
         int index = 0;
 
         for (Clue c : this.acrossClues = board.getAcrossClues()) {
-            Label l = new Label(c.number + " " + c.hint);
-            l.setStyleName(css.clueBox());
-            list.add(l);
-            this.acrossClueViews.put(c, l);
             final int cIndex = index;
-            l.addClickHandler(new ClickHandler() {
+            Grid g = new Grid(1,2);
+            g.setWidget(0,0, new Label(c.number+""));
+            g.getCellFormatter().setStyleName(0, 0, css.clueNumber());
+            g.getRowFormatter().setVerticalAlign(0, HasVerticalAlignment.ALIGN_TOP);
+            g.setWidget(0,1, new Label(c.hint));
+            g.setStyleName(css.clueBox());
+
+            list.add(g);
+            this.acrossClueViews.put(c, g);
+            g.addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent event) {
                         board.jumpTo(cIndex, true);
@@ -197,11 +204,16 @@ public class BasicEntryPoint implements EntryPoint {
 
         for (Clue c : this.downClues = board.getDownClues()) {
             final int cIndex = index;
-            Label l = new Label(c.number + " " + c.hint);
-            l.setStyleName(css.clueBox());
-            list.add(l);
-            this.downClueViews.put(c, l);
-            l.addClickHandler(new ClickHandler() {
+            Grid g = new Grid(1,2);
+            g.setWidget(0,0, new Label(c.number+""));
+            g.getCellFormatter().setStyleName(0, 0, css.clueNumber());
+            g.getRowFormatter().setVerticalAlign(0, HasVerticalAlignment.ALIGN_TOP);
+            g.setWidget(0,1, new Label(c.hint));
+            g.setStyleName(css.clueBox());
+
+            list.add(g);
+            this.downClueViews.put(c, g);
+            g.addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent event) {
                         board.jumpTo(cIndex, false);
@@ -216,7 +228,7 @@ public class BasicEntryPoint implements EntryPoint {
         hp.add(downScroll);
         
 
-        r.render(board.getCurrentWord());
+        render(board.getCurrentWord());
         mainPanel.setWidget(hp);
         mainPanel.setFocus(true);
 
@@ -243,14 +255,7 @@ public class BasicEntryPoint implements EntryPoint {
 
     }
 
-    private int indexOf(Object[] array, Object o){
-        for(int i=0; i < array.length; i++){
-            if((array[i] == null && o == null) || array[i].equals(o))
-                return i;
-        }
-        return -1;
-    }
-
+   
     private void render(){
         render(null);
     }
