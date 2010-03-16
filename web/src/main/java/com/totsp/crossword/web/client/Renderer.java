@@ -42,35 +42,32 @@ public class Renderer {
         table = new FlexTable();
         table.setCellSpacing(0);
         table.setCellPadding(0);
-        for(Box[] row : playboard.getBoxes() ){
-             int rowIndex =  table.getRowCount();
-             table.insertRow( table.getRowCount());
-             int cellIndex = 0;
-             for(final Box b : row){
-                
-                table.addCell(rowIndex);
-                if(b == null){
-                    table.getCellFormatter().setStyleName(rowIndex, cellIndex, this.resources.css().black());
-                    table.setWidget(rowIndex, cellIndex, new HTML("&nbsp;"));
+
+        for(int across=0; across < this.board.getBoxes().length; across++){
+            for(int down=0; down < this.board.getBoxes()[across].length; down++){
+
+                 Box b = board.getBoxes()[across][down];
+
+                 if(b == null){
+                    table.getCellFormatter().setStyleName(down, across, this.resources.css().black());
+                    table.setWidget(down, across, new HTML("&nbsp;"));
                 } else {
-                     table.getCellFormatter().setStyleName(rowIndex, cellIndex, this.resources.css().square());
+                     table.getCellFormatter().setStyleName(down, across, this.resources.css().square());
                      BoxView view = this.boxViewProvider.get();
                      view.setValue(b);
-                     table.setWidget(rowIndex, cellIndex, view);
+                     table.setWidget(down, across, view);
                 }
-                cellIndex++;
+            }
 
-             }
-             rowIndex++;
-             cellIndex = 0;
+
         }
 
         table.addTableListener(new TableListener(){
 
             @Override
-            public void onCellClicked(SourcesTableEvents sender, int row, int cell) {
+            public void onCellClicked(SourcesTableEvents sender, int down, int across) {
                 if(Renderer.this.listener != null){
-                    Renderer.this.listener.onClick(row, cell);
+                    Renderer.this.listener.onClick(across, down);
                 }
             }
 
@@ -95,8 +92,8 @@ public class Renderer {
         Position currentHighlightLetter = this.board.getHighlightLetter();
         for(int across = 0; across < this.board.getBoxes().length; across++){
             for(int down=0; down < this.board.getBoxes()[across].length; down++){
-                CellFormatter formatter = this.table.getCellFormatter();
-                Box box = this.board.getBoxes()[across][down];
+               CellFormatter formatter = this.table.getCellFormatter();
+               Box box = this.board.getBoxes()[across][down];
                if(!currentWord.checkInWord(across, down) && w != null &&  !w.checkInWord(across, down)){
                     continue;
                 }
@@ -105,23 +102,23 @@ public class Renderer {
                     continue;
                 }
 
-                BoxView view = (BoxView) table.getWidget(across, down);
+                BoxView view = (BoxView) table.getWidget(down, across);
                 view.setValue(box);
 
                 if(box.cheated){
-                    formatter.addStyleName(across, down, resources.css().cheated());
+                    formatter.addStyleName(down, across, resources.css().cheated());
                 }
 
                 if(currentWord.checkInWord(across, down)){
-                    formatter.addStyleName(across, down, resources.css().currentHighlightWord());
+                    formatter.addStyleName(down, across, resources.css().currentHighlightWord());
                 } else {
-                    formatter.removeStyleName(across, down, resources.css().currentHighlightWord());
+                    formatter.removeStyleName(down, across, resources.css().currentHighlightWord());
                 }
 
                 if(currentHighlightLetter.across == across && currentHighlightLetter.down == down){
-                    formatter.addStyleName(across, down, resources.css().currentLetterHighlight());
+                    formatter.addStyleName(down, across, resources.css().currentLetterHighlight());
                 } else {
-                    formatter.removeStyleName(across, down, resources.css().currentLetterHighlight());
+                    formatter.removeStyleName(down, across, resources.css().currentLetterHighlight());
                 }
 
             }
