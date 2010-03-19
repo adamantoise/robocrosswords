@@ -15,4 +15,11 @@
 
     <source path="client" />
     <source path="shared" />
+
+
+    <replace-with
+        class="com.totsp.crossword.web.client.rebind.WASDCodesSafari">
+        <when-type-is class="com.totsp.crossword.web.client.WASDCodes"/>
+        <when-property-is name="user.agent" value="safari"/>
+    </replace-with>
 </module>

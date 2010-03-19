@@ -5,6 +5,7 @@
 package com.totsp.crossword.web.client;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -41,6 +42,7 @@ import java.util.HashMap;
  * @author kebernet
  */
 public class BasicEntryPoint implements EntryPoint {
+    static final WASDCodes CODES = GWT.create(WASDCodes.class);
     static final PuzzleServiceAsync s = Injector.INSTANCE.service();
     static final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     static Css css = Injector.INSTANCE.resources().css();
@@ -64,30 +66,29 @@ public class BasicEntryPoint implements EntryPoint {
                     return;
                 }
 
-                if (keyCode == KeyCodes.KEY_DOWN) {
-                    Window.alert("Down");
-
+                
+                if (keyCode == KeyCodes.KEY_DOWN || ((modifiers & KeyboardListener.MODIFIER_CTRL) > 0 &&  keyCode == CODES.s())) {
                     Word w = board.moveDown();
                     render(w);
 
                     return;
                 }
 
-                if (keyCode == KeyCodes.KEY_UP) {
+                if (keyCode == KeyCodes.KEY_UP || ((modifiers & KeyboardListener.MODIFIER_CTRL) > 0 && keyCode == CODES.w())) {
                     Word w = board.movieUp();
                     render(w);
 
                     return;
                 }
 
-                if (keyCode == KeyCodes.KEY_LEFT) {
+                if (keyCode == KeyCodes.KEY_LEFT || ((modifiers & KeyboardListener.MODIFIER_CTRL) > 0 &&  keyCode == CODES.a() )) {
                     Word w = board.moveLeft();
                     render(w);
 
                     return;
                 }
 
-                if (keyCode == KeyCodes.KEY_RIGHT) {
+                if (keyCode == KeyCodes.KEY_RIGHT || ((modifiers & KeyboardListener.MODIFIER_CTRL) > 0 && keyCode == CODES.d())) {
                     Word w = board.moveRight();
                     render(w);
 
@@ -95,10 +96,21 @@ public class BasicEntryPoint implements EntryPoint {
                 }
 
                 if (keyCode == ' ') {
+                    Position p = board.getHighlightLetter();
+                    Word w = board.playLetter(' ');
+                    board.setHighlightLetter(p);
+                    render(w);
+
+                    return;
+                }
+
+                if( keyCode == KeyCodes.KEY_ENTER){
+
                     Word w = board.setHighlightLetter(board.getHighlightLetter());
                     render(w);
 
                     return;
+
                 }
 
                 if ((keyCode == KeyCodes.KEY_BACKSPACE) ||
@@ -109,7 +121,8 @@ public class BasicEntryPoint implements EntryPoint {
                     return;
                 }
 
-                if (ALPHA.indexOf(Character.toUpperCase(keyCode)) != -1) {
+                
+                if ((modifiers & KeyboardListener.MODIFIER_CTRL) == 0 && ALPHA.indexOf(Character.toUpperCase(keyCode)) != -1) {
                     Word w = board.playLetter(Character.toUpperCase(keyCode));
                     render(w);
 
