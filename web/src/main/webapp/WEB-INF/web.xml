@@ -7,10 +7,20 @@
         <servlet-class>com.totsp.crossword.web.server.PuzzleServlet</servlet-class>
     </servlet>
 
+    <servlet>
+        <servlet-name>RefreshPuzzleListTask</servlet-name>
+        <servlet-class>com.totsp.crossword.web.server.RefreshPuzzleList</servlet-class>
+    </servlet>
+
 
     <servlet-mapping>
         <servlet-name>PuzzleService</servlet-name>
         <url-pattern>/shortyz/puzzle.rpc</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>RefreshPuzzleListTask</servlet-name>
+        <url-pattern>/.tasks/refresh</url-pattern>
     </servlet-mapping>
 
     <session-config>

@@ -5,7 +5,6 @@
 package com.totsp.crossword.web.client;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -31,7 +30,9 @@ import com.totsp.crossword.puz.Playboard.Word;
 import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.web.client.Renderer.ClickListener;
 import com.totsp.crossword.web.client.resources.Css;
+import com.totsp.crossword.web.shared.PuzzleDescriptor;
 import com.totsp.crossword.web.shared.PuzzleServiceAsync;
+import java.util.Arrays;
 import java.util.HashMap;
 
 
@@ -40,18 +41,19 @@ import java.util.HashMap;
  * @author kebernet
  */
 public class BasicEntryPoint implements EntryPoint {
+    static final PuzzleServiceAsync s = Injector.INSTANCE.service();
     static final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    Css css = Injector.INSTANCE.resources().css();
-    FocusPanel mainPanel = new FocusPanel();
-    Playboard board;
-    Renderer r = Injector.INSTANCE.renderer();
-    Clue[] acrossClues;
-    Clue[] downClues;
+    static Css css = Injector.INSTANCE.resources().css();
+    static FocusPanel mainPanel = new FocusPanel();
+    static Playboard board;
+    static Renderer r = Injector.INSTANCE.renderer();
+    static Clue[] acrossClues;
+    static Clue[] downClues;
 
-    HashMap<Clue, Widget> acrossClueViews = new HashMap<Clue, Widget>();
-    HashMap<Clue, Widget> downClueViews = new HashMap<Clue, Widget>();
+    static HashMap<Clue, Widget> acrossClueViews = new HashMap<Clue, Widget>();
+    static HashMap<Clue, Widget> downClueViews = new HashMap<Clue, Widget>();
 
-    KeyboardListener l = new KeyboardListener() {
+    static KeyboardListener l = new KeyboardListener() {
             @Override
             public void onKeyDown(Widget sender, char keyCode, int modifiers) {
             }
@@ -120,15 +122,35 @@ public class BasicEntryPoint implements EntryPoint {
             }
         };
 
-    ScrollPanel acrossScroll = new ScrollPanel();
-    ScrollPanel downScroll = new ScrollPanel();
+    static ScrollPanel acrossScroll = new ScrollPanel();
+    static ScrollPanel downScroll = new ScrollPanel();
 
     @Override
     public void onModuleLoad() {
         StyleInjector.inject(Injector.INSTANCE.resources().css().getText());
+        RootPanel.get().add(mainPanel);
+        s.listPuzzles(new AsyncCallback<PuzzleDescriptor[]>(){
 
-        PuzzleServiceAsync s = Injector.INSTANCE.service();
-        s.findPuzzle(1L,
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Fail");
+            }
+
+            @Override
+            public void onSuccess(PuzzleDescriptor[] result) {
+                PuzzleListView plv = Injector.INSTANCE.puzzleListView();
+                mainPanel.setWidget(plv);
+                plv.setValue(Arrays.asList(result));
+            }
+
+        });
+       
+    }
+
+
+    public static void loadPuzzle(Long id){
+        
+        s.findPuzzle(id,
             new AsyncCallback<Puzzle>() {
                 @Override
                 public void onFailure(Throwable caught) {
@@ -141,22 +163,21 @@ public class BasicEntryPoint implements EntryPoint {
                 }
             });
 
-        mainPanel.getElement().getStyle().setBorderColor("red");
-        mainPanel.getElement().getStyle().setBorderWidth(2, Unit.PX);
         mainPanel.addKeyboardListener(l);
 
-        RootPanel.get().add(mainPanel);
+        
 
         r.setClickListener(new ClickListener() {
                 @Override
                 public void onClick(int across, int down) {
                     Word w = board.setHighlightLetter(new Position(across, down));
                     render(w);
+                    mainPanel.setFocus(true);
                 }
             });
     }
 
-    private void startPuzzle(Puzzle puzzle) {
+    private static void startPuzzle(Puzzle puzzle) {
         board = new Playboard(puzzle);
         board.setHighlightLetter(new Position(0, 0));
 
@@ -165,16 +186,16 @@ public class BasicEntryPoint implements EntryPoint {
         HorizontalPanel hp = new HorizontalPanel();
         hp.add(t);
 
-        this.acrossScroll.setWidth("155px");
-        this.downScroll.setWidth("155px");
+       acrossScroll.setWidth("155px");
+       downScroll.setWidth("155px");
 
         VerticalPanel list = new VerticalPanel();
 
-        this.acrossScroll.setWidget(list);
+       acrossScroll.setWidget(list);
 
         int index = 0;
 
-        for (Clue c : this.acrossClues = board.getAcrossClues()) {
+        for (Clue c :acrossClues = board.getAcrossClues()) {
             final int cIndex = index;
             Grid g = new Grid(1,2);
             g.setWidget(0,0, new Label(c.number+""));
@@ -184,11 +205,12 @@ public class BasicEntryPoint implements EntryPoint {
             g.setStyleName(css.clueBox());
 
             list.add(g);
-            this.acrossClueViews.put(c, g);
+            acrossClueViews.put(c, g);
             g.addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent event) {
                         board.jumpTo(cIndex, true);
+                        mainPanel.setFocus(true);
                         render();
                     }
                 });
@@ -199,10 +221,10 @@ public class BasicEntryPoint implements EntryPoint {
 
         list = new VerticalPanel();
 
-        this.downScroll.setWidget(list);
+       downScroll.setWidget(list);
         index = 0;
 
-        for (Clue c : this.downClues = board.getDownClues()) {
+        for (Clue c :downClues = board.getDownClues()) {
             final int cIndex = index;
             Grid g = new Grid(1,2);
             g.setWidget(0,0, new Label(c.number+""));
@@ -212,11 +234,12 @@ public class BasicEntryPoint implements EntryPoint {
             g.setStyleName(css.clueBox());
 
             list.add(g);
-            this.downClueViews.put(c, g);
+           downClueViews.put(c, g);
             g.addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent event) {
                         board.jumpTo(cIndex, false);
+                        mainPanel.setFocus(true);
                         render();
                     }
                 });
@@ -232,23 +255,23 @@ public class BasicEntryPoint implements EntryPoint {
         mainPanel.setWidget(hp);
         mainPanel.setFocus(true);
 
-        this.acrossScroll.setHeight(t.getOffsetHeight() + "px ");
-        this.downScroll.setHeight(t.getOffsetHeight() + "px ");
+       acrossScroll.setHeight(t.getOffsetHeight() + "px ");
+       downScroll.setHeight(t.getOffsetHeight() + "px ");
     }
 
-    private Widget lastClueWidget;
+    private static Widget lastClueWidget;
 
-    private void render(Word w){
+    private static void render(Word w){
         r.render(w);
         if(lastClueWidget != null){
             lastClueWidget.removeStyleName(css.highlightClue());
         }
         if(board.isAcross()){
-            lastClueWidget = this.acrossClueViews.get(board.getClue());
-            this.acrossScroll.ensureVisible( lastClueWidget );
+            lastClueWidget =acrossClueViews.get(board.getClue());
+           acrossScroll.ensureVisible( lastClueWidget );
         } else {
-            lastClueWidget =this.downClueViews.get(board.getClue());
-            this.downScroll.ensureVisible( lastClueWidget);
+            lastClueWidget =downClueViews.get(board.getClue());
+           downScroll.ensureVisible( lastClueWidget);
         }
         lastClueWidget.addStyleName(css.highlightClue());
         
@@ -256,7 +279,7 @@ public class BasicEntryPoint implements EntryPoint {
     }
 
    
-    private void render(){
+    private static  void render(){
         render(null);
     }
 }

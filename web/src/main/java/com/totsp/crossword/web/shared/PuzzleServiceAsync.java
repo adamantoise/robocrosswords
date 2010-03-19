@@ -8,13 +8,14 @@ package com.totsp.crossword.web.shared;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.totsp.crossword.puz.Puzzle;
+import java.util.ArrayList;
 
 /**
  *
  * @author kebernet
  */
 public interface PuzzleServiceAsync {
-
-
+    
     public Request findPuzzle(Long puzzleId, AsyncCallback<Puzzle> callback);
+    public Request listPuzzles(AsyncCallback<PuzzleDescriptor[]> callback);
 }

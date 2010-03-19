@@ -8,6 +8,7 @@ package com.totsp.crossword.web.shared;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.totsp.crossword.puz.Puzzle;
+import java.util.ArrayList;
 
 /**
  *
@@ -18,5 +19,6 @@ public interface PuzzleService extends RemoteService{
 
 
     public Puzzle findPuzzle(Long puzzleId);
+    public PuzzleDescriptor[] listPuzzles();
 
 }

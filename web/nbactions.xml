@@ -6,5 +6,9 @@
             <goals>
                 <goal>gwt-maven:gwt</goal>
             </goals>
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+                <google.webtoolkit.compileSkip>true</google.webtoolkit.compileSkip>
+            </properties>
         </action>
     </actions>

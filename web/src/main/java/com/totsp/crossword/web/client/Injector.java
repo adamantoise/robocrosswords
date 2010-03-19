@@ -23,4 +23,6 @@ public interface Injector extends Ginjector {
     Renderer renderer();
     PuzzleServiceAsync service();
     BoxView boxView();
+    PuzzleDescriptorView puzzleDescriptorView();
+    PuzzleListView puzzleListView();
 }

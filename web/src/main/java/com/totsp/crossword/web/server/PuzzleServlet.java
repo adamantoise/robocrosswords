@@ -6,11 +6,12 @@
 package com.totsp.crossword.web.server;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.totsp.crossword.io.IO;
 import com.totsp.crossword.puz.Puzzle;
+import com.totsp.crossword.web.server.model.PuzzleListing;
+import com.totsp.crossword.web.shared.PuzzleDescriptor;
 import com.totsp.crossword.web.shared.PuzzleService;
-import java.io.IOException;
-import java.net.URL;
+import java.util.Calendar;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,13 +23,54 @@ public class PuzzleServlet extends RemoteServiceServlet implements PuzzleService
 
     @Override
     public Puzzle findPuzzle(Long puzzleId) {
+       
+
+        DataService service = new DataService();
         try {
-            return IO.loadNative(new URL("http://herbach.dnsalias.com/Tausig/av100310.puz").openStream());
-        } catch (IOException ex) {
+            PuzzleListing l = service.findListingById(PuzzleListing.class, puzzleId);
+           
+            Puzzle p = (Puzzle) service.deserialize(l.getPuzzleSerial().getBytes());
+            System.out.println("Returning "+p);
+            return p;
+        } catch (Exception ex) {
+            ex.printStackTrace();
             Logger.getLogger(PuzzleServlet.class.getName()).log(Level.SEVERE, null, ex);
             throw new RuntimeException(ex);
+        } finally {
+            service.close();
         }
-
     }
+
+    @Override
+    public PuzzleDescriptor[] listPuzzles() {
+        PuzzleDescriptor[] result = new PuzzleDescriptor[0];
+        DataService service = new DataService();
+        try {
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DATE, -10);
+            
+            List<PuzzleListing> listings = service.findAfterDateNoPuzzle(cal.getTime());
+            int i = 0;
+            result = new PuzzleDescriptor[listings.size()];
+            for(PuzzleListing listing : listings){
+                PuzzleDescriptor desc = new PuzzleDescriptor();
+                desc.setId(listing.getId());
+                desc.setSource(listing.getSource());
+                desc.setTitle(listing.getTitle());
+                desc.setDate(listing.getDate());
+                System.out.println("\t"+desc.getTitle()+" "+desc.getDate());
+                result[i++]=desc;
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(PuzzleServlet.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RuntimeException(ex);
+        } finally {
+            service.close();
+        }
+        System.out.println("Returing "+result.length);
+        return result;
+    }
+
+
 
 }

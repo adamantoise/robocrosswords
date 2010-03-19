@@ -46,6 +46,8 @@ public class Module  extends AbstractGinModule {
         this.bind(Renderer.class);
         this.bind(PuzzleServiceAsync.class).toProvider(PuzzleServiceProvider.class);
         this.bind(BoxView.class);
+        this.bind(PuzzleDescriptorView.class);
+        this.bind(PuzzleListView.class);
     }
 
 }

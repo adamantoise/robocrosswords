@@ -25,5 +25,11 @@ public interface Css extends CssResource {
     String highlightClue();
     String clueNumber();
 
+    String pdDate();
+    String pdTitle();
+    String pdSource();
+    String pd();
+
+
 
 }
