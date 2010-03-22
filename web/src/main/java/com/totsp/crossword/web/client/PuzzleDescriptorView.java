@@ -7,7 +7,9 @@ package com.totsp.crossword.web.client;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.DockPanel;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.inject.Inject;
 import com.totsp.crossword.web.client.resources.Resources;
@@ -31,27 +33,34 @@ public class PuzzleDescriptorView extends AbstractBoundWidget<PuzzleDescriptor>{
         }
 
     };
-    
-    Label date = new Label();
+
+    DateTimeFormat format = DateTimeFormat.getFormat("EEEE '<br \\>' MMM dd, yyyy");
+    HTML date = new HTML();
     Label source = new Label();
     Label title = new Label();
 
 
     @Inject
     public PuzzleDescriptorView(Resources resources){
-        DockPanel dock = new DockPanel();
+        FlexTable table = new FlexTable();
+        table.insertRow(0);
+        table.insertRow(0);
 
-        dock.add(date, DockPanel.EAST);
-        dock.add(source, DockPanel.NORTH);
-        dock.add(title, DockPanel.SOUTH);
+        table.setWidget(0,1, date);
+        table.getFlexCellFormatter().setRowSpan(0, 1, 2);
+        table.getFlexCellFormatter().setWidth(0, 1, "25%");
 
+        table.setWidget(0,0, source);
+        table.setWidget(1,0, title);
+        
         date.setStyleName(resources.css().pdDate());
         title.setStyleName(resources.css().pdTitle());
         source.setStyleName(resources.css().pdSource());
-        super.initWidget(dock);
+        super.initWidget(table);
         this.setStyleName(resources.css().pd());
 
-        source.addClickHandler(new ClickHandler(){
+
+        table.addClickHandler(new ClickHandler(){
 
             @Override
             public void onClick(ClickEvent event) {
@@ -86,7 +95,7 @@ public class PuzzleDescriptorView extends AbstractBoundWidget<PuzzleDescriptor>{
         if(value == null){
             return;
         }
-        this.date.setText( value.getDate() != null ?  value.getDate().toLocaleString() : "" );
+        this.date.setHTML( value.getDate() != null ? format.format(value.getDate()) : "" );
         this.source.setText( value.getSource() );
         this.title.setText(value.getTitle());
 

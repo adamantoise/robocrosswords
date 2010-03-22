@@ -23,6 +23,7 @@ public class PuzzleDescriptor extends AbstractModelBean
     private Long id;
     private String source;
     private String title;
+    private int percentComplete;
 
     /**
      * Set the value of date
@@ -59,6 +60,24 @@ public class PuzzleDescriptor extends AbstractModelBean
      */
     public Long getId() {
         return this.id;
+    }
+
+    /**
+     * Set the value of percentComplete
+     *
+     * @param newpercentComplete new value of percentComplete
+     */
+    public void setPercentComplete(int newpercentComplete) {
+        this.percentComplete = newpercentComplete;
+    }
+
+    /**
+     * Get the value of percentComplete
+     *
+     * @return the value of percentComplete
+     */
+    public int getPercentComplete() {
+        return this.percentComplete;
     }
 
     /**

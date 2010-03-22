@@ -3,6 +3,7 @@
   <persistence-unit name="transactions-optional">
     <provider>org.datanucleus.store.appengine.jpa.DatastorePersistenceProvider</provider>
     <class>com.totsp.crossword.web.server.model.PuzzleListing</class>
+    <class>com.totsp.crossword.web.server.model.SavedPuzzle</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="datanucleus.NontransactionalRead" value="true"/>

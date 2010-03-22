@@ -6,8 +6,9 @@
 package com.totsp.crossword.web.server;
 
 import com.google.appengine.api.datastore.Blob;
-import com.totsp.crossword.puz.Box;
+import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.web.server.model.PuzzleListing;
+import com.totsp.crossword.web.server.model.SavedPuzzle;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -16,7 +17,9 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
@@ -38,6 +41,96 @@ public class DataService {
 
     public DataService(){
 
+    }
+
+    public Puzzle loadSavedPuzzle(String userUri, Long listingId){
+        EntityTransaction t = entityManager.getTransaction();
+        t.begin();
+
+        try{
+            Query q = entityManager.createNamedQuery("SavedPuzzle.findUserUriAndListingId");
+            q.setParameter("userUri", userUri);
+            q.setParameter("listingId", listingId);
+
+
+            SavedPuzzle sp = (SavedPuzzle) q.getSingleResult();
+            Puzzle p = (Puzzle) this.deserialize(sp.getPuzzleSerial().getBytes());
+            t.commit();
+            return p;
+
+        } catch (IOException ex) {
+            Logger.getLogger(DataService.class.getName()).log(Level.SEVERE, null, ex);
+             t.rollback();
+            return null;
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(DataService.class.getName()).log(Level.SEVERE, null, ex);
+             t.rollback();
+            return null;
+        } catch(NoResultException nre){
+            t.rollback();
+            return null;
+        }
+    }
+
+    public void savePuzzle(String userUri, Long listingId, Puzzle puzzle){
+        EntityTransaction t = entityManager.getTransaction();
+        t.begin();
+
+        try{
+            Query q = entityManager.createNamedQuery("SavedPuzzle.findUserUriAndListingId");
+            q.setParameter("userUri", userUri);
+            q.setParameter("listingId", listingId);
+
+            SavedPuzzle sp = (SavedPuzzle) q.getSingleResult();
+            try{
+                sp.setPuzzleSerial( new Blob(this.serialize(puzzle)));
+            } catch(IOException ioe){
+                t.rollback();
+                throw new RuntimeException(ioe);
+            }
+            entityManager.merge(sp);
+            t.commit();
+
+        } catch(NoResultException nre){
+            SavedPuzzle sp = new SavedPuzzle();
+            try{
+                sp.setPuzzleSerial( new Blob(this.serialize(puzzle)));
+            } catch(IOException ioe){
+                t.rollback();
+                throw new RuntimeException(ioe);
+            }
+            sp.setListingID(listingId);
+            sp.setUserUri(userUri);
+            entityManager.persist(sp);
+            t.commit();
+        }
+    }
+
+    public Map<Long, Puzzle> findSavedPuzzlesByUserAndListingIds(String userUri, List<Long> listingIds){
+        HashMap<Long, Puzzle> results = new HashMap<Long, Puzzle>();
+        EntityTransaction t = entityManager.getTransaction();
+        t.begin();
+        try{
+            Query q = entityManager.createNamedQuery("SavedPuzzle.findUserUriAndListingIds");
+            q.setParameter("userUri", userUri);
+            q.setParameter("listinIds", listingIds);
+            List<SavedPuzzle> saves = q.getResultList();
+            for(SavedPuzzle save: saves ){
+                try {
+                    Puzzle p = (Puzzle) this.deserialize(save.getPuzzleSerial().getBytes());
+                    results.put(save.getId(), p);
+                } catch (IOException ex) {
+                    Logger.getLogger(DataService.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(DataService.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } catch(NoResultException nre){
+            nre.printStackTrace();
+            t.rollback();
+        }
+
+        return results;
     }
 
 

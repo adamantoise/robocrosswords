@@ -20,5 +20,6 @@ public interface PuzzleService extends RemoteService{
 
     public Puzzle findPuzzle(Long puzzleId);
     public PuzzleDescriptor[] listPuzzles();
+    public void savePuzzle(Long listingId, Puzzle puzzle) throws NoUserException;
 
 }

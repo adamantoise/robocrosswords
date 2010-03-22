@@ -41,7 +41,7 @@
 
 .currentLetterHighlight {
     background-color: #EB6000;
-    border: 1px solid white;
+    border: 1px outset black;
 }
 
 .highlightClue{
@@ -89,4 +89,5 @@
     border-bottom: 1px solid silver;
     width: 100%;
     height: 70px;
+    cursor: pointer;
 }

@@ -11,7 +11,7 @@
     <static-files>
         <include path="/shortyz/**" />
         <include path="/favicon.ico" />
-        <!--include path="/debug/**" />
-        <include path="/static/**" /-->
+        <!--include path="/debug/**" /-->
+        <include path="/static/**" />
     </static-files>
 </appengine-web-app>

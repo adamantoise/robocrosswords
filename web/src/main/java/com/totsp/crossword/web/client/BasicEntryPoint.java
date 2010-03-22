@@ -152,8 +152,10 @@ public class BasicEntryPoint implements EntryPoint {
             @Override
             public void onSuccess(PuzzleDescriptor[] result) {
                 PuzzleListView plv = Injector.INSTANCE.puzzleListView();
+                Arrays.sort(result);
                 mainPanel.setWidget(plv);
                 plv.setValue(Arrays.asList(result));
+                setFBSize();
             }
 
         });
@@ -270,6 +272,7 @@ public class BasicEntryPoint implements EntryPoint {
 
        acrossScroll.setHeight(t.getOffsetHeight() + "px ");
        downScroll.setHeight(t.getOffsetHeight() + "px ");
+       setFBSize();
     }
 
     private static Widget lastClueWidget;
@@ -295,4 +298,10 @@ public class BasicEntryPoint implements EntryPoint {
     private static  void render(){
         render(null);
     }
+
+    private static native void setFBSize()/*-{
+       if($wnd.FB.CanvasClient.setSizeToContent){
+            $wnd.FB.CanvasClient.setSizeToContent();
+       }
+    }-*/;
 }

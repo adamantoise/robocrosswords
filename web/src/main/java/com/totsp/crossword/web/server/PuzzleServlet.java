@@ -8,6 +8,7 @@ package com.totsp.crossword.web.server;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.web.server.model.PuzzleListing;
+import com.totsp.crossword.web.shared.NoUserException;
 import com.totsp.crossword.web.shared.PuzzleDescriptor;
 import com.totsp.crossword.web.shared.PuzzleService;
 import java.util.Calendar;
@@ -69,6 +70,15 @@ public class PuzzleServlet extends RemoteServiceServlet implements PuzzleService
         }
         System.out.println("Returing "+result.length);
         return result;
+    }
+
+    public void savePuzzle(Long listingId, Puzzle puzzle) throws NoUserException {
+        DataService data = new DataService();
+        String userUri = (String) this.getThreadLocalRequest().getSession().getAttribute("user.id");
+        if(userUri == null){
+            throw new NoUserException();
+        }
+        data.savePuzzle(userUri, listingId, puzzle);
     }
 
 
