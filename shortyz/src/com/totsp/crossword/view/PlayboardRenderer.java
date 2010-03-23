@@ -55,9 +55,9 @@ public class PlayboardRenderer {
 
 		blackBox.setColor(Color.BLACK);
 
-		currentWordHighlight.setColor(Color.parseColor("#FFFFC0"));
-		currentLetterHighlight.setColor(Color.parseColor("#FFFF00"));
-		currentLetterBox.setColor(Color.parseColor("#FF6633"));
+		currentWordHighlight.setColor(Color.parseColor("#FFAE57"));
+		currentLetterHighlight.setColor(Color.parseColor("#EB6000"));
+		currentLetterBox.setColor(Color.parseColor("#606060"));
 		currentLetterBox.setStrokeWidth(2.0F);
 
 		white.setColor(Color.WHITE);
