@@ -329,17 +329,22 @@ public class BrowseActivity extends ListActivity {
 
 					try {
 						m = IO.meta(f);
+						
+						
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						// e.printStackTrace();
+						e.printStackTrace();
 					}
-
 					files.add(new FileHandle(f, m));
+					
 				}
 			}
 
 			this.puzFiles = files.toArray(new FileHandle[files.size()]);
-			Arrays.sort(puzFiles);
+			try{
+				Arrays.sort(puzFiles);
+			} catch(Exception e){
+				e.printStackTrace();
+			}
 		}
 
 		public int getCount() {
@@ -397,8 +402,11 @@ public class BrowseActivity extends ListActivity {
 
 		public int compareTo(FileHandle another) {
 			FileHandle h = (FileHandle) another;
-
-			return h.getDate().compareTo(this.getDate());
+			try{
+				return h.getDate().compareTo(this.getDate());
+			} catch(Exception e){
+				return 0;
+			}
 		}
 
 		String getCaption() {
