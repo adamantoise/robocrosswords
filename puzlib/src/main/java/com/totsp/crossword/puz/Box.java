@@ -1,10 +1,8 @@
 package com.totsp.crossword.puz;
 
-import com.totsp.gwittir.client.beans.annotations.Introspectable;
 import java.io.Serializable;
 
 
-@Introspectable
 public class Box implements Serializable {
     
     public String responder;

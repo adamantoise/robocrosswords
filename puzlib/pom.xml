@@ -45,8 +45,14 @@
         <groupId>com.totsp.gwittir</groupId>
         <artifactId>gwittir-core</artifactId>
         <version>0.5-SNAPSHOT</version>
+        <scope>provided</scope>
     </dependency>
-
+    <dependency>
+        <groupId>com.google.appengine</groupId>
+        <artifactId>geronimo-jpa_3.0_spec</artifactId>
+        <version>1.1.1</version>
+        <scope>provided</scope>
+        </dependency>
   </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

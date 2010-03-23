@@ -1,116 +1,65 @@
 package com.totsp.crossword.puz;
 
-import com.totsp.gwittir.client.beans.annotations.Introspectable;
+
 import java.io.Serializable;
+
 import java.util.Arrays;
 import java.util.Date;
 
-
-@Introspectable
-public class Puzzle implements Serializable  {
+public class Puzzle implements Serializable {
     private String author;
     private String copyright;
-    private String fileMagic;
+    private transient String fileMagic;
     private String notes;
     private String title;
-    private String versionString; // 4bytes
+    private transient String versionString; // 4bytes
     private String[] acrossClues;
     private Integer[] acrossCluesLookup;
     private String[] downClues;
     private Integer[] downCluesLookup;
-    private byte[] maskedHighChecksums; //4bytes
-    private byte[] maskedLowChecksums; //4bytes
-    private byte[] reserved20; //0xC bytes;
+    private transient byte[] maskedHighChecksums; //4bytes
+    private transient byte[] maskedLowChecksums; //4bytes
+    private transient byte[] reserved20; //0xC bytes;
     private int numberOfClues; //2 bytes;
-    private short cibChecksum;
-    private short fileChecksum;
-    private short reserved1C; //2bytes
-    private short unknown; //2bytes
-    private short unknown30; //2bytes
-    private short unknown32; //2bytes;
+    private transient short cibChecksum;
+    private transient short fileChecksum;
+    private transient short reserved1C; //2bytes
+    private transient short unknown; //2bytes
+    private transient short unknown30; //2bytes
+    private transient short unknown32; //2bytes;
+    private Date pubdate = new Date();
+    private String source;
     private Box[][] boxes;
+    private String[] rawClues;
     private int height; //on byte
     private int width; //one byte;
-    private String[] rawClues;
-    private String source;
-    private Date date = new Date();
-    private long time;
-    
-    public void setTime(long time){
-    	this.time = time;
+    private long playedTime;
+
+    public void setAcrossClues(String[] acrossClues) {
+        this.acrossClues = acrossClues;
     }
-    
-    public long getTime(){
-    	return this.time;
+
+    public String[] getAcrossClues() {
+        return acrossClues;
     }
-   
+
+    public void setAcrossCluesLookup(Integer[] acrossCluesLookup) {
+        this.acrossCluesLookup = acrossCluesLookup;
+    }
+
+    public Integer[] getAcrossCluesLookup() {
+        return acrossCluesLookup;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
 
     public String getAuthor() {
-		return author;
-	}
+        return author;
+    }
 
-	public void setAuthor(String author) {
-		this.author = author;
-	}
-
-	public String getCopyright() {
-		return copyright;
-	}
-
-	public void setCopyright(String copyright) {
-		this.copyright = copyright;
-	}
-
-	public String getNotes() {
-		return notes;
-	}
-
-	public void setNotes(String notes) {
-		this.notes = notes;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getSource() {
-		return source;
-	}
-
-	public void setSource(String source) {
-		this.source = source;
-	}
-
-	public Date getDate() {
-		return date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
-	public int getPercentComplete() {
-		int total = 0;
-		int correct = 0;
-		for(int x=0; x < boxes.length; x++){
-			for(int y=0; y < boxes[x].length; y++){
-				if(boxes[x][y] != null){
-					total++;
-					if(boxes[x][y].response == boxes[x][y].solution){
-						correct++;
-					}
-				}
-			}
-		}
-		return (correct * 100)/(total);
-	}
-
-
-	public void setBoxes(Box[][] boxes) {
+    public void setBoxes(Box[][] boxes) {
         this.boxes = boxes;
 
         int clueCount = 1;
@@ -153,6 +102,62 @@ public class Puzzle implements Serializable  {
         return boxes;
     }
 
+    public void setCibChecksum(short cibChecksum) {
+        this.cibChecksum = cibChecksum;
+    }
+
+    public short getCibChecksum() {
+        return cibChecksum;
+    }
+
+    public void setCopyright(String copyright) {
+        this.copyright = copyright;
+    }
+
+    public String getCopyright() {
+        return copyright;
+    }
+
+    public void setDate(Date date) {
+        this.pubdate = date;
+    }
+
+    public Date getDate() {
+        return pubdate;
+    }
+
+    public void setDownClues(String[] downClues) {
+        this.downClues = downClues;
+    }
+
+    public String[] getDownClues() {
+        return downClues;
+    }
+
+    public void setDownCluesLookup(Integer[] downCluesLookup) {
+        this.downCluesLookup = downCluesLookup;
+    }
+
+    public Integer[] getDownCluesLookup() {
+        return downCluesLookup;
+    }
+
+    public void setFileChecksum(short fileChecksum) {
+        this.fileChecksum = fileChecksum;
+    }
+
+    public short getFileChecksum() {
+        return fileChecksum;
+    }
+
+    public void setFileMagic(String fileMagic) {
+        this.fileMagic = fileMagic;
+    }
+
+    public String getFileMagic() {
+        return fileMagic;
+    }
+
     /**
      * @param height the height to set
      */
@@ -165,6 +170,137 @@ public class Puzzle implements Serializable  {
      */
     public int getHeight() {
         return height;
+    }
+
+    public void setMaskedHighChecksums(byte[] maskedHighChecksums) {
+        this.maskedHighChecksums = maskedHighChecksums;
+    }
+
+    public byte[] getMaskedHighChecksums() {
+        return maskedHighChecksums;
+    }
+
+    public void setMaskedLowChecksums(byte[] maskedLowChecksums) {
+        this.maskedLowChecksums = maskedLowChecksums;
+    }
+
+    public byte[] getMaskedLowChecksums() {
+        return maskedLowChecksums;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNumberOfClues(int numberOfClues) {
+        this.numberOfClues = numberOfClues;
+    }
+
+    public int getNumberOfClues() {
+        return numberOfClues;
+    }
+
+    public int getPercentComplete() {
+        int total = 0;
+        int correct = 0;
+
+        for (int x = 0; x < boxes.length; x++) {
+            for (int y = 0; y < boxes[x].length; y++) {
+                if (boxes[x][y] != null) {
+                    total++;
+
+                    if (boxes[x][y].response == boxes[x][y].solution) {
+                        correct++;
+                    }
+                }
+            }
+        }
+
+        return (correct * 100) / (total);
+    }
+
+    public void setRawClues(String[] rawClues) {
+        this.rawClues = rawClues;
+    }
+
+    public String[] getRawClues() {
+        return rawClues;
+    }
+
+    public void setReserved1C(short reserved1C) {
+        this.reserved1C = reserved1C;
+    }
+
+    public short getReserved1C() {
+        return reserved1C;
+    }
+
+    public void setReserved20(byte[] reserved20) {
+        this.reserved20 = reserved20;
+    }
+
+    public byte[] getReserved20() {
+        return reserved20;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setTime(long time) {
+        this.playedTime = time;
+    }
+
+    public long getTime() {
+        return this.playedTime;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setUnknown(short unknown) {
+        this.unknown = unknown;
+    }
+
+    public short getUnknown() {
+        return unknown;
+    }
+
+    public void setUnknown30(short unknown30) {
+        this.unknown30 = unknown30;
+    }
+
+    public short getUnknown30() {
+        return unknown30;
+    }
+
+    public void setUnknown32(short unknown32) {
+        this.unknown32 = unknown32;
+    }
+
+    public short getUnknown32() {
+        return unknown32;
+    }
+
+    public void setVersionString(String versionString) {
+        this.versionString = versionString;
+    }
+
+    public String getVersionString() {
+        return versionString;
     }
 
     /**
@@ -204,7 +340,8 @@ public class Puzzle implements Serializable  {
         }
 
         if (!Arrays.equals(acrossCluesLookup, other.acrossCluesLookup)) {
-        	System.out.println("acrossCluesLookup");
+            System.out.println("acrossCluesLookup");
+
             return false;
         }
 
@@ -213,21 +350,27 @@ public class Puzzle implements Serializable  {
                 return false;
             }
         } else if (!author.equals(other.author)) {
-        	System.out.println("author");
+            System.out.println("author");
+
             return false;
         }
 
         Box[][] b1 = boxes;
         Box[][] b2 = other.boxes;
         boolean boxEq = true;
-        for(int x=0; x < b1.length; x++ ){
-        	for(int y=0; y<b1[x].length; y++){
-        		boxEq = boxEq ? (b1[x][y] == b2[x][y] || b1[x][y].equals(b2[x][y])) : boxEq;
-        	}
+
+        for (int x = 0; x < b1.length; x++) {
+            for (int y = 0; y < b1[x].length; y++) {
+                boxEq = boxEq
+                    ? ((b1[x][y] == b2[x][y]) || b1[x][y].equals(b2[x][y]))
+                    : boxEq;
+            }
         }
-        if(!boxEq){
-        	System.out.println("boxes");
-        	return false;
+
+        if (!boxEq) {
+            System.out.println("boxes");
+
+            return false;
         }
 
         if (getCibChecksum() != other.getCibChecksum()) {
@@ -243,17 +386,20 @@ public class Puzzle implements Serializable  {
         }
 
         if (!Arrays.equals(downClues, other.downClues)) {
-        	System.out.println("downClues");
+            System.out.println("downClues");
+
             return false;
         }
 
         if (!Arrays.equals(downCluesLookup, other.downCluesLookup)) {
-        	System.out.println("downCluesLookup");
+            System.out.println("downCluesLookup");
+
             return false;
         }
 
         if (getFileChecksum() != other.getFileChecksum()) {
-        	System.out.println("fileChecksum");
+            System.out.println("fileChecksum");
+
             return false;
         }
 
@@ -262,27 +408,30 @@ public class Puzzle implements Serializable  {
                 return false;
             }
         } else if (!fileMagic.equals(other.fileMagic)) {
-        	System.out.println("fileMagic");
+            System.out.println("fileMagic");
+
             return false;
         }
 
         if (height != other.height) {
-        	System.out.println("height");
+            System.out.println("height");
+
             return false;
         }
 
-       
         if (notes == null) {
             if (other.notes != null) {
                 return false;
             }
         } else if (!notes.equals(other.notes)) {
-        	System.out.println("notes");
+            System.out.println("notes");
+
             return false;
         }
 
         if (getNumberOfClues() != other.getNumberOfClues()) {
-        	System.out.println("numberOfClues");
+            System.out.println("numberOfClues");
+
             return false;
         }
 
@@ -290,13 +439,13 @@ public class Puzzle implements Serializable  {
             return false;
         }
 
-        
         if (title == null) {
             if (other.title != null) {
                 return false;
             }
         } else if (!title.equals(other.title)) {
-        	System.out.println("title");
+            System.out.println("title");
+
             return false;
         }
 
@@ -371,139 +520,9 @@ public class Puzzle implements Serializable  {
         return result;
     }
 
-	public void setFileChecksum(short fileChecksum) {
-		this.fileChecksum = fileChecksum;
-	}
-
-	public short getFileChecksum() {
-		return fileChecksum;
-	}
-
-	public void setCibChecksum(short cibChecksum) {
-		this.cibChecksum = cibChecksum;
-	}
-
-	public short getCibChecksum() {
-		return cibChecksum;
-	}
-
-	public void setNumberOfClues(int numberOfClues) {
-		this.numberOfClues = numberOfClues;
-	}
-
-	public int getNumberOfClues() {
-		return numberOfClues;
-	}
-
-	public void setReserved20(byte[] reserved20) {
-		this.reserved20 = reserved20;
-	}
-
-	public byte[] getReserved20() {
-		return reserved20;
-	}
-
-	public void setMaskedLowChecksums(byte[] maskedLowChecksums) {
-		this.maskedLowChecksums = maskedLowChecksums;
-	}
-
-	public byte[] getMaskedLowChecksums() {
-		return maskedLowChecksums;
-	}
-
-	public void setMaskedHighChecksums(byte[] maskedHighChecksums) {
-		this.maskedHighChecksums = maskedHighChecksums;
-	}
-
-	public byte[] getMaskedHighChecksums() {
-		return maskedHighChecksums;
-	}
-
-	public void setDownCluesLookup(Integer[] downCluesLookup) {
-		this.downCluesLookup = downCluesLookup;
-	}
-
-	public Integer[] getDownCluesLookup() {
-		return downCluesLookup;
-	}
-
-	public void setDownClues(String[] downClues) {
-		this.downClues = downClues;
-	}
-
-	public String[] getDownClues() {
-		return downClues;
-	}
-
-	public void setAcrossCluesLookup(Integer[] acrossCluesLookup) {
-		this.acrossCluesLookup = acrossCluesLookup;
-	}
-
-	public Integer[] getAcrossCluesLookup() {
-		return acrossCluesLookup;
-	}
-
-	public void setAcrossClues(String[] acrossClues) {
-		this.acrossClues = acrossClues;
-	}
-
-	public String[] getAcrossClues() {
-		return acrossClues;
-	}
-
-	public void setVersionString(String versionString) {
-		this.versionString = versionString;
-	}
-
-	public String getVersionString() {
-		return versionString;
-	}
-
-	public void setFileMagic(String fileMagic) {
-		this.fileMagic = fileMagic;
-	}
-
-	public String getFileMagic() {
-		return fileMagic;
-	}
-
-	public void setReserved1C(short reserved1C) {
-		this.reserved1C = reserved1C;
-	}
-
-	public short getReserved1C() {
-		return reserved1C;
-	}
-
-	public void setUnknown(short unknown) {
-		this.unknown = unknown;
-	}
-
-	public short getUnknown() {
-		return unknown;
-	}
-
-	public void setUnknown30(short unknown30) {
-		this.unknown30 = unknown30;
-	}
-
-	public short getUnknown30() {
-		return unknown30;
-	}
-
-	public void setUnknown32(short unknown32) {
-		this.unknown32 = unknown32;
-	}
-
-	public short getUnknown32() {
-		return unknown32;
-	}
-
-	public void setRawClues(String[] rawClues) {
-		this.rawClues = rawClues;
-	}
-
-	public String[] getRawClues() {
-		return rawClues;
-	}
+    @Override
+    public String toString() {
+        return "Puzzle " + boxes.length + " x " + boxes[0].length + " " +
+        this.title;
+    }
 }
