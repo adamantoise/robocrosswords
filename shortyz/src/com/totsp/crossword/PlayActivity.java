@@ -209,6 +209,8 @@ public class PlayActivity extends Activity {
 
         return true;
     }
+    
+    private long lastDelete;
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
@@ -252,10 +254,14 @@ public class PlayActivity extends Activity {
             return true;
 
         case KeyEvent.KEYCODE_DEL:
-            previous = PlayActivity.BOARD.deleteLetter();
-            this.render(previous);
-
+        	if(System.currentTimeMillis() - lastDelete > 50){
+	            previous = PlayActivity.BOARD.deleteLetter();
+	            this.render(previous);
+        	}
+        	lastDelete = System.currentTimeMillis();
+            
             return true;
+            
 
         case KeyEvent.KEYCODE_BACK:
 
