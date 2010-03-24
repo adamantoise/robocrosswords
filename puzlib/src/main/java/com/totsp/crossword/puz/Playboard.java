@@ -297,6 +297,9 @@ public class Playboard implements Serializable {
 
     public Word playLetter(char letter) {
         Box b = this.boxes[this.highlightLetter.across][this.highlightLetter.down];
+        if(b == null){
+        	return null;
+        }
         b.response = letter;
 
         return this.nextLetter();
