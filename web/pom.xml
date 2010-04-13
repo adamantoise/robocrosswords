@@ -22,6 +22,11 @@
             <url> http://maven-gae-plugin.googlecode.com/svn/repository/</url>
         </repository>
         <repository>
+            <id>cobogwave</id>
+            <name>Cobogwave repository at googlecode</name>
+            <url>http://cobogwave.googlecode.com/svn/maven2/</url>
+        </repository>
+        <repository>
             <id>mvnsearch.org</id>
             <name>MVN Search</name>
             <url>http://www.mvnsearch.org/maven2</url>
@@ -94,10 +99,26 @@
 
         <dependency>
             <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-dev</artifactId>
+            <version>2.0.0</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.google.gwt</groupId>
             <artifactId>gwt-servlet</artifactId>
             <version>2.0.0</version>
             <type>jar</type>
             <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.gwt.google-apis</groupId>
+            <artifactId>gwt-gadgets</artifactId>
+            <version>1.0.3</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -235,6 +256,19 @@
             <artifactId>facebook-java-api</artifactId>
             <version>3.0.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.cobogw.gwt.wave-api</groupId>
+            <artifactId>cobogwave-gadget</artifactId>
+            <version>1.0.3.4</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.9.1</version>
+            <scope>provided</scope>
+        </dependency>
 
     </dependencies>
     <build>
@@ -356,6 +390,7 @@
                     <runTarget>/</runTarget>
                     <compileTargets>
                         <param>com.totsp.crossword.web.Shortyz</param>
+                        <param>com.totsp.crossword.web.Gadget</param>
                     </compileTargets>
                     <server>com.google.appengine.tools.development.gwt.AppEngineLauncher</server>
                     <extraJvmArgs>-Xmx512m -Dappengine.sdk.root=${gae.home} -javaagent:${gae.home}/lib/agent/appengine-agent.jar</extraJvmArgs>

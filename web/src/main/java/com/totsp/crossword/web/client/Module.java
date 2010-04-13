@@ -16,7 +16,7 @@ import com.totsp.crossword.web.shared.PuzzleServiceAsync;
  *
  * @author kebernet
  */
-public class Module  extends AbstractGinModule {
+public class Module extends AbstractGinModule {
 
     public static class ResourcesProvider implements Provider<Resources> {
 
@@ -32,10 +32,10 @@ public class Module  extends AbstractGinModule {
     public static class PuzzleServiceProvider implements Provider<PuzzleServiceAsync> {
 
 
-        PuzzleServiceAsync instance = null;
+        public static PuzzleServiceAsync INSTANCE = null;
         @Override
         public PuzzleServiceAsync get() {
-            return instance == null ? instance = GWT.create(PuzzleService.class) : instance;
+            return INSTANCE == null ? INSTANCE = GWT.create(PuzzleService.class) : INSTANCE;
         }
 
     }

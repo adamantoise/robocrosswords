@@ -36,9 +36,14 @@ public class FacebookSessionFilter implements Filter {
         HttpSession session = req.getSession();
         System.out.println("fb_sig_in_iframe "+req.getParameter("fb_sig_in_iframe"));
         System.out.println("fb_sig_user "+req.getParameter("fb_sig_user"));
-        if("1".equals(req.getParameter("fb_sig_in_iframe")) && req.getParameter("fb_sig_user") != null ){
+        System.out.println("fb_sig_canvas_user "+req.getParameter("fb_sig_canvas_user"));
+        String user = req.getParameter("fb_sig_user") ;
+        if(user == null){
+            user = req.getParameter("fb_sig_canvas_user");
+        }
+        if("1".equals(req.getParameter("fb_sig_in_iframe")) && user != null ){
 
-            session.setAttribute("user.id", "urn:facebook:"+req.getParameter("fb_sig_user"));
+            session.setAttribute("user.id", "urn:facebook:"+user);
             System.out.println("Facebook user:"+session.getAttribute("user.id"));
 //            IFacebookRestClient<Document> userClient = (IFacebookRestClient<Document>) session.getAttribute(FACEBOOK_CLIENT);
 //            if(userClient == null && req.getParameter("fb_sig_ss") != null) {

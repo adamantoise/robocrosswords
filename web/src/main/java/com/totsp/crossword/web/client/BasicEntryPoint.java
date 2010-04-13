@@ -23,6 +23,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -58,7 +59,7 @@ import java.util.HashMap;
  */
 public class BasicEntryPoint implements EntryPoint {
     static final WASDCodes CODES = GWT.create(WASDCodes.class);
-    static final PuzzleServiceAsync s = Injector.INSTANCE.service();
+    public static PuzzleServiceAsync SERVICE = Injector.INSTANCE.service();
     static final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     static Timer autoSaveTimer = null;
     static boolean dirty;
@@ -171,7 +172,7 @@ public class BasicEntryPoint implements EntryPoint {
         status.setStyleName(css.statusInfo());
 
         if (request == null) {
-            request = s.findPuzzle(id,
+            request = SERVICE.findPuzzle(id,
                     new AsyncCallback<Puzzle>() {
                         @Override
                         public void onFailure(Throwable caught) {
@@ -207,6 +208,8 @@ public class BasicEntryPoint implements EntryPoint {
 
     @Override
     public void onModuleLoad() {
+        ServiceDefTarget serviceDef = (ServiceDefTarget) SERVICE;
+        Window.alert(serviceDef.getServiceEntryPoint());
         Element e = DOM.getElementById("loadingIndicator");
 
         if (e != null) {
@@ -252,10 +255,11 @@ public class BasicEntryPoint implements EntryPoint {
 
         status.setText("Loading puzzles...");
         status.setStyleName(css.statusInfo());
-        s.listPuzzles(new AsyncCallback<PuzzleDescriptor[]>() {
+        SERVICE.listPuzzles(new AsyncCallback<PuzzleDescriptor[]>() {
                 @Override
                 public void onFailure(Throwable caught) {
-                    Window.alert("Failed to load puzzles.");
+                    Window.alert("Failed to load puzzles. \n"+caught.toString());
+
                 }
 
                 @Override
@@ -379,6 +383,19 @@ public class BasicEntryPoint implements EntryPoint {
         outer.add(hp);
         
         HorizontalPanel controls = new HorizontalPanel();
+        Button back = new Button("Return to List", new ClickHandler(){
+
+            @Override
+            public void onClick(ClickEvent event) {
+               History.newItem("list");
+            }
+
+        });
+        back.getElement().getStyle().setMarginRight(30, Unit.PX);
+
+        controls.add(back);
+
+
         controls.add(new Button("Show Errors", new ClickHandler(){
 
             @Override
@@ -440,7 +457,7 @@ public class BasicEntryPoint implements EntryPoint {
                         dirty = false;
                         status.setStyleName(css.statusInfo());
                         status.setText("Autosaving...");
-                        s.savePuzzle(listingId, puzzle,
+                        SERVICE.savePuzzle(listingId, puzzle,
                             new AsyncCallback() {
                                 @Override
                                 public void onFailure(Throwable caught) {

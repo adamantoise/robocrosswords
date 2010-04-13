@@ -4,7 +4,10 @@
     <head>
         <title>Shortyz for Facebook</title>
         
-        <!-- <%=session.getAttribute("user.id")%> -->
+        <!-- 
+        userId: <%=session.getAttribute("user.id")%>
+        serverName: <%=request.getServerName() %>
+        -->
         <style type="text/css">
             body {
                 margin: 0px;
@@ -15,11 +18,16 @@
                 width: 100%;
                 height: 300px;
             }
+            .android {
+                font-family: Verdana;
+                font-size: 12px;
+                text-align: center;
+            }
         </style>
     </head>
 
     <body id="body">
-
+        <div class="android"><a href="http://www.kebernet.net/Home/projects/shortyz">Get Shortyz for Android!</a></div>
         <script type="text/javascript"><!--
             google_ad_client = "pub-3082613281475517";
             /* shortyz leader ad */
@@ -32,7 +40,8 @@
         <iframe id="__gwt_historyFrame" style="width:0;height:0;border:0"></iframe>
         <!-- Note: Include this div markup as a workaround for a known bug in this release on IE where you may get a "operation aborted" error -->
         <div id="FB_HiddenIFrameContainer" style="display:none; position:absolute; left:-100px; top:-100px; width:0px; height: 0px;"></div>
- <% if(request.getRequestURI().indexOf("localhost") != -1 ) { %>
+
+ <% if(request.getServerName().indexOf("localhost") == -1 ) { %>
         <script src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php" type="text/javascript"></script>
         <script type="text/javascript">
           var api_key = '<%=request.getParameter("fb_sig_api_key")%>';
@@ -53,6 +62,7 @@
           
         </script>
 <%}%>
+
 <% if(session.getAttribute("user.id") != null) { %>
         <script type="text/javascript"
                 src="http://pagead2.googlesyndication.com/pagead/show_ads.js" defer="true">
