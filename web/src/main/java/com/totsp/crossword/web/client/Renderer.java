@@ -73,6 +73,7 @@ public class Renderer {
 
         });
 
+        this.render();
         return table;
 
 
@@ -119,6 +120,11 @@ public class Renderer {
                     formatter.addStyleName(down, across, resources.css().currentLetterHighlight());
                 } else {
                     formatter.removeStyleName(down, across, resources.css().currentLetterHighlight());
+                }
+                if(board.isShowErrors() && box.response != ' ' && box.response != box.solution ){
+                    formatter.addStyleName(down, across, resources.css().error());
+                } else {
+                    formatter.removeStyleName(down, across, resources.css().error());
                 }
 
             }

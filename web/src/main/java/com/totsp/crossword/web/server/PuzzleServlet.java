@@ -27,6 +27,22 @@ public class PuzzleServlet extends RemoteServiceServlet implements PuzzleService
        
 
         DataService service = new DataService();
+        try{
+            String userUri = (String) this.getThreadLocalRequest().getSession().getAttribute("user.id");
+            if(userUri != null){
+                System.out.println("User: "+userUri+" Puzzle:"+puzzleId);
+                Puzzle p = service.loadSavedPuzzle(userUri, puzzleId);
+                if(p != null){
+                    System.out.println("Found saved.");
+                    return p;
+                }
+            }
+        } catch(Exception ex){
+            ex.printStackTrace();
+        }
+
+
+
         try {
             PuzzleListing l = service.findListingById(PuzzleListing.class, puzzleId);
            
@@ -72,6 +88,7 @@ public class PuzzleServlet extends RemoteServiceServlet implements PuzzleService
         return result;
     }
 
+    @Override
     public void savePuzzle(Long listingId, Puzzle puzzle) throws NoUserException {
         DataService data = new DataService();
         String userUri = (String) this.getThreadLocalRequest().getSession().getAttribute("user.id");
@@ -79,6 +96,7 @@ public class PuzzleServlet extends RemoteServiceServlet implements PuzzleService
             throw new NoUserException();
         }
         data.savePuzzle(userUri, listingId, puzzle);
+        System.out.println("Save done.");
     }
 
 

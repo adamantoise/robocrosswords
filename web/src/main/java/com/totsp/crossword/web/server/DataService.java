@@ -83,16 +83,18 @@ public class DataService {
 
             SavedPuzzle sp = (SavedPuzzle) q.getSingleResult();
             try{
-                sp.setPuzzleSerial( new Blob(this.serialize(puzzle)));
+                sp.setPuzzleSerial(new Blob(this.serialize(puzzle)));
             } catch(IOException ioe){
                 t.rollback();
                 throw new RuntimeException(ioe);
             }
             entityManager.merge(sp);
             t.commit();
+            System.out.println("Savd puzzle UserId:"+userUri+" PuzzleId:"+listingId);
 
         } catch(NoResultException nre){
             SavedPuzzle sp = new SavedPuzzle();
+            sp.setPuzzleDate(puzzle.getDate());
             try{
                 sp.setPuzzleSerial( new Blob(this.serialize(puzzle)));
             } catch(IOException ioe){
@@ -102,6 +104,7 @@ public class DataService {
             sp.setListingID(listingId);
             sp.setUserUri(userUri);
             entityManager.persist(sp);
+            System.out.println("Created save for UserId:"+userUri+" PuzzleId:"+listingId);
             t.commit();
         }
     }

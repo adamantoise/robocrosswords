@@ -53,6 +53,10 @@
      background-color: #FFCCCC;
 }
 
+.error {
+    background-color: red;
+}
+
 
 .clueBox {
     min-height: 30px;
@@ -88,6 +92,50 @@
 .pd {
     border-bottom: 1px solid silver;
     width: 100%;
-    height: 70px;
     cursor: pointer;
+}
+
+.pdOver {
+    background-color: #DDDDFF;
+}
+
+
+.puzzleListView{
+    width: 100%;
+}
+
+.statusHidden{
+    font-family: Verdana;
+    height: 15px;
+    background-color: transparent;
+    color: white;
+    padding: 2px;
+    font-size: 10px;
+    text-align: center;
+}
+
+.statusInfo {
+    font-family: Verdana;
+    height: 15px;
+    background-color: #FFDD99;
+    color: black;
+    padding: 2px;
+    font-size: 10px;
+    text-align: center;
+}
+
+.statusError {
+    font-family: Verdana;
+    height: 15px;
+    background-color: #FFCCCC;
+    color: black;
+    padding: 2px;
+    font-size: 10px;
+    text-align: center;
+}
+
+.keyboardIntercept{
+    position: absolute;
+    left: -10px;
+    top: -10px;
 }

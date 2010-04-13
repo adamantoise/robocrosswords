@@ -24,12 +24,20 @@ public interface Css extends CssResource {
     String clueBox();
     String highlightClue();
     String clueNumber();
+    String error();
+    
 
     String pdDate();
     String pdTitle();
     String pdSource();
     String pd();
+    String puzzleListView();
+    String pdOver();
 
+    String statusHidden();
+    String statusInfo();
+    String statusError();
+    String keyboardIntercept();
 
 
 }

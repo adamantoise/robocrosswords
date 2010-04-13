@@ -11,6 +11,7 @@
     <inherits name="com.google.gwt.resources.Resources" />
     <inherits name='com.totsp.gwittir.Gwittir' />
     <inherits name='com.totsp.gwittir.LoggingInfo' />
+    <inherits name='com.google.gwt.user.theme.chrome.Chrome' />
     <entry-point class="com.totsp.crossword.web.client.BasicEntryPoint" />
 
     <source path="client" />

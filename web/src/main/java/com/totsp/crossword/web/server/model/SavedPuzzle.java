@@ -6,6 +6,7 @@ package com.totsp.crossword.web.server.model;
 
 import com.google.appengine.api.datastore.Blob;
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,6 +14,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 
 /**
@@ -25,7 +28,10 @@ import javax.persistence.NamedQuery;
              "WHERE sp.userUri = :userUri and sp.listingId IN (:listingIds) ORDER BY sp.listingId"),
 @NamedQuery(name = "SavedPuzzle.findUserUriAndListingId",
     query = "SELECT sp FROM com.totsp.crossword.web.server.model.SavedPuzzle sp " +
-             "WHERE sp.userUri = :userUri and sp.listingId IN (:listingIds) ORDER BY sp.listingId")
+             "WHERE sp.userUri = :userUri and sp.listingId = :listingId"),
+@NamedQuery(name = "SavedPuzzle.findUserUriAndListingIdAfterDate",
+    query = "SELECT sp FROM com.totsp.crossword.web.server.model.SavedPuzzle sp " +
+             "WHERE sp.userUri = :userUri and sp.listingId IN (:listingIds) AND  ORDER BY sp.listingId")
 
 })
 public class SavedPuzzle implements Serializable {
@@ -36,6 +42,8 @@ public class SavedPuzzle implements Serializable {
     private Long id;
     private Long listingId;
     private String userUri;
+    @Temporal(TemporalType.DATE)
+    private Date puzzleDate;
 
     /**
      * Set the value of listingId
@@ -96,5 +104,19 @@ public class SavedPuzzle implements Serializable {
      */
     public Long getId() {
         return id;
+    }
+
+    /**
+     * @return the puzzleDate
+     */
+    public Date getPuzzleDate() {
+        return puzzleDate;
+    }
+
+    /**
+     * @param puzzleDate the puzzleDate to set
+     */
+    public void setPuzzleDate(Date puzzleDate) {
+        this.puzzleDate = puzzleDate;
     }
 }

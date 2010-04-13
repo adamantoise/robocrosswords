@@ -11,4 +11,15 @@
                 <google.webtoolkit.compileSkip>true</google.webtoolkit.compileSkip>
             </properties>
         </action>
+        <action>
+            <actionName>CUSTOM-package-no-compile</actionName>
+            <displayName>package-no-compile</displayName>
+            <goals>
+                <goal>package</goal>
+            </goals>
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+                <google.webtoolkit.compileSkip>true</google.webtoolkit.compileSkip>
+            </properties>
+        </action>
     </actions>

@@ -7,9 +7,15 @@ package com.totsp.crossword.web.client;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.inject.Inject;
 import com.totsp.crossword.web.client.resources.Resources;
@@ -41,22 +47,40 @@ public class PuzzleDescriptorView extends AbstractBoundWidget<PuzzleDescriptor>{
 
 
     @Inject
-    public PuzzleDescriptorView(Resources resources){
+    public PuzzleDescriptorView(final Resources resources){
+        FocusPanel fp = new FocusPanel();
+        fp.addMouseOverHandler(new MouseOverHandler(){
+
+            @Override
+            public void onMouseOver(MouseOverEvent event) {
+                 addStyleName(resources.css().pdOver());
+            }
+
+        });
+        fp.addMouseOutHandler(new MouseOutHandler(){
+
+            @Override
+            public void onMouseOut(MouseOutEvent event) {
+                 removeStyleName(resources.css().pdOver());
+            }
+
+        });
         FlexTable table = new FlexTable();
         table.insertRow(0);
-        table.insertRow(0);
-
-        table.setWidget(0,1, date);
-        table.getFlexCellFormatter().setRowSpan(0, 1, 2);
-        table.getFlexCellFormatter().setWidth(0, 1, "25%");
-
-        table.setWidget(0,0, source);
-        table.setWidget(1,0, title);
+        table.setWidget(0,0, date);
+        table.getCellFormatter().setWidth(0,0, "25%");
+        table.setWidget(0,1, source);
+        table.getCellFormatter().setWidth(0,1, "50%");
+        table.getCellFormatter().setHorizontalAlignment(0,1, HasHorizontalAlignment.ALIGN_CENTER);
+        table.setWidget(0,2, title);
+        table.getCellFormatter().setWidth(0,2, "25%");
         
         date.setStyleName(resources.css().pdDate());
         title.setStyleName(resources.css().pdTitle());
         source.setStyleName(resources.css().pdSource());
-        super.initWidget(table);
+        table.setWidth("100%");
+        fp.setWidget(table);
+        super.initWidget(fp);
         this.setStyleName(resources.css().pd());
 
 
@@ -68,6 +92,7 @@ public class PuzzleDescriptorView extends AbstractBoundWidget<PuzzleDescriptor>{
             }
 
         });
+
 
     }
 

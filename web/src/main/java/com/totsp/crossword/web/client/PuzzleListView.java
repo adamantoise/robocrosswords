@@ -26,6 +26,7 @@ public class PuzzleListView extends BoundVerticalPanel<PuzzleDescriptor>{
     @Inject
     public PuzzleListView(Resources resources){
         super(FACTORY, null);
+        this.setStyleName(resources.css().puzzleListView());
     }
 
 
