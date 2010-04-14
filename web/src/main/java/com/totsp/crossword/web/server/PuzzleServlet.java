@@ -5,16 +5,26 @@
 
 package com.totsp.crossword.web.server;
 
+import com.google.gwt.user.server.rpc.RPCServletUtils;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.web.server.model.PuzzleListing;
 import com.totsp.crossword.web.shared.NoUserException;
 import com.totsp.crossword.web.shared.PuzzleDescriptor;
 import com.totsp.crossword.web.shared.PuzzleService;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 
 /**
  *
@@ -101,4 +111,65 @@ public class PuzzleServlet extends RemoteServiceServlet implements PuzzleService
 
 
 
+    @Override
+    protected String readContent(HttpServletRequest request)
+			throws ServletException, IOException {
+		return RPCServletUtils.readContentAsUtf8(new FakeRequest(request), false);
+	}
+
+    private static class FakeRequest extends HttpServletRequestWrapper {
+
+        byte[] bytes;
+
+        public FakeRequest(HttpServletRequest request) throws IOException{
+            super(request);
+
+            InputStream is = request.getInputStream();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            copyStream(is, baos);
+            System.out.println(new String(baos.toByteArray()));
+            this.bytes = baos.toByteArray();
+
+        }
+
+        @Override
+        public ServletInputStream getInputStream(){
+            final InputStream is = new ByteArrayInputStream(bytes);
+            return new ServletInputStream(){
+
+                @Override
+                public int read() throws IOException {
+                    return is.read();
+                }
+
+            };
+        }
+
+
+        @Override
+        public int getContentLength(){
+            return bytes.length;
+        }
+
+        public static int copyStream(InputStream sourceStream, OutputStream destinationStream) throws IOException {
+        int bytesRead = 0;
+        int totalBytes = 0;
+        byte[] buffer = new byte[1024];
+
+        while (bytesRead >= 0) {
+            bytesRead = sourceStream.read(buffer, 0, buffer.length);
+
+            if (bytesRead > 0) {
+                destinationStream.write(buffer, 0, bytesRead);
+            }
+
+            totalBytes += bytesRead;
+        }
+        destinationStream.flush();
+        destinationStream.close();
+        return totalBytes;
+    }
+
+
+    }
 }

@@ -60,6 +60,7 @@ import java.util.HashMap;
 public class BasicEntryPoint implements EntryPoint {
     static final WASDCodes CODES = GWT.create(WASDCodes.class);
     public static PuzzleServiceAsync SERVICE = Injector.INSTANCE.service();
+    public static PuzzleServiceProxy PROXY = new PuzzleServiceProxy(SERVICE, null);
     static final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     static Timer autoSaveTimer = null;
     static boolean dirty;
@@ -172,7 +173,7 @@ public class BasicEntryPoint implements EntryPoint {
         status.setStyleName(css.statusInfo());
 
         if (request == null) {
-            request = SERVICE.findPuzzle(id,
+            request = PROXY.findPuzzle(id,
                     new AsyncCallback<Puzzle>() {
                         @Override
                         public void onFailure(Throwable caught) {
@@ -208,8 +209,6 @@ public class BasicEntryPoint implements EntryPoint {
 
     @Override
     public void onModuleLoad() {
-        ServiceDefTarget serviceDef = (ServiceDefTarget) SERVICE;
-        Window.alert(serviceDef.getServiceEntryPoint());
         Element e = DOM.getElementById("loadingIndicator");
 
         if (e != null) {
@@ -224,14 +223,17 @@ public class BasicEntryPoint implements EntryPoint {
                         if (closingRegistration != null) {
                             closingRegistration.removeHandler();
                             closingRegistration = null;
-                            mainPanel.setWidget(plv);
+                            
                         }
                         if (autoSaveTimer != null){
                             autoSaveTimer.cancel();
                             autoSaveTimer.run();
                             autoSaveTimer = null;
                         }
+                        mainPanel.setWidget(plv);
                         keyboardIntercept.removeKeyboardListener(l);
+
+                        displayChangeListener.onDisplayChange();
                     } else if(event.getValue().startsWith("play=")){
                         Long id = Long.parseLong(event.getValue().split("=")[1]);
                         loadPuzzle(id);
@@ -255,7 +257,7 @@ public class BasicEntryPoint implements EntryPoint {
 
         status.setText("Loading puzzles...");
         status.setStyleName(css.statusInfo());
-        SERVICE.listPuzzles(new AsyncCallback<PuzzleDescriptor[]>() {
+        PROXY.listPuzzles(new AsyncCallback<PuzzleDescriptor[]>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     Window.alert("Failed to load puzzles. \n"+caught.toString());
@@ -457,7 +459,7 @@ public class BasicEntryPoint implements EntryPoint {
                         dirty = false;
                         status.setStyleName(css.statusInfo());
                         status.setText("Autosaving...");
-                        SERVICE.savePuzzle(listingId, puzzle,
+                        PROXY.savePuzzle(listingId, puzzle,
                             new AsyncCallback() {
                                 @Override
                                 public void onFailure(Throwable caught) {
@@ -483,5 +485,22 @@ public class BasicEntryPoint implements EntryPoint {
                         }
                     }
                 });
+       displayChangeListener.onDisplayChange();
+    }
+
+
+    public static DisplayChangeListener displayChangeListener = new DisplayChangeListener(){
+
+        @Override
+        public void onDisplayChange() {
+            ; //noop
+        }
+
+    };
+
+    public static interface DisplayChangeListener {
+
+        public void onDisplayChange();
+
     }
 }

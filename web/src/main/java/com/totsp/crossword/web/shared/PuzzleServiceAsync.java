@@ -5,7 +5,7 @@
 
 package com.totsp.crossword.web.shared;
 
-import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.totsp.crossword.puz.Puzzle;
 
@@ -15,7 +15,7 @@ import com.totsp.crossword.puz.Puzzle;
  */
 public interface PuzzleServiceAsync {
     
-    public Request findPuzzle(Long puzzleId, AsyncCallback<Puzzle> callback);
-    public Request listPuzzles(AsyncCallback<PuzzleDescriptor[]> callback);
-    public Request savePuzzle(Long listingId, Puzzle puzzle, AsyncCallback callback);
+    public RequestBuilder findPuzzle(Long puzzleId, AsyncCallback<Puzzle> callback);
+    public RequestBuilder listPuzzles(AsyncCallback<PuzzleDescriptor[]> callback);
+    public RequestBuilder savePuzzle(Long listingId, Puzzle puzzle, AsyncCallback callback);
 }

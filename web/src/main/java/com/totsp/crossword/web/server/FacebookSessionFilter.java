@@ -5,8 +5,6 @@
 
 package com.totsp.crossword.web.server;
 
-import com.google.code.facebookapi.FacebookXmlRestClient;
-import com.google.code.facebookapi.IFacebookRestClient;
 import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -16,7 +14,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import org.w3c.dom.Document;
 
 /**
  *
@@ -37,6 +34,7 @@ public class FacebookSessionFilter implements Filter {
         System.out.println("fb_sig_in_iframe "+req.getParameter("fb_sig_in_iframe"));
         System.out.println("fb_sig_user "+req.getParameter("fb_sig_user"));
         System.out.println("fb_sig_canvas_user "+req.getParameter("fb_sig_canvas_user"));
+
         String user = req.getParameter("fb_sig_user") ;
         if(user == null){
             user = req.getParameter("fb_sig_canvas_user");
