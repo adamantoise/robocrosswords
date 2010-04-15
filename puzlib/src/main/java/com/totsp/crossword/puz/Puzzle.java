@@ -1,10 +1,12 @@
 package com.totsp.crossword.puz;
 
-
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+
 
 public class Puzzle implements Serializable {
     private String author;
@@ -30,6 +32,7 @@ public class Puzzle implements Serializable {
     private Date pubdate = new Date();
     private String source;
     private Box[][] boxes;
+    private Box[] boxesList;
     private String[] rawClues;
     private int height; //on byte
     private int width; //one byte;
@@ -99,7 +102,24 @@ public class Puzzle implements Serializable {
     }
 
     public Box[][] getBoxes() {
-        return boxes;
+        return (boxes == null) ? this.buildBoxes() : boxes;
+    }
+
+    public void setBoxesList(Box[] value) {
+        this.boxesList = value;
+    }
+
+    public Box[] getBoxesList() {
+        Box[] result = new Box[boxes.length * boxes[0].length];
+        int i = 0;
+
+        for (int x = 0; x < boxes.length; x++) {
+            for (int y = 0; y < boxes[x].length; y++) {
+                result[i++] = boxes[x][y];
+            }
+        }
+
+        return result;
     }
 
     public void setCibChecksum(short cibChecksum) {
@@ -315,6 +335,19 @@ public class Puzzle implements Serializable {
      */
     public int getWidth() {
         return width;
+    }
+
+    public Box[][] buildBoxes() {
+        int i = 0;
+        boxes = new Box[this.height][this.width];
+
+        for (int y = 0; y < this.height; y++) {
+            for (int x = 0; x < this.width; x++) {
+                boxes[y][x] = boxesList[i++];
+            }
+        }
+
+        return boxes;
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.totsp.crossword.puz;
 
 import java.io.Serializable;
 
-
 public class Box implements Serializable {
     private String responder;
     private boolean across;
