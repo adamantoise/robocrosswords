@@ -4,7 +4,6 @@
  */
 package com.totsp.crossword.web.client;
 
-import com.totsp.crossword.web.basic.Injector;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
@@ -32,12 +31,7 @@ import com.totsp.gwittir.client.ui.util.BoundWidgetProvider;
  * @author kebernet
  */
 public class PuzzleDescriptorView extends AbstractBoundWidget<PuzzleDescriptor> {
-    public static final BoundWidgetProvider<PuzzleDescriptorView> PROVIDER = new BoundWidgetProvider<PuzzleDescriptorView>() {
-            @Override
-            public PuzzleDescriptorView get() {
-                return Injector.INSTANCE.puzzleDescriptorView();
-            }
-        };
+    
 
     DateTimeFormat format = DateTimeFormat.getFormat(
             "EEEE '<br \\>' MMM dd, yyyy");

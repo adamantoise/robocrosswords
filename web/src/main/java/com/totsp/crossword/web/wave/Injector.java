@@ -5,7 +5,6 @@
 
 package com.totsp.crossword.web.wave;
 
-import com.google.appengine.repackaged.com.google.common.io.Resources;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
@@ -14,6 +13,7 @@ import com.totsp.crossword.web.client.Game;
 import com.totsp.crossword.web.client.PuzzleDescriptorView;
 import com.totsp.crossword.web.client.PuzzleListView;
 import com.totsp.crossword.web.client.Renderer;
+import com.totsp.crossword.web.client.resources.Resources;
 import com.totsp.crossword.web.shared.PuzzleServiceAsync;
 
 /**

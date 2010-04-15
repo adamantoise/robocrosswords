@@ -38,7 +38,7 @@ public class ShortyzGadget extends Gadget<UserPreferences>
     public static native void makePostRequest(String url, String postdata,
         RequestCallback callback) /*-{
     var response = function(obj) { 
-        @com.totsp.crossword.web.gadget.ShortyzGadget::onSuccessInternal(Lcom/totsp/crossword/web/gadget/GadgetResponse;Lcom/google/gwt/http/client/RequestCallback;)(obj, callback);
+        @com.totsp.crossword.web.gadget.ShortyzGadget::onSuccessInternal(Lcom/totsp/crossword/web/client/GadgetResponse;Lcom/google/gwt/http/client/RequestCallback;)(obj, callback);
     };
     var params = {};
     params[$wnd.gadgets.io.RequestParameters.HEADERS] = {
