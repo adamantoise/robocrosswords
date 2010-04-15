@@ -2,24 +2,26 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.totsp.crossword.web.basic;
+package com.totsp.crossword.web.wave;
 
-import com.totsp.crossword.web.client.LocalStorageServiceProxy;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.gwt.user.client.ui.RootPanel;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+
 import com.totsp.crossword.web.client.BoxView;
 import com.totsp.crossword.web.client.Game;
-import com.totsp.crossword.web.basic.Module.RootPanelProvider;
 import com.totsp.crossword.web.client.PuzzleDescriptorView;
 import com.totsp.crossword.web.client.PuzzleListView;
 import com.totsp.crossword.web.client.PuzzleServiceProxy;
+import com.totsp.crossword.web.client.PuzzleServiceProxy.CallStrategy;
 import com.totsp.crossword.web.client.Renderer;
-
 import com.totsp.crossword.web.client.resources.Resources;
+import com.totsp.crossword.web.gadget.ShortyzGadget.FakeRequest;
 import com.totsp.crossword.web.shared.PuzzleService;
 import com.totsp.crossword.web.shared.PuzzleServiceAsync;
 
@@ -73,7 +75,15 @@ public class Module extends AbstractGinModule {
 
         @Override
         public PuzzleServiceProxy get() {
-            return new LocalStorageServiceProxy(service, null);
+            return new PuzzleServiceProxy(service,  new CallStrategy(){
+
+            @Override
+            public Request makeRequest(RequestBuilder builder) {
+                 ShortyzWave.makePostRequest(builder.getUrl(), builder.getRequestData(), builder.getCallback());
+                 return new FakeRequest();
+            }
+
+        });
         }
     }
 

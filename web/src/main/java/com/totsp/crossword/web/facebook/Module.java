@@ -2,9 +2,8 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.totsp.crossword.web.basic;
+package com.totsp.crossword.web.facebook;
 
-import com.totsp.crossword.web.client.LocalStorageServiceProxy;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -73,7 +72,7 @@ public class Module extends AbstractGinModule {
 
         @Override
         public PuzzleServiceProxy get() {
-            return new LocalStorageServiceProxy(service, null);
+            return new PuzzleServiceProxy(service, null);
         }
     }
 

@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package com.totsp.crossword.web.gadget;
+package com.totsp.crossword.web.client;
 
 import com.google.gwt.core.client.JavaScriptObject;
 

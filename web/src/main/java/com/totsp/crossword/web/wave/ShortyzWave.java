@@ -2,9 +2,8 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.totsp.crossword.web.gadget;
+package com.totsp.crossword.web.wave;
 
-import com.totsp.crossword.web.client.GadgetResponse;
 import com.google.gwt.gadgets.client.DynamicHeightFeature;
 import com.google.gwt.gadgets.client.Gadget;
 import com.google.gwt.gadgets.client.Gadget.ModulePrefs;
@@ -16,6 +15,7 @@ import com.google.gwt.http.client.Header;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.Response;
+import com.totsp.crossword.web.client.GadgetResponse;
 
 import com.totsp.crossword.web.client.Game;
 import com.totsp.crossword.web.client.Game.DisplayChangeListener;
@@ -26,7 +26,7 @@ import com.totsp.crossword.web.client.Game.DisplayChangeListener;
  * @author kebernet
  */
 @ModulePrefs(title = "Shortyz", author = "Robert Cooper", author_quote = "If you only have two ducks, they are always in a row.", author_email = "kebernet@gmail.com", width = 750, height = 300, scrolling = true)
-public class ShortyzGadget extends Gadget<UserPreferences>
+public class ShortyzWave extends Gadget<UserPreferences>
     implements NeedsIntrinsics, NeedsDynamicHeight {
     UserPreferences prefs;
     private DynamicHeightFeature height;

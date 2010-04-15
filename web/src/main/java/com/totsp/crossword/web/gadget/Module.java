@@ -15,6 +15,7 @@ import com.google.inject.Provider;
 
 import com.totsp.crossword.web.client.BoxView;
 import com.totsp.crossword.web.client.Game;
+import com.totsp.crossword.web.client.LocalStorageServiceProxy;
 import com.totsp.crossword.web.client.PuzzleDescriptorView;
 import com.totsp.crossword.web.client.PuzzleListView;
 import com.totsp.crossword.web.client.PuzzleServiceProxy;
@@ -75,7 +76,7 @@ public class Module extends AbstractGinModule {
 
         @Override
         public PuzzleServiceProxy get() {
-            return new PuzzleServiceProxy(service,  new CallStrategy(){
+            return new LocalStorageServiceProxy(service,  new CallStrategy(){
 
             @Override
             public Request makeRequest(RequestBuilder builder) {

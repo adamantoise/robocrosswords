@@ -46,6 +46,7 @@ import com.totsp.crossword.web.client.Renderer.ClickListener;
 import com.totsp.crossword.web.client.resources.Css;
 import com.totsp.crossword.web.client.resources.Resources;
 import com.totsp.crossword.web.shared.PuzzleDescriptor;
+import com.totsp.gwittir.serial.client.SerializationException;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -324,6 +325,7 @@ public class Game {
     }
 
     private void startPuzzle(final long listingId, final Puzzle puzzle) {
+
         VerticalPanel outer = new VerticalPanel();
         board = new Playboard(puzzle);
         board.setHighlightLetter(new Position(0, 0));
