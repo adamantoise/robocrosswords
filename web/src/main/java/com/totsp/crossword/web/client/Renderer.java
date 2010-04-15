@@ -106,7 +106,7 @@ public class Renderer {
                 BoxView view = (BoxView) table.getWidget(down, across);
                 view.setValue(box);
 
-                if(box.cheated){
+                if(box.isCheated()){
                     formatter.addStyleName(down, across, resources.css().cheated());
                 }
 
@@ -121,7 +121,7 @@ public class Renderer {
                 } else {
                     formatter.removeStyleName(down, across, resources.css().currentLetterHighlight());
                 }
-                if(board.isShowErrors() && box.response != ' ' && box.response != box.solution ){
+                if(board.isShowErrors() && box.getResponse() != ' ' && box.getResponse() != box.getSolution() ){
                     formatter.addStyleName(down, across, resources.css().error());
                 } else {
                     formatter.removeStyleName(down, across, resources.css().error());

@@ -8,6 +8,6 @@
     <body>
         <h1>Shortyz</h1>
         <iframe id="__gwt_historyFrame" style="width:0;height:0;border:0"></iframe>
-        <script src="shortyz/shortyz.nocache.js" type="text/javascript"></script>
+        <script src="basic/basic.nocache.js" type="text/javascript"></script>
     </body>
 </html>

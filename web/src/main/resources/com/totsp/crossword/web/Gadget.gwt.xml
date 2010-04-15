@@ -1,6 +1,6 @@
 <module rename-to="gadget">
     <inherits name="com.google.gwt.gadgets.Gadgets" />
-    <inherits name="com.totsp.crossword.web.ShortyzBase" />
+    <inherits name="com.totsp.crossword.web.Base" />
 
     <define-linker name="gadget"
         class="com.totsp.crossword.misc.GadgetLinker" />

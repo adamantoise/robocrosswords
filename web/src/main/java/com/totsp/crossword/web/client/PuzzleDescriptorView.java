@@ -2,9 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.totsp.crossword.web.client;
 
+import com.totsp.crossword.web.basic.Injector;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
@@ -17,64 +17,62 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
+
 import com.google.inject.Inject;
+
 import com.totsp.crossword.web.client.resources.Resources;
 import com.totsp.crossword.web.shared.PuzzleDescriptor;
+
 import com.totsp.gwittir.client.ui.AbstractBoundWidget;
 import com.totsp.gwittir.client.ui.util.BoundWidgetProvider;
+
 
 /**
  *
  * @author kebernet
  */
-public class PuzzleDescriptorView extends AbstractBoundWidget<PuzzleDescriptor>{
+public class PuzzleDescriptorView extends AbstractBoundWidget<PuzzleDescriptor> {
+    public static final BoundWidgetProvider<PuzzleDescriptorView> PROVIDER = new BoundWidgetProvider<PuzzleDescriptorView>() {
+            @Override
+            public PuzzleDescriptorView get() {
+                return Injector.INSTANCE.puzzleDescriptorView();
+            }
+        };
 
-
-
-    public static final BoundWidgetProvider<PuzzleDescriptorView> PROVIDER = new BoundWidgetProvider<PuzzleDescriptorView>(){
-
-        @Override
-        public PuzzleDescriptorView get() {
-            return Injector.INSTANCE.puzzleDescriptorView();
-        }
-
-    };
-
-    DateTimeFormat format = DateTimeFormat.getFormat("EEEE '<br \\>' MMM dd, yyyy");
+    DateTimeFormat format = DateTimeFormat.getFormat(
+            "EEEE '<br \\>' MMM dd, yyyy");
     HTML date = new HTML();
     Label source = new Label();
     Label title = new Label();
-
+    private PuzzleDescriptor value;
 
     @Inject
-    public PuzzleDescriptorView(final Resources resources){
+    public PuzzleDescriptorView(final Resources resources, final Game game) {
         FocusPanel fp = new FocusPanel();
-        fp.addMouseOverHandler(new MouseOverHandler(){
+        fp.addMouseOverHandler(new MouseOverHandler() {
+                @Override
+                public void onMouseOver(MouseOverEvent event) {
+                    addStyleName(resources.css().pdOver());
+                }
+            });
+        fp.addMouseOutHandler(new MouseOutHandler() {
+                @Override
+                public void onMouseOut(MouseOutEvent event) {
+                    removeStyleName(resources.css().pdOver());
+                }
+            });
 
-            @Override
-            public void onMouseOver(MouseOverEvent event) {
-                 addStyleName(resources.css().pdOver());
-            }
-
-        });
-        fp.addMouseOutHandler(new MouseOutHandler(){
-
-            @Override
-            public void onMouseOut(MouseOutEvent event) {
-                 removeStyleName(resources.css().pdOver());
-            }
-
-        });
         FlexTable table = new FlexTable();
         table.insertRow(0);
-        table.setWidget(0,0, date);
-        table.getCellFormatter().setWidth(0,0, "25%");
-        table.setWidget(0,1, source);
-        table.getCellFormatter().setWidth(0,1, "50%");
-        table.getCellFormatter().setHorizontalAlignment(0,1, HasHorizontalAlignment.ALIGN_CENTER);
-        table.setWidget(0,2, title);
-        table.getCellFormatter().setWidth(0,2, "25%");
-        
+        table.setWidget(0, 0, date);
+        table.getCellFormatter().setWidth(0, 0, "25%");
+        table.setWidget(0, 1, source);
+        table.getCellFormatter().setWidth(0, 1, "50%");
+        table.getCellFormatter()
+             .setHorizontalAlignment(0, 1, HasHorizontalAlignment.ALIGN_CENTER);
+        table.setWidget(0, 2, title);
+        table.getCellFormatter().setWidth(0, 2, "25%");
+
         date.setStyleName(resources.css().pdDate());
         title.setStyleName(resources.css().pdTitle());
         source.setStyleName(resources.css().pdSource());
@@ -83,30 +81,18 @@ public class PuzzleDescriptorView extends AbstractBoundWidget<PuzzleDescriptor>{
         super.initWidget(fp);
         this.setStyleName(resources.css().pd());
 
-
-        table.addClickHandler(new ClickHandler(){
-
-            @Override
-            public void onClick(ClickEvent event) {
-                BasicEntryPoint.loadPuzzle(getValue().getId());
-            }
-
-        });
-
-
+        table.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    game.loadPuzzle(getValue().getId());
+                }
+            });
     }
 
-
-    private PuzzleDescriptor value;
-
-    /**
-     * Get the value of value
-     *
-     * @return the value of value
-     */
     @Override
-    public PuzzleDescriptor getValue() {
-        return this.value;
+    public void setModel(Object model) {
+        this.setValue((PuzzleDescriptor) model);
+        super.setModel(model);
     }
 
     /**
@@ -117,20 +103,24 @@ public class PuzzleDescriptorView extends AbstractBoundWidget<PuzzleDescriptor>{
     @Override
     public void setValue(PuzzleDescriptor newvalue) {
         this.value = newvalue;
-        if(value == null){
+
+        if (value == null) {
             return;
         }
-        this.date.setHTML( value.getDate() != null ? format.format(value.getDate()) : "" );
-        this.source.setText( value.getSource() );
+
+        this.date.setHTML((value.getDate() != null)
+            ? format.format(value.getDate()) : "");
+        this.source.setText(value.getSource());
         this.title.setText(value.getTitle());
-
     }
 
+    /**
+     * Get the value of value
+     *
+     * @return the value of value
+     */
     @Override
-    public void setModel(Object model){
-        this.setValue((PuzzleDescriptor) model);
-        super.setModel(model);
+    public PuzzleDescriptor getValue() {
+        return this.value;
     }
-
-
 }

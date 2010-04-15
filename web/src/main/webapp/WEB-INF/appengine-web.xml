@@ -9,7 +9,8 @@
 
     <sessions-enabled>true</sessions-enabled>
     <static-files>
-        <include path="/shortyz/**" />
+        <include path="/basic/**" />
+        <include path="/gadget/**" />
         <include path="/favicon.ico" />
         <!--include path="/debug/**" /-->
         <include path="/static/**" />

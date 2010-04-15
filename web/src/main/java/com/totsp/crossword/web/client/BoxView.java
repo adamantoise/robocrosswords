@@ -42,10 +42,10 @@ public class BoxView extends AbstractBoundWidget<Box> {
 
     @Override
     public void setValue(Box value) {
-       if(value.across || value.down ){
-           this.number.setText(Integer.toString(value.clueNumber));
+       if(value.isAcross() || value.isDown() ){
+           this.number.setText(Integer.toString(value.getClueNumber()));
        }
-       letter.setText(Character.toString(value.response));
+       letter.setText(Character.toString(value.getResponse()));
        this.changes.firePropertyChange(PROP_VALUE, this.value, this.value = value);
     }
 

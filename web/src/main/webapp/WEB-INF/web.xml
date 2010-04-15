@@ -22,7 +22,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>PuzzleService</servlet-name>
-        <url-pattern>/shortyz/puzzle.rpc</url-pattern>
+        <url-pattern>/basic/puzzle.rpc</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>PuzzleService</servlet-name>

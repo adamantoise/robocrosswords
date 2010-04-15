@@ -4,9 +4,7 @@
  */
 package com.totsp.crossword.web.client;
 
-import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -16,14 +14,12 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.http.client.Request;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -39,6 +35,8 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import com.google.inject.Inject;
+
 import com.totsp.crossword.puz.Playboard;
 import com.totsp.crossword.puz.Playboard.Clue;
 import com.totsp.crossword.puz.Playboard.Position;
@@ -46,8 +44,8 @@ import com.totsp.crossword.puz.Playboard.Word;
 import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.web.client.Renderer.ClickListener;
 import com.totsp.crossword.web.client.resources.Css;
+import com.totsp.crossword.web.client.resources.Resources;
 import com.totsp.crossword.web.shared.PuzzleDescriptor;
-import com.totsp.crossword.web.shared.PuzzleServiceAsync;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -57,25 +55,24 @@ import java.util.HashMap;
  *
  * @author kebernet
  */
-public class BasicEntryPoint implements EntryPoint {
-    static final WASDCodes CODES = GWT.create(WASDCodes.class);
-    public static PuzzleServiceAsync SERVICE = Injector.INSTANCE.service();
-    public static PuzzleServiceProxy PROXY = new PuzzleServiceProxy(SERVICE, null);
-    static final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    static Timer autoSaveTimer = null;
-    static boolean dirty;
-    static Css css = Injector.INSTANCE.resources().css();
-    static FocusPanel mainPanel = new FocusPanel();
-    static Playboard board;
-    static Renderer r = Injector.INSTANCE.renderer();
-    static Clue[] acrossClues;
-    static Clue[] downClues;
-    static final TextArea keyboardIntercept = new TextArea();
-    static final Label status = new Label();
-    static VerticalPanel verticalPanel = new VerticalPanel();
-    static HashMap<Clue, Widget> acrossClueViews = new HashMap<Clue, Widget>();
-    static HashMap<Clue, Widget> downClueViews = new HashMap<Clue, Widget>();
-    static KeyboardListener l = new KeyboardListener() {
+public class Game {
+    private static final WASDCodes CODES = GWT.create(WASDCodes.class);
+    private static final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    boolean dirty;
+    private Css css;
+    private DisplayChangeListener displayChangeListener = new DisplayChangeListener() {
+            @Override
+            public void onDisplayChange() {
+                ; //noop
+            }
+        };
+
+    private FocusPanel mainPanel = new FocusPanel();
+    private HandlerRegistration closingRegistration = null;
+    private HashMap<Clue, Widget> acrossClueViews = new HashMap<Clue, Widget>();
+    private HashMap<Clue, Widget> downClueViews = new HashMap<Clue, Widget>();
+    private Playboard board;
+    private KeyboardListener l = new KeyboardListener() {
             @Override
             public void onKeyPress(Widget sender, char keyCode, int modifiers) {
             }
@@ -122,14 +119,7 @@ public class BasicEntryPoint implements EntryPoint {
                     return;
                 }
 
-                //                if (keyCode == ' ') {
-                //                    Position p = board.getHighlightLetter();
-                //                    Word w = board.playLetter(' ');
-                //                    board.setHighlightLetter(p);
-                //                    render(w);
-                //
-                //                    return;
-                //                }
+                
                 if ((keyCode == ' ') || (keyCode == KeyCodes.KEY_ENTER)) {
                     Word w = board.setHighlightLetter(board.getHighlightLetter());
                     render(w);
@@ -161,19 +151,116 @@ public class BasicEntryPoint implements EntryPoint {
             }
         };
 
-    static ScrollPanel acrossScroll = new ScrollPanel();
-    static ScrollPanel downScroll = new ScrollPanel();
-    static PuzzleListView plv = Injector.INSTANCE.puzzleListView();
-    private static Request request = null;
-    private static HandlerRegistration closingRegistration = null;
-    private static Widget lastClueWidget;
+    private Label status = new Label();
+    private PuzzleListView plv;
+    private PuzzleServiceProxy service;
+    private Renderer renderer;
+    private Request request = null;
+    private ScrollPanel acrossScroll = new ScrollPanel();
+    private ScrollPanel downScroll = new ScrollPanel();
+    private TextArea keyboardIntercept = new TextArea();
+    private Timer autoSaveTimer = null;
+    private VerticalPanel verticalPanel = new VerticalPanel();
+    private Widget lastClueWidget;
+    private Clue[] acrossClues;
+    private Clue[] downClues;
 
-    public static void loadPuzzle(final Long id) {
+    @Inject
+    public Game(RootPanel rootPanel, PuzzleServiceProxy service,
+        Resources resources, final PuzzleListView plv, Renderer renderer) {
+        this.service = service;
+        this.plv = plv;
+        this.renderer = renderer;
+        this.css = resources.css();
+
+        History.newItem("list", false);
+        History.addValueChangeHandler(new ValueChangeHandler<String>() {
+                @Override
+                public void onValueChange(ValueChangeEvent<String> event) {
+                    if (event.getValue().equals("list")) {
+                        if (closingRegistration != null) {
+                            closingRegistration.removeHandler();
+                            closingRegistration = null;
+                        }
+
+                        if (autoSaveTimer != null) {
+                            autoSaveTimer.cancel();
+                            autoSaveTimer.run();
+                            autoSaveTimer = null;
+                        }
+
+                        mainPanel.setWidget(plv);
+                        keyboardIntercept.removeKeyboardListener(l);
+
+                        getDisplayChangeListener().onDisplayChange();
+                    } else if (event.getValue().startsWith("play=")) {
+                        Long id = Long.parseLong(event.getValue().split("=")[1]);
+                        loadPuzzle(id);
+                    }
+                }
+            });
+        verticalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        verticalPanel.setWidth("100%");
+        StyleInjector.inject(resources.css().getText());
+        keyboardIntercept.setWidth("1px");
+        keyboardIntercept.setHeight("1px");
+        keyboardIntercept.setStyleName(css.keyboardIntercept());
+        rootPanel.add(keyboardIntercept);
+        rootPanel.add(verticalPanel);
+        verticalPanel.add(status);
+        verticalPanel.setCellHorizontalAlignment(status,
+            HasHorizontalAlignment.ALIGN_CENTER);
+        verticalPanel.add(mainPanel);
+        verticalPanel.setCellHorizontalAlignment(mainPanel,
+            HasHorizontalAlignment.ALIGN_CENTER);
+
+       
+    }
+
+    public void loadList(){
+        status.setText("Loading puzzles...");
+        status.setStyleName(css.statusInfo());
+        service.listPuzzles(new AsyncCallback<PuzzleDescriptor[]>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    Window.alert("Failed to load puzzles. \n" +
+                        caught.toString());
+                }
+
+                @Override
+                public void onSuccess(PuzzleDescriptor[] result) {
+                    Arrays.sort(result);
+                    mainPanel.setWidget(plv);
+                    plv.setValue(Arrays.asList(result));
+                    setFBSize();
+                    status.setStyleName(css.statusHidden());
+                    status.setText(" ");
+                }
+            });
+    }
+
+
+    /**
+     * @param displayChangeListener the displayChangeListener to set
+     */
+    public void setDisplayChangeListener(
+        DisplayChangeListener displayChangeListener) {
+        this.displayChangeListener = displayChangeListener;
+    }
+
+    /**
+     * @return the displayChangeListener
+     */
+    public DisplayChangeListener getDisplayChangeListener() {
+        return displayChangeListener;
+    }
+
+    public void loadPuzzle(final Long id) {
         status.setText("Loading puzzle...");
         status.setStyleName(css.statusInfo());
 
         if (request == null) {
-            request = PROXY.findPuzzle(id,
+            request = service.findPuzzle(id,
                     new AsyncCallback<Puzzle>() {
                         @Override
                         public void onFailure(Throwable caught) {
@@ -191,7 +278,7 @@ public class BasicEntryPoint implements EntryPoint {
                         }
                     });
 
-            r.setClickListener(new ClickListener() {
+            renderer.setClickListener(new ClickListener() {
                     @Override
                     public void onClick(int across, int down) {
                         Word w = board.setHighlightLetter(new Position(across,
@@ -207,83 +294,14 @@ public class BasicEntryPoint implements EntryPoint {
         }
     }
 
-    @Override
-    public void onModuleLoad() {
-        Element e = DOM.getElementById("loadingIndicator");
-
-        if (e != null) {
-            e.removeFromParent();
-        }
-
-        History.newItem("list", false);
-        History.addValueChangeHandler(new ValueChangeHandler<String>() {
-                @Override
-                public void onValueChange(ValueChangeEvent<String> event) {
-                    if (event.getValue().equals("list")) {
-                        if (closingRegistration != null) {
-                            closingRegistration.removeHandler();
-                            closingRegistration = null;
-                            
-                        }
-                        if (autoSaveTimer != null){
-                            autoSaveTimer.cancel();
-                            autoSaveTimer.run();
-                            autoSaveTimer = null;
-                        }
-                        mainPanel.setWidget(plv);
-                        keyboardIntercept.removeKeyboardListener(l);
-
-                        displayChangeListener.onDisplayChange();
-                    } else if(event.getValue().startsWith("play=")){
-                        Long id = Long.parseLong(event.getValue().split("=")[1]);
-                        loadPuzzle(id);
-                    }
-                }
-            });
-        verticalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        verticalPanel.setWidth("100%");
-        StyleInjector.inject(Injector.INSTANCE.resources().css().getText());
-        keyboardIntercept.setWidth("1px");
-        keyboardIntercept.setHeight("1px");
-        keyboardIntercept.setStyleName(css.keyboardIntercept());
-        RootPanel.get().add(keyboardIntercept);
-        RootPanel.get().add(verticalPanel);
-        verticalPanel.add(status);
-        verticalPanel.setCellHorizontalAlignment(status,
-            HasHorizontalAlignment.ALIGN_CENTER);
-        verticalPanel.add(mainPanel);
-        verticalPanel.setCellHorizontalAlignment(mainPanel,
-            HasHorizontalAlignment.ALIGN_CENTER);
-
-        status.setText("Loading puzzles...");
-        status.setStyleName(css.statusInfo());
-        PROXY.listPuzzles(new AsyncCallback<PuzzleDescriptor[]>() {
-                @Override
-                public void onFailure(Throwable caught) {
-                    Window.alert("Failed to load puzzles. \n"+caught.toString());
-
-                }
-
-                @Override
-                public void onSuccess(PuzzleDescriptor[] result) {
-                    Arrays.sort(result);
-                    mainPanel.setWidget(plv);
-                    plv.setValue(Arrays.asList(result));
-                    setFBSize();
-                    status.setStyleName(css.statusHidden());
-                    status.setText(" ");
-                }
-            });
-    }
-
     private static native void setFBSize() /*-{
     if($wnd.FB && $wnd.FB.CanvasClient.setSizeToContent){
     $wnd.FB.CanvasClient.setSizeToContent();
     }
     }-*/;
 
-    private static void render(Word w) {
-        r.render(w);
+    private void render(Word w) {
+        renderer.render(w);
 
         if (lastClueWidget != null) {
             lastClueWidget.removeStyleName(css.highlightClue());
@@ -301,16 +319,16 @@ public class BasicEntryPoint implements EntryPoint {
         keyboardIntercept.setFocus(true);
     }
 
-    private static void render() {
+    private void render() {
         render(null);
     }
 
-    private static void startPuzzle(final long listingId, final Puzzle puzzle) {
+    private void startPuzzle(final long listingId, final Puzzle puzzle) {
         VerticalPanel outer = new VerticalPanel();
         board = new Playboard(puzzle);
         board.setHighlightLetter(new Position(0, 0));
 
-        FlexTable t = r.initialize(board);
+        FlexTable t = renderer.initialize(board);
 
         HorizontalPanel hp = new HorizontalPanel();
         hp.add(t);
@@ -383,61 +401,56 @@ public class BasicEntryPoint implements EntryPoint {
 
         render(board.getCurrentWord());
         outer.add(hp);
-        
+
         HorizontalPanel controls = new HorizontalPanel();
-        Button back = new Button("Return to List", new ClickHandler(){
-
-            @Override
-            public void onClick(ClickEvent event) {
-               History.newItem("list");
-            }
-
-        });
+        Button back = new Button("Return to List",
+                new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        History.newItem("list");
+                    }
+                });
         back.getElement().getStyle().setMarginRight(30, Unit.PX);
 
         controls.add(back);
 
-
-        controls.add(new Button("Show Errors", new ClickHandler(){
-
-            @Override
-            public void onClick(ClickEvent event) {
-                board.toggleShowErrors();
-                ((Button)event.getSource()).setText( board.isShowErrors() ? "Hide Errors": "Show Errors");
-                render();
-            }
-
-        }));
-        controls.add( new Button("Reveal Letter", new ClickHandler(){
-
-            @Override
-            public void onClick(ClickEvent event) {
-                board.revealLetter();
-                dirty = true;
-                render();
-            }
-
-        }));
-        controls.add( new Button("Reveal Word", new ClickHandler(){
-
-            @Override
-            public void onClick(ClickEvent event) {
-                board.revealWord();
-                dirty = true;
-                render();
-            }
-
-        }));
-        controls.add( new Button("Reveal Puzzle", new ClickHandler(){
-
-            @Override
-            public void onClick(ClickEvent event) {
-                board.revealPuzzle();
-                dirty = true;
-                render();
-            }
-
-        }));
+        controls.add(new Button("Show Errors",
+                new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    board.toggleShowErrors();
+                    ((Button) event.getSource()).setText(board.isShowErrors()
+                            ? "Hide Errors" : "Show Errors");
+                    render();
+                }
+            }));
+        controls.add(new Button("Reveal Letter",
+                new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    board.revealLetter();
+                    dirty = true;
+                    render();
+                }
+            }));
+        controls.add(new Button("Reveal Word",
+                new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    board.revealWord();
+                    dirty = true;
+                    render();
+                }
+            }));
+        controls.add(new Button("Reveal Puzzle",
+                new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    board.revealPuzzle();
+                    dirty = true;
+                    render();
+                }
+            }));
         controls.getElement().getStyle().setMarginTop(10, Unit.PX);
         outer.add(controls);
 
@@ -459,7 +472,7 @@ public class BasicEntryPoint implements EntryPoint {
                         dirty = false;
                         status.setStyleName(css.statusInfo());
                         status.setText("Autosaving...");
-                        PROXY.savePuzzle(listingId, puzzle,
+                        service.savePuzzle(listingId, puzzle,
                             new AsyncCallback() {
                                 @Override
                                 public void onFailure(Throwable caught) {
@@ -485,22 +498,10 @@ public class BasicEntryPoint implements EntryPoint {
                         }
                     }
                 });
-       displayChangeListener.onDisplayChange();
+        getDisplayChangeListener().onDisplayChange();
     }
 
-
-    public static DisplayChangeListener displayChangeListener = new DisplayChangeListener(){
-
-        @Override
-        public void onDisplayChange() {
-            ; //noop
-        }
-
-    };
-
     public static interface DisplayChangeListener {
-
         public void onDisplayChange();
-
     }
 }
