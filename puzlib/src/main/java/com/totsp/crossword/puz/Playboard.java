@@ -30,12 +30,12 @@ public class Playboard implements Serializable {
         for (int x = 0; x < puzzle.getBoxes().length; x++) {
             for (int y = 0; y < puzzle.getBoxes()[x].length; y++) {
                 boxes[y][x] = puzzle.getBoxes()[x][y];
-                if (boxes[y][x] != null && boxes[y][x].across) {
-                    acrossWordStarts.put(boxes[y][x].clueNumber, new Position(
+                if (boxes[y][x] != null && boxes[y][x].isAcross()) {
+                    acrossWordStarts.put(boxes[y][x].getClueNumber(), new Position(
                             y, x));
                 }
-                if (boxes[y][x] != null && boxes[y][x].down) {
-                    downWordStarts.put(boxes[y][x].clueNumber, new Position(y,
+                if (boxes[y][x] != null && boxes[y][x].isDown()) {
+                    downWordStarts.put(boxes[y][x].getClueNumber(), new Position(y,
                             x));
                 }
             }
@@ -62,7 +62,7 @@ public class Playboard implements Serializable {
         Clue c = new Clue();
         try {
             Position start = this.getCurrentWordStart();
-            c.number = this.getBoxes()[start.across][start.down].clueNumber;
+            c.number = this.getBoxes()[start.across][start.down].getClueNumber();
             c.hint = this.across ? this.puzzle.findAcrossClue(c.number)
                     : this.puzzle.findDownClue(c.number);
         } catch (Exception e) {
@@ -91,7 +91,7 @@ public class Playboard implements Serializable {
             while (b == null) {
                 try {
                     if ((boxes[col][this.highlightLetter.down] != null)
-                            && boxes[col][this.highlightLetter.down].across) {
+                            && boxes[col][this.highlightLetter.down].isAcross()) {
 
                         b = boxes[col][this.highlightLetter.down];
 
@@ -111,7 +111,7 @@ public class Playboard implements Serializable {
             while (b == null) {
                 try {
                     if ((boxes[this.highlightLetter.across][row] != null)
-                            && boxes[this.highlightLetter.across][row].down) {
+                            && boxes[this.highlightLetter.across][row].isDown()) {
                         b = boxes[this.highlightLetter.across][row];
                     } else {
                         row--;
@@ -191,7 +191,7 @@ public class Playboard implements Serializable {
 
     public Word deleteLetter() {
         try {
-            this.boxes[this.highlightLetter.across][this.highlightLetter.down].response = ' ';
+            this.boxes[this.highlightLetter.across][this.highlightLetter.down].setResponse(' ');
         } catch (NullPointerException npe) {
             npe.printStackTrace();
         }
@@ -210,7 +210,7 @@ public class Playboard implements Serializable {
         while ((b == null) && (checkRow < (this.getBoxes().length - 1))) {
             try {
                 b = this.getBoxes()[this.highlightLetter.across][++checkRow];
-                if (skipFilled && b != null && b.response != ' ' && checkRow < w.start.down + w.length) {
+                if (skipFilled && b != null && b.getResponse() != ' ' && checkRow < w.start.down + w.length) {
                     b = null;
                 }
             } catch (RuntimeException e) {
@@ -256,7 +256,7 @@ public class Playboard implements Serializable {
                 && (checkCol < (this.getBoxes()[this.highlightLetter.across].length - 1))) {
             try {
                 b = this.getBoxes()[++checkCol][this.highlightLetter.down];
-                if (skipFilled && b != null && b.response != ' ' && checkCol < w.start.across + w.length) {
+                if (skipFilled && b != null && b.getResponse() != ' ' && checkCol < w.start.across + w.length) {
                     b = null;
                 }
             } catch (RuntimeException e) {
@@ -300,7 +300,7 @@ public class Playboard implements Serializable {
         if(b == null){
         	return null;
         }
-        b.response = letter;
+        b.setResponse(letter);
 
         return this.nextLetter();
     }
@@ -316,18 +316,18 @@ public class Playboard implements Serializable {
     public void revealLetter() {
         Box b = this.boxes[this.highlightLetter.across][this.highlightLetter.down];
 
-        if ((b != null) && (b.solution != b.response)) {
-            b.cheated = true;
-            b.response = b.solution;
+        if ((b != null) && (b.getSolution() != b.getResponse())) {
+            b.setCheated(true);
+            b.setResponse(b.getSolution());
         }
     }
 
     public void revealPuzzle() {
         for (Box[] row : this.boxes) {
             for (Box b : row) {
-                if ((b != null) && (b.solution != b.response)) {
-                    b.cheated = true;
-                    b.response = b.solution;
+                if ((b != null) && (b.getSolution() != b.getResponse())) {
+                    b.setCheated(true);
+                    b.setResponse(b.getSolution());
                 }
             }
         }

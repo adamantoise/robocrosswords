@@ -4,14 +4,13 @@ import java.io.Serializable;
 
 
 public class Box implements Serializable {
-    
-    public String responder;
-    public boolean across;
-    public boolean cheated;
-    public boolean down;
-    public char response = ' ';
-    public char solution;
-    public int clueNumber;
+    private String responder;
+    private boolean across;
+    private boolean cheated;
+    private boolean down;
+    private char response = ' ';
+    private char solution;
+    private int clueNumber;
 
     @Override
     public boolean equals(Object obj) {
@@ -29,40 +28,40 @@ public class Box implements Serializable {
 
         Box other = (Box) obj;
 
-        if (across != other.across) {
+        if (isAcross() != other.isAcross()) {
         	System.out.println("across");
             return false;
         }
 
-        if (cheated != other.cheated) {
+        if (isCheated() != other.isCheated()) {
         	System.out.println("cheated");
             return false;
         }
 
-        if (clueNumber != other.clueNumber) {
+        if (getClueNumber() != other.getClueNumber()) {
         	System.out.println("clueNumber");
             return false;
         }
 
-        if (down != other.down) {
+        if (isDown() != other.isDown()) {
         	System.out.println("down");
             return false;
         }
 
-        if (responder == null) {
-            if (other.responder != null) {
+        if (getResponder() == null) {
+            if (other.getResponder() != null) {
                 return false;
             }
         } else if (!responder.equals(other.responder)) {
             return false;
         }
 
-        if (response != other.response) {
+        if (getResponse() != other.getResponse()) {
         	System.out.println("response");
             return false;
         }
 
-        if (solution != other.solution) {
+        if (getSolution() != other.getSolution()) {
             return false;
         }
 
@@ -73,20 +72,118 @@ public class Box implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = (prime * result) + (across ? 1231 : 1237);
-        result = (prime * result) + (cheated ? 1231 : 1237);
-        result = (prime * result) + clueNumber;
-        result = (prime * result) + (down ? 1231 : 1237);
+        result = (prime * result) + (isAcross() ? 1231 : 1237);
+        result = (prime * result) + (isCheated() ? 1231 : 1237);
+        result = (prime * result) + getClueNumber();
+        result = (prime * result) + (isDown() ? 1231 : 1237);
         result = (prime * result) +
-            ((responder == null) ? 0 : responder.hashCode());
-        result = (prime * result) + response;
-        result = (prime * result) + solution;
+            ((getResponder() == null) ? 0 : getResponder().hashCode());
+        result = (prime * result) + getResponse();
+        result = (prime * result) + getSolution();
 
         return result;
     }
 
     @Override
     public String toString() {
-        return this.clueNumber + this.solution + " ";
+        return this.getClueNumber() + this.getSolution() + " ";
+    }
+
+    /**
+     * @param responder the responder to set
+     */
+    public void setResponder(String responder) {
+        this.responder = responder;
+    }
+
+    /**
+     * @return the across
+     */
+    public boolean isAcross() {
+        return across;
+    }
+
+    /**
+     * @param across the across to set
+     */
+    public void setAcross(boolean across) {
+        this.across = across;
+    }
+
+    /**
+     * @return the cheated
+     */
+    public boolean isCheated() {
+        return cheated;
+    }
+
+    /**
+     * @param cheated the cheated to set
+     */
+    public void setCheated(boolean cheated) {
+        this.cheated = cheated;
+    }
+
+    /**
+     * @return the down
+     */
+    public boolean isDown() {
+        return down;
+    }
+
+    /**
+     * @param down the down to set
+     */
+    public void setDown(boolean down) {
+        this.down = down;
+    }
+
+    /**
+     * @return the response
+     */
+    public char getResponse() {
+        return response;
+    }
+
+    /**
+     * @param response the response to set
+     */
+    public void setResponse(char response) {
+        this.response = response;
+    }
+
+    /**
+     * @return the solution
+     */
+    public char getSolution() {
+        return solution;
+    }
+
+    /**
+     * @param solution the solution to set
+     */
+    public void setSolution(char solution) {
+        this.solution = solution;
+    }
+
+    /**
+     * @return the clueNumber
+     */
+    public int getClueNumber() {
+        return clueNumber;
+    }
+
+    /**
+     * @param clueNumber the clueNumber to set
+     */
+    public void setClueNumber(int clueNumber) {
+        this.clueNumber = clueNumber;
+    }
+
+    /**
+     * @return the responder
+     */
+    public String getResponder() {
+        return responder;
     }
 }

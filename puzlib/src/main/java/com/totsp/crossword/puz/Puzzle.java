@@ -73,19 +73,19 @@ public class Puzzle implements Serializable {
                 }
 
                 if ((x == 0) || (boxes[x - 1][y] == null)) {
-                    boxes[x][y].down = true;
+                    boxes[x][y].setDown(true);
 
                     if ((x == 0) || (boxes[x - 1][y] == null)) {
-                        boxes[x][y].clueNumber = clueCount;
+                        boxes[x][y].setClueNumber(clueCount);
                         tickedClue = true;
                     }
                 }
 
                 if ((y == 0) || (boxes[x][y - 1] == null)) {
-                    boxes[x][y].across = true;
+                    boxes[x][y].setAcross(true);
 
                     if ((y == 0) || (boxes[x][y - 1] == null)) {
-                        boxes[x][y].clueNumber = clueCount;
+                        boxes[x][y].setClueNumber(clueCount);
                         tickedClue = true;
                     }
                 }
@@ -213,7 +213,7 @@ public class Puzzle implements Serializable {
                 if (boxes[x][y] != null) {
                     total++;
 
-                    if (boxes[x][y].response == boxes[x][y].solution) {
+                    if (boxes[x][y].getResponse() == boxes[x][y].getSolution()) {
                         correct++;
                     }
                 }

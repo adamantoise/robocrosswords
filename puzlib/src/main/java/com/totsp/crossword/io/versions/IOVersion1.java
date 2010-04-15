@@ -25,8 +25,8 @@ public class IOVersion1 implements IOVersion {
 				if(b == null){
 					continue;
 				}
-				b.cheated = dis.readBoolean();
-				b.responder = IO.readNullTerminatedString(dis);
+				b.setCheated(dis.readBoolean());
+				b.setResponder(IO.readNullTerminatedString(dis));
 			}
 		}
 		try{
@@ -63,8 +63,8 @@ public class IOVersion1 implements IOVersion {
 				if(b == null){
 					continue;
 				}
-				dos.writeBoolean(b.cheated);
-				IO.writeNullTerminatedString(dos, b.responder);
+				dos.writeBoolean(b.isCheated());
+				IO.writeNullTerminatedString(dos, b.getResponder());
 			}
 		}
 		dos.writeLong(puz.getTime());

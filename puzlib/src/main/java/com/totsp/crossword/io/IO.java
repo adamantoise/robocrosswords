@@ -77,7 +77,7 @@ public class IO {
 
                 if (solution != '.') {
                     boxes[x][y] = new Box();
-                    boxes[x][y].solution = (char) solution;
+                    boxes[x][y].setSolution((char) solution);
                 }
             }
         }
@@ -89,9 +89,9 @@ public class IO {
                 if (answer == '.') {
                     continue;
                 } else if (answer == '-') {
-                    boxes[x][y].response = ' ';
+                    boxes[x][y].setResponse(' ');
                 } else {
-                    boxes[x][y].response = answer;
+                    boxes[x][y].setResponse(answer);
                 }
             }
         }
@@ -143,7 +143,7 @@ public class IO {
                     continue;
                 }
 
-                if (boxes[x][y].across && (boxes[x][y].clueNumber != 0)) {
+                if (boxes[x][y].isAcross() && (boxes[x][y].getClueNumber() != 0)) {
                     StringBuilder acrossClue = new StringBuilder();
 
                     for (byte nextChar = input.readByte(); nextChar != 0x0;
@@ -153,14 +153,14 @@ public class IO {
                         }
                     }
 
-                    acrossCluesLookup.add(boxes[x][y].clueNumber);
+                    acrossCluesLookup.add(boxes[x][y].getClueNumber());
 
                     String value = acrossClue.toString();
                     acrossClues.add(value);
                     rawClues.add(value);
                 }
 
-                if (boxes[x][y].down && (boxes[x][y].clueNumber != 0)) {
+                if (boxes[x][y].isDown() && (boxes[x][y].getClueNumber() != 0)) {
                     StringBuilder downClue = new StringBuilder();
 
                     for (byte nextChar = input.readByte(); nextChar != 0x0;
@@ -170,7 +170,7 @@ public class IO {
                         }
                     }
 
-                    downCluesLookup.add(boxes[x][y].clueNumber);
+                    downCluesLookup.add(boxes[x][y].getClueNumber());
 
                     String value = downClue.toString();
                     downClues.add(value);
@@ -305,7 +305,7 @@ public class IO {
                 if (boxes[x][y] == null) {
                     dos.writeByte('.');
                 } else {
-                    dos.writeByte(boxes[x][y].solution);
+                    dos.writeByte(boxes[x][y].getSolution());
                 }
             }
         }
@@ -315,8 +315,8 @@ public class IO {
                 if (boxes[x][y] == null) {
                     dos.writeByte('.');
                 } else {
-                    dos.writeByte((boxes[x][y].response == ' ') ? '-'
-                                                                : boxes[x][y].response);
+                    dos.writeByte((boxes[x][y].getResponse() == ' ') ? '-'
+                                                                : boxes[x][y].getResponse());
                 }
             }
         }
