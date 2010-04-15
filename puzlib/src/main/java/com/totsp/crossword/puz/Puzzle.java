@@ -106,6 +106,7 @@ public class Puzzle implements Serializable {
     }
 
     public void setBoxesList(Box[] value) {
+        System.out.println("Setting list "+value.length);
         this.boxesList = value;
     }
 
@@ -338,6 +339,7 @@ public class Puzzle implements Serializable {
     }
 
     public Box[][] buildBoxes() {
+        System.out.println("Building boxes "+this.height+"x"+this.width);
         int i = 0;
         boxes = new Box[this.height][this.width];
 
