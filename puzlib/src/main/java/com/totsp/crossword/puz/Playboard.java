@@ -5,11 +5,13 @@ import java.util.HashMap;
 
 public class Playboard implements Serializable {
 
-    Position highlightLetter = new Position(0, 0);
-    Puzzle puzzle;
-    Box[][] boxes;
-    boolean across = true;
-    boolean skipCompletedLetters;
+    private Position highlightLetter = new Position(0, 0);
+    private Puzzle puzzle;
+    private Box[][] boxes;
+    private boolean across = true;
+    private boolean skipCompletedLetters;
+
+    private String responder;
 
     public boolean isSkipCompletedLetters() {
         return skipCompletedLetters;
@@ -278,6 +280,9 @@ public class Playboard implements Serializable {
             try {
                 b = this.getBoxes()[this.highlightLetter.across][--checkRow];
             } catch (RuntimeException e) {
+                this.highlightLetter = new Position(this.highlightLetter.across,
+                        checkRow++);
+                return this.moveDown();
             }
         }
 
@@ -301,7 +306,7 @@ public class Playboard implements Serializable {
         	return null;
         }
         b.setResponse(letter);
-
+        b.setResponder(this.responder);
         return this.nextLetter();
     }
 
@@ -402,6 +407,20 @@ public class Playboard implements Serializable {
         return clues;
     }
 
+    /**
+     * @return the responder
+     */
+    public String getResponder() {
+        return responder;
+    }
+
+    /**
+     * @param responder the responder to set
+     */
+    public void setResponder(String responder) {
+        this.responder = responder;
+    }
+
     public static class Clue {
 
         public String hint;
@@ -430,6 +449,7 @@ public class Playboard implements Serializable {
             return true;
         }
 
+        @Override
         public String toString() {
             return number + ". " + hint;
         }
