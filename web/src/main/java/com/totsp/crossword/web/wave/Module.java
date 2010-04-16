@@ -20,10 +20,11 @@ import com.totsp.crossword.web.client.PuzzleListView;
 import com.totsp.crossword.web.client.PuzzleServiceProxy;
 import com.totsp.crossword.web.client.PuzzleServiceProxy.CallStrategy;
 import com.totsp.crossword.web.client.Renderer;
+import com.totsp.crossword.web.client.RetryLocalStorageServiceProxy;
 import com.totsp.crossword.web.client.resources.Resources;
-import com.totsp.crossword.web.gadget.ShortyzGadget.FakeRequest;
 import com.totsp.crossword.web.shared.PuzzleService;
 import com.totsp.crossword.web.shared.PuzzleServiceAsync;
+import com.totsp.crossword.web.wave.ShortyzWave.FakeRequest;
 
 
 /**
@@ -34,7 +35,7 @@ public class Module extends AbstractGinModule {
     @Override
     protected void configure() {
         this.bind(Resources.class).toProvider(ResourcesProvider.class);
-        this.bind(Renderer.class);
+        this.bind(Renderer.class).asEagerSingleton();
         this.bind(PuzzleServiceAsync.class)
             .toProvider(PuzzleServiceProvider.class);
         this.bind(BoxView.class);
@@ -75,7 +76,7 @@ public class Module extends AbstractGinModule {
 
         @Override
         public PuzzleServiceProxy get() {
-            return new PuzzleServiceProxy(service,  new CallStrategy(){
+            return new RetryLocalStorageServiceProxy(service,  new CallStrategy(){
 
             @Override
             public Request makeRequest(RequestBuilder builder) {

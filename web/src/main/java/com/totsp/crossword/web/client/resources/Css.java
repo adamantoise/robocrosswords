@@ -39,5 +39,5 @@ public interface Css extends CssResource {
     String statusError();
     String keyboardIntercept();
 
-
+    String clueLine();
 }

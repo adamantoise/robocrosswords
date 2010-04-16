@@ -389,6 +389,7 @@
                     <compileTargets>
                         <param>com.totsp.crossword.web.Basic</param>
                         <param>com.totsp.crossword.web.Gadget</param>
+                        <param>com.totsp.crossword.web.Wave</param>
                     </compileTargets>
                     <server>com.google.appengine.tools.development.gwt.AppEngineLauncher</server>
                     <extraJvmArgs>-Xmx512m -Dappengine.sdk.root=${gae.home} -javaagent:${gae.home}/lib/agent/appengine-agent.jar</extraJvmArgs>

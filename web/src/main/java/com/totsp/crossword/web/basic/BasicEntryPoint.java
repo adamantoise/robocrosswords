@@ -32,6 +32,7 @@ public class BasicEntryPoint implements EntryPoint {
 
 
         Game g = Injector.INSTANCE.game();
+        //g.setSmallView(true);
         g.loadList();
         
     }

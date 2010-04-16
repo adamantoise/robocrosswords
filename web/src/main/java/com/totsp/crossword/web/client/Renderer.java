@@ -18,6 +18,8 @@ import com.totsp.crossword.puz.Playboard;
 import com.totsp.crossword.puz.Playboard.Position;
 import com.totsp.crossword.puz.Playboard.Word;
 import com.totsp.crossword.web.client.resources.Resources;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -30,6 +32,9 @@ public class Renderer {
     private ClickListener listener;
     private Playboard board;
     private FlexTable table;
+    private Map<String, String> colorMap = new HashMap<String,String>();
+
+
     @Inject
     public Renderer(Resources resources, Provider<BoxView> boxViewProvider){
         this.resources = resources;
@@ -127,8 +132,27 @@ public class Renderer {
                     formatter.removeStyleName(down, across, resources.css().error());
                 }
 
+                if(box.getResponder() != null && colorMap.get(box.getResponder()) != null){
+                    view.getElement().getStyle().setColor(colorMap.get(box.getResponder()));
+                }
+
+
             }
         }
+    }
+
+    /**
+     * @return the colorMap
+     */
+    public Map<String, String> getColorMap() {
+        return colorMap;
+    }
+
+    /**
+     * @param colorMap the colorMap to set
+     */
+    public void setColorMap(Map<String, String> colorMap) {
+        this.colorMap = colorMap;
     }
 
 

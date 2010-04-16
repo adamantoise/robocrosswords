@@ -139,3 +139,15 @@
     left: -10px;
     top: -10px;
 }
+
+.clueLine {
+    color: white;
+    background-color: black;
+    border: 1px outset black;
+    padding-left: 5px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-right: 5px;
+    margin-bottom: 2px;
+    width: 425px;
+}

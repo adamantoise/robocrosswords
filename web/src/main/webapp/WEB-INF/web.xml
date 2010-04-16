@@ -29,6 +29,10 @@
         <url-pattern>/gadget/puzzle.rpc</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>PuzzleService</servlet-name>
+        <url-pattern>/gwave/puzzle.rpc</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>RefreshPuzzleListTask</servlet-name>
         <url-pattern>/cron/refresh</url-pattern>
     </servlet-mapping>

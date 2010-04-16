@@ -6,7 +6,7 @@
     <inherits name="com.google.gwt.inject.Inject"/>
     <inherits name="com.google.gwt.resources.Resources" />
     <inherits name="com.totsp.gwittir.Gwittir" />
-    <inherits name="com.totsp.gwittir.LoggingInfo" />
+    <inherits name="com.totsp.gwittir.LoggingDisabled" />
     <inherits name="com.google.gwt.user.theme.chrome.Chrome" />
     <inherits name="com.totsp.gwittir.serial.json.JSON" />
 

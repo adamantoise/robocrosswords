@@ -4,6 +4,7 @@
  */
 package com.totsp.crossword.web.gadget;
 
+import com.totsp.crossword.web.client.RetryLocalStorageServiceProxy;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
@@ -15,7 +16,6 @@ import com.google.inject.Provider;
 
 import com.totsp.crossword.web.client.BoxView;
 import com.totsp.crossword.web.client.Game;
-import com.totsp.crossword.web.client.LocalStorageServiceProxy;
 import com.totsp.crossword.web.client.PuzzleDescriptorView;
 import com.totsp.crossword.web.client.PuzzleListView;
 import com.totsp.crossword.web.client.PuzzleServiceProxy;
@@ -76,7 +76,7 @@ public class Module extends AbstractGinModule {
 
         @Override
         public PuzzleServiceProxy get() {
-            return new LocalStorageServiceProxy(service,  new CallStrategy(){
+            return new RetryLocalStorageServiceProxy(service,  new CallStrategy(){
 
             @Override
             public Request makeRequest(RequestBuilder builder) {
