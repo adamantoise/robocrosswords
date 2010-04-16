@@ -8,10 +8,14 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.inject.client.AbstractGinModule;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.totsp.crossword.puz.Puzzle;
 
 import com.totsp.crossword.web.client.BoxView;
 import com.totsp.crossword.web.client.Game;
@@ -84,7 +88,22 @@ public class Module extends AbstractGinModule {
                  return new FakeRequest();
             }
 
-        });
+        }){
+
+                @Override
+                public Request savePuzzle(Long listingId, Puzzle puzzle, final AsyncCallback callback) {
+                    DeferredCommand.add(new Command(){
+
+                        @Override
+                        public void execute() {
+                            callback.onSuccess(null);
+                        }
+                        
+                    });
+                    return new FakeRequest();
+                }
+
+        };
         }
     }
 

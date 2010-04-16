@@ -36,6 +36,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import com.google.inject.Inject;
+import com.totsp.crossword.puz.Box;
 
 import com.totsp.crossword.puz.Playboard;
 import com.totsp.crossword.puz.Playboard.Clue;
@@ -353,22 +354,12 @@ public class Game {
                         public void onSuccess(Puzzle result) {
                             History.newItem("play=" + id, false);
                             startPuzzle(id, result);
-                            keyboardIntercept.addKeyboardListener(l);
                             request = null;
                             status.setStyleName(css.statusHidden());
                             status.setText(" ");
                         }
                     });
 
-            renderer.setClickListener(new ClickListener() {
-                    @Override
-                    public void onClick(int across, int down) {
-                        Word w = board.setHighlightLetter(new Position(across,
-                                    down));
-                        render(w);
-                        keyboardIntercept.setFocus(true);
-                    }
-                });
         } else {
             request.cancel();
             request = null;
@@ -601,8 +592,6 @@ public class Game {
 
         mainPanel.setWidget(outer);
 
-        keyboardIntercept.setFocus(true);
-
         acrossScroll.setHeight(t.getOffsetHeight() + "px ");
         downScroll.setHeight(t.getOffsetHeight() + "px ");
         setFBSize();
@@ -644,6 +633,31 @@ public class Game {
                     }
                 });
         getDisplayChangeListener().onDisplayChange();
+        keyboardIntercept.addKeyboardListener(l);
+        renderer.setClickListener(new ClickListener() {
+            @Override
+            public void onClick(int across, int down) {
+                Word w = board.setHighlightLetter(new Position(across,
+                            down));
+                render(w);
+                keyboardIntercept.setFocus(true);
+            }
+        });
+        keyboardIntercept.setFocus(true);
+    }
+
+
+    public void play(String responder, int across, int down, char response){
+        if(this.board != null ){
+            Box b = this.board.getBoxes()[across][down];
+            if(b != null){
+                b.setResponse(response);
+                b.setResponder(responder);
+            }
+
+        }
+
+
     }
 
     public static interface DisplayChangeListener {

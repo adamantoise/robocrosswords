@@ -3,7 +3,7 @@
     <inherits name="com.totsp.crossword.web.Base" />
     <inherits name='org.cobogw.gwt.waveapi.gadget.WaveGadget' />
 
-    <set-property name="user.agent" value="safari" />
+    <!--set-property name="user.agent" value="safari" /-->
     <define-linker name="gadget"
         class="com.totsp.crossword.misc.GadgetLinker" />
     <add-linker name="gadget" />
