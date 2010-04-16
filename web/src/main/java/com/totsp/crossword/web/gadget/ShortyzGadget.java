@@ -25,7 +25,7 @@ import com.totsp.crossword.web.client.Game.DisplayChangeListener;
  *
  * @author kebernet
  */
-@ModulePrefs(title = "Shortyz", author = "Robert Cooper", author_quote = "If you only have two ducks, they are always in a row.", author_email = "kebernet@gmail.com", width = 750, height = 450, scrolling = true)
+@ModulePrefs(title = "Shortyz", author = "Robert Cooper", author_quote = "If you only have two ducks, they are always in a row.", author_email = "kebernet@gmail.com", width = 450, height = 500, scrolling = true)
 public class ShortyzGadget extends Gadget<UserPreferences>
     implements NeedsIntrinsics, NeedsDynamicHeight {
     UserPreferences prefs;
