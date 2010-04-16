@@ -46,6 +46,7 @@ import com.totsp.crossword.web.client.Renderer.ClickListener;
 import com.totsp.crossword.web.client.resources.Css;
 import com.totsp.crossword.web.client.resources.Resources;
 import com.totsp.crossword.web.shared.PuzzleDescriptor;
+
 import com.totsp.gwittir.client.fx.ui.SoftScrollArea;
 
 import java.util.Arrays;
@@ -59,8 +60,6 @@ import java.util.HashMap;
 public class Game {
     private static final WASDCodes CODES = GWT.create(WASDCodes.class);
     private static final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private SoftScrollArea ssa = new SoftScrollArea();
-    private boolean dirty;
     private Css css;
     private DisplayChangeListener displayChangeListener = new DisplayChangeListener() {
             @Override
@@ -69,10 +68,13 @@ public class Game {
             }
         };
 
+    private FlexTable t;
     private FocusPanel mainPanel = new FocusPanel();
     private HandlerRegistration closingRegistration = null;
     private HashMap<Clue, Widget> acrossClueViews = new HashMap<Clue, Widget>();
     private HashMap<Clue, Widget> downClueViews = new HashMap<Clue, Widget>();
+    private HorizontalPanel display = new HorizontalPanel();
+    private Label clueLine = new Label();
     private Playboard board;
     private KeyboardListener l = new KeyboardListener() {
             @Override
@@ -121,7 +123,6 @@ public class Game {
                     return;
                 }
 
-                
                 if ((keyCode == ' ') || (keyCode == KeyCodes.KEY_ENTER)) {
                     Word w = board.setHighlightLetter(board.getHighlightLetter());
                     render(w);
@@ -131,8 +132,10 @@ public class Game {
 
                 if ((keyCode == KeyCodes.KEY_BACKSPACE) ||
                         (keyCode == KeyCodes.KEY_DELETE)) {
+                    Position p = board.getHighlightLetter();
                     Word w = board.deleteLetter();
                     render(w);
+                    playStateListener.onLetterPlayed(responder, p.across, p.down, ' ');
                     dirty = true;
 
                     return;
@@ -140,8 +143,10 @@ public class Game {
 
                 if (((modifiers & KeyboardListener.MODIFIER_CTRL) == 0) &&
                         (ALPHA.indexOf(Character.toUpperCase(keyCode)) != -1)) {
+                    Position p = board.getHighlightLetter();
                     Word w = board.playLetter(Character.toUpperCase(keyCode));
                     render(w);
+                    playStateListener.onLetterPlayed(responder, p.across, p.down, Character.toUpperCase(keyCode));
                     dirty = true;
 
                     return;
@@ -160,16 +165,29 @@ public class Game {
     private Request request = null;
     private ScrollPanel acrossScroll = new ScrollPanel();
     private ScrollPanel downScroll = new ScrollPanel();
+    private SoftScrollArea ssa = new SoftScrollArea();
+    private String responder;
+    private PlayStateListener playStateListener = new PlayStateListener() {
+            @Override
+            public void onPuzzleLoaded(Puzzle puz) {
+                //noop
+            }
+
+            @Override
+            public void onLetterPlayed(String responder, int across, int down,
+                char response) {
+                // noop
+            }
+        };
+
     private TextArea keyboardIntercept = new TextArea();
     private Timer autoSaveTimer = null;
     private VerticalPanel verticalPanel = new VerticalPanel();
     private Widget lastClueWidget;
     private Clue[] acrossClues;
     private Clue[] downClues;
+    private boolean dirty;
     private boolean smallView;
-    private Label clueLine = new Label();
-    private FlexTable t;
-    private HorizontalPanel display = new HorizontalPanel();
 
     @Inject
     public Game(RootPanel rootPanel, PuzzleServiceProxy service,
@@ -212,7 +230,7 @@ public class Game {
         keyboardIntercept.setHeight("1px");
         keyboardIntercept.setStyleName(css.keyboardIntercept());
         rootPanel.add(keyboardIntercept);
-        
+
         verticalPanel.add(status);
         verticalPanel.setCellHorizontalAlignment(status,
             HasHorizontalAlignment.ALIGN_CENTER);
@@ -222,14 +240,82 @@ public class Game {
         display.add(verticalPanel);
         display.setWidth("97%");
         rootPanel.add(display);
-       
     }
 
-    public HorizontalPanel getDisplay(){
+    public Label getStatus(){
+        return this.status;
+    }
+
+    public HorizontalPanel getDisplay() {
         return this.display;
     }
 
-    public void loadList(){
+    /**
+     * @param displayChangeListener the displayChangeListener to set
+     */
+    public void setDisplayChangeListener(
+        DisplayChangeListener displayChangeListener) {
+        this.displayChangeListener = displayChangeListener;
+    }
+
+    /**
+     * @return the displayChangeListener
+     */
+    public DisplayChangeListener getDisplayChangeListener() {
+        return displayChangeListener;
+    }
+
+    /**
+     * Set the value of playStateListener
+     *
+     * @param newplayStateListener new value of playStateListener
+     */
+    public void setPlayStateListener(PlayStateListener newplayStateListener) {
+        this.playStateListener = newplayStateListener;
+    }
+
+    /**
+     * Get the value of playStateListener
+     *
+     * @return the value of playStateListener
+     */
+    public PlayStateListener getPlayStateListener() {
+        return this.playStateListener;
+    }
+
+    /**
+     * Set the value of responder
+     *
+     * @param newresponder new value of responder
+     */
+    public void setResponder(String newresponder) {
+        this.responder = newresponder;
+    }
+
+    /**
+     * Get the value of responder
+     *
+     * @return the value of responder
+     */
+    public String getResponder() {
+        return this.responder;
+    }
+
+    /**
+     * @param smallView the smallView to set
+     */
+    public void setSmallView(boolean smallView) {
+        this.smallView = smallView;
+    }
+
+    /**
+     * @return the smallView
+     */
+    public boolean isSmallView() {
+        return smallView;
+    }
+
+    public void loadList() {
         status.setText("Loading puzzles...");
         status.setStyleName(css.statusInfo());
         service.listPuzzles(new AsyncCallback<PuzzleDescriptor[]>() {
@@ -249,22 +335,6 @@ public class Game {
                     status.setText(" ");
                 }
             });
-    }
-
-
-    /**
-     * @param displayChangeListener the displayChangeListener to set
-     */
-    public void setDisplayChangeListener(
-        DisplayChangeListener displayChangeListener) {
-        this.displayChangeListener = displayChangeListener;
-    }
-
-    /**
-     * @return the displayChangeListener
-     */
-    public DisplayChangeListener getDisplayChangeListener() {
-        return displayChangeListener;
     }
 
     public void loadPuzzle(final Long id) {
@@ -312,82 +382,85 @@ public class Game {
     }
     }-*/;
 
+    private void ensureVisible(int x, int y) {
+        int maxScrollX = ssa.getMaxHorizontalScrollPosition();
+        int maxScrollY = ssa.getMaxScrollPosition();
+
+        int currentMinX = ssa.getHorizontalScrollPosition();
+        int currentMaxX = ssa.getOffsetWidth() + currentMinX;
+        int currentMinY = ssa.getScrollPosition();
+        int currentMaxY = ssa.getOffsetHeight() + currentMinY;
+
+        GWT.log("X range " + currentMinX + " to " + currentMaxX, null);
+        GWT.log("Desired X:" + x, null);
+        GWT.log("Y range " + currentMinY + " to " + currentMaxY, null);
+        GWT.log("Desired Y:" + y, null);
+
+        int newScrollX = ssa.getHorizontalScrollPosition();
+        int newScrollY = ssa.getScrollPosition();
+
+        if ((x < currentMinX) || (x > currentMaxX)) {
+            newScrollX = (x > maxScrollX) ? maxScrollX : x;
+        }
+
+        if ((y < currentMinY) || (y > currentMaxY)) {
+            newScrollY = (y > maxScrollY) ? maxScrollY : y;
+        }
+
+        ssa.setHorizontalScrollPosition(newScrollX);
+        ssa.setScrollPosition(newScrollY);
+    }
+
     private void render(Word w) {
         renderer.render(w);
 
         Position highlight = board.getHighlightLetter();
-        this.ensureVisible((highlight.across +1) * 26, (highlight.down + 1) * 26);
+        this.ensureVisible((highlight.across + 1) * 26,
+            (highlight.down + 1) * 26);
         this.ensureVisible(highlight.across * 26, highlight.down * 26);
-        
-        
+
         if (lastClueWidget != null) {
             lastClueWidget.removeStyleName(css.highlightClue());
         }
-        Clue clue = board.getClue();
-        if (board.isAcross() && (board.getClue() != null)) {
 
+        Clue clue = board.getClue();
+
+        if (board.isAcross() && (board.getClue() != null)) {
             lastClueWidget = acrossClueViews.get(clue);
             acrossScroll.ensureVisible(lastClueWidget);
-            clueLine.setText("(across) "+clue.number+". "+clue.hint);
+            clueLine.setText("(across) " + clue.number + ". " + clue.hint);
         } else if (board.getClue() != null) {
             lastClueWidget = downClueViews.get(board.getClue());
             downScroll.ensureVisible(lastClueWidget);
-            clueLine.setText("(down) "+clue.number+". "+clue.hint);
+            clueLine.setText("(down) " + clue.number + ". " + clue.hint);
         }
 
         lastClueWidget.addStyleName(css.highlightClue());
         keyboardIntercept.setFocus(true);
-
     }
 
-    private void ensureVisible(int x, int y){
-        int maxScrollX = ssa.getMaxHorizontalScrollPosition();
-    	int maxScrollY = ssa.getMaxScrollPosition() ;
-
-
-    	int currentMinX = ssa.getHorizontalScrollPosition();
-    	int currentMaxX = ssa.getOffsetWidth() + currentMinX;
-    	int currentMinY = ssa.getScrollPosition();
-    	int currentMaxY = ssa.getOffsetHeight() + currentMinY;
-
-    	GWT.log("X range "+currentMinX+" to "+currentMaxX, null);
-    	GWT.log("Desired X:"+x, null);
-    	GWT.log("Y range "+currentMinY+" to "+currentMaxY, null);
-    	GWT.log("Desired Y:"+y, null);
-
-    	int newScrollX = ssa.getHorizontalScrollPosition();
-        int newScrollY = ssa.getScrollPosition();
-    	if( x < currentMinX || x > currentMaxX ){
-    		newScrollX = x > maxScrollX ? maxScrollX : x;
-    	}
-    	if( y < currentMinY || y > currentMaxY ){
-    		newScrollY = y > maxScrollY ? maxScrollY : y;
-    	}
-        ssa.setHorizontalScrollPosition(newScrollX);
-        ssa.setScrollPosition(newScrollY);
-
-    }
-
-    private void render() {
+    public void render() {
         render(null);
     }
 
-    private void startPuzzle(final long listingId, final Puzzle puzzle) {
-
+    public void startPuzzle(final long listingId, final Puzzle puzzle) {
+        this.playStateListener.onPuzzleLoaded(puzzle);
         VerticalPanel outer = new VerticalPanel();
         board = new Playboard(puzzle);
         board.setResponder(this.getResponder());
         board.setHighlightLetter(new Position(0, 0));
-        if(board.getBoxes()[0][0] == null ){
+
+        if (board.getBoxes()[0][0] == null) {
             board.moveRight();
         }
-        if(this.isSmallView() ){
+
+        if (this.isSmallView()) {
             outer.add(this.clueLine);
-            outer.setCellHorizontalAlignment(this.clueLine, HasHorizontalAlignment.ALIGN_CENTER);
+            outer.setCellHorizontalAlignment(this.clueLine,
+                HasHorizontalAlignment.ALIGN_CENTER);
             this.clueLine.setStyleName(css.clueLine());
         }
 
-        
         ssa.setWidth("425px");
         ssa.setHeight("425px");
         ssa.addMouseListener(ssa.MOUSE_MOVE_SCROLL_LISTENER);
@@ -461,7 +534,7 @@ public class Game {
 
         downScroll.setWidget(list);
 
-        if(!this.isSmallView()){
+        if (!this.isSmallView()) {
             hp.add(acrossScroll);
             hp.add(downScroll);
         }
@@ -479,9 +552,11 @@ public class Game {
                         History.newItem("list");
                     }
                 });
-        if(!this.isSmallView()){
+
+        if (!this.isSmallView()) {
             back.getElement().getStyle().setMarginRight(30, Unit.PX);
         }
+
         controls.add(back);
 
         controls.add(new Button("Show Errors",
@@ -571,43 +646,14 @@ public class Game {
         getDisplayChangeListener().onDisplayChange();
     }
 
-    /**
-     * @return the smallView
-     */
-    public boolean isSmallView() {
-        return smallView;
-    }
-
-    /**
-     * @param smallView the smallView to set
-     */
-    public void setSmallView(boolean smallView) {
-        this.smallView = smallView;
-    }
-
     public static interface DisplayChangeListener {
         public void onDisplayChange();
     }
 
+    public static interface PlayStateListener {
+        public void onLetterPlayed(String responder, int across, int down,
+            char response);
 
-    private String responder;
-
-    /**
-     * Get the value of responder
-     *
-     * @return the value of responder
-     */
-    public String getResponder() {
-        return this.responder;
+        public void onPuzzleLoaded(Puzzle puz);
     }
-
-    /**
-     * Set the value of responder
-     *
-     * @param newresponder new value of responder
-     */
-    public void setResponder(String newresponder) {
-        this.responder = newresponder;
-    }
-
 }

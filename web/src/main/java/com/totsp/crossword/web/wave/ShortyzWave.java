@@ -4,7 +4,9 @@
  */
 package com.totsp.crossword.web.wave;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.gadgets.client.DynamicHeightFeature;
 import com.google.gwt.gadgets.client.Gadget.ModulePrefs;
 import com.google.gwt.gadgets.client.IntrinsicFeature;
@@ -18,15 +20,24 @@ import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
+import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.web.client.GadgetResponse;
 
 import com.totsp.crossword.web.client.Game;
 import com.totsp.crossword.web.client.Game.DisplayChangeListener;
+import com.totsp.crossword.web.client.Game.PlayStateListener;
+import com.totsp.crossword.web.client.PuzzleCodec;
+import com.totsp.gwittir.serial.client.SerializationException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import org.cobogw.gwt.waveapi.gadget.client.Participant;
 import org.cobogw.gwt.waveapi.gadget.client.ParticipantUpdateEvent;
 import org.cobogw.gwt.waveapi.gadget.client.ParticipantUpdateEventHandler;
+import org.cobogw.gwt.waveapi.gadget.client.State;
+import org.cobogw.gwt.waveapi.gadget.client.StateUpdateEvent;
+import org.cobogw.gwt.waveapi.gadget.client.StateUpdateEventHandler;
 import org.cobogw.gwt.waveapi.gadget.client.WaveGadget;
 
 
@@ -37,14 +48,42 @@ import org.cobogw.gwt.waveapi.gadget.client.WaveGadget;
 @ModulePrefs(title = "Shortyz", author = "Robert Cooper", author_quote = "If you only have two ducks, they are always in a row.", author_email = "kebernet@gmail.com", width = 850, height = 450, scrolling = true)
 public class ShortyzWave extends WaveGadget<UserPreferences>
     implements NeedsIntrinsics, NeedsDynamicHeight {
-
+    private static final String INTIAL_PUZZLE_KEY = "intial";
     private static final String[] COLORS = new String[] { "blue", "green", "gray", "violet", "lime" };
+    private static final PuzzleCodec CODEC = GWT.create(PuzzleCodec.class);
+    private static final PlayCodec PLAY_CODEC = GWT.create(PlayCodec.class);
     private FlexTable userList = new FlexTable();
+    private Set<String> stateKeysSeen = new HashSet<String>();
+    private PlayStateListener deltaStateListener = new PlayStateListener(){
+
+        @Override
+        public void onLetterPlayed(String responder, int across, int down, char response) {
+            Play play = new Play();
+            play.setTime(getWave().getTime());
+            play.setAcross(across);
+            play.setDown(down);
+            play.setResponse(response);
+            play.setResponder(responder);
+            HashMap<String, String> delta = new HashMap<String, String>();
+            try {
+                delta.put("play-" + play.getTime(), PLAY_CODEC.serialize(play));
+                getWave().getState().submitDelta(delta);
+            } catch (SerializationException ex) {
+                Window.alert("Failed to submit play"+ex.toString());
+            }
+
+        }
+
+        @Override
+        public void onPuzzleLoaded(Puzzle puz) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+    };
+    private HandlerRegistration startupStateHanlder;
 
     public ShortyzWave(){
         super();
-        Window.alert("Create.");
-
     }
 
 
@@ -53,6 +92,7 @@ public class ShortyzWave extends WaveGadget<UserPreferences>
 
     @Override
     public void initializeFeature(IntrinsicFeature feature) {
+
     }
 
     public static native void makePostRequest(String url, String postdata,
@@ -79,7 +119,7 @@ public class ShortyzWave extends WaveGadget<UserPreferences>
     @Override
     protected void init(UserPreferences preferences) {
         this.prefs = preferences;
-        Game g = Injector.INSTANCE.game();
+        final Game g = Injector.INSTANCE.game();
         g.setDisplayChangeListener(new DisplayChangeListener() {
                 @Override
                 public void onDisplayChange() {
@@ -95,12 +135,54 @@ public class ShortyzWave extends WaveGadget<UserPreferences>
             @Override
             public void onUpdate(ParticipantUpdateEvent event) {
                 Injector.INSTANCE.renderer().setColorMap(provisionColors(event.getParticipants()));
+                g.render();
             }
 
         });
 
+        this.startupStateHanlder = this.getWave().addStateUpdateEventHandler(new StateUpdateEventHandler(){
+
+            @Override
+            public void onUpdate(StateUpdateEvent event) {
+                final State state = event.getState();
+                if(state.get(INTIAL_PUZZLE_KEY) == null){
+                    g.loadList();
+                    g.setPlayStateListener(new PlayStateListener(){
+
+                        @Override
+                        public void onLetterPlayed(String responder, int across, int down, char response) {
+                            //
+                        }
+
+                        @Override
+                        public void onPuzzleLoaded(Puzzle puz) {
+                            try {
+                                startupStateHanlder.removeHandler();
+                                HashMap<String, String> delta = new HashMap<String, String>();
+                                delta.put(INTIAL_PUZZLE_KEY, CODEC.serialize(puz));
+                                state.submitDelta(delta);
+                                g.setPlayStateListener(deltaStateListener);
+                            } catch (SerializationException ex) {
+                                Window.alert("Critical error "+ex.toString());
+                            }
+
+                        }
+
+                    });
+                } else {
+                    try {
+                        startupStateHanlder.removeHandler();
+                        g.startPuzzle(0L, CODEC.deserialize(state.get(INTIAL_PUZZLE_KEY)));
+                        g.setPlayStateListener(deltaStateListener);
+                    } catch (SerializationException ex) {
+                        Window.alert("Critical error: "+ex.toString());
+                    }
+                }
+
+            }
+
+        });
         
-        g.loadList();
         
 
     }
