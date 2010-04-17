@@ -342,15 +342,26 @@ public class IO {
 
         os.write(0);
     }
+
+    public static void save(Puzzle puz, OutputStream puzzleOutputStream, OutputStream metaOutputStream) throws IOException{
+        IO.saveNative(puz, puzzleOutputStream);
+    	puzzleOutputStream.close();
+        IO.writeCustom(puz, metaOutputStream);
+        metaOutputStream.close();
+    }
     
     public static void save(Puzzle puz, File baseFile) throws IOException {
     	File metaFile = new File(baseFile.getParentFile(), baseFile.getName().substring(0, baseFile.getName().lastIndexOf(".")) + ".shortyz");
-    	FileOutputStream fos = new FileOutputStream(baseFile);
-    	IO.saveNative(puz, fos);
-    	fos.close();
-    	fos = new FileOutputStream(metaFile);
-    	IO.writeCustom(puz, fos);
-    	fos.close();
+    	FileOutputStream puzzle= new FileOutputStream(baseFile);
+    	FileOutputStream meta = new FileOutputStream(metaFile);
+    	IO.save(puz, puzzle, meta);
+    }
+
+    public static Puzzle load(InputStream puzzleInput, InputStream metaInput ) throws IOException{
+        Puzzle puz = IO.loadNative(puzzleInput);
+        puzzleInput.close();
+        IO.readCustom(puz, metaInput);
+        return puz;
     }
     
     public static Puzzle load(File baseFile) throws IOException {
