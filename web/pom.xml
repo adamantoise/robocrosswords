@@ -213,7 +213,7 @@
         <dependency>
             <groupId>com.google.appengine.orm</groupId>
             <artifactId>datanucleus-appengine</artifactId>
-            <version>1.0.4.1</version>
+            <version>1.0.6.final</version>
         </dependency>
 
         <dependency>
@@ -385,8 +385,8 @@
                     <gen>target/gwtgen</gen>
                     <runTarget>/</runTarget>
                     <compileTargets>
-                        <!--param>com.totsp.crossword.web.Basic</param>
-                        <param>com.totsp.crossword.web.Gadget</param-->
+                        <param>com.totsp.crossword.web.Basic</param>
+                        <param>com.totsp.crossword.web.Gadget</param>
                         <param>com.totsp.crossword.web.Wave</param>
                     </compileTargets>
                     <server>com.google.appengine.tools.development.gwt.AppEngineLauncher</server>

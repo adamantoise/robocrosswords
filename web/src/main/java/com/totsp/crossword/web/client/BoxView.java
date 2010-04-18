@@ -6,7 +6,9 @@
 package com.totsp.crossword.web.client;
 
 import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.totsp.crossword.puz.Box;
 import com.totsp.crossword.web.client.resources.Resources;
@@ -27,12 +29,18 @@ public class BoxView extends AbstractBoundWidget<Box> {
     @Inject
     public BoxView(Resources resources){
         AbsolutePanel main = new AbsolutePanel();
-        main.setStyleName(resources.css().boxPanel());
+        
         number.setStyleName(resources.css().number());
         letter.setStyleName(resources.css().letter());
         main.add(number, 0,0);
-        main.add(letter, 0,5);
+        main.add(letter, 0,0);
+
         super.initWidget(main);
+        this.setStyleName(resources.css().boxPanel());
+    }
+
+    public Widget getLetter(){
+        return this.letter;
     }
 
     @Override

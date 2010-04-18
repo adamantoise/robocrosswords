@@ -31,6 +31,7 @@ import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -94,7 +95,8 @@ public class Game {
                         (keyCode == CODES.s()))) {
                     Word w = board.moveDown();
                     render(w);
-
+                    playStateListener.onCursorMoved(board.getHighlightLetter().across, board.getHighlightLetter().down);
+                    
                     return;
                 }
 
@@ -103,6 +105,7 @@ public class Game {
                         (keyCode == CODES.w()))) {
                     Word w = board.movieUp();
                     render(w);
+                    playStateListener.onCursorMoved(board.getHighlightLetter().across, board.getHighlightLetter().down);
 
                     return;
                 }
@@ -112,7 +115,7 @@ public class Game {
                         (keyCode == CODES.a()))) {
                     Word w = board.moveLeft();
                     render(w);
-
+                    playStateListener.onCursorMoved(board.getHighlightLetter().across, board.getHighlightLetter().down);
                     return;
                 }
 
@@ -121,7 +124,7 @@ public class Game {
                         (keyCode == CODES.d()))) {
                     Word w = board.moveRight();
                     render(w);
-
+                    playStateListener.onCursorMoved(board.getHighlightLetter().across, board.getHighlightLetter().down);
                     return;
                 }
 
@@ -137,10 +140,11 @@ public class Game {
                     Position p = board.getHighlightLetter();
                     Word w = board.deleteLetter();
                     render(w);
+                    playStateListener.onCursorMoved(board.getHighlightLetter().across, board.getHighlightLetter().down);
                     playStateListener.onLetterPlayed(responder, p.across,
-                        p.down, ' ', board.getBoxes()[p.across][p.down].isCheated());
+                        p.down, ' ',
+                        board.getBoxes()[p.across][p.down].isCheated());
                     dirty = true;
-
                     return;
                 }
 
@@ -150,7 +154,9 @@ public class Game {
                     Word w = board.playLetter(Character.toUpperCase(keyCode));
                     render(w);
                     playStateListener.onLetterPlayed(responder, p.across,
-                        p.down, Character.toUpperCase(keyCode), board.getBoxes()[p.across][p.down].isCheated());
+                        p.down, Character.toUpperCase(keyCode),
+                        board.getBoxes()[p.across][p.down].isCheated());
+                    playStateListener.onCursorMoved(board.getHighlightLetter().across, board.getHighlightLetter().down);
                     dirty = true;
 
                     return;
@@ -169,6 +175,7 @@ public class Game {
     private Request request = null;
     private ScrollPanel acrossScroll = new ScrollPanel();
     private ScrollPanel downScroll = new ScrollPanel();
+    private SimplePanel below = new SimplePanel();
     private SoftScrollArea ssa = new SoftScrollArea();
     private String responder;
     private PlayStateListener playStateListener = new PlayStateListener() {
@@ -181,6 +188,11 @@ public class Game {
             public void onLetterPlayed(String responder, int across, int down,
                 char response, boolean cheated) {
                 // noop
+            }
+
+            @Override
+            public void onCursorMoved(int across, int down) {
+                GWT.log("Move to "+across+", "+down, null);
             }
         };
 
@@ -243,9 +255,14 @@ public class Game {
         verticalPanel.add(mainPanel);
         verticalPanel.setCellHorizontalAlignment(mainPanel,
             HasHorizontalAlignment.ALIGN_CENTER);
+        verticalPanel.add(below);
         display.add(verticalPanel);
         display.setWidth("97%");
         rootPanel.add(display);
+    }
+
+    public SimplePanel getBelow() {
+        return this.below;
     }
 
     public HorizontalPanel getDisplay() {
@@ -359,6 +376,7 @@ public class Game {
                     mainPanel.setWidget(plv);
                     plv.setValue(Arrays.asList(result));
                     setFBSize();
+                    displayChangeListener.onDisplayChange();
                     status.setStyleName(css.statusHidden());
                     status.setText(" ");
                 }
@@ -393,9 +411,11 @@ public class Game {
         }
     }
 
-    public void play(String responder, int across, int down, char response, boolean cheated) {
+    public void play(String responder, int across, int down, char response,
+        boolean cheated) {
         if (this.board != null) {
             Box b = this.board.getBoxes()[across][down];
+
             if (b != null) {
                 b.setResponse(response);
                 b.setResponder(responder);
@@ -561,9 +581,12 @@ public class Game {
                     Position change = board.revealLetter();
                     char solution = board.getBoxes()[p.across][p.down].getSolution();
                     dirty = true;
-                    if(change != null){
-                        playStateListener.onLetterPlayed(responder, p.across, p.down, solution, true);
+
+                    if (change != null) {
+                        playStateListener.onLetterPlayed(responder, p.across,
+                                p.down, solution, true);
                     }
+
                     render();
                 }
             }));
@@ -573,10 +596,14 @@ public class Game {
                 public void onClick(ClickEvent event) {
                     Word word = board.getCurrentWord();
                     List<Position> changes = board.revealWord();
-                    for(Position p: changes){
-                       playStateListener.onLetterPlayed(responder, p.across, p.down,
-                               board.getBoxes()[p.across][p.down].getSolution(), true);
+
+                    for (Position p : changes) {
+                        playStateListener.onLetterPlayed(responder, p.across,
+                                p.down,
+                                board.getBoxes()[p.across][p.down].getSolution(),
+                                true);
                     }
+
                     dirty = true;
 
                     render();
@@ -587,10 +614,14 @@ public class Game {
                 @Override
                 public void onClick(ClickEvent event) {
                     List<Position> changes = board.revealPuzzle();
-                    for(Position p: changes){
-                       playStateListener.onLetterPlayed(responder, p.across, p.down,
-                               board.getBoxes()[p.across][p.down].getSolution(), true);
+
+                    for (Position p : changes) {
+                        playStateListener.onLetterPlayed(responder, p.across,
+                                p.down,
+                                board.getBoxes()[p.across][p.down].getSolution(),
+                                true);
                     }
+
                     dirty = true;
                     render();
                 }
@@ -649,6 +680,7 @@ public class Game {
                 public void onClick(int across, int down) {
                     Word w = board.setHighlightLetter(new Position(across, down));
                     render(w);
+                    playStateListener.onCursorMoved(board.getHighlightLetter().across, board.getHighlightLetter().down);
                     keyboardIntercept.setFocus(true);
                 }
             });
@@ -723,6 +755,8 @@ public class Game {
     }
 
     public static interface PlayStateListener {
+        public void onCursorMoved(int across, int down);
+
         public void onLetterPlayed(String responder, int across, int down,
             char response, boolean cheated);
 

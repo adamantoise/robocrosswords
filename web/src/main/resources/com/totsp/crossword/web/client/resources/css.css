@@ -36,15 +36,29 @@
 }
 
 .letter {
-    width: 25px;
-    height: 25px;
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    height: 100%;
     text-align: center;
     vertical-align: middle;
+    padding-top: 5px;
+}
+
+.cursor {
+    width: 23px;
+    height: 23px;
+    border: 2px dashed red;
+    margin: 0px;
+    padding: 0px;
 }
 
 .boxPanel {
-    width: 25px;
-    height: 25px;
+    width: 27px;
+    height: 27px;
+    margin: 0px;
+    padding: 0px;
+    border: none;
 }
 
 .currentHighlightWord {

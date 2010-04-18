@@ -11,6 +11,6 @@ import com.totsp.gwittir.serial.json.client.JSONCodec;
  *
  * @author kebernet
  */
-public interface PlayCodec extends JSONCodec<Play> {
+public interface PlayContainerCodec extends JSONCodec<PlayContainer> {
 
 }

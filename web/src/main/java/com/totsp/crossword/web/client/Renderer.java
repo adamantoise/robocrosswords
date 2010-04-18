@@ -5,11 +5,13 @@
 
 package com.totsp.crossword.web.client;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
 import com.google.gwt.user.client.ui.SourcesTableEvents;
 import com.google.gwt.user.client.ui.TableListener;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -33,6 +35,7 @@ public class Renderer {
     private Playboard board;
     private FlexTable table;
     private Map<String, String> colorMap = new HashMap<String,String>();
+    private HashMap<String, Position> cursors = new HashMap<String, Position>();
 
 
     @Inject
@@ -85,6 +88,28 @@ public class Renderer {
 
     }
 
+    public void updateCursor(String responder, Position position){
+        Widget w = null;
+
+        Position old = this.cursors.get(responder);
+        if(old != null){
+            w = table.getWidget(old.down, old.across);
+            if(w instanceof BoxView && w != null){
+                w.setStyleName(resources.css().boxPanel());
+            }
+        } else {
+            cursors.put(responder, position);
+            return;
+        }
+        w = table.getWidget(position.down, position.across);
+        if(w instanceof BoxView && w != null){
+            w.setStyleName(resources.css().cursor());
+            w.getElement().getStyle().setBorderColor(colorMap.get(responder));
+            cursors.put(responder, position);
+        }
+    }
+
+
     public void setClickListener(ClickListener l){
         this.listener = l;
     }
@@ -116,11 +141,7 @@ public class Renderer {
                     formatter.addStyleName(down, across, resources.css().cheated());
                 }
 
-                if(currentWord.checkInWord(across, down)){
-                    formatter.addStyleName(down, across, resources.css().currentHighlightWord());
-                } else {
-                    formatter.removeStyleName(down, across, resources.css().currentHighlightWord());
-                }
+                
 
                 if(currentHighlightLetter.across == across && currentHighlightLetter.down == down){
                     formatter.addStyleName(down, across, resources.css().currentLetterHighlight());
@@ -137,7 +158,11 @@ public class Renderer {
                     view.getElement().getStyle().setColor(colorMap.get(box.getResponder()));
                 }
 
-
+                if(currentWord.checkInWord(across, down)){
+                    formatter.addStyleName(down, across, resources.css().currentHighlightWord());
+                } else {
+                    formatter.removeStyleName(down, across, resources.css().currentHighlightWord());
+                }
             }
         }
     }
