@@ -1,3 +1,15 @@
+.table {
+    color: black;
+    background-color: black;
+}
+
+.ssa {
+    border: 1px solid black;
+    border-radius: 3px;
+    \-moz-border-radius: 3px;
+    \-webkit-border-radius: 3px;
+}
+
 .black {
     color: black;
     background-color: black;
@@ -13,7 +25,7 @@
     vertical-align: top;
     width: 27px;
     height: 27px;
-    border: 1px solid black;
+    /*border: 1px solid black;*/
 }
 
 .number {
@@ -41,7 +53,7 @@
 
 .currentLetterHighlight {
     background-color: #EB6000;
-    border: 1px outset black;
+    /*border: 1px outset black;*/
 }
 
 .highlightClue{

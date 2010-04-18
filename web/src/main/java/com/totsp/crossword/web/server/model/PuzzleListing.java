@@ -6,7 +6,6 @@ package com.totsp.crossword.web.server.model;
 
 import com.google.appengine.api.datastore.Blob;
 
-
 import java.io.Serializable;
 
 import java.util.Date;
@@ -34,6 +33,7 @@ import javax.persistence.TemporalType;
 public class PuzzleListing implements Serializable {
     private static final long serialVersionUID = 1L;
     private Blob boxesSerial;
+    private Blob metaSerial;
     @Temporal(TemporalType.DATE)
     private Date pubDate;
     @Id
@@ -66,6 +66,24 @@ public class PuzzleListing implements Serializable {
 
     public Long getId() {
         return id;
+    }
+
+    /**
+     * Set the value of metaSerial
+     *
+     * @param newmetaSerial new value of metaSerial
+     */
+    public void setMetaSerial(Blob newmetaSerial) {
+        this.metaSerial = newmetaSerial;
+    }
+
+    /**
+     * Get the value of metaSerial
+     *
+     * @return the value of metaSerial
+     */
+    public Blob getMetaSerial() {
+        return this.metaSerial;
     }
 
     /**

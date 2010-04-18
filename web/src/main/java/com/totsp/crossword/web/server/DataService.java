@@ -6,22 +6,25 @@
 package com.totsp.crossword.web.server;
 
 import com.google.appengine.api.datastore.Blob;
+import com.totsp.crossword.io.IO;
 import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.web.server.model.PuzzleListing;
 import com.totsp.crossword.web.server.model.SavedPuzzle;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.cache.Cache;
+import javax.cache.CacheException;
+import javax.cache.CacheFactory;
+import javax.cache.CacheManager;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -54,15 +57,12 @@ public class DataService {
 
 
             SavedPuzzle sp = (SavedPuzzle) q.getSingleResult();
-            Puzzle p = (Puzzle) this.deserialize(sp.getPuzzleSerial().getBytes());
+            Puzzle p = IO.load(new ByteArrayInputStream(sp.getPuzzleSerial().getBytes()),
+                    new ByteArrayInputStream(sp.getMetaSerial().getBytes()));
             t.commit();
             return p;
 
         } catch (IOException ex) {
-            Logger.getLogger(DataService.class.getName()).log(Level.SEVERE, null, ex);
-             t.rollback();
-            return null;
-        } catch (ClassNotFoundException ex) {
             Logger.getLogger(DataService.class.getName()).log(Level.SEVERE, null, ex);
              t.rollback();
             return null;
@@ -83,7 +83,14 @@ public class DataService {
 
             SavedPuzzle sp = (SavedPuzzle) q.getSingleResult();
             try{
-                sp.setPuzzleSerial(new Blob(this.serialize(puzzle)));
+                //sp.setPuzzleSerial(new Blob(this.serialize(puzzle)));
+
+                ByteArrayOutputStream puz = new ByteArrayOutputStream();
+                ByteArrayOutputStream meta = new ByteArrayOutputStream();
+                IO.save(puzzle, puz, meta);
+                sp.setPuzzleSerial(new Blob(puz.toByteArray()));
+                sp.setMetaSerial(new Blob(meta.toByteArray()));
+
             } catch(IOException ioe){
                 t.rollback();
                 throw new RuntimeException(ioe);
@@ -96,7 +103,11 @@ public class DataService {
             SavedPuzzle sp = new SavedPuzzle();
             sp.setPuzzleDate(puzzle.getDate());
             try{
-                sp.setPuzzleSerial( new Blob(this.serialize(puzzle)));
+                ByteArrayOutputStream puz = new ByteArrayOutputStream();
+                ByteArrayOutputStream meta = new ByteArrayOutputStream();
+                IO.save(puzzle, puz, meta);
+                sp.setPuzzleSerial(new Blob(puz.toByteArray()));
+                sp.setMetaSerial(new Blob(meta.toByteArray()));
             } catch(IOException ioe){
                 t.rollback();
                 throw new RuntimeException(ioe);
@@ -120,11 +131,11 @@ public class DataService {
             List<SavedPuzzle> saves = q.getResultList();
             for(SavedPuzzle save: saves ){
                 try {
-                    Puzzle p = (Puzzle) this.deserialize(save.getPuzzleSerial().getBytes());
+                    Puzzle p = IO.load( new ByteArrayInputStream(save.getPuzzleSerial().getBytes()),
+                            new ByteArrayInputStream(save.getMetaSerial().getBytes()) );
+
                     results.put(save.getId(), p);
                 } catch (IOException ex) {
-                    Logger.getLogger(DataService.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (ClassNotFoundException ex) {
                     Logger.getLogger(DataService.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -203,25 +214,6 @@ public class DataService {
         this.entityManager.close();
     }
 
-//    public List<PuzzleListing> findThisWeeksPuzzleListings(){
-//
-//    }
-
-
-
-    byte[] serialize(Serializable s) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(s);
-        oos.close();
-        return baos.toByteArray();
-    }
-
-    Serializable deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
-        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-        ObjectInputStream ois = new ObjectInputStream(bais);
-        return  (Serializable) ois.readObject();
-    }
 
     PuzzleListing findListingById(Class<PuzzleListing> aClass, Long puzzleId) {
         PuzzleListing result = (PuzzleListing) this.findById(PuzzleListing.class, puzzleId);

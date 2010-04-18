@@ -7,10 +7,13 @@ package com.totsp.crossword.web.wave;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.dom.client.Style.FontWeight;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.gadgets.client.AnalyticsFeature;
 import com.google.gwt.gadgets.client.DynamicHeightFeature;
 import com.google.gwt.gadgets.client.Gadget.ModulePrefs;
 import com.google.gwt.gadgets.client.IntrinsicFeature;
+import com.google.gwt.gadgets.client.NeedsAnalytics;
 import com.google.gwt.gadgets.client.NeedsDynamicHeight;
 import com.google.gwt.gadgets.client.NeedsIntrinsics;
 import com.google.gwt.gadgets.client.UserPreferences;
@@ -59,14 +62,13 @@ import java.util.Set;
  */
 @ModulePrefs(title = "Shortyz", author = "Robert Cooper", author_quote = "If you only have two ducks, they are always in a row.", author_email = "kebernet@gmail.com", width = 900, height = 450, scrolling = true)
 public class ShortyzWave extends WaveGadget<UserPreferences>
-    implements NeedsIntrinsics, NeedsDynamicHeight {
+    implements NeedsIntrinsics, NeedsDynamicHeight, NeedsAnalytics {
     private static final String INTIAL_PUZZLE_KEY = "intial";
     private static final String[] COLORS = new String[] {
             "blue", "green", "gray", "violet", "lime"
         };
     private static final PuzzleCodec CODEC = GWT.create(PuzzleCodec.class);
     private static final PlayCodec PLAY_CODEC = GWT.create(PlayCodec.class);
-
     UserPreferences prefs;
     private DynamicHeightFeature height;
     private FlexTable userList = new FlexTable();
@@ -76,13 +78,14 @@ public class ShortyzWave extends WaveGadget<UserPreferences>
     private PlayStateListener deltaStateListener = new PlayStateListener() {
             @Override
             public void onLetterPlayed(String responder, int across, int down,
-                char response) {
+                char response, boolean cheated) {
                 Play play = new Play();
                 play.setTime(getWave().getTime());
                 play.setAcross(across);
                 play.setDown(down);
                 play.setResponse(response);
                 play.setResponder(responder);
+                play.setCheated(cheated);
 
                 HashMap<String, String> delta = new HashMap<String, String>();
 
@@ -102,6 +105,7 @@ public class ShortyzWave extends WaveGadget<UserPreferences>
         };
 
     private Set<String> stateKeysSeen = new HashSet<String>();
+    private String waitMarker = System.currentTimeMillis() + "";
 
     public ShortyzWave() {
         super();
@@ -137,28 +141,79 @@ public class ShortyzWave extends WaveGadget<UserPreferences>
         this.prefs = preferences;
 
         final Game g = Injector.INSTANCE.game();
+        g.setShowBackButton(false);
         g.setDisplayChangeListener(new DisplayChangeListener() {
                 @Override
                 public void onDisplayChange() {
                     height.adjustHeight();
                 }
             });
-        this.userList.setWidth("100px");
+        this.userList.setWidth("250px");
         g.getDisplay().add(userList);
 
-        final StateUpdateEventHandler externaPlaysHandler = new StateUpdateEventHandler() {
+        final StateUpdateEventHandler externalPlayHandler = new StateUpdateEventHandler() {
                 @Override
                 public void onUpdate(final StateUpdateEvent event) {
+                    final State state = event.getState();
+                    
+                    if(!g.isPlaying()){
+                        try {
+                            g.startPuzzle(0L, CODEC.deserialize(state.get(INTIAL_PUZZLE_KEY)));
+                        } catch (SerializationException ex) {
+                            Window.alert("Exception trying to override the list "+ex);
+                        }
+
+                        ArrayList<String> updateKeys = new ArrayList<String>();
+                        JsArrayString keys = event.getState().getKeys();
+
+                        for (int i = 0; i < keys.length(); i++) {
+                            String key = keys.get(i);
+
+                            if (!"undefined".equals("" + key) && key.startsWith("play-") &&
+                                    !stateKeysSeen.contains(key)) {
+                                updateKeys.add(key);
+                                stateKeysSeen.add(key);
+                            }
+                        }
+
+                        final String[] keysArray = updateKeys.toArray(new String[updateKeys.size()]);
+                        Arrays.sort(keysArray);
+
+                        for (String key : keysArray) {
+                            String data = event.getState().get(key);
+                            if(!"undefined".equals(""+key)){
+                                try {
+                                    if (data != null) {
+                                        Play play = PLAY_CODEC.deserialize(data);
+                                        g.play(play.getResponder(),
+                                            play.getAcross(),
+                                            play.getDown(),
+                                            play.getResponse(),
+                                            play.isCheated());
+                                    }
+                                } catch (SerializationException ex) {
+                                    Window.alert(
+                                        "Critical error getting state update " +
+                                        ex + "\n" + key + "\n" + data);
+                                }
+                            }
+                        }
+
+                        g.render();
+                    } else {
+
                     ArrayList<String> updateKeys = new ArrayList<String>();
                     JsArrayString keys = event.getState().getKeys();
 
                     for (int i = 0; i < keys.length(); i++) {
                         String key = keys.get(i);
 
-                        if (key.startsWith("play-") &&
+                        if (!"undefined".equals("" + key) &&
+                                key.startsWith("play-") &&
                                 !stateKeysSeen.contains(key)) {
                             updateKeys.add(key);
-                            if(!getWave().isPlayback()){
+
+                            if (!getWave().isPlayback()) {
                                 stateKeysSeen.add(key);
                             }
                         }
@@ -174,22 +229,24 @@ public class ShortyzWave extends WaveGadget<UserPreferences>
                             public boolean execute() {
                                 String key = keysArray[i++];
                                 String data = event.getState().get(key);
-
-                                try {
-                                    Play play = PLAY_CODEC.deserialize(data);
-                                    g.play(play.getResponder(),
-                                        play.getAcross(), play.getDown(),
-                                        play.getResponse());
-                                    g.render();
-                                } catch (SerializationException ex) {
-                                    Window.alert(
-                                        "Critical error getting state update " +
-                                        ex + "\n"+key+"\n"+data);
+                                if(!"undefined".equals(""+key)){
+                                    try {
+                                        Play play = PLAY_CODEC.deserialize(data);
+                                        g.play(play.getResponder(),
+                                            play.getAcross(), play.getDown(),
+                                            play.getResponse(),
+                                            play.isCheated());
+                                        g.render();
+                                    } catch (SerializationException ex) {
+                                        Window.alert(
+                                            "Critical error getting state update " +
+                                            ex + "\n" + key + "\n" + data);
+                                    }
                                 }
-
                                 return i < keysArray.length;
                             }
                         });
+                    }
                 }
             };
 
@@ -215,6 +272,7 @@ public class ShortyzWave extends WaveGadget<UserPreferences>
                     @Override
                     public void onUpdate(StateUpdateEvent event) {
                         final State state = event.getState();
+                        //Window.alert("Startup state "+ (state.get(INTIAL_PUZZLE_KEY) == null) );
 
                         if (state.get(INTIAL_PUZZLE_KEY) == null) {
                             g.loadList();
@@ -222,7 +280,7 @@ public class ShortyzWave extends WaveGadget<UserPreferences>
                                     @Override
                                     public void onLetterPlayed(
                                         String responder, int across, int down,
-                                        char response) {
+                                        char response, boolean cheated) {
                                         //
                                     }
 
@@ -237,7 +295,7 @@ public class ShortyzWave extends WaveGadget<UserPreferences>
                                             state.submitDelta(delta);
                                             g.setPlayStateListener(deltaStateListener);
                                             getWave()
-                                                .addStateUpdateEventHandler(externaPlaysHandler);
+                                                .addStateUpdateEventHandler(externalPlayHandler);
                                         } catch (SerializationException ex) {
                                             Window.alert("Critical error " +
                                                 ex.toString());
@@ -246,17 +304,19 @@ public class ShortyzWave extends WaveGadget<UserPreferences>
                                 });
                         } else {
                             try {
-                                startupStateHandler.removeHandler();
+                                //Window.alert("Starting puzzle...");
+                                String puzSer = state.get(INTIAL_PUZZLE_KEY);
+                                //Window.alert(puzSer);
                                 g.startPuzzle(0L,
-                                    CODEC.deserialize(state.get(
-                                            INTIAL_PUZZLE_KEY)));
+                                    CODEC.deserialize(puzSer), false);
+
                                 ArrayList<String> updateKeys = new ArrayList<String>();
                                 JsArrayString keys = event.getState().getKeys();
 
                                 for (int i = 0; i < keys.length(); i++) {
                                     String key = keys.get(i);
 
-                                    if (key.startsWith("play-") &&
+                                    if (!"undefined".equals("" + key) && key.startsWith("play-") &&
                                             !stateKeysSeen.contains(key)) {
                                         updateKeys.add(key);
                                         stateKeysSeen.add(key);
@@ -265,26 +325,33 @@ public class ShortyzWave extends WaveGadget<UserPreferences>
 
                                 final String[] keysArray = updateKeys.toArray(new String[updateKeys.size()]);
                                 Arrays.sort(keysArray);
-                                for(String key : keysArray){
+
+                                for (String key : keysArray) {
                                     String data = event.getState().get(key);
-                                    try {
-                                        if(data != null){
-                                            Play play = PLAY_CODEC.deserialize(data);
-                                            g.play(play.getResponder(),
-                                                play.getAcross(), play.getDown(),
-                                                play.getResponse());
+                                    if(!"undefined".equals(""+key)){
+                                        try {
+                                            if (data != null) {
+                                                Play play = PLAY_CODEC.deserialize(data);
+                                                g.play(play.getResponder(),
+                                                    play.getAcross(),
+                                                    play.getDown(),
+                                                    play.getResponse(),
+                                                    play.isCheated());
+                                            }
+                                        } catch (SerializationException ex) {
+                                            Window.alert(
+                                                "Critical error getting state update " +
+                                                ex + "\n" + key + "\n" + data);
                                         }
-                                    } catch (SerializationException ex) {
-                                        Window.alert(
-                                        "Critical error getting state update " +
-                                        ex + "\n"+key+"\n"+data);
                                     }
                                 }
+
                                 g.render();
+                                startupStateHandler.removeHandler();
                                 g.setPlayStateListener(deltaStateListener);
                                 getWave()
-                                    .addStateUpdateEventHandler(externaPlaysHandler);
-                            } catch (SerializationException ex) {
+                                    .addStateUpdateEventHandler(externalPlayHandler);
+                            } catch (Exception ex) {
                                 Window.alert("Critical error: " +
                                     ex.toString());
                             }
@@ -312,11 +379,15 @@ public class ShortyzWave extends WaveGadget<UserPreferences>
         colors.put(user.getId(), "black");
         userList.removeAllRows();
 
-        int count = 0;
-        int colorIndex = 0;
-        Label l = new Label(user.getDisplayName());
-        l.getElement().getStyle().setColor("black");
+        Label l = new Label("Players:");
+        l.getElement().getStyle().setFontWeight(FontWeight.BOLD);
         userList.setWidget(0, 0, l);
+
+        int count = 1;
+        int colorIndex = 0;
+        l = new Label(user.getDisplayName());
+        l.getElement().getStyle().setColor("black");
+        userList.setWidget(1, 0, l);
 
         for (int i = 0; i < participants.length(); i++) {
             Participant p = participants.get(i);
@@ -338,6 +409,11 @@ public class ShortyzWave extends WaveGadget<UserPreferences>
         }
 
         return colors;
+    }
+
+    @Override
+    public void initializeFeature(AnalyticsFeature feature) {
+        feature.recordPageView("UA-15907620-2", "/");
     }
 
     public static class FakeRequest extends Request {

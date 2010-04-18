@@ -12,7 +12,8 @@ import com.google.gwt.resources.client.CssResource;
  * @author kebernet
  */
 public interface Css extends CssResource {
-
+    String table();
+    String ssa();
     String black();
     String square();
     String letter();

@@ -14,6 +14,7 @@ import com.totsp.gwittir.client.beans.annotations.Introspectable;
 @Introspectable
 public class Play {
     private String responder;
+    private boolean cheated;
     private char response;
     private int across;
     private int down;
@@ -35,6 +36,24 @@ public class Play {
      */
     public int getAcross() {
         return this.across;
+    }
+
+    /**
+     * Set the value of cheated
+     *
+     * @param newcheated new value of cheated
+     */
+    public void setCheated(boolean newcheated) {
+        this.cheated = newcheated;
+    }
+
+    /**
+     * Get the value of cheated
+     *
+     * @return the value of cheated
+     */
+    public boolean isCheated() {
+        return this.cheated;
     }
 
     /**

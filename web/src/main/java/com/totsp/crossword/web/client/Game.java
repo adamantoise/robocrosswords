@@ -36,8 +36,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import com.google.inject.Inject;
-import com.totsp.crossword.puz.Box;
 
+import com.totsp.crossword.puz.Box;
 import com.totsp.crossword.puz.Playboard;
 import com.totsp.crossword.puz.Playboard.Clue;
 import com.totsp.crossword.puz.Playboard.Position;
@@ -52,6 +52,7 @@ import com.totsp.gwittir.client.fx.ui.SoftScrollArea;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 
 /**
@@ -136,7 +137,8 @@ public class Game {
                     Position p = board.getHighlightLetter();
                     Word w = board.deleteLetter();
                     render(w);
-                    playStateListener.onLetterPlayed(responder, p.across, p.down, ' ');
+                    playStateListener.onLetterPlayed(responder, p.across,
+                        p.down, ' ', board.getBoxes()[p.across][p.down].isCheated());
                     dirty = true;
 
                     return;
@@ -147,7 +149,8 @@ public class Game {
                     Position p = board.getHighlightLetter();
                     Word w = board.playLetter(Character.toUpperCase(keyCode));
                     render(w);
-                    playStateListener.onLetterPlayed(responder, p.across, p.down, Character.toUpperCase(keyCode));
+                    playStateListener.onLetterPlayed(responder, p.across,
+                        p.down, Character.toUpperCase(keyCode), board.getBoxes()[p.across][p.down].isCheated());
                     dirty = true;
 
                     return;
@@ -176,7 +179,7 @@ public class Game {
 
             @Override
             public void onLetterPlayed(String responder, int across, int down,
-                char response) {
+                char response, boolean cheated) {
                 // noop
             }
         };
@@ -188,6 +191,8 @@ public class Game {
     private Clue[] acrossClues;
     private Clue[] downClues;
     private boolean dirty;
+    private boolean playing;
+    private boolean showBackButton = true;
     private boolean smallView;
 
     @Inject
@@ -243,10 +248,6 @@ public class Game {
         rootPanel.add(display);
     }
 
-    public Label getStatus(){
-        return this.status;
-    }
-
     public HorizontalPanel getDisplay() {
         return this.display;
     }
@@ -284,6 +285,10 @@ public class Game {
         return this.playStateListener;
     }
 
+    public boolean isPlaying() {
+        return this.playing;
+    }
+
     /**
      * Set the value of responder
      *
@@ -303,6 +308,24 @@ public class Game {
     }
 
     /**
+     * Set the value of showBackButton
+     *
+     * @param newshowBackButton new value of showBackButton
+     */
+    public void setShowBackButton(boolean newshowBackButton) {
+        this.showBackButton = newshowBackButton;
+    }
+
+    /**
+     * Get the value of showBackButton
+     *
+     * @return the value of showBackButton
+     */
+    public boolean isShowBackButton() {
+        return this.showBackButton;
+    }
+
+    /**
      * @param smallView the smallView to set
      */
     public void setSmallView(boolean smallView) {
@@ -314,6 +337,10 @@ public class Game {
      */
     public boolean isSmallView() {
         return smallView;
+    }
+
+    public Label getStatus() {
+        return this.status;
     }
 
     public void loadList() {
@@ -359,12 +386,273 @@ public class Game {
                             status.setText(" ");
                         }
                     });
-
         } else {
             request.cancel();
             request = null;
             loadPuzzle(id);
         }
+    }
+
+    public void play(String responder, int across, int down, char response, boolean cheated) {
+        if (this.board != null) {
+            Box b = this.board.getBoxes()[across][down];
+            if (b != null) {
+                b.setResponse(response);
+                b.setResponder(responder);
+                b.setCheated(cheated);
+            }
+        }
+    }
+
+    public void render() {
+        render(null);
+    }
+
+    public void showWait() {
+        this.status.setText("Please wait while the creator selects a puzzle...");
+        this.mainPanel.clear();
+    }
+
+    public void startPuzzle(final long listingId, final Puzzle puzzle) {
+        this.startPuzzle(listingId, puzzle, true);
+    }
+
+    public void startPuzzle(final long listingId, final Puzzle puzzle,
+        boolean fireEvent) {
+        this.playing = true;
+
+        if (fireEvent) {
+            this.playStateListener.onPuzzleLoaded(puzzle);
+        }
+
+        VerticalPanel outer = new VerticalPanel();
+        board = new Playboard(puzzle);
+        board.setResponder(this.getResponder());
+        board.setHighlightLetter(new Position(0, 0));
+
+        if (board.getBoxes()[0][0] == null) {
+            board.moveRight();
+        }
+
+        if (this.isSmallView()) {
+            outer.add(this.clueLine);
+            outer.setCellHorizontalAlignment(this.clueLine,
+                HasHorizontalAlignment.ALIGN_CENTER);
+            this.clueLine.setStyleName(css.clueLine());
+        }
+
+        ssa.setWidth("421px");
+        ssa.setHeight("421px");
+        //        ssa.setWidth("300px");
+        //        ssa.setHeight("300px");
+        ssa.setStyleName(css.ssa());
+        ssa.addMouseListener(ssa.MOUSE_MOVE_SCROLL_LISTENER);
+        t = renderer.initialize(board);
+
+        HorizontalPanel hp = new HorizontalPanel();
+        ssa.setWidget(t);
+        hp.add(ssa);
+
+        acrossScroll.setWidth("155px");
+        downScroll.setWidth("155px");
+
+        VerticalPanel list = new VerticalPanel();
+
+        int index = 0;
+
+        for (Clue c : acrossClues = board.getAcrossClues()) {
+            final int cIndex = index;
+            Grid g = new Grid(1, 2);
+            g.setWidget(0, 0, new Label(c.number + ""));
+            g.getCellFormatter().setStyleName(0, 0, css.clueNumber());
+            g.getRowFormatter()
+             .setVerticalAlign(0, HasVerticalAlignment.ALIGN_TOP);
+            g.setWidget(0, 1, new Label(c.hint));
+            g.setStyleName(css.clueBox());
+
+            list.add(g);
+            acrossClueViews.put(c, g);
+            g.addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        board.jumpTo(cIndex, true);
+                        mainPanel.setFocus(true);
+                        render();
+                    }
+                });
+            index++;
+        }
+
+        Widget acrossList = list;
+
+        list = new VerticalPanel();
+
+        Widget downList = list;
+
+        index = 0;
+
+        for (Clue c : downClues = board.getDownClues()) {
+            final int cIndex = index;
+            Grid g = new Grid(1, 2);
+            g.setWidget(0, 0, new Label(c.number + ""));
+            g.getCellFormatter().setStyleName(0, 0, css.clueNumber());
+            g.getRowFormatter()
+             .setVerticalAlign(0, HasVerticalAlignment.ALIGN_TOP);
+            g.setWidget(0, 1, new Label(c.hint));
+            g.setStyleName(css.clueBox());
+
+            list.add(g);
+            downClueViews.put(c, g);
+            g.addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        board.jumpTo(cIndex, false);
+                        mainPanel.setFocus(true);
+                        render();
+                    }
+                });
+            index++;
+        }
+
+        if (!this.isSmallView()) {
+            hp.add(acrossScroll);
+            hp.add(downScroll);
+        }
+
+        render(board.getCurrentWord());
+        outer.add(hp);
+
+        outer.setCellHorizontalAlignment(hp, HasHorizontalAlignment.ALIGN_CENTER);
+
+        HorizontalPanel controls = new HorizontalPanel();
+
+        if (this.isShowBackButton()) {
+            Button back = new Button("Return to List",
+                    new ClickHandler() {
+                        @Override
+                        public void onClick(ClickEvent event) {
+                            playing = false;
+                            History.newItem("list");
+                        }
+                    });
+
+            if (!this.isSmallView()) {
+                back.getElement().getStyle().setMarginRight(30, Unit.PX);
+            }
+
+            controls.add(back);
+        }
+
+        controls.add(new Button("Show Errors",
+                new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    board.toggleShowErrors();
+                    ((Button) event.getSource()).setText(board.isShowErrors()
+                            ? "Hide Errors" : "Show Errors");
+                    render();
+                }
+            }));
+        controls.add(new Button("Reveal Letter",
+                new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    Position p = board.getHighlightLetter();
+                    Position change = board.revealLetter();
+                    char solution = board.getBoxes()[p.across][p.down].getSolution();
+                    dirty = true;
+                    if(change != null){
+                        playStateListener.onLetterPlayed(responder, p.across, p.down, solution, true);
+                    }
+                    render();
+                }
+            }));
+        controls.add(new Button("Reveal Word",
+                new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    Word word = board.getCurrentWord();
+                    List<Position> changes = board.revealWord();
+                    for(Position p: changes){
+                       playStateListener.onLetterPlayed(responder, p.across, p.down,
+                               board.getBoxes()[p.across][p.down].getSolution(), true);
+                    }
+                    dirty = true;
+
+                    render();
+                }
+            }));
+        controls.add(new Button("Reveal Puzzle",
+                new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    List<Position> changes = board.revealPuzzle();
+                    for(Position p: changes){
+                       playStateListener.onLetterPlayed(responder, p.across, p.down,
+                               board.getBoxes()[p.across][p.down].getSolution(), true);
+                    }
+                    dirty = true;
+                    render();
+                }
+            }));
+        controls.getElement().getStyle().setMarginTop(10, Unit.PX);
+        outer.add(controls);
+
+        mainPanel.setWidget(outer);
+
+        acrossScroll.setHeight(ssa.getOffsetHeight() + "px ");
+        downScroll.setHeight(ssa.getOffsetHeight() + "px ");
+        setFBSize();
+
+        autoSaveTimer = new Timer() {
+                    @Override
+                    public void run() {
+                        if (!dirty) {
+                            return;
+                        }
+
+                        dirty = false;
+                        status.setStyleName(css.statusInfo());
+                        status.setText("Autosaving...");
+                        service.savePuzzle(listingId, puzzle,
+                            new AsyncCallback() {
+                                @Override
+                                public void onFailure(Throwable caught) {
+                                    GWT.log("Save failed", caught);
+                                    status.setStyleName(css.statusError());
+                                    status.setText("Failed to save puzzle.");
+                                }
+
+                                @Override
+                                public void onSuccess(Object result) {
+                                    status.setStyleName(css.statusHidden());
+                                    status.setText(" ");
+                                }
+                            });
+                    }
+                };
+        autoSaveTimer.scheduleRepeating(2 * 60 * 1000);
+        closingRegistration = Window.addWindowClosingHandler(new ClosingHandler() {
+                    @Override
+                    public void onWindowClosing(ClosingEvent event) {
+                        if (dirty) {
+                            event.setMessage("Abandon unsaved changes?");
+                        }
+                    }
+                });
+        getDisplayChangeListener().onDisplayChange();
+        acrossScroll.setWidget(acrossList);
+        downScroll.setWidget(downList);
+        keyboardIntercept.addKeyboardListener(l);
+        renderer.setClickListener(new ClickListener() {
+                @Override
+                public void onClick(int across, int down) {
+                    Word w = board.setHighlightLetter(new Position(across, down));
+                    render(w);
+                    keyboardIntercept.setFocus(true);
+                }
+            });
+        keyboardIntercept.setFocus(true);
     }
 
     private static native void setFBSize() /*-{
@@ -430,243 +718,13 @@ public class Game {
         keyboardIntercept.setFocus(true);
     }
 
-    public void render() {
-        render(null);
-    }
-
-    public void startPuzzle(final long listingId, final Puzzle puzzle) {
-        this.playStateListener.onPuzzleLoaded(puzzle);
-        VerticalPanel outer = new VerticalPanel();
-        board = new Playboard(puzzle);
-        board.setResponder(this.getResponder());
-        board.setHighlightLetter(new Position(0, 0));
-
-        if (board.getBoxes()[0][0] == null) {
-            board.moveRight();
-        }
-
-        if (this.isSmallView()) {
-            outer.add(this.clueLine);
-            outer.setCellHorizontalAlignment(this.clueLine,
-                HasHorizontalAlignment.ALIGN_CENTER);
-            this.clueLine.setStyleName(css.clueLine());
-        }
-
-        ssa.setWidth("425px");
-        ssa.setHeight("425px");
-        ssa.addMouseListener(ssa.MOUSE_MOVE_SCROLL_LISTENER);
-        t = renderer.initialize(board);
-
-        HorizontalPanel hp = new HorizontalPanel();
-        ssa.setWidget(t);
-        hp.add(ssa);
-
-        acrossScroll.setWidth("155px");
-        downScroll.setWidth("155px");
-
-        VerticalPanel list = new VerticalPanel();
-
-        acrossScroll.setWidget(list);
-
-        int index = 0;
-
-        for (Clue c : acrossClues = board.getAcrossClues()) {
-            final int cIndex = index;
-            Grid g = new Grid(1, 2);
-            g.setWidget(0, 0, new Label(c.number + ""));
-            g.getCellFormatter().setStyleName(0, 0, css.clueNumber());
-            g.getRowFormatter()
-             .setVerticalAlign(0, HasVerticalAlignment.ALIGN_TOP);
-            g.setWidget(0, 1, new Label(c.hint));
-            g.setStyleName(css.clueBox());
-
-            list.add(g);
-            acrossClueViews.put(c, g);
-            g.addClickHandler(new ClickHandler() {
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        board.jumpTo(cIndex, true);
-                        mainPanel.setFocus(true);
-                        render();
-                    }
-                });
-            index++;
-        }
-
-        acrossScroll.setWidget(list);
-
-        list = new VerticalPanel();
-
-        downScroll.setWidget(list);
-        index = 0;
-
-        for (Clue c : downClues = board.getDownClues()) {
-            final int cIndex = index;
-            Grid g = new Grid(1, 2);
-            g.setWidget(0, 0, new Label(c.number + ""));
-            g.getCellFormatter().setStyleName(0, 0, css.clueNumber());
-            g.getRowFormatter()
-             .setVerticalAlign(0, HasVerticalAlignment.ALIGN_TOP);
-            g.setWidget(0, 1, new Label(c.hint));
-            g.setStyleName(css.clueBox());
-
-            list.add(g);
-            downClueViews.put(c, g);
-            g.addClickHandler(new ClickHandler() {
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        board.jumpTo(cIndex, false);
-                        mainPanel.setFocus(true);
-                        render();
-                    }
-                });
-            index++;
-        }
-
-        downScroll.setWidget(list);
-
-        if (!this.isSmallView()) {
-            hp.add(acrossScroll);
-            hp.add(downScroll);
-        }
-
-        render(board.getCurrentWord());
-        outer.add(hp);
-
-        outer.setCellHorizontalAlignment(hp, HasHorizontalAlignment.ALIGN_CENTER);
-
-        HorizontalPanel controls = new HorizontalPanel();
-        Button back = new Button("Return to List",
-                new ClickHandler() {
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        History.newItem("list");
-                    }
-                });
-
-        if (!this.isSmallView()) {
-            back.getElement().getStyle().setMarginRight(30, Unit.PX);
-        }
-
-        controls.add(back);
-
-        controls.add(new Button("Show Errors",
-                new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent event) {
-                    board.toggleShowErrors();
-                    ((Button) event.getSource()).setText(board.isShowErrors()
-                            ? "Hide Errors" : "Show Errors");
-                    render();
-                }
-            }));
-        controls.add(new Button("Reveal Letter",
-                new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent event) {
-                    board.revealLetter();
-                    dirty = true;
-                    render();
-                }
-            }));
-        controls.add(new Button("Reveal Word",
-                new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent event) {
-                    board.revealWord();
-                    dirty = true;
-                    render();
-                }
-            }));
-        controls.add(new Button("Reveal Puzzle",
-                new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent event) {
-                    board.revealPuzzle();
-                    dirty = true;
-                    render();
-                }
-            }));
-        controls.getElement().getStyle().setMarginTop(10, Unit.PX);
-        outer.add(controls);
-
-        mainPanel.setWidget(outer);
-
-        acrossScroll.setHeight(t.getOffsetHeight() + "px ");
-        downScroll.setHeight(t.getOffsetHeight() + "px ");
-        setFBSize();
-
-        autoSaveTimer = new Timer() {
-                    @Override
-                    public void run() {
-                        if (!dirty) {
-                            return;
-                        }
-
-                        dirty = false;
-                        status.setStyleName(css.statusInfo());
-                        status.setText("Autosaving...");
-                        service.savePuzzle(listingId, puzzle,
-                            new AsyncCallback() {
-                                @Override
-                                public void onFailure(Throwable caught) {
-                                    GWT.log("Save failed", caught);
-                                    status.setStyleName(css.statusError());
-                                    status.setText("Failed to save puzzle.");
-                                }
-
-                                @Override
-                                public void onSuccess(Object result) {
-                                    status.setStyleName(css.statusHidden());
-                                    status.setText(" ");
-                                }
-                            });
-                    }
-                };
-        autoSaveTimer.scheduleRepeating(2 * 60 * 1000);
-        closingRegistration = Window.addWindowClosingHandler(new ClosingHandler() {
-                    @Override
-                    public void onWindowClosing(ClosingEvent event) {
-                        if (dirty) {
-                            event.setMessage("Abandon unsaved changes?");
-                        }
-                    }
-                });
-        getDisplayChangeListener().onDisplayChange();
-        keyboardIntercept.addKeyboardListener(l);
-        renderer.setClickListener(new ClickListener() {
-            @Override
-            public void onClick(int across, int down) {
-                Word w = board.setHighlightLetter(new Position(across,
-                            down));
-                render(w);
-                keyboardIntercept.setFocus(true);
-            }
-        });
-        keyboardIntercept.setFocus(true);
-    }
-
-
-    public void play(String responder, int across, int down, char response){
-        if(this.board != null ){
-            Box b = this.board.getBoxes()[across][down];
-            if(b != null){
-                b.setResponse(response);
-                b.setResponder(responder);
-            }
-
-        }
-
-
-    }
-
     public static interface DisplayChangeListener {
         public void onDisplayChange();
     }
 
     public static interface PlayStateListener {
         public void onLetterPlayed(String responder, int across, int down,
-            char response);
+            char response, boolean cheated);
 
         public void onPuzzleLoaded(Puzzle puz);
     }

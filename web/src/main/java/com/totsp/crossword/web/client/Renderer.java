@@ -45,8 +45,9 @@ public class Renderer {
     public FlexTable initialize(Playboard playboard){
         this.board = playboard;
         table = new FlexTable();
-        table.setCellSpacing(0);
+        table.setCellSpacing(1);
         table.setCellPadding(0);
+        table.setStyleName(resources.css().table());
 
         for(int across=0; across < this.board.getBoxes().length; across++){
             for(int down=0; down < this.board.getBoxes()[across].length; down++){

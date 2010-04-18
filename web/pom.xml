@@ -298,8 +298,6 @@
                         Make sure this path contains your persistent
                         classes!
                     -->
-                    <mappingIncludes>com/totsp/crossword/puz/Puzzle.class</mappingIncludes>
-                    <mappingIncludes>com/totsp/crossword/puz/Box.class</mappingIncludes>
                     <mappingIncludes>**/model/*.class</mappingIncludes>
                     <targetDirectory>target/classes</targetDirectory>
                     <persistenceUnitName>transactions-optional</persistenceUnitName>
@@ -394,6 +392,7 @@
                     <server>com.google.appengine.tools.development.gwt.AppEngineLauncher</server>
                     <extraJvmArgs>-Xmx512m -Dappengine.sdk.root=${gae.home} -javaagent:${gae.home}/lib/agent/appengine-agent.jar</extraJvmArgs>
                     <port>8088</port>
+                    <localWorkers>1</localWorkers>
                     <useHtmlUnit>true</useHtmlUnit>
                     <htmlUnitBrowsers>
                         <param>FF3</param>

@@ -9,6 +9,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import com.totsp.gwittir.client.beans.AbstractModelBean;
 import com.totsp.gwittir.client.beans.annotations.Introspectable;
 
+import java.io.Serializable;
+
 import java.util.Date;
 
 
@@ -18,7 +20,7 @@ import java.util.Date;
  */
 @Introspectable
 public class PuzzleDescriptor extends AbstractModelBean
-    implements IsSerializable, Comparable {
+    implements IsSerializable, Comparable, Serializable {
     private Date date;
     private Long id;
     private String source;
