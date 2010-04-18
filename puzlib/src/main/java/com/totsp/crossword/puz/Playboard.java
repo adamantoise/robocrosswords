@@ -1,7 +1,9 @@
 package com.totsp.crossword.puz;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Playboard implements Serializable {
 
@@ -318,37 +320,48 @@ public class Playboard implements Serializable {
         }
     }
 
-    public void revealLetter() {
+    public Position revealLetter() {
         Box b = this.boxes[this.highlightLetter.across][this.highlightLetter.down];
 
         if ((b != null) && (b.getSolution() != b.getResponse())) {
             b.setCheated(true);
             b.setResponse(b.getSolution());
+            return this.highlightLetter;
         }
+        return null;
     }
 
-    public void revealPuzzle() {
-        for (Box[] row : this.boxes) {
-            for (Box b : row) {
+    public List<Position> revealPuzzle() {
+        ArrayList<Position> changes = new ArrayList<Position>();
+        for (int across = 0; across < this.boxes.length; across++) {
+            for (int down = 0; down < this.boxes[across].length; down++) {
+                Box b= this.boxes[across][down];
                 if ((b != null) && (b.getSolution() != b.getResponse())) {
                     b.setCheated(true);
                     b.setResponse(b.getSolution());
+                    changes.add(new Position(across, down));
                 }
             }
         }
+        return changes;
     }
 
-    public void revealWord() {
+    public List<Position> revealWord() {
+        ArrayList<Position> changes = new ArrayList<Position>();
         Position oldHighlight = this.highlightLetter;
         Word w = this.getCurrentWord();
         this.highlightLetter = w.start;
 
         for (int i = 0; i < w.length; i++) {
-            revealLetter();
+            Position p = revealLetter();
+            if(p != null){
+                changes.add(p);
+            }
             nextLetter();
         }
 
         this.highlightLetter = oldHighlight;
+        return changes;
     }
 
     public Word toggleDirection() {
