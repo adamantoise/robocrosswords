@@ -203,7 +203,7 @@ public class DataService {
 
             return result;
        } catch(NoResultException nre){
-            nre.printStackTrace();
+            System.out.println("No result for "+source+" "+date);
             t.rollback();
             return null;
         } 

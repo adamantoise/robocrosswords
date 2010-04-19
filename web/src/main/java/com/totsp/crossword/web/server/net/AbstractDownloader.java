@@ -45,7 +45,7 @@ public abstract class AbstractDownloader implements Downloader {
         }
     }
 
-    private InputStream connect(Date d){
+    protected InputStream connect(Date d){
         try{
             String fileName = this.getFileName(d);
             if(fileName == null){
