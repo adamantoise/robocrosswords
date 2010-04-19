@@ -1,4 +1,5 @@
 <br/><br/>
 Want to add Shortyz to your Waves?
-<a href="https://wave.google.com/wave/#restored:wave:googlewave.com!w%252BrXLY_LOyC.1">Click Here</a>
+<a href="https://wave.google.com/wave/#restored:wave:googlewave.com!w%252BrXLY_LOyC.1"
+    target="_blank">Click Here</a>
 to install the Shortyz Gadget!

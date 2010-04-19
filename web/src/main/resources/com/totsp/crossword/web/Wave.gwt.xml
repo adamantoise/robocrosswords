@@ -11,4 +11,4 @@
     <entry-point class="com.totsp.crossword.web.wave.ShortyzWave" />
     
     <source path="wave" />
-</module>
+</module>   
