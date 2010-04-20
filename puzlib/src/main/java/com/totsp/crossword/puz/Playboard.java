@@ -1,30 +1,22 @@
 package com.totsp.crossword.puz;
 
 import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+
 public class Playboard implements Serializable {
-
-    private Position highlightLetter = new Position(0, 0);
-    private Puzzle puzzle;
-    private Box[][] boxes;
-    private boolean across = true;
-    private boolean skipCompletedLetters;
-
-    private String responder;
-
-    public boolean isSkipCompletedLetters() {
-        return skipCompletedLetters;
-    }
-
-    public void setSkipCompletedLetters(boolean skipCompletedLetters) {
-        this.skipCompletedLetters = skipCompletedLetters;
-    }
-    private boolean showErrors;
     private HashMap<Integer, Position> acrossWordStarts = new HashMap<Integer, Position>();
     private HashMap<Integer, Position> downWordStarts = new HashMap<Integer, Position>();
+    private Position highlightLetter = new Position(0, 0);
+    private Puzzle puzzle;
+    private String responder;
+    private Box[][] boxes;
+    private boolean across = true;
+    private boolean showErrors;
+    private boolean skipCompletedLetters;
 
     public Playboard(Puzzle puzzle) {
         this.puzzle = puzzle;
@@ -34,20 +26,18 @@ public class Playboard implements Serializable {
         for (int x = 0; x < puzzle.getBoxes().length; x++) {
             for (int y = 0; y < puzzle.getBoxes()[x].length; y++) {
                 boxes[y][x] = puzzle.getBoxes()[x][y];
-                if (boxes[y][x] != null && boxes[y][x].isAcross()) {
-                    acrossWordStarts.put(boxes[y][x].getClueNumber(), new Position(
-                            y, x));
+
+                if ((boxes[y][x] != null) && boxes[y][x].isAcross()) {
+                    acrossWordStarts.put(boxes[y][x].getClueNumber(),
+                        new Position(y, x));
                 }
-                if (boxes[y][x] != null && boxes[y][x].isDown()) {
-                    downWordStarts.put(boxes[y][x].getClueNumber(), new Position(y,
-                            x));
+
+                if ((boxes[y][x] != null) && boxes[y][x].isDown()) {
+                    downWordStarts.put(boxes[y][x].getClueNumber(),
+                        new Position(y, x));
                 }
             }
         }
-    }
-
-    public Puzzle getPuzzle() {
-        return this.puzzle;
     }
 
     public void setAcross(boolean across) {
@@ -58,20 +48,38 @@ public class Playboard implements Serializable {
         return across;
     }
 
+    public Clue[] getAcrossClues() {
+        Clue[] clues = new Clue[puzzle.getAcrossClues().length];
+
+        for (int i = 0; i < clues.length; i++) {
+            clues[i] = new Clue();
+            clues[i].hint = puzzle.getAcrossClues()[i];
+            clues[i].number = puzzle.getAcrossCluesLookup()[i];
+        }
+
+        return clues;
+    }
+
     public Box[][] getBoxes() {
         return this.boxes;
     }
 
     public Clue getClue() {
         Clue c = new Clue();
+
         try {
             Position start = this.getCurrentWordStart();
             c.number = this.getBoxes()[start.across][start.down].getClueNumber();
             c.hint = this.across ? this.puzzle.findAcrossClue(c.number)
-                    : this.puzzle.findDownClue(c.number);
+                                 : this.puzzle.findDownClue(c.number);
         } catch (Exception e) {
         }
+
         return c;
+    }
+
+    public Box getCurrentBox() {
+        return this.boxes[this.highlightLetter.across][this.highlightLetter.down];
     }
 
     public Word getCurrentWord() {
@@ -83,8 +91,24 @@ public class Playboard implements Serializable {
         return w;
     }
 
-    public Box getCurrentBox() {
-        return this.boxes[this.highlightLetter.across][this.highlightLetter.down];
+    public Box[] getCurrentWordBoxes() {
+        Word currentWord = this.getCurrentWord();
+        Box[] result = new Box[currentWord.length];
+
+        for (int i = 0; i < result.length; i++) {
+            Position pos = new Position(currentWord.start.across,
+                    currentWord.start.down);
+
+            if (currentWord.across) {
+                pos.across += i;
+            } else {
+                pos.down += i;
+            }
+
+            result[i] = this.boxes[pos.across][pos.down];
+        }
+
+        return result;
     }
 
     public Position getCurrentWordStart() {
@@ -94,11 +118,9 @@ public class Playboard implements Serializable {
 
             while (b == null) {
                 try {
-                    if ((boxes[col][this.highlightLetter.down] != null)
-                            && boxes[col][this.highlightLetter.down].isAcross()) {
-
+                    if ((boxes[col][this.highlightLetter.down] != null) &&
+                            boxes[col][this.highlightLetter.down].isAcross()) {
                         b = boxes[col][this.highlightLetter.down];
-
                     } else {
                         col--;
                     }
@@ -114,8 +136,8 @@ public class Playboard implements Serializable {
 
             while (b == null) {
                 try {
-                    if ((boxes[this.highlightLetter.across][row] != null)
-                            && boxes[this.highlightLetter.across][row].isDown()) {
+                    if ((boxes[this.highlightLetter.across][row] != null) &&
+                            boxes[this.highlightLetter.across][row].isDown()) {
                         b = boxes[this.highlightLetter.across][row];
                     } else {
                         row--;
@@ -129,15 +151,27 @@ public class Playboard implements Serializable {
         }
     }
 
+    public Clue[] getDownClues() {
+        Clue[] clues = new Clue[puzzle.getDownClues().length];
+
+        for (int i = 0; i < clues.length; i++) {
+            clues[i] = new Clue();
+            clues[i].hint = puzzle.getDownClues()[i];
+            clues[i].number = puzzle.getDownCluesLookup()[i];
+        }
+
+        return clues;
+    }
+
     public Word setHighlightLetter(Position highlightLetter) {
         Word w = this.getCurrentWord();
 
         if (highlightLetter.equals(this.highlightLetter)) {
             this.toggleDirection();
         } else {
-            if ((this.boxes.length > highlightLetter.across)
-                    && (this.boxes[highlightLetter.across].length > highlightLetter.down)
-                    && (this.boxes[highlightLetter.across][highlightLetter.down] != null)) {
+            if ((this.boxes.length > highlightLetter.across) &&
+                    (this.boxes[highlightLetter.across].length > highlightLetter.down) &&
+                    (this.boxes[highlightLetter.across][highlightLetter.down] != null)) {
                 this.highlightLetter = highlightLetter;
             }
         }
@@ -149,8 +183,34 @@ public class Playboard implements Serializable {
         return highlightLetter;
     }
 
+    public Puzzle getPuzzle() {
+        return this.puzzle;
+    }
+
+    /**
+     * @param responder the responder to set
+     */
+    public void setResponder(String responder) {
+        this.responder = responder;
+    }
+
+    /**
+     * @return the responder
+     */
+    public String getResponder() {
+        return responder;
+    }
+
     public boolean isShowErrors() {
         return this.showErrors;
+    }
+
+    public void setSkipCompletedLetters(boolean skipCompletedLetters) {
+        this.skipCompletedLetters = skipCompletedLetters;
+    }
+
+    public boolean isSkipCompletedLetters() {
+        return skipCompletedLetters;
     }
 
     public int getWordRange() {
@@ -199,97 +259,149 @@ public class Playboard implements Serializable {
         } catch (NullPointerException npe) {
             npe.printStackTrace();
         }
+
         return this.previousLetter();
+    }
+
+    public void jumpTo(int clueIndex, boolean across) {
+        this.across = across;
+
+        if (across) {
+            this.highlightLetter = (this.acrossWordStarts.get(this.puzzle.getAcrossCluesLookup()[clueIndex]));
+        } else {
+            this.highlightLetter = (this.downWordStarts.get(this.puzzle.getDownCluesLookup()[clueIndex]));
+        }
     }
 
     public Word moveDown() {
         return this.moveDown(false);
     }
 
-    public Word moveDown(boolean skipFilled) {
-        Word w = this.getCurrentWord();
-        Box b = null;
-        int checkRow = this.highlightLetter.down;
+    public Position moveDown(Position original, boolean skipCompleted) {
+        Position next = new Position(original.across, original.down + 1);
+        Box value = this.getBoxes()[next.across][next.down];
 
-        while ((b == null) && (checkRow < (this.getBoxes().length - 1))) {
+        if ((value == null) ||
+                (!skipCompleted && (value.getResponse() != ' '))) {
             try {
-                b = this.getBoxes()[this.highlightLetter.across][++checkRow];
-                if (skipFilled && b != null && b.getResponse() != ' ' && checkRow < w.start.down + w.length) {
-                    b = null;
-                }
-            } catch (RuntimeException e) {
+                next = moveDown(next, skipCompleted);
+                System.out.println(next.down);
+            } catch (ArrayIndexOutOfBoundsException e) {
+                System.out.println("Inner " + next.across + " " + next.down);
             }
         }
 
-        this.highlightLetter = new Position(this.highlightLetter.across,
-                checkRow);
+        return next;
+    }
+
+    public Word moveDown(boolean skipCompleted) {
+        Word w = this.getCurrentWord();
+
+        try {
+            Position newPos = this.moveDown(this.getHighlightLetter(),
+                    skipCompleted);
+            this.setHighlightLetter(newPos);
+        } catch (ArrayIndexOutOfBoundsException e) {
+        }
+
+        return w;
+    }
+
+    public Position moveLeft(Position original, boolean skipCompleted) {
+        Position next = new Position(original.across - 1, original.down);
+        Box value = this.getBoxes()[next.across][next.down];
+
+        if ((value == null) ||
+                (!skipCompleted && (value.getResponse() != ' '))) {
+            try {
+                next = moveLeft(next, skipCompleted);
+            } catch (ArrayIndexOutOfBoundsException e) {
+            }
+        }
+
+        return next;
+    }
+
+    public Word moveLeft(boolean skipCompleted) {
+        Word w = this.getCurrentWord();
+
+        try {
+            Position newPos = this.moveLeft(this.getHighlightLetter(),
+                    skipCompleted);
+            this.setHighlightLetter(newPos);
+        } catch (ArrayIndexOutOfBoundsException e) {
+        }
 
         return w;
     }
 
     public Word moveLeft() {
-        Word w = this.getCurrentWord();
-        Box b = null;
-        int checkCol = this.highlightLetter.across;
-
-        while ((b == null) && (checkCol > 0)) {
-            try {
-                b = this.getBoxes()[--checkCol][this.highlightLetter.down];
-            } catch (RuntimeException e) {
-                this.highlightLetter = new Position(checkCol++,
-                        this.highlightLetter.down);
-                return this.moveRight();
-            }
-        }
-
-        this.highlightLetter = new Position(checkCol, this.highlightLetter.down);
-
-        return w;
+        return moveLeft(false);
     }
 
     public Word moveRight() {
         return moveRight(false);
     }
 
-    public Word moveRight(boolean skipFilled) {
-        Word w = this.getCurrentWord();
-        Box b = null;
-        int checkCol = this.highlightLetter.across;
+    public Position moveRight(Position original, boolean skipCompleted) {
+        Position next = new Position(original.across + 1, original.down);
+        Box value = this.getBoxes()[next.across][next.down];
 
-        while ((b == null)
-                && (checkCol < (this.getBoxes()[this.highlightLetter.across].length - 1))) {
+        if ((value == null) ||
+                (!skipCompleted && (value.getResponse() != ' '))) {
             try {
-                b = this.getBoxes()[++checkCol][this.highlightLetter.down];
-                if (skipFilled && b != null && b.getResponse() != ' ' && checkCol < w.start.across + w.length) {
-                    b = null;
-                }
-            } catch (RuntimeException e) {
-                return w;
+                next = moveRight(next, skipCompleted);
+               
+            } catch (ArrayIndexOutOfBoundsException e) {
             }
         }
 
-        this.highlightLetter = new Position(checkCol, this.highlightLetter.down);
+        return next;
+    }
+
+    public Word moveRight(boolean skipCompleted) {
+        Word w = this.getCurrentWord();
+
+        try {
+            Position newPos = this.moveRight(this.getHighlightLetter(),
+                    skipCompleted);
+            this.setHighlightLetter(newPos);
+        } catch (ArrayIndexOutOfBoundsException e) {
+        }
 
         return w;
     }
 
-    public Word movieUp() {
-        Word w = this.getCurrentWord();
-        Box b = null;
-        int checkRow = this.highlightLetter.down;
+    public Position moveUp(Position original, boolean skipCompleted) {
+        Position next = new Position(original.across, original.down - 1);
+        Box value = this.getBoxes()[next.across][next.down];
 
-        while ((b == null) && (checkRow > 0)) {
+        if ((value == null) ||
+                (!skipCompleted && (value.getResponse() != ' '))) {
             try {
-                b = this.getBoxes()[this.highlightLetter.across][--checkRow];
-            } catch (RuntimeException e) {
-                this.highlightLetter = new Position(this.highlightLetter.across,
-                        checkRow++);
-                return this.moveDown();
+                next = moveUp(next, skipCompleted);
+               
+            } catch (ArrayIndexOutOfBoundsException e) {
+                
             }
         }
 
-        this.highlightLetter = new Position(this.highlightLetter.across,
-                checkRow);
+        return next;
+    }
+
+    public Word moveUp(){
+        return moveUp(false);
+    }
+
+    public Word moveUp(boolean skipCompleted) {
+        Word w = this.getCurrentWord();
+
+        try {
+            Position newPos = this.moveUp(this.getHighlightLetter(),
+                    skipCompleted);
+            this.setHighlightLetter(newPos);
+        } catch (ArrayIndexOutOfBoundsException e) {
+        }
 
         return w;
     }
@@ -304,11 +416,14 @@ public class Playboard implements Serializable {
 
     public Word playLetter(char letter) {
         Box b = this.boxes[this.highlightLetter.across][this.highlightLetter.down];
-        if(b == null){
-        	return null;
+
+        if (b == null) {
+            return null;
         }
+
         b.setResponse(letter);
         b.setResponder(this.responder);
+
         return this.nextLetter();
     }
 
@@ -316,7 +431,7 @@ public class Playboard implements Serializable {
         if (across) {
             return this.moveLeft();
         } else {
-            return this.movieUp();
+            return this.moveUp(false);
         }
     }
 
@@ -326,16 +441,20 @@ public class Playboard implements Serializable {
         if ((b != null) && (b.getSolution() != b.getResponse())) {
             b.setCheated(true);
             b.setResponse(b.getSolution());
+
             return this.highlightLetter;
         }
+
         return null;
     }
 
     public List<Position> revealPuzzle() {
         ArrayList<Position> changes = new ArrayList<Position>();
+
         for (int across = 0; across < this.boxes.length; across++) {
             for (int down = 0; down < this.boxes[across].length; down++) {
-                Box b= this.boxes[across][down];
+                Box b = this.boxes[across][down];
+
                 if ((b != null) && (b.getSolution() != b.getResponse())) {
                     b.setCheated(true);
                     b.setResponse(b.getSolution());
@@ -343,6 +462,7 @@ public class Playboard implements Serializable {
                 }
             }
         }
+
         return changes;
     }
 
@@ -354,13 +474,16 @@ public class Playboard implements Serializable {
 
         for (int i = 0; i < w.length; i++) {
             Position p = revealLetter();
-            if(p != null){
+
+            if (p != null) {
                 changes.add(p);
             }
+
             nextLetter();
         }
 
         this.highlightLetter = oldHighlight;
+
         return changes;
     }
 
@@ -375,91 +498,37 @@ public class Playboard implements Serializable {
         this.showErrors = !showErrors;
     }
 
-    public void jumpTo(int clueIndex, boolean across) {
-        this.across = across;
-        if (across) {
-            this.highlightLetter = (this.acrossWordStarts.get(this.puzzle.getAcrossCluesLookup()[clueIndex]));
-        } else {
-            this.highlightLetter = (this.downWordStarts.get(this.puzzle.getDownCluesLookup()[clueIndex]));
-        }
-    }
-
-    public Box[] getCurrentWordBoxes() {
-        Word currentWord = this.getCurrentWord();
-        Box[] result = new Box[currentWord.length];
-        for (int i = 0; i < result.length; i++) {
-            Position pos = new Position(currentWord.start.across,
-                    currentWord.start.down);
-            if (currentWord.across) {
-                pos.across += i;
-            } else {
-                pos.down += i;
-            }
-            result[i] = this.boxes[pos.across][pos.down];
-        }
-        return result;
-    }
-
-    public Clue[] getDownClues() {
-        Clue[] clues = new Clue[puzzle.getDownClues().length];
-        for (int i = 0; i < clues.length; i++) {
-            clues[i] = new Clue();
-            clues[i].hint = puzzle.getDownClues()[i];
-            clues[i].number = puzzle.getDownCluesLookup()[i];
-        }
-        return clues;
-    }
-
-    public Clue[] getAcrossClues() {
-        Clue[] clues = new Clue[puzzle.getAcrossClues().length];
-        for (int i = 0; i < clues.length; i++) {
-            clues[i] = new Clue();
-            clues[i].hint = puzzle.getAcrossClues()[i];
-            clues[i].number = puzzle.getAcrossCluesLookup()[i];
-        }
-        return clues;
-    }
-
-    /**
-     * @return the responder
-     */
-    public String getResponder() {
-        return responder;
-    }
-
-    /**
-     * @param responder the responder to set
-     */
-    public void setResponder(String responder) {
-        this.responder = responder;
-    }
-
     public static class Clue {
-
         public String hint;
         public int number;
-
-        @Override
-        public int hashCode() {
-            return hint.hashCode();
-        }
 
         @Override
         public boolean equals(Object obj) {
             if (obj == null) {
                 return false;
             }
+
             if (getClass() != obj.getClass()) {
                 return false;
             }
+
             final Clue other = (Clue) obj;
-            if ((this.hint == null) ? (other.hint != null) : !this.hint.equals(other.hint)) {
+
+            if ((this.hint == null) ? (other.hint != null)
+                                        : (!this.hint.equals(other.hint))) {
                 return false;
             }
+
             if (this.number != other.number) {
                 return false;
             }
+
             return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return hint.hashCode();
         }
 
         @Override
@@ -469,7 +538,6 @@ public class Playboard implements Serializable {
     }
 
     public static class Position {
-
         public int across;
         public int down;
 
@@ -501,7 +569,6 @@ public class Playboard implements Serializable {
     }
 
     public static class Word {
-
         public Position start;
         public boolean across;
         public int length;
@@ -509,11 +576,12 @@ public class Playboard implements Serializable {
         public boolean checkInWord(int across, int down) {
             int ranging = this.across ? across : down;
             boolean offRanging = this.across ? (down == start.down)
-                    : (across == start.across);
+                                             : (across == start.across);
 
             int startPos = this.across ? start.across : start.down;
 
-            return (offRanging && (startPos <= ranging) && ((startPos + length) > ranging));
+            return (offRanging && (startPos <= ranging) &&
+            ((startPos + length) > ranging));
         }
 
         @Override
@@ -523,15 +591,19 @@ public class Playboard implements Serializable {
             }
 
             Word check = (Word) o;
-            return check.start.equals(this.start) && check.across == this.across && check.length == this.length;
+
+            return check.start.equals(this.start) &&
+            (check.across == this.across) && (check.length == this.length);
         }
 
         @Override
         public int hashCode() {
             int hash = 5;
-            hash = 29 * hash + (this.start != null ? this.start.hashCode() : 0);
-            hash = 29 * hash + (this.across ? 1 : 0);
-            hash = 29 * hash + this.length;
+            hash = (29 * hash) +
+                ((this.start != null) ? this.start.hashCode() : 0);
+            hash = (29 * hash) + (this.across ? 1 : 0);
+            hash = (29 * hash) + this.length;
+
             return hash;
         }
     }

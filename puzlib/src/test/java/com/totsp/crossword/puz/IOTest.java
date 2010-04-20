@@ -43,7 +43,7 @@ public class IOTest extends TestCase {
         Box[][] boxes = puz.getBoxes();
         for(int x=0; x<boxes.length; x++){
             for(int y=0; y<boxes[x].length; y++){
-                System.out.print( boxes[x][y]  == null ? "null " : boxes[x][y]);
+                System.out.print( boxes[x][y]  == null ? "_ " : boxes[x][y].getSolution() +" ");
             }
             System.out.println();
         }
