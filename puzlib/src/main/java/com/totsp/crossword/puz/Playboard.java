@@ -281,8 +281,7 @@ public class Playboard implements Serializable {
         Position next = new Position(original.across, original.down + 1);
         Box value = this.getBoxes()[next.across][next.down];
 
-        if ((value == null) ||
-                (!skipCompleted && (value.getResponse() != ' '))) {
+        if ((value == null) || (skipCompleted && (value.getResponse() != ' '))) {
             try {
                 next = moveDown(next, skipCompleted);
                 System.out.println(next.down);
@@ -311,8 +310,7 @@ public class Playboard implements Serializable {
         Position next = new Position(original.across - 1, original.down);
         Box value = this.getBoxes()[next.across][next.down];
 
-        if ((value == null) ||
-                (!skipCompleted && (value.getResponse() != ' '))) {
+        if ((value == null) || (skipCompleted && (value.getResponse() != ' '))) {
             try {
                 next = moveLeft(next, skipCompleted);
             } catch (ArrayIndexOutOfBoundsException e) {
@@ -347,11 +345,9 @@ public class Playboard implements Serializable {
         Position next = new Position(original.across + 1, original.down);
         Box value = this.getBoxes()[next.across][next.down];
 
-        if ((value == null) ||
-                (!skipCompleted && (value.getResponse() != ' '))) {
+        if ((value == null) || (skipCompleted && (value.getResponse() != ' '))) {
             try {
                 next = moveRight(next, skipCompleted);
-               
             } catch (ArrayIndexOutOfBoundsException e) {
             }
         }
@@ -376,20 +372,17 @@ public class Playboard implements Serializable {
         Position next = new Position(original.across, original.down - 1);
         Box value = this.getBoxes()[next.across][next.down];
 
-        if ((value == null) ||
-                (!skipCompleted && (value.getResponse() != ' '))) {
+        if ((value == null) || (skipCompleted && (value.getResponse() != ' '))) {
             try {
                 next = moveUp(next, skipCompleted);
-               
             } catch (ArrayIndexOutOfBoundsException e) {
-                
             }
         }
 
         return next;
     }
 
-    public Word moveUp(){
+    public Word moveUp() {
         return moveUp(false);
     }
 
@@ -423,7 +416,6 @@ public class Playboard implements Serializable {
 
         b.setResponse(letter);
         b.setResponder(this.responder);
-
         return this.nextLetter();
     }
 

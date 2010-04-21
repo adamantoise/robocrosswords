@@ -103,7 +103,7 @@ public class Game {
                 if ((keyCode == KeyCodes.KEY_UP) ||
                         (((modifiers & KeyboardListener.MODIFIER_CTRL) > 0) &&
                         (keyCode == CODES.w()))) {
-                    Word w = board.movieUp();
+                    Word w = board.moveUp();
                     render(w);
                     playStateListener.onCursorMoved(board.getHighlightLetter().across, board.getHighlightLetter().down);
 
@@ -152,6 +152,10 @@ public class Game {
                         (ALPHA.indexOf(Character.toUpperCase(keyCode)) != -1)) {
                     Position p = board.getHighlightLetter();
                     Word w = board.playLetter(Character.toUpperCase(keyCode));
+                    if(board.getHighlightLetter().across == board.getBoxes().length -1 ||
+                            board.getHighlightLetter().down == board.getBoxes()[board.getHighlightLetter().across].length -1 ){
+                        w= null;
+                    }
                     render(w);
                     playStateListener.onLetterPlayed(responder, p.across,
                         p.down, Character.toUpperCase(keyCode),
@@ -435,6 +439,10 @@ public class Game {
 
     public void startPuzzle(final long listingId, final Puzzle puzzle) {
         this.startPuzzle(listingId, puzzle, true);
+    }
+
+    public Puzzle getPuzzle(){
+        return board.getPuzzle();
     }
 
     public void startPuzzle(final long listingId, final Puzzle puzzle,

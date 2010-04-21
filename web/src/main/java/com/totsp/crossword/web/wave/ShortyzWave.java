@@ -178,7 +178,7 @@ public class ShortyzWave extends WaveGadget<UserPreferences>
 
                         ArrayList<String> updateKeys = new ArrayList<String>();
                         JsArrayString keys = event.getState().getKeys();
-
+                        ArrayList<String> allKeys = new ArrayList<String>();
                         for (int i = 0; i < keys.length(); i++) {
                             String key = keys.get(i);
 
@@ -186,11 +186,16 @@ public class ShortyzWave extends WaveGadget<UserPreferences>
                                     !stateKeysSeen.contains(key)) {
                                 updateKeys.add(key);
                                 stateKeysSeen.add(key);
+                                allKeys.add(key);
+                            } else if (!"undefined".equals("" + key) && key.startsWith("play-")){
+                                allKeys.add(key);
                             }
                         }
 
                         final String[] keysArray = updateKeys.toArray(new String[updateKeys.size()]);
+                        final String[] allKeysArray = allKeys.toArray(new String[allKeys.size()]);
                         Arrays.sort(keysArray);
+                        Arrays.sort(allKeysArray);
 
                         for (String key : keysArray) {
                             String data = event.getState().get(key);
@@ -211,6 +216,18 @@ public class ShortyzWave extends WaveGadget<UserPreferences>
                                         "Critical error getting state update " +
                                         ex + "\n" + key + "\n" + data);
                                 }
+                            }
+                        }
+
+                        if(allKeysArray.length > 10 ){
+
+                            try{
+                                state.submitValue(INTIAL_PUZZLE_KEY, CODEC.serialize(g.getPuzzle()));
+                                for(int i=0; allKeysArray.length - i > 10; i++ ){
+                                    state.submitValue(allKeysArray[i], null);
+                                }
+                            } catch(SerializationException se){
+                                Window.alert("Update of wave state failed"+se);
                             }
                         }
 

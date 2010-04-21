@@ -385,8 +385,8 @@
                     <gen>target/gwtgen</gen>
                     <runTarget>/</runTarget>
                     <compileTargets>
-                        <param>com.totsp.crossword.web.Basic</param>
-                        <param>com.totsp.crossword.web.Gadget</param>
+                        <!--param>com.totsp.crossword.web.Basic</param>
+                        <param>com.totsp.crossword.web.Gadget</param-->
                         <param>com.totsp.crossword.web.Wave</param>
                     </compileTargets>
                     <server>com.google.appengine.tools.development.gwt.AppEngineLauncher</server>
