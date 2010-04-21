@@ -237,6 +237,8 @@ public class ShortyzWave extends WaveGadget<UserPreferences>
 
                         ArrayList<String> cursorKeys = new ArrayList<String>();
                         ArrayList<String> updateKeys = new ArrayList<String>();
+                         ArrayList<String> allKeys = new ArrayList<String>();
+
                         JsArrayString keys = event.getState().getKeys();
 
                         for (int i = 0; i < keys.length(); i++) {
@@ -250,6 +252,8 @@ public class ShortyzWave extends WaveGadget<UserPreferences>
                                 if (!getWave().isPlayback()) {
                                     stateKeysSeen.add(key);
                                 }
+                            } else if (!"undefined".equals("" + key) && key.startsWith("play-")){
+                                allKeys.add(key);
                             } else if(!"undefined".equals("" + key) &&
                                     key.startsWith("cursor-")){
                                     cursorKeys.add(key);
@@ -266,7 +270,21 @@ public class ShortyzWave extends WaveGadget<UserPreferences>
                         }
                     }
                     final String[] keysArray = updateKeys.toArray(new String[updateKeys.size()]);
+                    final String[] allKeysArray = allKeys.toArray(new String[allKeys.size()]);
                     Arrays.sort(keysArray);
+                    Arrays.sort(allKeysArray);
+
+                    if(allKeysArray.length > 10 ){
+
+                        try{
+                            state.submitValue(INTIAL_PUZZLE_KEY, CODEC.serialize(g.getPuzzle()));
+                            for(int i=0; allKeysArray.length - i > 10; i++ ){
+                                state.submitValue(allKeysArray[i], null);
+                            }
+                        } catch(SerializationException se){
+                            Window.alert("Update of wave state failed"+se);
+                        }
+                    }
 
                     DeferredCommand.addCommand(new IncrementalCommand() {
                             int i = 0;
@@ -320,8 +338,7 @@ public class ShortyzWave extends WaveGadget<UserPreferences>
                     @Override
                     public void onUpdate(StateUpdateEvent event) {
                         final State state = event.getState();
-                        //Window.alert("Startup state "+ (state.get(INTIAL_PUZZLE_KEY) == null) );
-
+                        
                         if (state.get(INTIAL_PUZZLE_KEY) == null) {
                             g.loadList();
                             g.setPlayStateListener(new PlayStateListener() {
@@ -357,9 +374,7 @@ public class ShortyzWave extends WaveGadget<UserPreferences>
                                 });
                         } else {
                             try {
-                                //Window.alert("Starting puzzle...");
                                 String puzSer = state.get(INTIAL_PUZZLE_KEY);
-                                //Window.alert(puzSer);
                                 g.startPuzzle(0L,
                                     CODEC.deserialize(puzSer), false);
                                 ArrayList<String> cursorKeys = new ArrayList<String>();
