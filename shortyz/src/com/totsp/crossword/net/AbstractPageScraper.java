@@ -98,7 +98,8 @@ public class AbstractPageScraper {
 			for(Entry<String, String> entry : urlsToFilenames.entrySet() ){
 				String url = entry.getKey();
 				String filename = entry.getValue();
-				if( !(new File(AbstractDownloader.DOWNLOAD_DIR, filename).exists())){
+				if( !(new File(AbstractDownloader.DOWNLOAD_DIR, filename).exists()) && 
+						!(new File(AbstractDownloader.DOWNLOAD_DIR, "archive/"+filename).exists())){
 					System.out.println("Attempting "+url);
 					try{
 						File file = download(url, filename);

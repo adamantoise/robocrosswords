@@ -60,7 +60,7 @@
 	android:title="Other Puzzle Sources (Experimental)">
 	
 	<CheckBoxPreference
-	android:title="Brendan Emmett Guigley"
+	android:title="Brendan Emmett Quigley"
 	android:defaultValue="true"
 	android:summary="brendanemmettquigley.com"
 	android:key="scrapeBEQ"
