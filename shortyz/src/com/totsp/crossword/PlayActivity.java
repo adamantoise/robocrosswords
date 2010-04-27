@@ -210,7 +210,7 @@ public class PlayActivity extends Activity {
         return true;
     }
     
-    private long lastDelete;
+    private long lastKey;
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
@@ -218,26 +218,37 @@ public class PlayActivity extends Activity {
 
         switch (keyCode) {
         case KeyEvent.KEYCODE_DPAD_DOWN:
-            previous = PlayActivity.BOARD.moveDown();
-            this.render(previous);
-
+        	if(System.currentTimeMillis() - lastKey > 50){
+        		previous = PlayActivity.BOARD.moveDown();
+                this.render(previous);
+        	}
+        	lastKey = System.currentTimeMillis();
             return true;
 
         case KeyEvent.KEYCODE_DPAD_UP:
-            previous = PlayActivity.BOARD.moveUp();
-            this.render(previous);
+        	if(System.currentTimeMillis() - lastKey > 50){
+        		previous = PlayActivity.BOARD.moveUp();
+                this.render(previous);
+        	}
+        	lastKey = System.currentTimeMillis();
 
             return true;
 
         case KeyEvent.KEYCODE_DPAD_LEFT:
-            previous = PlayActivity.BOARD.moveLeft();
-            this.render(previous);
-
+        	if(System.currentTimeMillis() - lastKey > 50){
+        		previous = PlayActivity.BOARD.moveLeft();
+                this.render(previous);
+        	}
+        	lastKey = System.currentTimeMillis();
             return true;
 
         case KeyEvent.KEYCODE_DPAD_RIGHT:
-            previous = PlayActivity.BOARD.moveRight();
-            this.render(previous);
+        	if(System.currentTimeMillis() - lastKey > 50){
+        		previous = PlayActivity.BOARD.moveRight();
+                this.render(previous);
+        	}
+        	lastKey = System.currentTimeMillis();
+            
 
             return true;
 
@@ -254,11 +265,11 @@ public class PlayActivity extends Activity {
             return true;
 
         case KeyEvent.KEYCODE_DEL:
-        	if(System.currentTimeMillis() - lastDelete > 50){
+        	if(System.currentTimeMillis() - lastKey > 50){
 	            previous = PlayActivity.BOARD.deleteLetter();
 	            this.render(previous);
         	}
-        	lastDelete = System.currentTimeMillis();
+        	lastKey = System.currentTimeMillis();
             
             return true;
             
