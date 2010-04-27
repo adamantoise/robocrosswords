@@ -263,14 +263,14 @@ public class PlayActivity extends Activity {
             return true;
             
 
-        case KeyEvent.KEYCODE_BACK:
-
-            if ((this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES) ||
-                    (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
-                this.finish();
-
-                return true;
-            }
+//        case KeyEvent.KEYCODE_BACK:
+//
+//            if ((this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES) ||
+//                    (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
+//                this.finish();
+//
+//                return true;
+//            }
         }
 
         char c = Character.toUpperCase(event.getDisplayLabel());

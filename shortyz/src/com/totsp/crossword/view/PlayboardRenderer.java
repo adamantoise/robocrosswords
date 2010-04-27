@@ -57,7 +57,7 @@ public class PlayboardRenderer {
 
 		currentWordHighlight.setColor(Color.parseColor("#FFAE57"));
 		currentLetterHighlight.setColor(Color.parseColor("#EB6000"));
-		currentLetterBox.setColor(Color.parseColor("#0000FF"));
+		currentLetterBox.setColor(Color.parseColor("#FFFFFF"));
 		currentLetterBox.setStrokeWidth(2.0F);
 
 		white.setColor(Color.WHITE);
@@ -80,7 +80,6 @@ public class PlayboardRenderer {
 		letterText.setTextSize(this.logicalDensity * 20F);
 		for (int col = 0; col < word.length; col++) {
 			int numberTextSize = (int) (scale * 8F);
-			int letterTextSize = (int) (scale * 20);
 			int startX = (int) (col * boxSize);
 			int startY = 0;
 			Paint boxColor = this.blackLine;
@@ -271,12 +270,12 @@ public class PlayboardRenderer {
 
 	public void zoomIn() {
 		this.bitmap = null;
-		this.scale = scale * 1.5F;
+		this.scale = scale * 1.25F;
 	}
 
 	public void zoomOut() {
 		this.bitmap = null;
-		this.scale = scale / 1.5F;
+		this.scale = scale / 1.25F;
 	}
 
 	public void zoomReset() {
