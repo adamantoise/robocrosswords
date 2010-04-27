@@ -1,58 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android">
-  <PreferenceCategory
-	android:title="Application Settings">
-	<CheckBoxPreference
-	android:title="Download on Startup"
-	android:defaultValue="true"
-	android:summary="Download today's puzzles when starting the application"
-	android:key="dlOnStartup"
-	/>
-	
-	<!--  <CheckBoxPreference
-	android:title="Background Service"
-	android:defaultValue="true"
-	android:summary="Download new puzzles in the background"
-	android:key="runService"
-	/>-->
-	
-	<CheckBoxPreference
-	android:title="Delete on Cleanup"
-	android:defaultValue="false"
-	android:summary="Delete rather than archive old puzzles"
-	android:key="deleteOnCleanup"
-	/>
-	
-	
-	<CheckBoxPreference
-	android:title="Snap to Current Word"
-	android:defaultValue="true"
-	android:summary="Toggles the auto-scrolling of the playboard to the current play position"
-	android:key="ensureVisible"
-	/>
-	
-	<CheckBoxPreference
-	android:title="Scroll To Clue"
-	android:defaultValue="false"
-	android:summary="Toggles the auto-scrolling to the selected clue in the clues list mode. (Works like Shortyz 1)"
-	android:key="snapClue"
-	/>
-	
-	<CheckBoxPreference
-	android:title="Skip Filled Boxes"
-	android:defaultValue="false"
-	android:summary="Toggles the skipping of filled boxes when you enter a new letter."
-	android:key="skipFilled"
-	/>
-	
-	<CheckBoxPreference
-	android:title="No Download Notifications"
-	android:defaultValue="false"
-	android:summary="Prevents a notification for each puzzle downloaded from appearing in the notifications list."
-	android:key="supressMessages"
-	/>
- </PreferenceCategory>
+ 
 <PreferenceCategory
 	android:title="Free Puzzle Downloads">
 	<CheckBoxPreference
@@ -106,6 +55,23 @@
 	
 	
 </PreferenceCategory>
+
+<PreferenceCategory
+	android:title="Other Puzzle Sources (Experimental)">
+	
+	<CheckBoxPreference
+	android:title="Brendan Emmett Guigley"
+	android:defaultValue="true"
+	android:summary="brendanemmettquigley.com"
+	android:key="scrapeBEQ"
+	/>
+	
+	<Preference
+ 	android:title="About These Sources" 
+ 	android:key="aboutScrapes"/>
+	
+</PreferenceCategory>	
+
 <PreferenceCategory
 	android:title="New York Times Select Membership">
 	<CheckBoxPreference
@@ -124,6 +90,59 @@
 	android:key="nytPassword" 
 	/>
 	</PreferenceCategory>
+	 <PreferenceCategory
+	android:title="Application Settings">
+	<CheckBoxPreference
+	android:title="Download on Startup"
+	android:defaultValue="true"
+	android:summary="Download today's puzzles when starting the application"
+	android:key="dlOnStartup"
+	/>
+	
+	<!--  <CheckBoxPreference
+	android:title="Background Service"
+	android:defaultValue="true"
+	android:summary="Download new puzzles in the background"
+	android:key="runService"
+	/>-->
+	
+	<CheckBoxPreference
+	android:title="Delete on Cleanup"
+	android:defaultValue="false"
+	android:summary="Delete rather than archive old puzzles"
+	android:key="deleteOnCleanup"
+	/>
+	
+	
+	<CheckBoxPreference
+	android:title="Snap to Current Word"
+	android:defaultValue="true"
+	android:summary="Toggles the auto-scrolling of the playboard to the current play position"
+	android:key="ensureVisible"
+	/>
+	
+	<CheckBoxPreference
+	android:title="Scroll To Clue"
+	android:defaultValue="false"
+	android:summary="Toggles the auto-scrolling to the selected clue in the clues list mode. (Works like Shortyz 1)"
+	android:key="snapClue"
+	/>
+	
+	<CheckBoxPreference
+	android:title="Skip Filled Boxes"
+	android:defaultValue="false"
+	android:summary="Toggles the skipping of filled boxes when you enter a new letter."
+	android:key="skipFilled"
+	/>
+	
+	<CheckBoxPreference
+	android:title="No Download Notifications"
+	android:defaultValue="false"
+	android:summary="Prevents a notification for each puzzle downloaded from appearing in the notifications list."
+	android:key="supressMessages"
+	/>
+ </PreferenceCategory>
+	
 	<PreferenceCategory
 	android:title="About Shortyz">
 	<Preference

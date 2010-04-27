@@ -224,7 +224,7 @@ public class PlayActivity extends Activity {
             return true;
 
         case KeyEvent.KEYCODE_DPAD_UP:
-            previous = PlayActivity.BOARD.movieUp();
+            previous = PlayActivity.BOARD.moveUp();
             this.render(previous);
 
             return true;

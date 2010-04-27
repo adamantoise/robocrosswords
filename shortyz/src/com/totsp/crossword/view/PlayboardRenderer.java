@@ -57,7 +57,7 @@ public class PlayboardRenderer {
 
 		currentWordHighlight.setColor(Color.parseColor("#FFAE57"));
 		currentLetterHighlight.setColor(Color.parseColor("#EB6000"));
-		currentLetterBox.setColor(Color.parseColor("#606060"));
+		currentLetterBox.setColor(Color.parseColor("#0000FF"));
 		currentLetterBox.setStrokeWidth(2.0F);
 
 		white.setColor(Color.WHITE);
@@ -113,13 +113,13 @@ public class PlayboardRenderer {
 			canvas.drawLine(startX, startY + boxSize, startX + boxSize,
 					startY + boxSize, boxColor);
 
-			if (word[col].across | word[col].down) {
-				canvas.drawText(Integer.toString(word[col].clueNumber),
+			if (word[col].isAcross() | word[col].isDown()) {
+				canvas.drawText(Integer.toString(word[col].getClueNumber()),
 						startX + 2, startY + numberTextSize + 2,
 						this.numberText);
 			}
 
-			canvas.drawText(Character.toString(word[col].response), startX
+			canvas.drawText(Character.toString(word[col].getResponse()), startX
 					+ (BOX_SIZE / 2), startY + (int) ((this.logicalDensity * 20F) * 1.25),
 					this.letterText);
 		}
@@ -208,24 +208,24 @@ public class PlayboardRenderer {
 							canvas.drawRect(r, this.currentLetterHighlight);
 						} else if (currentWord.checkInWord(col, row)) {
 							canvas.drawRect(r, this.currentWordHighlight);
-						} else if (boxes[col][row].cheated) {
+						} else if (boxes[col][row].isCheated()) {
 							canvas.drawRect(r, this.cheated);
-						} else if (this.board.isShowErrors() && boxes[col][row].response != ' ' 
-								&& boxes[col][row].solution != boxes[col][row].response) {
+						} else if (this.board.isShowErrors() && boxes[col][row].getResponse() != ' ' 
+								&& boxes[col][row].getSolution() != boxes[col][row].getResponse()) {
 							canvas.drawRect(r, this.red);
 						} else {
 							canvas.drawRect(r, this.white);
 						}
 
-						if (boxes[col][row].across | boxes[col][row].down) {
+						if (boxes[col][row].isAcross() | boxes[col][row].isDown()) {
 							canvas.drawText(Integer
-									.toString(boxes[col][row].clueNumber),
+									.toString(boxes[col][row].getClueNumber()),
 									startX + 2, startY + numberTextSize + 2,
 									this.numberText);
 						}
 
 						canvas.drawText(Character
-								.toString(boxes[col][row].response), startX
+								.toString(boxes[col][row].getResponse()), startX
 								+ (boxSize / 2), startY
 								+ (int) (letterTextSize * 1.25),
 								this.letterText);

@@ -182,8 +182,8 @@ public class NYTDownloader extends AbstractDownloader {
                 	for(int y=0; y < oPuz.getBoxes()[x].length; y++){
                 		Box oBox = oPuz.getBoxes()[x][y];
                 		Box nBox = nPuz.getBoxes()[x][y];
-                		if( oBox != null && nBox != null && oBox.solution != nBox.solution){
-                			oBox.solution = nBox.solution;
+                		if( oBox != null && nBox != null && oBox.getSolution() != nBox.getSolution()){
+                			oBox.setSolution(nBox.getSolution());
                 			updated = true;
                 		}
                 	}

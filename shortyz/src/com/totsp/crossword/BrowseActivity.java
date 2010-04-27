@@ -35,8 +35,9 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.totsp.crossword.net.Downloaders;
 import com.totsp.crossword.io.IO;
+import com.totsp.crossword.net.Downloaders;
+import com.totsp.crossword.net.Scrapers;
 import com.totsp.crossword.puz.PuzzleMeta;
 import com.totsp.crossword.shortyz.R;
 
@@ -175,10 +176,10 @@ public class BrowseActivity extends ListActivity {
 	                HTMLActivity.class);
 			this.startActivity(i);
 			return;
-        }  else if(prefs.getBoolean("release_2.0.15", true) ){
+        }  else if(prefs.getBoolean("release_2.0.17", true) ){
         	
         	Editor e = prefs.edit();
-        	e.putBoolean("release_2.0.15", false);
+        	e.putBoolean("release_2.0.17", false);
         	e.commit();
         	
         	Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/release.html"), this,
@@ -281,6 +282,8 @@ public class BrowseActivity extends ListActivity {
 			public void run() {
 				Downloaders dls = new Downloaders(prefs, nm,
 						BrowseActivity.this);
+				Scrapers scrapes = new Scrapers(prefs, nm, BrowseActivity.this);
+				scrapes.scrape();
 				Date d = new Date();
 				for (int i = 0; i < 10; i++) {
 					d = new Date(d.getTime() - DAY);
@@ -301,6 +304,10 @@ public class BrowseActivity extends ListActivity {
 				Downloaders dls = new Downloaders(prefs, nm,
 						BrowseActivity.this);
 				dls.download(d);
+				
+				Scrapers scrapes = new Scrapers(prefs, nm, BrowseActivity.this);
+				scrapes.scrape();
+				
 				handler.post(new Runnable() {
 					public void run() {
 						BrowseActivity.this.render();
