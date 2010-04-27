@@ -398,6 +398,14 @@ public class Playboard implements Serializable {
 
         return w;
     }
+    
+    public Word nextLetter(boolean overWrite){
+    	if (across) {
+            return this.moveRight(!overWrite);
+        } else {
+            return this.moveDown(!overWrite);
+        }
+    }
 
     public Word nextLetter() {
         if (across) {
@@ -413,10 +421,10 @@ public class Playboard implements Serializable {
         if (b == null) {
             return null;
         }
-
+        boolean overWrite = b.getResponse() != ' ';
         b.setResponse(letter);
         b.setResponder(this.responder);
-        return this.nextLetter();
+        return this.skipCompletedLetters ? this.nextLetter(overWrite) : this.nextLetter();
     }
 
     public Word previousLetter() {
