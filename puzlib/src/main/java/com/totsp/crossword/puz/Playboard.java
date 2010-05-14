@@ -3,6 +3,7 @@ package com.totsp.crossword.puz;
 import java.io.Serializable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -76,6 +77,20 @@ public class Playboard implements Serializable {
         }
 
         return c;
+    }
+    
+    /** Returns the 0 based index of the current clue based on the current across or down state
+     * 
+     * @return index of the across or down clue based on the current state
+     */
+    public int getCurrentClueIndex(){
+    	Clue c = this.getClue();
+    	if(across){
+    		return Arrays.binarySearch(this.puzzle.getAcrossCluesLookup(), c.number);
+    	} else {
+    		return Arrays.binarySearch(this.puzzle.getAcrossCluesLookup(), c.number);
+    	}
+    	
     }
 
     public Box getCurrentBox() {
