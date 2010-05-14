@@ -75,7 +75,7 @@ public class Puzzle implements Serializable {
                     continue;
                 }
 
-                if ((x == 0) || (boxes[x - 1][y] == null)) {
+                if ( ((x == 0) || (boxes[x - 1][y] == null) ) && ( x +1 < boxes.length && boxes[x + 1][y] != null)) {
                     boxes[x][y].setDown(true);
 
                     if ((x == 0) || (boxes[x - 1][y] == null)) {
@@ -84,7 +84,7 @@ public class Puzzle implements Serializable {
                     }
                 }
 
-                if ((y == 0) || (boxes[x][y - 1] == null)) {
+                if ( ((y == 0) || (boxes[x][y - 1] == null)) && (y+1 < boxes[x].length && boxes[x][y+1] != null)) {
                     boxes[x][y].setAcross(true);
 
                     if ((y == 0) || (boxes[x][y - 1] == null)) {
