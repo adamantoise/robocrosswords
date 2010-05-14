@@ -163,7 +163,7 @@ public class BrowseActivity extends ListActivity {
         setDefaultKeyMode(DEFAULT_KEYS_SHORTCUT);
         getListView().setOnCreateContextMenuListener(this);
         this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
+        
         this.nm = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         
         if (prefs.getBoolean("dlOnStartup", true)) {
