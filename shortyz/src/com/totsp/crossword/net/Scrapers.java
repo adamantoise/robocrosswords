@@ -30,6 +30,10 @@ public class Scrapers {
         if (prefs.getBoolean("scrapeBEQ", true)) {
             scrapers.add(new BEQuigleyScraper());
         }
+        System.out.println("scrapeCru"+prefs.getBoolean("scrapeCru", false));
+        if(prefs.getBoolean("scrapeCru", false)){
+        	scrapers.add(new CruScraper() );
+        }
         
         this.supressMessages = prefs.getBoolean("supressMessages", false);
     }
@@ -37,28 +41,32 @@ public class Scrapers {
     
     public void scrape(){
     	 int i = 1;
-         String contentTitle = "Downloading Puzzles";
+         String contentTitle = "Downloading Scrape Puzzles";
 
          Notification not = new Notification(android.R.drawable.stat_sys_download,
                  contentTitle, System.currentTimeMillis());
          for(AbstractPageScraper scraper : scrapers ){
-        	 String contentText = "Downloading from " + scraper.getSourceName();
-             Intent notificationIntent = new Intent(context, PlayActivity.class);
-             PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-                     notificationIntent, 0);
-             not.setLatestEventInfo(context, contentTitle, contentText,
-                 contentIntent);
-
-             if (this.notificationManager != null) {
-                 this.notificationManager.notify(0, not);
-             }
-             
-             List<File> downloaded = scraper.scrape();
-             if(!this.supressMessages){
-	             for(File f: downloaded){
-	            	 postDownloadedNotification(i++, scraper.getSourceName(), f);
+        	 try{
+	        	 String contentText = "Downloading from " + scraper.getSourceName();
+	             Intent notificationIntent = new Intent(context, PlayActivity.class);
+	             PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
+	                     notificationIntent, 0);
+	             not.setLatestEventInfo(context, contentTitle, contentText,
+	                 contentIntent);
+	
+	             if (this.notificationManager != null) {
+	                 this.notificationManager.notify(0, not);
 	             }
-             }
+	             
+	             List<File> downloaded = scraper.scrape();
+	             if(!this.supressMessages){
+		             for(File f: downloaded){
+		            	 postDownloadedNotification(i++, scraper.getSourceName(), f);
+		             }
+	             }
+        	 } catch(Exception e){
+        		 e.printStackTrace();
+        	 }
              
              
          }

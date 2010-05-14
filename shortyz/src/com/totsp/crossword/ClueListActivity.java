@@ -137,13 +137,16 @@ public class ClueListActivity extends Activity {
         across.setOnItemSelectedListener(new OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> arg0, View arg1,
                     int arg2, long arg3) {
-                    PlayActivity.BOARD.jumpTo(arg2, true);
-                    imageView.scrollTo(0, 0);
-                    render();
-                    if(prefs.getBoolean("snapClue", false)){
-	                    across.setSelectionFromTop(arg2, 5);
-	                    across.setSelection(arg2);
-                    }
+                	if(!PlayActivity.BOARD.isAcross() || PlayActivity.BOARD.getCurrentClueIndex() != arg2 ){
+                
+	                    PlayActivity.BOARD.jumpTo(arg2, true);
+	                    imageView.scrollTo(0, 0);
+	                    render();
+	                    if(prefs.getBoolean("snapClue", false)){
+		                    across.setSelectionFromTop(arg2, 5);
+		                    across.setSelection(arg2);
+	                    }
+                	}
                 }
 
                 public void onNothingSelected(AdapterView<?> arg0) {
@@ -153,6 +156,7 @@ public class ClueListActivity extends Activity {
         down.setOnItemClickListener(new OnItemClickListener() {
                 public void onItemClick(AdapterView<?> arg0, View arg1,
                     int arg2, long arg3) {
+                	
                     PlayActivity.BOARD.jumpTo(arg2, false);
                     imageView.scrollTo(0, 0);
                     render();
@@ -160,19 +164,22 @@ public class ClueListActivity extends Activity {
 	                    down.setSelectionFromTop(arg2, 5);
 	                    down.setSelection(arg2);
                     }
+                	
                 }
             });
         
         down.setOnItemSelectedListener(new OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> arg0, View arg1,
                     int arg2, long arg3) {
-                    PlayActivity.BOARD.jumpTo(arg2, false);
-                    imageView.scrollTo(0, 0);
-                    render();
-                    if(prefs.getBoolean("snapClue", false)){
-	                    down.setSelectionFromTop(arg2, 5);
-	                    down.setSelection(arg2);
-                    }
+                	if(PlayActivity.BOARD.isAcross() || PlayActivity.BOARD.getCurrentClueIndex() != arg2 ){
+	                    PlayActivity.BOARD.jumpTo(arg2, false);
+	                    imageView.scrollTo(0, 0);
+	                    render();
+	                    if(prefs.getBoolean("snapClue", false)){
+		                    down.setSelectionFromTop(arg2, 5);
+		                    down.setSelection(arg2);
+	                    }
+                	}
                 }
 
                 public void onNothingSelected(AdapterView<?> arg0) {

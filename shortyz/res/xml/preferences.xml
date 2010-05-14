@@ -66,6 +66,13 @@
 	android:key="scrapeBEQ"
 	/>
 	
+	<CheckBoxPreference
+	android:title="Cru Puzzle Workshop"
+	android:defaultValue="false"
+	android:summary="NYT Cru Cryptic Fan Puzzles\nhttp://web.me.com/joecab/nytcru/\n(Please Read the help item below)"
+	android:key="scrapeCru"
+	/>
+	
 	<Preference
  	android:title="About These Sources" 
  	android:key="aboutScrapes"/>

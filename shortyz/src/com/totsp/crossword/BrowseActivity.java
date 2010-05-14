@@ -176,10 +176,10 @@ public class BrowseActivity extends ListActivity {
 	                HTMLActivity.class);
 			this.startActivity(i);
 			return;
-        }  else if(prefs.getBoolean("release_2.0.17", true) ){
+        }  else if(prefs.getBoolean("release_2.0.22", true) ){
         	
         	Editor e = prefs.edit();
-        	e.putBoolean("release_2.0.17", false);
+        	e.putBoolean("release_2.0.22", false);
         	e.commit();
         	
         	Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/release.html"), this,
