@@ -143,11 +143,20 @@
 	/>
 	
 	<CheckBoxPreference
+	android:title="Use Native Keyboard"
+	android:defaultValue="true"
+	android:summary="Uses the Android soft keyboard for input. Uncheck this to use the Shortyz condensed keyboard"
+	android:key="useNativeKeyboard"
+	/>
+	
+	<CheckBoxPreference
 	android:title="No Download Notifications"
 	android:defaultValue="false"
 	android:summary="Prevents a notification for each puzzle downloaded from appearing in the notifications list."
 	android:key="supressMessages"
 	/>
+	
+	
  </PreferenceCategory>
 	
 	<PreferenceCategory

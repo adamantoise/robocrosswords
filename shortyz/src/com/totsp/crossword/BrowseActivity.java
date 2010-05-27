@@ -11,6 +11,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.NotificationManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -40,9 +41,11 @@ import com.totsp.crossword.net.Downloaders;
 import com.totsp.crossword.net.Scrapers;
 import com.totsp.crossword.puz.PuzzleMeta;
 import com.totsp.crossword.shortyz.R;
+import com.totsp.crossword.view.SeparatedListAdapter;
 
 public class BrowseActivity extends ListActivity {
 	private static final int DATE_DIALOG_ID = 0;
+	private static final long DAY = 24L * 60L * 60L * 1000L;
 	SharedPreferences prefs;
 	private DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
@@ -54,6 +57,7 @@ public class BrowseActivity extends ListActivity {
 		}
 	};
 
+	private Accessor accessor = Accessor.DATE_DESC;
 	private File archiveFolder = new File(Environment
 			.getExternalStorageDirectory(), "crosswords/archive");
 	private File contextFile;
@@ -117,6 +121,14 @@ public class BrowseActivity extends ListActivity {
 		super.onCreateOptionsMenu(menu);
 
 		menu.add("Download").setIcon(android.R.drawable.ic_menu_rotate);
+		Menu sortMenu = menu.addSubMenu("Sort").setIcon(
+				android.R.drawable.ic_menu_sort_alphabetically);
+		sortMenu.add("By Date (Descending)").setIcon(
+				android.R.drawable.ic_menu_day);
+		sortMenu.add("By Date (Ascending)").setIcon(
+				android.R.drawable.ic_menu_day);
+		sortMenu.add("By Source").setIcon(android.R.drawable.ic_menu_upload);
+
 		menu.add("Cleanup").setIcon(android.R.drawable.ic_menu_manage);
 		menu.add("Archive").setIcon(android.R.drawable.ic_menu_view);
 		menu.add("Help").setIcon(android.R.drawable.ic_menu_help);
@@ -147,49 +159,78 @@ public class BrowseActivity extends ListActivity {
 			this.cleanup();
 
 			return true;
-		} else if( item.getTitle().equals("Help")){
-			Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/filescreen.html"), this,
-	                HTMLActivity.class);
+		} else if (item.getTitle().equals("Help")) {
+			Intent i = new Intent(Intent.ACTION_VIEW, Uri
+					.parse("file:///android_asset/filescreen.html"), this,
+					HTMLActivity.class);
 			this.startActivity(i);
+		} else if (item.getTitle().equals("By Source")) {
+			this.accessor = Accessor.SOURCE;
+			prefs.edit().putInt("sort", 2).commit();
+			this.render();
+		} else if (item.getTitle().equals("By Date (Ascending)")) {
+			this.accessor = Accessor.DATE_ASC;
+			prefs.edit().putInt("sort", 1).commit();
+			this.render();
+		} else if (item.getTitle().equals("By Date (Descending)")) {
+			this.accessor = Accessor.DATE_DESC;
+			prefs.edit().putInt("sort", 0).commit();
+			this.render();
 		}
 
 		return false;
 	}
 
 	@Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        this.setTitle("Select Puzzle:");
-        setDefaultKeyMode(DEFAULT_KEYS_SHORTCUT);
-        getListView().setOnCreateContextMenuListener(this);
-        this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        
-        this.nm = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        
-        if (prefs.getBoolean("dlOnStartup", true)) {
-            this.download(new Date());
-        }
-        
-        if( !crosswordsFolder.exists() ){
-        	this.downloadTen();
-    		Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/welcome.html"), this,
-	                HTMLActivity.class);
-			this.startActivity(i);
-			return;
-        }  else if(prefs.getBoolean("release_2.0.22", true) ){
-        	
-        	Editor e = prefs.edit();
-        	e.putBoolean("release_2.0.22", false);
-        	e.commit();
-        	
-        	Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/release.html"), this,
-	                HTMLActivity.class);
-			this.startActivity(i);
-			return;
-        } 
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		this.setTitle("Select Puzzle:");
+		setDefaultKeyMode(DEFAULT_KEYS_SHORTCUT);
+		getListView().setOnCreateContextMenuListener(this);
+		this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        render();
-    }
+		this.nm = (NotificationManager) this
+				.getSystemService(Context.NOTIFICATION_SERVICE);
+
+		if (prefs.getBoolean("dlOnStartup", true)) {
+			this.download(new Date());
+		}
+
+		switch (prefs.getInt("sort", 0)) {
+		case 2:
+			this.accessor = Accessor.SOURCE;
+			break;
+		case 1:
+			this.accessor = Accessor.DATE_ASC;
+			break;
+		default:
+			this.accessor = Accessor.DATE_DESC;
+		}
+
+		if (!crosswordsFolder.exists()) {
+			this.downloadTen();
+
+			Intent i = new Intent(Intent.ACTION_VIEW, Uri
+					.parse("file:///android_asset/welcome.html"), this,
+					HTMLActivity.class);
+			this.startActivity(i);
+
+			return;
+		} else if (prefs.getBoolean("release_2.0.26", true)) {
+			Editor e = prefs.edit();
+			e.putBoolean("release_2.0.26", false);
+			e.commit();
+
+			Intent i = new Intent(Intent.ACTION_VIEW, Uri
+					.parse("file:///android_asset/release.html"), this,
+					HTMLActivity.class);
+			this.startActivity(i);
+
+			return;
+		}
+
+		render();
+	}
 
 	@Override
 	protected Dialog onCreateDialog(int id) {
@@ -217,6 +258,62 @@ public class BrowseActivity extends ListActivity {
 	protected void onResume() {
 		this.render();
 		super.onResume();
+	}
+
+	private SeparatedListAdapter buildList(File directory, Accessor accessor) {
+		directory.mkdirs();
+		
+		ArrayList<FileHandle> files = new ArrayList<FileHandle>();
+		FileHandle[] puzFiles = null;
+
+		for (File f : directory.listFiles()) {
+			if (f.getName().endsWith(".puz")) {
+				PuzzleMeta m = null;
+
+				try {
+					m = IO.meta(f);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				files.add(new FileHandle(f, m));
+			}
+		}
+
+		puzFiles = files.toArray(new FileHandle[files.size()]);
+
+		try {
+			Arrays.sort(puzFiles, accessor);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		SeparatedListAdapter adapter = new SeparatedListAdapter(this);
+		String lastHeader = null;
+		ArrayList<FileHandle> current = new ArrayList<FileHandle>();
+
+		for (FileHandle handle : puzFiles) {
+			String check = accessor.getLabel(handle);
+
+			if (!((lastHeader == null) || lastHeader.equals(check))) {
+				FileAdapter fa = new FileAdapter();
+				fa.puzFiles = current.toArray(new FileHandle[current.size()]);
+				adapter.addSection(lastHeader, fa);
+				current = new ArrayList<FileHandle>();
+			}
+
+			lastHeader = check;
+			current.add(handle);
+		}
+
+		if (lastHeader != null) {
+			FileAdapter fa = new FileAdapter();
+			fa.puzFiles = current.toArray(new FileHandle[current.size()]);
+			adapter.addSection(lastHeader, fa);
+			current = new ArrayList<FileHandle>();
+		}
+
+		return adapter;
 	}
 
 	private void cleanup() {
@@ -275,7 +372,24 @@ public class BrowseActivity extends ListActivity {
 		render();
 	}
 
-	private static final long DAY = 24L * 60L * 60L * 1000L;
+	private void download(final Date d) {
+		new Thread(new Runnable() {
+			public void run() {
+				Downloaders dls = new Downloaders(prefs, nm,
+						BrowseActivity.this);
+				dls.download(d);
+
+				Scrapers scrapes = new Scrapers(prefs, nm, BrowseActivity.this);
+				scrapes.scrape();
+
+				handler.post(new Runnable() {
+					public void run() {
+						BrowseActivity.this.render();
+					}
+				});
+			}
+		}).start();
+	}
 
 	private void downloadTen() {
 		new Thread(new Runnable() {
@@ -284,7 +398,9 @@ public class BrowseActivity extends ListActivity {
 						BrowseActivity.this);
 				Scrapers scrapes = new Scrapers(prefs, nm, BrowseActivity.this);
 				scrapes.scrape();
+
 				Date d = new Date();
+
 				for (int i = 0; i < 10; i++) {
 					d = new Date(d.getTime() - DAY);
 					dls.download(d);
@@ -298,63 +414,40 @@ public class BrowseActivity extends ListActivity {
 		}).start();
 	}
 
-	private void download(final Date d) {
-		new Thread(new Runnable() {
-			public void run() {
-				Downloaders dls = new Downloaders(prefs, nm,
-						BrowseActivity.this);
-				dls.download(d);
-				
-				Scrapers scrapes = new Scrapers(prefs, nm, BrowseActivity.this);
-				scrapes.scrape();
-				
-				handler.post(new Runnable() {
-					public void run() {
-						BrowseActivity.this.render();
-					}
-				});
-			}
-		}).start();
-	}
-
 	private void render() {
-		this.setListAdapter(new FileAdapter(viewArchive ? this.archiveFolder
-				: this.crosswordsFolder));
+		
+		final ProgressDialog dialog = new ProgressDialog(this);
+		dialog.setMessage("Please Wait...");
+		dialog.setCancelable(false);
+		dialog.show();
+		
+		Runnable r = new Runnable(){
 
-		// getListView().setOnCreateContextMenuListener(this);
+			public void run() {
+				final BaseAdapter a = BrowseActivity.this.buildList((viewArchive ? BrowseActivity.this.archiveFolder
+						: BrowseActivity.this.crosswordsFolder), BrowseActivity.this.accessor);
+				BrowseActivity.this.handler.post(new Runnable(){
+
+					public void run() {
+						BrowseActivity.this.setListAdapter(a);
+						dialog.hide();
+					}
+					
+				});
+				
+			}
+			
+		};
+		
+
+		new Thread(r).start();
 	}
 
 	private class FileAdapter extends BaseAdapter {
 		SimpleDateFormat df = new SimpleDateFormat("EEEEEEEEE\n MMM dd, yyyy");
 		FileHandle[] puzFiles;
 
-		public FileAdapter(File directory) {
-			directory.mkdirs();
-
-			ArrayList<FileHandle> files = new ArrayList<FileHandle>();
-
-			for (File f : directory.listFiles()) {
-				if (f.getName().endsWith(".puz")) {
-					PuzzleMeta m = null;
-
-					try {
-						m = IO.meta(f);
-						
-						
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					files.add(new FileHandle(f, m));
-					
-				}
-			}
-
-			this.puzFiles = files.toArray(new FileHandle[files.size()]);
-			try{
-				Arrays.sort(puzFiles);
-			} catch(Exception e){
-				e.printStackTrace();
-			}
+		public FileAdapter() {
 		}
 
 		public int getCount() {
@@ -398,43 +491,6 @@ public class BrowseActivity extends ListActivity {
 			caption.setText(puzFiles[i].getCaption());
 
 			return view;
-		}
-	}
-
-	private static class FileHandle implements Comparable<FileHandle> {
-		File file;
-		PuzzleMeta meta;
-
-		FileHandle(File f, PuzzleMeta meta) {
-			this.file = f;
-			this.meta = meta;
-		}
-
-		public int compareTo(FileHandle another) {
-			FileHandle h = (FileHandle) another;
-			try{
-				return h.getDate().compareTo(this.getDate());
-			} catch(Exception e){
-				return 0;
-			}
-		}
-
-		String getCaption() {
-			return (meta == null) ? "" : meta.title;
-		}
-
-		Date getDate() {
-			return (meta == null) ? new Date(file.lastModified()) : meta.date;
-		}
-
-		int getProgress() {
-			return (meta == null) ? 0 : meta.percentComplete;
-		}
-
-		String getTitle() {
-			return ((meta == null) || (meta.source == null) || (meta.source
-					.length() == 0)) ? file.getName().substring(0,
-					file.getName().lastIndexOf(".")) : meta.source;
 		}
 	}
 }

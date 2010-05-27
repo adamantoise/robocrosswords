@@ -1,60 +1,50 @@
 package com.totsp.crossword;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-
 import android.content.res.Configuration;
-
+import android.inputmethodservice.Keyboard;
+import android.inputmethodservice.KeyboardView;
+import android.inputmethodservice.KeyboardView.OnKeyboardActionListener;
 import android.net.Uri;
-
 import android.os.Bundle;
 import android.os.Handler;
-
 import android.preference.PreferenceManager;
-
 import android.util.DisplayMetrics;
-
 import android.view.ContextMenu;
-
-import android.view.ContextMenu.ContextMenuInfo;
-
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
-import android.view.View.OnClickListener;
-
 import android.view.Window;
-
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
-
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.RelativeLayout.LayoutParams;
 
 import com.totsp.crossword.io.IO;
 import com.totsp.crossword.puz.Playboard;
+import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.puz.Playboard.Clue;
 import com.totsp.crossword.puz.Playboard.Position;
 import com.totsp.crossword.puz.Playboard.Word;
-import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.shortyz.R;
 import com.totsp.crossword.view.PlayboardRenderer;
 import com.totsp.crossword.view.ScrollingImageView;
 import com.totsp.crossword.view.ScrollingImageView.ClickListener;
 import com.totsp.crossword.view.ScrollingImageView.Point;
-
-import java.io.File;
-import java.io.IOException;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 public class PlayActivity extends Activity {
@@ -74,6 +64,8 @@ public class PlayActivity extends Activity {
     private ScrollingImageView boardView;
     private SharedPreferences prefs;
     private TextView clue;
+    private boolean useNativeKeyboard = true;
+    private KeyboardView keyboardView = null;
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -81,10 +73,17 @@ public class PlayActivity extends Activity {
 
         if ((this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES) ||
                 (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,
-                InputMethodManager.HIDE_NOT_ALWAYS);
+            
+        	if(this.useNativeKeyboard){
+	        	InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+	
+	            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,
+	                InputMethodManager.HIDE_NOT_ALWAYS);
+        	} else {
+        		this.keyboardView.setVisibility(View.VISIBLE);
+        	}
+        } else {
+        	this.keyboardView.setVisibility(View.GONE);
         }
     }
 
@@ -116,6 +115,10 @@ public class PlayActivity extends Activity {
 
             BOARD = new Playboard(puz);
             RENDERER = new PlayboardRenderer(BOARD, metrics.density);
+            
+            float scale = prefs.getFloat("scale", metrics.density);
+            RENDERER.setScale(scale);
+            
             BOARD.setSkipCompletedLetters(this.prefs.getBoolean("skipFilled",
                     false));
 
@@ -125,6 +128,64 @@ public class PlayActivity extends Activity {
             }
 
             setContentView(R.layout.main);
+            
+            Keyboard keyboard = new Keyboard(this, R.xml.keyboard);
+        	keyboardView = (KeyboardView) this.findViewById(R.id.playKeyboard);
+        	keyboardView.setKeyboard(keyboard);
+        	
+        	keyboardView.setOnKeyboardActionListener(new OnKeyboardActionListener(){
+
+				public void onKey(int primaryCode, int[] keyCodes) {
+					System.out.println("Got key "+ ((char) primaryCode)+" "+ primaryCode);
+					long eventTime = System.currentTimeMillis();
+					KeyEvent event = new KeyEvent(eventTime, eventTime,
+						    KeyEvent.ACTION_DOWN, primaryCode, 0, 0, 0, 0,
+						    KeyEvent.FLAG_SOFT_KEYBOARD|KeyEvent.FLAG_KEEP_TOUCH_MODE);
+					PlayActivity.this.onKeyUp(primaryCode, event);
+				}
+
+				public void onPress(int primaryCode) {
+					
+				}
+
+				public void onRelease(int primaryCode) {
+					
+				}
+
+				public void onText(CharSequence text) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				public void swipeDown() {
+					// TODO Auto-generated method stub
+					
+				}
+
+				public void swipeLeft() {
+					// TODO Auto-generated method stub
+					
+				}
+
+				public void swipeRight() {
+					// TODO Auto-generated method stub
+					
+				}
+
+				public void swipeUp() {
+					// TODO Auto-generated method stub
+					
+				}
+        		
+        	});
+        	
+            
+        	this.useNativeKeyboard = prefs.getBoolean("useNativeKeyboard", true);
+        	if(this.useNativeKeyboard){
+        		keyboardView.setVisibility(View.GONE);
+        	}
+        	
+            
             this.clue = (TextView) this.findViewById(R.id.clueLine);
 
             this.clue.setClickable(true);
@@ -217,6 +278,9 @@ public class PlayActivity extends Activity {
         Word previous;
 
         switch (keyCode) {
+        case KeyEvent.KEYCODE_MENU:
+        	return false;
+        
         case KeyEvent.KEYCODE_DPAD_DOWN:
         	if(System.currentTimeMillis() - lastKey > 50){
         		previous = PlayActivity.BOARD.moveDown();
@@ -284,7 +348,7 @@ public class PlayActivity extends Activity {
 //            }
         }
 
-        char c = Character.toUpperCase(event.getDisplayLabel());
+        char c = Character.toUpperCase( this.useNativeKeyboard ? event.getDisplayLabel() : ((char)keyCode));
 
         if (ALPHA.indexOf(c) != -1) {
             previous = PlayActivity.BOARD.playLetter(c);
@@ -330,18 +394,21 @@ public class PlayActivity extends Activity {
             return true;
         } else if (item.getTitle().equals("Zoom In")) {
             this.boardView.scrollTo(0, 0);
-            RENDERER.zoomIn();
+            float newScale = RENDERER.zoomIn();
+            this.prefs.edit().putFloat("scale", newScale).commit();
             this.render();
 
             return true;
         } else if (item.getTitle().equals("Zoom Out")) {
             this.boardView.scrollTo(0, 0);
-            RENDERER.zoomOut();
+            float newScale = RENDERER.zoomOut();
+            this.prefs.edit().putFloat("scale", newScale).commit();
             this.render();
 
             return true;
         } else if (item.getTitle().equals("Zoom Reset")) {
-            RENDERER.zoomReset();
+            float newScale = RENDERER.zoomReset();
+            this.prefs.edit().putFloat("scale", newScale).commit();
             this.render();
             this.boardView.scrollTo(0, 0);
 
@@ -446,12 +513,27 @@ public class PlayActivity extends Activity {
     private void render(Word previous) {
         if ((this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES) ||
                 (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,
-                InputMethodManager.HIDE_IMPLICIT_ONLY);
+        	
+        	if(this.useNativeKeyboard){
+	            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+	
+	            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,
+	                InputMethodManager.HIDE_IMPLICIT_ONLY);
+        	} else {
+        		this.keyboardView.setVisibility(View.VISIBLE);
+        	}
+        	
+        } else {
+        	this.keyboardView.setVisibility(View.GONE);
         }
-
+        Clue c = PlayActivity.BOARD.getClue();
+        
+        if(c.hint == null){
+        	PlayActivity.BOARD.toggleDirection();
+        	c = PlayActivity.BOARD.getClue();
+        	
+        }
+        
         this.boardView.setBitmap(RENDERER.draw(previous));
 
         Point topLeft = RENDERER.findPointTopLeft(PlayActivity.BOARD.getHighlightLetter());
@@ -462,7 +544,7 @@ public class PlayActivity extends Activity {
             this.boardView.ensureVisible(topLeft);
         }
 
-        Clue c = PlayActivity.BOARD.getClue();
+        
         this.clue.setText("(" +
             (PlayActivity.BOARD.isAcross() ? "across" : "down") + ") " +
             c.number + ". " + c.hint);

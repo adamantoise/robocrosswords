@@ -268,18 +268,25 @@ public class PlayboardRenderer {
 		return new Point(x, y);
 	}
 
-	public void zoomIn() {
+	public float zoomIn() {
 		this.bitmap = null;
 		this.scale = scale * 1.25F;
+		return scale;
 	}
 
-	public void zoomOut() {
+	public float zoomOut() {
 		this.bitmap = null;
 		this.scale = scale / 1.25F;
+		return scale;
 	}
 
-	public void zoomReset() {
+	public float zoomReset() {
 		this.bitmap = null;
-		this.scale = 1.0F;
+		this.scale = 1.0F * logicalDensity;
+		return scale;
+	}
+	
+	public void setScale(float scale){
+		this.scale = scale;
 	}
 }

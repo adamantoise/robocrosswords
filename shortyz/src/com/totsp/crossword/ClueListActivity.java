@@ -1,12 +1,14 @@
 package com.totsp.crossword;
 
 import java.io.IOException;
-import java.util.logging.Level;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.inputmethodservice.Keyboard;
+import android.inputmethodservice.KeyboardView;
+import android.inputmethodservice.KeyboardView.OnKeyboardActionListener;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.KeyEvent;
@@ -40,6 +42,8 @@ public class ClueListActivity extends Activity {
     private TabHost tabHost;
     private SharedPreferences prefs;
     private Configuration configuration;
+    private KeyboardView keyboardView = null;
+    private boolean useNativeKeyboard = true;
     
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -63,6 +67,65 @@ public class ClueListActivity extends Activity {
         this.timer = new ImaginaryTimer(PlayActivity.BOARD.getPuzzle().getTime());
         timer.start();
         setContentView(R.layout.clue_list);
+        
+        Keyboard keyboard = new Keyboard(this, R.xml.keyboard);
+    	keyboardView = (KeyboardView) this.findViewById(R.id.clueKeyboard);
+    	keyboardView.setKeyboard(keyboard);
+    	
+    	keyboardView.setOnKeyboardActionListener(new OnKeyboardActionListener(){
+
+			public void onKey(int primaryCode, int[] keyCodes) {
+				System.out.println("Got key "+ ((char) primaryCode)+" "+ primaryCode);
+				long eventTime = System.currentTimeMillis();
+				KeyEvent event = new KeyEvent(eventTime, eventTime,
+					    KeyEvent.ACTION_DOWN, primaryCode, 0, 0, 0, 0,
+					    KeyEvent.FLAG_SOFT_KEYBOARD|KeyEvent.FLAG_KEEP_TOUCH_MODE);
+				ClueListActivity.this.onKeyDown(primaryCode, event);
+			}
+
+			public void onPress(int primaryCode) {
+				
+			}
+
+			public void onRelease(int primaryCode) {
+				
+			}
+
+			public void onText(CharSequence text) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void swipeDown() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void swipeLeft() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void swipeRight() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void swipeUp() {
+				// TODO Auto-generated method stub
+				
+			}
+    		
+    	});
+    	
+        
+    	this.useNativeKeyboard = prefs.getBoolean("useNativeKeyboard", true);
+    	if(this.useNativeKeyboard){
+    		keyboardView.setVisibility(View.GONE);
+    	}
+        
+        
+        
         this.imageView = (ScrollingImageView) this.findViewById(R.id.miniboard);
         
         this.imageView.setContextMenuListener(new ClickListener(){
@@ -196,6 +259,9 @@ public class ClueListActivity extends Activity {
     			w.start.down + (!w.across ? w.length -1 : 0 ) );
     	
         switch (keyCode) {
+        case KeyEvent.KEYCODE_MENU:
+        	return false;
+        
         case KeyEvent.KEYCODE_BACK:
             System.out.println("BACK!!!");
             this.setResult(0);
@@ -231,7 +297,7 @@ public class ClueListActivity extends Activity {
             return true;
         }
 
-        char c = Character.toUpperCase(event.getDisplayLabel());
+        char c = Character.toUpperCase( this.useNativeKeyboard ? event.getDisplayLabel() :  ((char)keyCode));
 
         if (PlayActivity.ALPHA.indexOf(c) != -1) {
             PlayActivity.BOARD.playLetter(c);
@@ -291,10 +357,18 @@ public class ClueListActivity extends Activity {
     private void render() {
     	if ((this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES) ||
                 (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,
-                InputMethodManager.HIDE_IMPLICIT_ONLY);
+        	
+        	if(this.useNativeKeyboard){
+	            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+	
+	            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,
+	                InputMethodManager.HIDE_IMPLICIT_ONLY);
+        	} else {
+        		this.keyboardView.setVisibility(View.VISIBLE);
+        	}
+        	
+        } else {
+        	this.keyboardView.setVisibility(View.GONE);
         }
         for (Box b : PlayActivity.BOARD.getCurrentWordBoxes()) {
             System.out.print(b + " ");
