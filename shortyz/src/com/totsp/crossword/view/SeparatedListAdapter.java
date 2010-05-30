@@ -1,7 +1,6 @@
 package com.totsp.crossword.view;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ArrayList;
 
 import android.content.Context;
 import android.view.View;
@@ -14,9 +13,9 @@ import com.totsp.crossword.shortyz.R;
 
 public class SeparatedListAdapter extends BaseAdapter {
 
-	public final Map<String,Adapter> sections = new LinkedHashMap<String,Adapter>();
-	public final ArrayAdapter<String> headers;
-	public final static int TYPE_SECTION_HEADER = 0;
+	private final ArrayList<Adapter> sections = new ArrayList<Adapter>();
+	private final ArrayAdapter<String> headers;
+	private final static int TYPE_SECTION_HEADER = 0;
 
 	public SeparatedListAdapter(Context context) {
 		headers = new ArrayAdapter<String>(context, R.layout.puzzle_list_header);
@@ -24,20 +23,21 @@ public class SeparatedListAdapter extends BaseAdapter {
 
 	public void addSection(String section, Adapter adapter) {
 		this.headers.add(section);
-		this.sections.put(section, adapter);
+		this.sections.add(adapter);
 	}
 
 	public Object getItem(int position) {
-		for(Object section : this.sections.keySet()) {
-			Adapter adapter = sections.get(section);
+		int section = 0;
+		for(Adapter adapter : this.sections) {
 			int size = adapter.getCount() + 1;
 
 			// check if position inside this section
-			if(position == 0) return section;
+			if(position == 0) return headers.getItem(section);
 			if(position < size) return adapter.getItem(position - 1);
 
 			// otherwise jump into next section
 			position -= size;
+			section++;
 		}
 		return null;
 	}
@@ -45,32 +45,32 @@ public class SeparatedListAdapter extends BaseAdapter {
 	public int getCount() {
 		// total together all sections, plus one for each section header
 		int total = 0;
-		for(Adapter adapter : this.sections.values())
+		for(Adapter adapter : this.sections)
 			total += adapter.getCount() + 1;
 		return total;
 	}
 
 	public int getViewTypeCount() {
-		// assume that headers count as one, then total all sections
-		int total = 1;
-		for(Adapter adapter : this.sections.values())
-			total += adapter.getViewTypeCount();
-		return total;
+//		// assume that headers count as one, then total all sections
+//		int total = 1;
+//		for(Adapter adapter : this.sections)
+//			total += adapter.getViewTypeCount();
+//		return total;
+		return 2;
 	}
 
 	public int getItemViewType(int position) {
-		int type = 1;
-		for(Object section : this.sections.keySet()) {
-			Adapter adapter = sections.get(section);
+		for(Adapter adapter : this.sections) {
+			
 			int size = adapter.getCount() + 1;
 
 			// check if position inside this section
 			if(position == 0) return TYPE_SECTION_HEADER;
-			if(position < size) return type + adapter.getItemViewType(position - 1);
+			if(position < size) return 1;
 
 			// otherwise jump into next section
 			position -= size;
-			type += adapter.getViewTypeCount();
+			//type += adapter.getViewTypeCount();
 		}
 		return -1;
 	}
@@ -85,8 +85,7 @@ public class SeparatedListAdapter extends BaseAdapter {
 
 	public View getView(int i, View view, ViewGroup group) {
 		int sectionnum = 0;
-		for(Object section : this.sections.keySet()) {
-			Adapter adapter = sections.get(section);
+		for(Adapter adapter : this.sections) {
 			int size = adapter.getCount() + 1;
 
 			// check if position inside this section

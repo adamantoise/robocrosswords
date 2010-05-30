@@ -144,8 +144,8 @@
 	
 	<CheckBoxPreference
 	android:title="Use Native Keyboard"
-	android:defaultValue="true"
-	android:summary="Uses the Android soft keyboard for input. Uncheck this to use the Shortyz condensed keyboard"
+	android:defaultValue="false"
+	android:summary="Uses the Android soft keyboard for input. Unchecked, use the Shortyz condensed keyboard"
 	android:key="useNativeKeyboard"
 	/>
 	

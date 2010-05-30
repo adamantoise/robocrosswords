@@ -39,6 +39,10 @@ public class Playboard implements Serializable {
                 }
             }
         }
+        
+        if(this.boxes[0][0] == null){
+        	this.moveRight(false);
+        }
     }
 
     public void setAcross(boolean across) {

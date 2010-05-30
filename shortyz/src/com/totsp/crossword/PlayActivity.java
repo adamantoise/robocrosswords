@@ -64,7 +64,7 @@ public class PlayActivity extends Activity {
     private ScrollingImageView boardView;
     private SharedPreferences prefs;
     private TextView clue;
-    private boolean useNativeKeyboard = true;
+    private boolean useNativeKeyboard = false;
     private KeyboardView keyboardView = null;
 
     @Override
@@ -158,29 +158,42 @@ public class PlayActivity extends Activity {
 				}
 
 				public void swipeDown() {
-					// TODO Auto-generated method stub
+					long eventTime = System.currentTimeMillis();
+					KeyEvent event = new KeyEvent(eventTime, eventTime,
+						    KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_DOWN, 0, 0, 0, 0,
+						    KeyEvent.FLAG_SOFT_KEYBOARD|KeyEvent.FLAG_KEEP_TOUCH_MODE);
+					PlayActivity.this.onKeyUp(KeyEvent.KEYCODE_DPAD_DOWN, event);
 					
 				}
 
 				public void swipeLeft() {
-					// TODO Auto-generated method stub
-					
+					long eventTime = System.currentTimeMillis();
+					KeyEvent event = new KeyEvent(eventTime, eventTime,
+						    KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_LEFT, 0, 0, 0, 0,
+						    KeyEvent.FLAG_SOFT_KEYBOARD|KeyEvent.FLAG_KEEP_TOUCH_MODE);
+					PlayActivity.this.onKeyUp(KeyEvent.KEYCODE_DPAD_LEFT, event);
 				}
 
 				public void swipeRight() {
-					// TODO Auto-generated method stub
-					
+					long eventTime = System.currentTimeMillis();
+					KeyEvent event = new KeyEvent(eventTime, eventTime,
+						    KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_RIGHT, 0, 0, 0, 0,
+						    KeyEvent.FLAG_SOFT_KEYBOARD|KeyEvent.FLAG_KEEP_TOUCH_MODE);
+					PlayActivity.this.onKeyUp(KeyEvent.KEYCODE_DPAD_RIGHT, event);
 				}
 
 				public void swipeUp() {
-					// TODO Auto-generated method stub
-					
+					long eventTime = System.currentTimeMillis();
+					KeyEvent event = new KeyEvent(eventTime, eventTime,
+						    KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_UP, 0, 0, 0, 0,
+						    KeyEvent.FLAG_SOFT_KEYBOARD|KeyEvent.FLAG_KEEP_TOUCH_MODE);
+					PlayActivity.this.onKeyUp(KeyEvent.KEYCODE_DPAD_UP, event);
 				}
         		
         	});
         	
             
-        	this.useNativeKeyboard = prefs.getBoolean("useNativeKeyboard", true);
+        	this.useNativeKeyboard = prefs.getBoolean("useNativeKeyboard", false);
         	if(this.useNativeKeyboard){
         		keyboardView.setVisibility(View.GONE);
         	}
@@ -348,7 +361,8 @@ public class PlayActivity extends Activity {
 //            }
         }
 
-        char c = Character.toUpperCase( this.useNativeKeyboard ? event.getDisplayLabel() : ((char)keyCode));
+        char c = Character.toUpperCase( this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO || 
+        		this.useNativeKeyboard ? event.getDisplayLabel() : ((char)keyCode));
 
         if (ALPHA.indexOf(c) != -1) {
             previous = PlayActivity.BOARD.playLetter(c);
