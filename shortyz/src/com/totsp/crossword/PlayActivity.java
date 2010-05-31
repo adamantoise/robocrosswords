@@ -32,9 +32,9 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.RelativeLayout.LayoutParams;
 
 import com.totsp.crossword.io.IO;
+import com.totsp.crossword.puz.MovementStrategy;
 import com.totsp.crossword.puz.Playboard;
 import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.puz.Playboard.Clue;
@@ -70,21 +70,38 @@ public class PlayActivity extends Activity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         this.configuration = newConfig;
-
         if ((this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES) ||
                 (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
             
         	if(this.useNativeKeyboard){
+        		keyboardView.setVisibility(View.GONE);
 	        	InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 	
 	            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,
 	                InputMethodManager.HIDE_NOT_ALWAYS);
         	} else {
         		this.keyboardView.setVisibility(View.VISIBLE);
-        	}
+        	} 
         } else {
         	this.keyboardView.setVisibility(View.GONE);
         }
+    }
+    
+    private MovementStrategy getMovementStrategy(){
+    	MovementStrategy movement = null;
+    	String stratName = this.prefs.getString("movementStrategy", "MOVE_NEXT_ON_AXIS");
+        System.out.println("Movement Strategy:"+stratName);
+        if(stratName.equals("MOVE_NEXT_ON_AXIS")){
+        	movement = MovementStrategy.MOVE_NEXT_ON_AXIS;
+        } else if( stratName.equals("STOP_ON_END")){
+        	movement = MovementStrategy.STOP_ON_END;
+        } else if(stratName.equals("MOVE_NEXT_CLUE")){
+        	movement = MovementStrategy.MOVE_NEXT_CLUE;
+        } else if(stratName.equals("MOVE_PARALLEL_WORD")){
+        	movement = MovementStrategy.MOVE_PARALLEL_WORD;
+        }
+        return movement;
+        
     }
 
     /** Called when the activity is first created. */
@@ -95,6 +112,10 @@ public class PlayActivity extends Activity {
         this.configuration = getBaseContext().getResources().getConfiguration();
         this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
+        MovementStrategy movement = this.getMovementStrategy();
+        
+        
+        
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
@@ -113,7 +134,11 @@ public class PlayActivity extends Activity {
                                         .openRawResource(R.raw.test));
             }
 
-            BOARD = new Playboard(puz);
+            
+            
+            
+            
+            BOARD = new Playboard(puz, movement);
             RENDERER = new PlayboardRenderer(BOARD, metrics.density);
             
             float scale = prefs.getFloat("scale", metrics.density);
@@ -134,10 +159,12 @@ public class PlayActivity extends Activity {
         	keyboardView.setKeyboard(keyboard);
         	
         	keyboardView.setOnKeyboardActionListener(new OnKeyboardActionListener(){
-
+        		private long lastSwipe = 0;
 				public void onKey(int primaryCode, int[] keyCodes) {
-					System.out.println("Got key "+ ((char) primaryCode)+" "+ primaryCode);
 					long eventTime = System.currentTimeMillis();
+					if(eventTime - lastSwipe < 500){
+						return;
+					}
 					KeyEvent event = new KeyEvent(eventTime, eventTime,
 						    KeyEvent.ACTION_DOWN, primaryCode, 0, 0, 0, 0,
 						    KeyEvent.FLAG_SOFT_KEYBOARD|KeyEvent.FLAG_KEEP_TOUCH_MODE);
@@ -159,6 +186,7 @@ public class PlayActivity extends Activity {
 
 				public void swipeDown() {
 					long eventTime = System.currentTimeMillis();
+					lastSwipe = eventTime;
 					KeyEvent event = new KeyEvent(eventTime, eventTime,
 						    KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_DOWN, 0, 0, 0, 0,
 						    KeyEvent.FLAG_SOFT_KEYBOARD|KeyEvent.FLAG_KEEP_TOUCH_MODE);
@@ -168,6 +196,7 @@ public class PlayActivity extends Activity {
 
 				public void swipeLeft() {
 					long eventTime = System.currentTimeMillis();
+					lastSwipe = eventTime;
 					KeyEvent event = new KeyEvent(eventTime, eventTime,
 						    KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_LEFT, 0, 0, 0, 0,
 						    KeyEvent.FLAG_SOFT_KEYBOARD|KeyEvent.FLAG_KEEP_TOUCH_MODE);
@@ -176,6 +205,7 @@ public class PlayActivity extends Activity {
 
 				public void swipeRight() {
 					long eventTime = System.currentTimeMillis();
+					lastSwipe = eventTime;
 					KeyEvent event = new KeyEvent(eventTime, eventTime,
 						    KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_RIGHT, 0, 0, 0, 0,
 						    KeyEvent.FLAG_SOFT_KEYBOARD|KeyEvent.FLAG_KEEP_TOUCH_MODE);
@@ -184,6 +214,7 @@ public class PlayActivity extends Activity {
 
 				public void swipeUp() {
 					long eventTime = System.currentTimeMillis();
+					lastSwipe = eventTime;
 					KeyEvent event = new KeyEvent(eventTime, eventTime,
 						    KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_UP, 0, 0, 0, 0,
 						    KeyEvent.FLAG_SOFT_KEYBOARD|KeyEvent.FLAG_KEEP_TOUCH_MODE);
@@ -336,10 +367,32 @@ public class PlayActivity extends Activity {
             return true;
 
         case KeyEvent.KEYCODE_SPACE:
-            previous = PlayActivity.BOARD.toggleDirection();
-            this.render(previous);
-
-            return true;
+        	if(prefs.getBoolean("spaceChangesDirection", true)){
+	            previous = PlayActivity.BOARD.toggleDirection();
+	            this.render(previous);
+        	} else {
+        		previous = PlayActivity.BOARD.playLetter(' ');
+	            this.render(previous);
+        	}
+        	return true; 
+        case KeyEvent.KEYCODE_ENTER:
+        	if(prefs.getBoolean("enterChangesDirection", true)){
+	            previous = PlayActivity.BOARD.toggleDirection();
+	            this.render(previous);
+	
+	            return true;    
+        	} else {
+        		previous = PlayActivity.BOARD.getCurrentWord();
+        		Position p = PlayActivity.BOARD.getHighlightLetter();
+        		if(previous.across){
+        			p.across = previous.start.across + previous.length -1;
+        		} else {
+        			p.down = previous.start.down + previous.length -1;
+        		}
+        		PlayActivity.BOARD.nextLetter();
+        		this.render(previous);
+        		return true;
+        	}
 
         case KeyEvent.KEYCODE_DEL:
         	if(System.currentTimeMillis() - lastKey > 50){
@@ -513,7 +566,9 @@ public class PlayActivity extends Activity {
     protected void onResume() {
         super.onResume();
         BOARD.setSkipCompletedLetters(this.prefs.getBoolean("skipFilled", false));
-
+        BOARD.setMovementStrategy(this.getMovementStrategy());
+        this.useNativeKeyboard = prefs.getBoolean("useNativeKeyboard", false);
+        this.onConfigurationChanged(this.configuration);
         if (puz.getPercentComplete() != 100) {
             timer = new ImaginaryTimer(this.puz.getTime());
             timer.start();

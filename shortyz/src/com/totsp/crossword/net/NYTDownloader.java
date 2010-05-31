@@ -188,9 +188,9 @@ public class NYTDownloader extends AbstractDownloader {
                 		}
                 	}
                 }
+                f.delete();
                 if(updated){
                 	IO.save(oPuz, original);
-                	f.delete();
                 } else {
                 	return null;
                 }

@@ -13,13 +13,13 @@
   	android:layout_alignParentBottom="true"
   	android:padding="5dp"
   	android:background="#CCCCCC"
-  	android:gravity="center_vertical|right">
+  	android:gravity="center_vertical|right"
+  	>
   	
   	<Button
   	android:id="@+id/closeButton"
-  	android:layout_width="80dp"
+  	android:layout_width="fill_parent"
   	android:layout_height="wrap_content"
-  	
   	android:text="Done"/>
   	
   	

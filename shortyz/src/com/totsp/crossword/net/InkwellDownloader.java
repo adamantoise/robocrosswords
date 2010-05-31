@@ -9,7 +9,7 @@ import java.util.Date;
 
 //http://herbach.dnsalias.com/Tausig/vv100212.puz
 public class InkwellDownloader extends AbstractDownloader {
-    private static final String NAME = "InkWell.com";
+    private static final String NAME = "InkWellXWords.com";
     NumberFormat nf = NumberFormat.getInstance();
 
     public InkwellDownloader() {

@@ -34,6 +34,9 @@ public class Scrapers {
         if(prefs.getBoolean("scrapeCru", false)){
         	scrapers.add(new CruScraper() );
         }
+        if(prefs.getBoolean("scrapeKegler", false)){
+        	scrapers.add(new KeglerScraper());
+        }
         
         this.supressMessages = prefs.getBoolean("supressMessages", false);
     }

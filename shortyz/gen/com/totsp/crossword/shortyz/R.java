@@ -8,6 +8,10 @@
 package com.totsp.crossword.shortyz;
 
 public final class R {
+    public static final class array {
+        public static final int movementStrategyLabels=0x7f060000;
+        public static final int movementStrategyValues=0x7f060001;
+    }
     public static final class attr {
     }
     public static final class drawable {
@@ -18,29 +22,29 @@ public final class R {
         public static final int space=0x7f020004;
     }
     public static final class id {
-        public static final int acrossList=0x7f070006;
-        public static final int board=0x7f07000c;
-        public static final int buttons=0x7f070007;
-        public static final int closeButton=0x7f070008;
-        public static final int clueKeyboard=0x7f070003;
-        public static final int clueLine=0x7f07000a;
-        public static final int clueNumber=0x7f070001;
-        public static final int downList=0x7f070005;
-        public static final int letter=0x7f070000;
-        public static final int list_header_title=0x7f070012;
-        public static final int miniboard=0x7f070004;
-        public static final int playKeyboard=0x7f07000b;
-        public static final int puzzle_caption=0x7f070015;
-        public static final int puzzle_date=0x7f070013;
-        public static final int puzzle_info_author=0x7f07000e;
-        public static final int puzzle_info_copyright=0x7f07000f;
-        public static final int puzzle_info_progress=0x7f070011;
-        public static final int puzzle_info_time=0x7f070010;
-        public static final int puzzle_info_title=0x7f07000d;
-        public static final int puzzle_name=0x7f070014;
-        public static final int puzzle_progress=0x7f070016;
-        public static final int tabhost=0x7f070002;
-        public static final int webkit=0x7f070009;
+        public static final int acrossList=0x7f080006;
+        public static final int board=0x7f08000c;
+        public static final int buttons=0x7f080007;
+        public static final int closeButton=0x7f080008;
+        public static final int clueKeyboard=0x7f080003;
+        public static final int clueLine=0x7f08000a;
+        public static final int clueNumber=0x7f080001;
+        public static final int downList=0x7f080005;
+        public static final int letter=0x7f080000;
+        public static final int list_header_title=0x7f080012;
+        public static final int miniboard=0x7f080004;
+        public static final int playKeyboard=0x7f08000b;
+        public static final int puzzle_caption=0x7f080015;
+        public static final int puzzle_date=0x7f080013;
+        public static final int puzzle_info_author=0x7f08000e;
+        public static final int puzzle_info_copyright=0x7f08000f;
+        public static final int puzzle_info_progress=0x7f080011;
+        public static final int puzzle_info_time=0x7f080010;
+        public static final int puzzle_info_title=0x7f08000d;
+        public static final int puzzle_name=0x7f080014;
+        public static final int puzzle_progress=0x7f080016;
+        public static final int tabhost=0x7f080002;
+        public static final int webkit=0x7f080009;
     }
     public static final class layout {
         public static final int box_layout=0x7f030000;
@@ -55,8 +59,8 @@ public final class R {
         public static final int test=0x7f050000;
     }
     public static final class string {
-        public static final int app_name=0x7f060001;
-        public static final int hello=0x7f060000;
+        public static final int app_name=0x7f070001;
+        public static final int hello=0x7f070000;
     }
     public static final class xml {
         public static final int keyboard=0x7f040000;

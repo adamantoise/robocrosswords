@@ -1,18 +1,15 @@
 package com.totsp.crossword.net;
 
 import java.io.File;
-
 import java.text.NumberFormat;
-
 import java.util.Date;
 
-
-public class WSJDownloader extends AbstractDownloader {
-    private static final String NAME = "Wall Street Journal";
+public class CHEDownloader extends AbstractDownloader{
+	private static final String NAME = "Chronicle of Higher Education";
     NumberFormat nf = NumberFormat.getInstance();
 
-    public WSJDownloader() {
-        super("http://mazerlm.home.comcast.net/~mazerlm/", DOWNLOAD_DIR, NAME);
+    public CHEDownloader() {
+        super("http://chronicle.com/items/biz/puzzles/", DOWNLOAD_DIR, NAME);
         nf.setMinimumIntegerDigits(2);
         nf.setMaximumFractionDigits(0);
     }
@@ -25,9 +22,9 @@ public class WSJDownloader extends AbstractDownloader {
         if (date.getDay() != 5) {
             return null;
         }
-        String name = "wsj" + nf.format(date.getYear() - 100) +
-            nf.format(date.getMonth() + 1) + nf.format(date.getDate()) +
-            ".puz";
+        //20100521.puz
+        String name = (date.getYear() + 1900) + nf.format(date.getMonth() + 1) +
+            nf.format(date.getDate()) +  ".puz";
 
         return super.download(date, name);
     }

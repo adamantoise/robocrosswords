@@ -18,7 +18,13 @@ public class Playboard implements Serializable {
     private boolean across = true;
     private boolean showErrors;
     private boolean skipCompletedLetters;
+    private MovementStrategy movementStrategy = MovementStrategy.MOVE_NEXT_ON_AXIS;
 
+    public Playboard(Puzzle puzzle, MovementStrategy movementStrategy){
+    	this(puzzle);
+    	this.movementStrategy = movementStrategy;
+    }
+    
     public Playboard(Puzzle puzzle) {
         this.puzzle = puzzle;
         this.highlightLetter = new Position(0, 0);
@@ -281,6 +287,12 @@ public class Playboard implements Serializable {
 
         return this.previousLetter();
     }
+    
+    public void setMovementStrategy(MovementStrategy movementStrategy){
+    	this.movementStrategy = movementStrategy;
+    }
+    
+    
 
     public void jumpTo(int clueIndex, boolean across) {
         this.across = across;
@@ -419,19 +431,11 @@ public class Playboard implements Serializable {
     }
     
     public Word nextLetter(boolean overWrite){
-    	if (across) {
-            return this.moveRight(!overWrite);
-        } else {
-            return this.moveDown(!overWrite);
-        }
+    	return this.movementStrategy.move(this, !overWrite);
     }
 
     public Word nextLetter() {
-        if (across) {
-            return this.moveRight(this.skipCompletedLetters);
-        } else {
-            return this.moveDown(this.skipCompletedLetters);
-        }
+            return this.movementStrategy.move(this, this.skipCompletedLetters);
     }
 
     public Word playLetter(char letter) {

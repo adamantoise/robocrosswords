@@ -66,6 +66,7 @@ public class BrowseActivity extends ListActivity {
 	private Handler handler = new Handler();
 	private NotificationManager nm;
 	private boolean viewArchive;
+	private BaseAdapter currentAdapter = null;
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
@@ -216,9 +217,9 @@ public class BrowseActivity extends ListActivity {
 			this.startActivity(i);
 
 			return;
-		} else if (prefs.getBoolean("release_2.0.30", true)) {
+		} else if (prefs.getBoolean("release_2.1.0", true)) {
 			Editor e = prefs.edit();
-			e.putBoolean("release_2.0.30", false);
+			e.putBoolean("release_2.1.0", false);
 			e.commit();
 
 			Intent i = new Intent(Intent.ACTION_VIEW, Uri
@@ -246,9 +247,14 @@ public class BrowseActivity extends ListActivity {
 		return null;
 	}
 
+	private FileHandle lastOpenedHandle = null;
+	private View lastOpenedView = null;
+	
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		File puzFile = ((FileHandle) v.getTag()).file;
+		lastOpenedView = v;
+		lastOpenedHandle = ((FileHandle) v.getTag());
+		File puzFile = lastOpenedHandle.file;
 		Intent i = new Intent(Intent.ACTION_EDIT, Uri.fromFile(puzFile), this,
 				PlayActivity.class);
 		this.startActivity(i);
@@ -256,7 +262,19 @@ public class BrowseActivity extends ListActivity {
 
 	@Override
 	protected void onResume() {
-		this.render();
+		if(this.currentAdapter == null){
+			this.render();
+		} else {
+			if(lastOpenedHandle != null ){
+				try{
+					lastOpenedHandle.meta = IO.meta(lastOpenedHandle.file);
+					ProgressBar bar = (ProgressBar) lastOpenedView.findViewById(R.id.puzzle_progress);
+					bar.setProgress(lastOpenedHandle.getProgress());
+				} catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		}
 		super.onResume();
 	}
 
@@ -424,12 +442,12 @@ public class BrowseActivity extends ListActivity {
 		Runnable r = new Runnable(){
 
 			public void run() {
-				final BaseAdapter a = BrowseActivity.this.buildList((viewArchive ? BrowseActivity.this.archiveFolder
+				currentAdapter = BrowseActivity.this.buildList((viewArchive ? BrowseActivity.this.archiveFolder
 						: BrowseActivity.this.crosswordsFolder), BrowseActivity.this.accessor);
 				BrowseActivity.this.handler.post(new Runnable(){
 
 					public void run() {
-						BrowseActivity.this.setListAdapter(a);
+						BrowseActivity.this.setListAdapter(currentAdapter);
 						dialog.hide();
 					}
 					

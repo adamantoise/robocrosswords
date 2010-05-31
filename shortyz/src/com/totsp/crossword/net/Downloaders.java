@@ -61,6 +61,9 @@ public class Downloaders {
         if (prefs.getBoolean("downloadPhilly", true)) {
             downloaders.add(new PhillyDownloader());
         }
+        if(prefs.getBoolean("downloadCHE", true)){
+        	downloaders.add(new CHEDownloader());
+        }
 
         if (prefs.getBoolean("downloadNYT", false)) {
             downloaders.add(new NYTDownloader(prefs.getString("nytUsername", ""),

@@ -40,6 +40,14 @@
 	android:summary="The WSJ Friday Puzzle"
 	android:key="downloadWsj"
 	/>
+	
+	<CheckBoxPreference
+	android:title="The Chronicle of Higher Education"
+	android:defaultValue="true"
+	android:summary="The CoHE Friday Puzzle (biweekly during the summer)"
+	android:key="downloadCHE"
+	/>
+	
 	<CheckBoxPreference
 	android:title="Boston Globe"
 	android:defaultValue="true"
@@ -73,6 +81,13 @@
 	android:key="scrapeCru"
 	/>
 	
+	
+	<CheckBoxPreference
+	android:title="Kegler's Kryptics"
+	android:defaultValue="false"
+	android:summary="Ron &quot;Kegler&quot; Sweet's Cryptic Archive\nhttp://www.lafn.org/~keglerron/kegler.html\n(Please Read the help item below)"
+	android:key="scrapeKegler"
+	/>
 	<Preference
  	android:title="About These Sources" 
  	android:key="aboutScrapes"/>
@@ -106,12 +121,12 @@
 	android:key="dlOnStartup"
 	/>
 	
-	<!--  <CheckBoxPreference
-	android:title="Background Service"
-	android:defaultValue="true"
-	android:summary="Download new puzzles in the background"
-	android:key="runService"
-	/>-->
+	<CheckBoxPreference
+	android:title="No Download Notifications"
+	android:defaultValue="false"
+	android:summary="Prevents a notification for each puzzle downloaded from appearing in the notifications list."
+	android:key="supressMessages"
+	/>
 	
 	<CheckBoxPreference
 	android:title="Delete on Cleanup"
@@ -119,7 +134,6 @@
 	android:summary="Delete rather than archive old puzzles"
 	android:key="deleteOnCleanup"
 	/>
-	
 	
 	<CheckBoxPreference
 	android:title="Snap to Current Word"
@@ -135,11 +149,33 @@
 	android:key="snapClue"
 	/>
 	
+	<ListPreference
+		android:title="Movement Style"
+		android:summary="Select what happens when you type past the end of a word."
+		android:key="movementStrategy"
+		android:defaultValue="MOVE_NEXT_ON_AXIS"
+		android:entries="@array/movementStrategyLabels"
+		android:entryValues="@array/movementStrategyValues" />
+	
 	<CheckBoxPreference
 	android:title="Skip Filled Boxes"
 	android:defaultValue="false"
 	android:summary="Toggles the skipping of filled boxes when you enter a new letter."
 	android:key="skipFilled"
+	/>
+	
+	<CheckBoxPreference
+	android:title="Space Changes Direction"
+	android:defaultValue="true"
+	android:summary="Spacebar changed direction rather than blanking the box."
+	android:key="spaceChangesDirection"
+	/>
+	
+	<CheckBoxPreference
+	android:title="Enter Changes Direction"
+	android:defaultValue="true"
+	android:summary="Enter changes direction rather than moving to the next clue."
+	android:key="enterChangesDirection"
 	/>
 	
 	<CheckBoxPreference
@@ -149,13 +185,7 @@
 	android:key="useNativeKeyboard"
 	/>
 	
-	<CheckBoxPreference
-	android:title="No Download Notifications"
-	android:defaultValue="false"
-	android:summary="Prevents a notification for each puzzle downloaded from appearing in the notifications list."
-	android:key="supressMessages"
-	/>
-	
+
 	
  </PreferenceCategory>
 	

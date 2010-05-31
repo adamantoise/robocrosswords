@@ -73,10 +73,13 @@ public class ClueListActivity extends Activity {
     	keyboardView.setKeyboard(keyboard);
     	
     	keyboardView.setOnKeyboardActionListener(new OnKeyboardActionListener(){
-
+    		private long lastSwipe = 0;
 			public void onKey(int primaryCode, int[] keyCodes) {
 				System.out.println("Got key "+ ((char) primaryCode)+" "+ primaryCode);
 				long eventTime = System.currentTimeMillis();
+				if(eventTime - lastSwipe < 500){
+					return;
+				}
 				KeyEvent event = new KeyEvent(eventTime, eventTime,
 					    KeyEvent.ACTION_DOWN, primaryCode, 0, 0, 0, 0,
 					    KeyEvent.FLAG_SOFT_KEYBOARD|KeyEvent.FLAG_KEEP_TOUCH_MODE);
@@ -103,6 +106,7 @@ public class ClueListActivity extends Activity {
 
 			public void swipeLeft() {
 				long eventTime = System.currentTimeMillis();
+				lastSwipe = eventTime;
 				KeyEvent event = new KeyEvent(eventTime, eventTime,
 					    KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_LEFT, 0, 0, 0, 0,
 					    KeyEvent.FLAG_SOFT_KEYBOARD|KeyEvent.FLAG_KEEP_TOUCH_MODE);
@@ -111,6 +115,7 @@ public class ClueListActivity extends Activity {
 
 			public void swipeRight() {
 				long eventTime = System.currentTimeMillis();
+				lastSwipe = eventTime;
 				KeyEvent event = new KeyEvent(eventTime, eventTime,
 					    KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_RIGHT, 0, 0, 0, 0,
 					    KeyEvent.FLAG_SOFT_KEYBOARD|KeyEvent.FLAG_KEEP_TOUCH_MODE);
@@ -301,6 +306,18 @@ public class ClueListActivity extends Activity {
             this.render();
 
             return true;
+            
+        case KeyEvent.KEYCODE_SPACE:
+        	if(!prefs.getBoolean("spaceChangesDirection", true)){
+        		PlayActivity.BOARD.playLetter(' ');
+        		Position curr = PlayActivity.BOARD.getHighlightLetter();
+                if(!PlayActivity.BOARD.getCurrentWord().equals(w) || PlayActivity.BOARD.getBoxes()[curr.across][curr.down] == null ){
+                	PlayActivity.BOARD.setHighlightLetter(last);
+                }
+	            this.render();
+	            return true;
+        	}
+        	 
         }
 
         char c = Character.toUpperCase(  

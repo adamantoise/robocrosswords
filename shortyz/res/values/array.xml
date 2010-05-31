@@ -1,0 +1,14 @@
+<resources>
+     <string-array name="movementStrategyLabels">
+       <item>Next word in line</item>
+       <item>Stop at the end</item>
+       <item>Next clue in same direction</item>
+       <item>Next parallel clue</item>
+     </string-array>
+     <string-array name="movementStrategyValues">
+       <item>MOVE_NEXT_ON_AXIS</item>
+       <item>STOP_ON_END</item>
+       <item>MOVE_NEXT_CLUE</item>
+       <item>MOVE_PARALLEL_WORD</item>
+     </string-array>
+</resources>
