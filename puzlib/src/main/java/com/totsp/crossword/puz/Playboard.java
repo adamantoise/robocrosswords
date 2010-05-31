@@ -451,11 +451,7 @@ public class Playboard implements Serializable {
     }
 
     public Word previousLetter() {
-        if (across) {
-            return this.moveLeft();
-        } else {
-            return this.moveUp(false);
-        }
+        return this.movementStrategy.back(this);
     }
 
     public Position revealLetter() {
