@@ -38,12 +38,13 @@ public interface MovementStrategy {
 					|| (!w.across && p.down == w.start.down + w.length - 1)) {
 				return w;
 			} else {
-				Word newWord = MOVE_NEXT_ON_AXIS.move(board,
-						skipCompletedLetters);
+				MOVE_NEXT_ON_AXIS.move(board,skipCompletedLetters);
+				Word newWord = board.getCurrentWord();
 				if (newWord.equals(w)) {
 					return w;
 				} else {
-					return board.setHighlightLetter(p);
+					board.setHighlightLetter(p);
+					return w;
 				}
 			}
 		}
@@ -64,6 +65,7 @@ public interface MovementStrategy {
 		public Word move(Playboard board, boolean skipCompletedLetters) {
 			Position p = board.getHighlightLetter();
 			Word w = board.getCurrentWord();
+			
 			if ((w.across && p.across == w.start.across + w.length - 1)
 					|| (!w.across && p.down == w.start.down + w.length - 1)) {
 				try {
@@ -92,12 +94,17 @@ public interface MovementStrategy {
 					return w;
 				}
 			} else {
-				Word newWord = MOVE_NEXT_ON_AXIS.move(board,
+				MOVE_NEXT_ON_AXIS.move(board,
 						skipCompletedLetters);
+				Word newWord = board.getCurrentWord();
 				if (newWord.equals(w)) {
 					return w;
 				} else {
-					return board.setHighlightLetter(p);
+					Position end = new Position(w.start.across + (w.across ? w.length -1: 0),
+							w.start.down + (w.across? 0 : w.length -1));
+					board.setHighlightLetter(end);
+					this.move(board, skipCompletedLetters);
+					return w;
 				}
 			}
 		}
@@ -188,10 +195,14 @@ public interface MovementStrategy {
 				}
 			
 			} else {
-				Word newWord = MOVE_NEXT_ON_AXIS.move(board,
+				MOVE_NEXT_ON_AXIS.move(board,
 						skipCompletedLetters);
+				Word newWord = board.getCurrentWord();
 				if (!newWord.equals(w)) {
-					board.setHighlightLetter(newWord.start);
+					Position end = new Position(w.start.across + (w.across ? w.length -1: 0),
+							w.start.down + (w.across? 0 : w.length -1));
+					board.setHighlightLetter(end);
+					this.move(board, skipCompletedLetters);
 				}
 			}
 
@@ -205,10 +216,13 @@ public interface MovementStrategy {
 					|| (!w.across && p.down == w.start.down)) {
 				//board.setHighlightLetter(w.start);
 				Word newWord;
+				Position lastPos = null;
 				if (w.across) {
 					board.moveUp();
-					while(board.getClue().hint == null && board.getHighlightLetter().down < board.getBoxes()[0].length){
+					while(!board.getHighlightLetter().equals(lastPos) && board.getClue().hint == null && board.getHighlightLetter().down < board.getBoxes()[0].length){
+						lastPos = board.getHighlightLetter();
 						board.moveUp();
+						
 					}
 					if(board.getClue().hint == null){
 						board.toggleDirection();
@@ -216,7 +230,8 @@ public interface MovementStrategy {
 					newWord = board.getCurrentWord();
 				} else {
 					board.moveLeft();
-					while(board.getClue().hint == null && board.getHighlightLetter().across < board.getBoxes().length){
+					while(!board.getHighlightLetter().equals(lastPos) && board.getClue().hint == null && board.getHighlightLetter().across < board.getBoxes().length){
+						lastPos = board.getHighlightLetter();
 						board.moveLeft();
 					}
 					if(board.getClue().hint == null){

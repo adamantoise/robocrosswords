@@ -567,7 +567,7 @@ public class Playboard implements Serializable {
 
         @Override
         public boolean equals(Object o) {
-            if (o.getClass() != this.getClass()) {
+            if (o == null || o.getClass() != this.getClass()) {
                 return false;
             }
 
