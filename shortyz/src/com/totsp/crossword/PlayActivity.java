@@ -2,6 +2,8 @@ package com.totsp.crossword;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,6 +47,7 @@ import com.totsp.crossword.view.PlayboardRenderer;
 import com.totsp.crossword.view.ScrollingImageView;
 import com.totsp.crossword.view.ScrollingImageView.ClickListener;
 import com.totsp.crossword.view.ScrollingImageView.Point;
+import com.totsp.crossword.view.ScrollingImageView.ScaleListener;
 
 
 public class PlayActivity extends Activity {
@@ -282,6 +285,37 @@ public class PlayActivity extends Activity {
                 }
             });
 
+        this.boardView.setScaleListener( new ScaleListener(){
+        	float scale;
+        	TimerTask t;
+        	Timer renderTimer = new Timer();
+        	
+			public void onScale(float newScale) {
+				this.scale = newScale;
+				if(t != null) t.cancel();
+				t = new TimerTask(){
+
+					@Override
+					public void run() {
+						handler.post(new Runnable(){
+
+							public void run() {
+								RENDERER.setLogicalScale(scale);
+								render();
+								boardView.scrollTo(0, 0);
+							}
+							
+						});
+						
+					}
+	        		
+	        	};
+				renderTimer.schedule(t, 500);
+			}
+        	
+        });
+        
+        
         this.render();
     }
 
@@ -403,15 +437,6 @@ public class PlayActivity extends Activity {
             
             return true;
             
-
-//        case KeyEvent.KEYCODE_BACK:
-//
-//            if ((this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES) ||
-//                    (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
-//                this.finish();
-//
-//                return true;
-//            }
         }
 
         char c = Character.toUpperCase( this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO || 
