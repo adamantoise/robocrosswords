@@ -185,6 +185,11 @@ public class BrowseActivity extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+	    if(!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())){
+	    	showSDCardHelp();
+	    	finish();
+	    	return;
+	    }
 		this.setTitle("Select Puzzle:");
 		setDefaultKeyMode(DEFAULT_KEYS_SHORTCUT);
 		getListView().setOnCreateContextMenuListener(this);
@@ -217,9 +222,9 @@ public class BrowseActivity extends ListActivity {
 			this.startActivity(i);
 
 			return;
-		} else if (prefs.getBoolean("release_2.1.0", true)) {
+		} else if (prefs.getBoolean("release_2.1.1", true)) {
 			Editor e = prefs.edit();
-			e.putBoolean("release_2.1.0", false);
+			e.putBoolean("release_2.1.1", false);
 			e.commit();
 
 			Intent i = new Intent(Intent.ACTION_VIEW, Uri
@@ -277,13 +282,23 @@ public class BrowseActivity extends ListActivity {
 		}
 		super.onResume();
 	}
+	
+	private void showSDCardHelp(){
+		Intent i = new Intent(Intent.ACTION_VIEW, Uri
+				.parse("file:///android_asset/sdcard.html"), this,
+				HTMLActivity.class);
+		this.startActivity(i);
+	}
 
 	private SeparatedListAdapter buildList(File directory, Accessor accessor) {
 		directory.mkdirs();
 		
 		ArrayList<FileHandle> files = new ArrayList<FileHandle>();
 		FileHandle[] puzFiles = null;
-
+		if(!directory.exists()){
+			showSDCardHelp();
+			return new SeparatedListAdapter(this);
+		}
 		for (File f : directory.listFiles()) {
 			if (f.getName().endsWith(".puz")) {
 				PuzzleMeta m = null;

@@ -67,9 +67,10 @@ public class PlayboardRenderer {
         this.cheated.setColor(Color.parseColor("#FFE0E0"));
     }
 
-    public void setLogicalScale(float scale) {
+    public float setLogicalScale(float scale) {
         this.scale *= scale;
         this.bitmap = null;
+        return this.scale;
     }
 
     public void setScale(float scale) {

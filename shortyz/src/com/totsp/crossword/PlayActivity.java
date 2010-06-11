@@ -251,22 +251,32 @@ public class PlayActivity extends Activity {
                     public void onContextMenu(final Point e) {
                         handler.post(new Runnable() {
                                 public void run() {
-                                    Position p = PlayActivity.RENDERER.findBox(e);
-                                    Word w = PlayActivity.BOARD.setHighlightLetter(p);
-                                    PlayActivity.RENDERER.draw(w);
-                                    PlayActivity.this.openContextMenu(boardView);
+                                	try{
+	                                    Position p = PlayActivity.RENDERER.findBox(e);
+	                                    Word w = PlayActivity.BOARD.setHighlightLetter(p);
+	                                    PlayActivity.RENDERER.draw(w);
+	                                    PlayActivity.this.openContextMenu(boardView);
+                                	} catch(Exception ex){
+                                		ex.printStackTrace();
+                                	}
                                 }
                             });
                     }
 
                     public void onTap(Point e) {
-                        Position p = PlayActivity.RENDERER.findBox(e);
-                        Word old = PlayActivity.BOARD.setHighlightLetter(p);
-                        PlayActivity.this.render(old);
+                    	try{
+	                        Position p = PlayActivity.RENDERER.findBox(e);
+	                        Word old = PlayActivity.BOARD.setHighlightLetter(p);
+	                        PlayActivity.this.render(old);
+                    	} catch(Exception ex){
+                    		ex.printStackTrace();
+                    	}
                     }
                 });
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+        	this.finish();
+            
         }
 
         dialog = new Dialog(this);
@@ -293,6 +303,7 @@ public class PlayActivity extends Activity {
 			public void onScale(float newScale) {
 				this.scale = newScale;
 				if(t != null) t.cancel();
+				renderTimer.purge();
 				t = new TimerTask(){
 
 					@Override
@@ -300,7 +311,7 @@ public class PlayActivity extends Activity {
 						handler.post(new Runnable(){
 
 							public void run() {
-								RENDERER.setLogicalScale(scale);
+								prefs.edit().putFloat("scale", RENDERER.setLogicalScale(scale)).commit();
 								render();
 								boardView.scrollTo(0, 0);
 							}

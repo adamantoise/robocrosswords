@@ -8,7 +8,8 @@
 		android:layout_height="wrap_content" 
 		android:text="@string/hello"
 		android:textSize="12dip" 
-		android:lines="2"
+		android:minLines="2"
+		android:maxLines="4"
 		android:textColor="#FFFFFF"
 		android:background="#2C2C2C"
 	/>
