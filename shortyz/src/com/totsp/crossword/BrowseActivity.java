@@ -452,8 +452,11 @@ public class BrowseActivity extends ListActivity {
 		final ProgressDialog dialog = new ProgressDialog(this);
 		dialog.setMessage("Please Wait...");
 		dialog.setCancelable(false);
-		dialog.show();
-		
+		try{
+			dialog.show();
+		} catch(RuntimeException e){
+			e.printStackTrace();
+		}
 		Runnable r = new Runnable(){
 
 			public void run() {
@@ -463,7 +466,9 @@ public class BrowseActivity extends ListActivity {
 
 					public void run() {
 						BrowseActivity.this.setListAdapter(currentAdapter);
-						dialog.hide();
+						if(dialog.isShowing()){
+							dialog.hide();
+						}
 					}
 					
 				});

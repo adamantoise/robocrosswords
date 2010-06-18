@@ -69,11 +69,25 @@ public class PlayboardRenderer {
 
     public float setLogicalScale(float scale) {
         this.scale *= scale;
+        if(scale > 2.5f){
+        	scale = 2.5f;
+        } else if(scale < 0.5f){
+        	scale = 0.5f;
+        }else if((""+scale).equals("NaN")){
+        	scale = 1.0f * this.logicalDensity;
+        }
         this.bitmap = null;
         return this.scale;
     }
 
     public void setScale(float scale) {
+    	if(scale > 2.5f){
+        	scale = 2.5f;
+        } else if(scale < 0.5f){
+        	scale = 0.5f;
+        } else if((""+scale).equals("NaN")){
+        	scale = 1.0f * this.logicalDensity;
+        }
         this.scale = scale;
     }
 
@@ -81,7 +95,14 @@ public class PlayboardRenderer {
         try {
             Box[][] boxes = this.board.getBoxes();
             boolean renderAll = reset == null;
-
+            if(scale > 2.5f){
+            	scale = 2.5f;
+            } else if(scale < 0.5f){
+            	scale = 0.5f;
+            } else if(scale == Float.NaN){
+            	scale = 1.0f * this.logicalDensity;
+            }
+            System.out.println("----"+scale);
             if (bitmap == null) {
                 LOG.warning("New bitmap");
                 bitmap = Bitmap.createBitmap((int) (boxes.length * BOX_SIZE * scale),

@@ -62,6 +62,9 @@ public class ScrollingImageView extends AbsoluteLayout
     }
 
     public void setBitmap(Bitmap bitmap) {
+    	if(bitmap == null){
+    		return;
+    	}
         if (imageView != null) {
             this.removeView(imageView);
         }

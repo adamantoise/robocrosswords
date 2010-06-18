@@ -34,6 +34,7 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.totsp.crossword.io.IO;
 import com.totsp.crossword.puz.MovementStrategy;
@@ -145,6 +146,16 @@ public class PlayActivity extends Activity {
             RENDERER = new PlayboardRenderer(BOARD, metrics.density);
             
             float scale = prefs.getFloat("scale", metrics.density);
+            if(scale > 2.5f){
+            	scale = 2.5f;
+            	prefs.edit().putFloat("scale", 2.5f).commit();
+            }else if(scale < .5f){
+            	scale = .25f;
+            	prefs.edit().putFloat("scale", .25f).commit();
+            } else if(scale == Float.NaN){
+            	scale = 1f;
+            	prefs.edit().putFloat("scale", 1f).commit();
+            }
             RENDERER.setScale(scale);
             
             BOARD.setSkipCompletedLetters(this.prefs.getBoolean("skipFilled",
@@ -274,9 +285,13 @@ public class PlayActivity extends Activity {
                     }
                 });
         } catch (IOException e) {
+        	System.err.println(this.getIntent().getData());
             e.printStackTrace();
+            Toast t = new Toast(this);
+            t.setText("Unable to read file \n"+PlayActivity.BASE_FILE.getName());
+            t.show();
         	this.finish();
-            
+            return;
         }
 
         dialog = new Dialog(this);
@@ -576,7 +591,7 @@ public class PlayActivity extends Activity {
     protected void onPause() {
         try {
             if ((puz != null) && (BASE_FILE != null)) {
-                if (puz.getPercentComplete() != 100) {
+                if (puz.getPercentComplete() != 100 && this.timer !=null) {
                     this.timer.stop();
                     puz.setTime(timer.getElapsed());
                 }
