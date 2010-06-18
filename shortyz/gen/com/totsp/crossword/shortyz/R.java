@@ -34,15 +34,15 @@ public final class R {
         public static final int list_header_title=0x7f080012;
         public static final int miniboard=0x7f080004;
         public static final int playKeyboard=0x7f08000b;
-        public static final int puzzle_caption=0x7f080015;
-        public static final int puzzle_date=0x7f080013;
+        public static final int puzzle_caption=0x7f080016;
+        public static final int puzzle_date=0x7f080014;
         public static final int puzzle_info_author=0x7f08000e;
         public static final int puzzle_info_copyright=0x7f08000f;
         public static final int puzzle_info_progress=0x7f080011;
         public static final int puzzle_info_time=0x7f080010;
         public static final int puzzle_info_title=0x7f08000d;
-        public static final int puzzle_name=0x7f080014;
-        public static final int puzzle_progress=0x7f080016;
+        public static final int puzzle_name=0x7f080015;
+        public static final int puzzle_progress=0x7f080013;
         public static final int tabhost=0x7f080002;
         public static final int webkit=0x7f080009;
     }

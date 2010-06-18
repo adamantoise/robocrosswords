@@ -42,6 +42,7 @@ import com.totsp.crossword.net.Scrapers;
 import com.totsp.crossword.puz.PuzzleMeta;
 import com.totsp.crossword.shortyz.R;
 import com.totsp.crossword.view.SeparatedListAdapter;
+import com.totsp.crossword.view.VerticalProgressBar;
 
 public class BrowseActivity extends ListActivity {
 	private static final int DATE_DIALOG_ID = 0;
@@ -273,8 +274,8 @@ public class BrowseActivity extends ListActivity {
 			if(lastOpenedHandle != null ){
 				try{
 					lastOpenedHandle.meta = IO.meta(lastOpenedHandle.file);
-					ProgressBar bar = (ProgressBar) lastOpenedView.findViewById(R.id.puzzle_progress);
-					bar.setProgress(lastOpenedHandle.getProgress());
+					VerticalProgressBar bar = (VerticalProgressBar) lastOpenedView.findViewById(R.id.puzzle_progress);
+					bar.setPercentComplete(lastOpenedHandle.getProgress());
 				} catch(Exception e){
 					e.printStackTrace();
 				}
@@ -510,18 +511,24 @@ public class BrowseActivity extends ListActivity {
 
 			view.setTag(puzFiles[i]);
 
+			
 			TextView date = (TextView) view.findViewById(R.id.puzzle_date);
 
 			date.setText(df.format(puzFiles[i].getDate()));
+			if(accessor == Accessor.SOURCE){
+				date.setVisibility(View.VISIBLE);
+			} else {
+				date.setVisibility(View.GONE);
+			}
 
 			TextView title = (TextView) view.findViewById(R.id.puzzle_name);
 
 			title.setText(puzFiles[i].getTitle());
 
-			ProgressBar bar = (ProgressBar) view
+			VerticalProgressBar bar = (VerticalProgressBar) view
 					.findViewById(R.id.puzzle_progress);
 
-			bar.setProgress(puzFiles[i].getProgress());
+			bar.setPercentComplete(puzFiles[i].getProgress());
 
 			TextView caption = (TextView) view
 					.findViewById(R.id.puzzle_caption);

@@ -2,30 +2,33 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
-  android:layout_height="90dp"
-  android:orientation="vertical"
-  android:gravity="center_horizontal|center_vertical">
-  <LinearLayout
-  	 android:layout_width="fill_parent"
-  	android:layout_height="fill_parent"
-  	android:orientation="horizontal">
-  
+  android:layout_height="72dp">
+  <com.totsp.crossword.view.VerticalProgressBar 
+  	android:layout_height="72dp"
+  	android:layout_width="8dp"
+  	android:layout_alignParentLeft="true"
+  	android:id="@+id/puzzle_progress"
+  />
+ 
   <TextView
   	android:id="@+id/puzzle_date"
   	android:layout_width="70dp"
   	android:layout_height="fill_parent"
   	android:lines="2"
   	android:textSize="10dp"
+  	android:paddingLeft="10dp"
   	android:gravity="center_horizontal|center_vertical"
   	android:text="Wed
 Jan 2, 2001"/>
+  
 
 	<LinearLayout
-		 android:layout_width="fill_parent"
-  	android:layout_height="fill_parent"
-  	android:orientation="vertical"
-  	android:gravity="center_horizontal|center_vertical">
-	
+		android:layout_toLeftOf="@id/puzzle_date"
+		android:layout_alignParentTop="true"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:orientation="vertical"
+		android:gravity="center_vertical">
 	<TextView
 	android:id="@+id/puzzle_name"
 	android:layout_width="fill_parent"
@@ -37,8 +40,10 @@ Jan 2, 2001"/>
 	android:text="New York Times"
 	android:gravity="center_vertical"
 	android:paddingTop="2dp"
-	android:paddingLeft="18dp"
-	/>
+	android:paddingLeft="10dp"
+	android:layout_alignParentTop="true"
+	android:layout_toLeftOf="@id/puzzle_date"
+    />
 	<TextView
   	android:id="@+id/puzzle_caption"
   	android:layout_width="fill_parent"
@@ -46,11 +51,11 @@ Jan 2, 2001"/>
   	android:lines="1"
   	android:textSize="15dp"
   	android:gravity="center_vertical"
-  	android:paddingLeft="20dp"
+  	android:paddingLeft="12dp"
   	android:text="Caption text"/>
-	</LinearLayout>
   	</LinearLayout>
-  	<ProgressBar
+	
+  	<!--  ProgressBar
   		style="?android:attr/progressBarStyleHorizontal"
   		android:layout_width="fill_parent"
   		android:layout_height="3dp"
@@ -58,5 +63,5 @@ Jan 2, 2001"/>
   		android:progress="80"
   		android:id="@+id/puzzle_progress"
   		
-  		/>
+  		/-->
 </LinearLayout>
