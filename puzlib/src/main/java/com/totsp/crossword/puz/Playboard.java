@@ -9,7 +9,8 @@ import java.util.List;
 
 
 public class Playboard implements Serializable {
-    private HashMap<Integer, Position> acrossWordStarts = new HashMap<Integer, Position>();
+   
+	private HashMap<Integer, Position> acrossWordStarts = new HashMap<Integer, Position>();
     private HashMap<Integer, Position> downWordStarts = new HashMap<Integer, Position>();
     private Position highlightLetter = new Position(0, 0);
     private Puzzle puzzle;

@@ -370,7 +370,8 @@ public class Puzzle implements Serializable {
 
         if (!Arrays.equals(acrossClues, other.acrossClues)) {
             System.out.println("acrossClues");
-
+//            for(int i=0; i < acrossClues.length; i++)
+//            	System.out.println((acrossClues[i].equals(other.acrossClues[i]))+"["+acrossClues[i]+"]==["+other.acrossClues[i]+"]");
             return false;
         }
 
@@ -409,11 +410,13 @@ public class Puzzle implements Serializable {
         }
 
         if (getCibChecksum() != other.getCibChecksum()) {
+        	System.out.println("checksum");
             return false;
         }
 
         if (copyright == null) {
             if (other.copyright != null) {
+            	System.out.println("copyright");
                 return false;
             }
         } else if (!copyright.equals(other.copyright)) {

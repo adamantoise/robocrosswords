@@ -70,10 +70,11 @@ public class IO {
         puz.setUnknown32(input.readShort());
 
         Box[][] boxes = new Box[puz.getWidth()][puz.getHeight()];
-
+        byte[] answerByte = new byte[1];
         for (int x = 0; x < boxes.length; x++) {
             for (int y = 0; y < boxes[x].length; y++) {
-                byte solution = input.readByte();
+            	answerByte[0] = input.readByte();
+                char solution = new String(answerByte, "Cp1252").charAt(0);
 
                 if (solution != '.') {
                     boxes[x][y] = new Box();
@@ -81,11 +82,11 @@ public class IO {
                 }
             }
         }
-
+        
         for (int x = 0; x < boxes.length; x++) {
             for (int y = 0; y < boxes[x].length; y++) {
-                char answer = (char) input.readByte();
-
+                answerByte[0] = input.readByte();
+                char answer = new String(answerByte, "Cp1252").charAt(0);
                 if (answer == '.') {
                     continue;
                 } else if (answer == '-') {
@@ -98,38 +99,12 @@ public class IO {
 
         puz.setBoxes(boxes);
 
-        StringBuffer sb = new StringBuffer();
+        puz.setTitle(readNullTerminatedString(input));
 
-        for (byte nextByte = input.readByte(); nextByte != 0x0;
-                nextByte = input.readByte()) {
-            if (nextByte != 0x0) {
-                sb.append((char) nextByte);
-            }
-        }
+        puz.setAuthor(readNullTerminatedString(input));
 
-        puz.setTitle(sb.toString());
-
-        sb = new StringBuffer();
-
-        for (byte nextByte = input.readByte(); nextByte != 0x0;
-                nextByte = input.readByte()) {
-            if (nextByte != 0x0) {
-                sb.append((char) nextByte);
-            }
-        }
-
-        puz.setAuthor(sb.toString());
-
-        sb = new StringBuffer();
-
-        for (byte nextByte = input.readByte(); nextByte != 0x0;
-                nextByte = input.readByte()) {
-            if (nextByte != 0x0) {
-                sb.append((char) nextByte);
-            }
-        }
-
-        puz.setCopyright(sb.toString());
+        
+        puz.setCopyright(readNullTerminatedString(input));
 
         ArrayList<String> acrossClues = new ArrayList<String>();
         ArrayList<Integer> acrossCluesLookup = new ArrayList<Integer>();
@@ -144,35 +119,16 @@ public class IO {
                 }
 
                 if (boxes[x][y].isAcross() && (boxes[x][y].getClueNumber() != 0)) {
-                    StringBuilder acrossClue = new StringBuilder();
-
-                    for (byte nextChar = input.readByte(); nextChar != 0x0;
-                            nextChar = input.readByte()) {
-                        if (nextChar != 0x0) {
-                            acrossClue.append((char) nextChar);
-                        }
-                    }
+                    String value = readNullTerminatedString(input);
 
                     acrossCluesLookup.add(boxes[x][y].getClueNumber());
-
-                    String value = acrossClue.toString();
                     acrossClues.add(value);
                     rawClues.add(value);
                 }
 
                 if (boxes[x][y].isDown() && (boxes[x][y].getClueNumber() != 0)) {
-                    StringBuilder downClue = new StringBuilder();
-
-                    for (byte nextChar = input.readByte(); nextChar != 0x0;
-                            nextChar = input.readByte()) {
-                        if (nextChar != 0x0) {
-                            downClue.append((char) nextChar);
-                        }
-                    }
-
+                    String value = readNullTerminatedString(input);
                     downCluesLookup.add(boxes[x][y].getClueNumber());
-
-                    String value = downClue.toString();
                     downClues.add(value);
                     rawClues.add(value);
                 }
@@ -185,16 +141,7 @@ public class IO {
         puz.setAcrossCluesLookup(acrossCluesLookup.toArray(new Integer[acrossCluesLookup.size()]));
         puz.setRawClues(rawClues.toArray(new String[rawClues.size()]));
 
-        StringBuilder notes = new StringBuilder();
-
-        for (byte nextChar = input.readByte(); nextChar != 0x0;
-                nextChar = input.readByte()) {
-            if (nextChar != 0x0) {
-                notes.append((char) nextChar);
-            }
-        }
-
-        puz.setNotes(notes.toString());
+        puz.setNotes(readNullTerminatedString(input));
 
         boolean eof = false;
 
@@ -255,11 +202,12 @@ public class IO {
     public static String readNullTerminatedString(InputStream is)
         throws IOException {
         StringBuilder sb = new StringBuilder();
-
+        byte[] temp = new byte[1];
         for (byte nextByte = (byte) is.read(); nextByte != 0x0;
                 nextByte = (byte) is.read()) {
             if (nextByte != 0x0) {
-                sb.append((char) nextByte);
+            	temp[0] = nextByte;
+                sb.append(new String(temp, "Cp1252"));
             }
             if(sb.length() > 4096){
             	throw new IOException("Run on string!");
@@ -305,7 +253,8 @@ public class IO {
                 if (boxes[x][y] == null) {
                     dos.writeByte('.');
                 } else {
-                    dos.writeByte(boxes[x][y].getSolution());
+                	byte val = Character.toString(boxes[x][y].getSolution()).getBytes("Cp1252")[0];
+                    dos.writeByte(val);
                 }
             }
         }
@@ -315,8 +264,9 @@ public class IO {
                 if (boxes[x][y] == null) {
                     dos.writeByte('.');
                 } else {
+                	byte val = Character.toString(boxes[x][y].getResponse()).getBytes("Cp1252")[0];
                     dos.writeByte((boxes[x][y].getResponse() == ' ') ? '-'
-                                                                : boxes[x][y].getResponse());
+                                                                : val);
                 }
             }
         }
@@ -336,7 +286,7 @@ public class IO {
         throws IOException {
         value = (value == null) ? "" : value;
 
-        for (char c : value.toCharArray()) {
+        for (byte c : value.getBytes("Cp1252")) {
             os.write(c);
         }
 

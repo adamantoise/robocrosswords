@@ -73,7 +73,7 @@ public class IOTest extends TestCase {
         	}
         }
         
-        assertEquals( puz, puz2);
+        assertEquals(puz, puz2);
         
         Puzzle p = IO.load(tmp);
         p.setDate(new Date());
