@@ -127,7 +127,7 @@ public class PlayActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.configuration = getBaseContext().getResources().getConfiguration();
         this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        this.showErrors = this.prefs.getBoolean("showErrors", true);
+        this.showErrors = this.prefs.getBoolean("showErrors", false);
         MovementStrategy movement = this.getMovementStrategy();
 
         DisplayMetrics metrics = new DisplayMetrics();
