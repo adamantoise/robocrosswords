@@ -99,7 +99,7 @@ public class Playboard implements Serializable {
     	if(across){
     		return Arrays.binarySearch(this.puzzle.getAcrossCluesLookup(), c.number);
     	} else {
-    		return Arrays.binarySearch(this.puzzle.getAcrossCluesLookup(), c.number);
+    		return Arrays.binarySearch(this.puzzle.getDownCluesLookup(), c.number);
     	}
     	
     }
