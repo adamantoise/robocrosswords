@@ -69,7 +69,14 @@ public abstract class AbstractDownloader implements Downloader {
         date.getDate() + "-" + this.downloaderName.replaceAll(" ", "") +
         ".puz";
     }
-
+    
+    
+    protected abstract String createUrlSuffix(Date date);
+    
+    public String sourceUrl(Date date){
+    	return this.baseUrl + this.createUrlSuffix(date);
+    }
+    
     protected File download(Date date, String urlSuffix) {
         LOG.info("Mkdirs: " + this.downloadDirectory.mkdirs());
         LOG.info("Exist: " + this.downloadDirectory.exists());

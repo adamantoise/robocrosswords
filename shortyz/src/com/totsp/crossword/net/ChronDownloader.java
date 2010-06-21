@@ -23,10 +23,13 @@ public class ChronDownloader extends AbstractDownloader {
     }
 
     public File download(Date date) {
-        String name = "cs" + (date.getYear() - 100) +
-            nf.format(date.getMonth() + 1) + nf.format(date.getDate()) +
-            ".puz";
-
-        return super.download(date, name);
+        return super.download(date, this.createUrlSuffix(date));
     }
+
+	@Override
+	protected String createUrlSuffix(Date date) {
+		return "cs" + (date.getYear() - 100) +
+        nf.format(date.getMonth() + 1) + nf.format(date.getDate()) +
+        ".puz";
+	}
 }

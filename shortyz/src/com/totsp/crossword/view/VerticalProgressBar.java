@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 
 import android.graphics.Paint.Style;
 
@@ -45,12 +46,13 @@ public class VerticalProgressBar extends View {
     protected void onDraw(Canvas canvas) {
         Paint paint = new Paint();
         paint.setColor(GRAY);
-        paint.setStyle(Style.FILL_AND_STROKE);
-
+        paint.setStyle(Style.FILL);
+        //System.out.println("Draw "+this.width + " " +this.height);
         if (this.percentComplete == 0) {
             canvas.drawRect(0, 0, this.width, this.height, paint);
         } else if (this.percentComplete == 100) {
             paint.setColor(GREEN);
+            paint.setStyle(Style.FILL);
             canvas.drawRect(0, 0, this.width, this.height, paint);
         } else {
             float orangeHeight = ((float) this.percentComplete / 100f) * (float) this.height;
@@ -59,9 +61,11 @@ public class VerticalProgressBar extends View {
 
             canvas.drawRect(0, 0, this.width, grayHeight, paint);
             paint.setColor(ORANGE);
+            paint.setStyle(Style.FILL);
             canvas.drawRect(0, grayHeight, this.width, this.height, paint);
         }
         paint.setColor(Color.BLACK);
+        paint.setStyle(Style.FILL);
         canvas.drawLine(0, this.height, this.width, this.height, paint);
         canvas.drawLine(0, 0, this.width, 0, paint);
         
@@ -71,6 +75,7 @@ public class VerticalProgressBar extends View {
     protected void onMeasure(int widthSpecId, int heightSpecId) {
         this.height = View.MeasureSpec.getSize(heightSpecId);
         this.width = View.MeasureSpec.getSize(widthSpecId);
+        //System.out.println("On Measure "+this.width+" "+this.height );
         setMeasuredDimension(this.width, this.height);
     }
 }

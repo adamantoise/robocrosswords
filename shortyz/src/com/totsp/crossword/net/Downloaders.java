@@ -2,6 +2,7 @@ package com.totsp.crossword.net;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -73,6 +74,21 @@ public class Downloaders {
     }
 
     public void download(Date date) {
+    	Calendar cal = Calendar.getInstance();
+    	Calendar now = Calendar.getInstance();
+    	cal.setTime(date);
+    	cal.set(Calendar.HOUR_OF_DAY, 0);
+    	cal.set(Calendar.MINUTE, 0);
+    	cal.set(Calendar.SECOND, 0);
+    	cal.set(Calendar.MILLISECOND, 0);
+    	
+    	date = cal.getTime();
+    	now.setTimeInMillis(System.currentTimeMillis());
+    	
+    	now.set(Calendar.MINUTE, 0);
+    	now.set(Calendar.SECOND, 0);
+    	now.set(Calendar.MILLISECOND, 0);
+    	now.set(Calendar.HOUR_OF_DAY, 0);
         int i = 1;
         String contentTitle = "Downloading Puzzles";
 
@@ -116,6 +132,13 @@ public class Downloaders {
                     Puzzle puz = IO.load(downloaded);
                     puz.setDate(date);
                     puz.setSource(d.getName());
+                    puz.setSourceUrl(d.sourceUrl(date));
+                    System.out.println(date.getTime() +" >= "+ now.getTimeInMillis());
+                    System.out.println(date +" :: "+ now.getTime() );
+                    if(d instanceof NYTDownloader && date.getTime() >= now.getTimeInMillis() ){
+                    	puz.setUpdatable(true);
+                    }
+                    
                     IO.save(puz, downloaded);
                     if(!this.supressMessages){
                     	this.postDownloadedNotification(i, d.getName(), downloaded);

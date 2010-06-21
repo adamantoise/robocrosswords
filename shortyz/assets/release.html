@@ -5,20 +5,84 @@ body { background: black;}
 </style>
 <body>
 
-<h2>Welcome to Shortyz 2.1.8</h2>
-
-<p>Quick update. Mostly bug fixes. Two noticeable changes:
+<form action="https://mobile.paypal.com/cgi-bin/webscr" method="get" target="_blank">
+<input type="hidden" name="cmd" value="_xclick">
+<input type="hidden" name="business" value="kebernet@gmail.com">
+<input type="hidden" name="no_shipping" value="2">
+<input type="hidden" name="no_note" value="1">
+<input type="hidden" name="currency_code" value="USD">
+<input type="hidden" name="tax" value="0">
+<input type="hidden" name="bn" value="PP-DonationsBF">
+<input style="float: right;" type="image" src="donate.gif" border="0" name="submit" alt="Make payments with PayPal - it's fast, free and secure!">
+</form>
+<h2>Shortyz 2.1.9</h2>
+<p>Shortyz is free and open source. No ads, no whatever. Honestly, I started working on it because
+last fall when I switched from the iPhone world to the Android world, there wasn't an app that
+would let me do the NYT puzzle easily on the train ride to work. A number of people have asked about 
+a donate/paid version. Well, in lieu of dealing with that, I have added a donate button at the 
+top of the page. Want to buy me a beer? Feel free, but don't feel obligated.</p>
+<p>At any rate. What is up with this version?
 <ul>
-<li>New look for the puzzle browse screen</li>
-<li>Show Errors is now persistent.</li>
-<li><b>2.1.7 to 2.1.8</b>: Quick fix to make "Show Errors" default to off. 
-	This was my mistake.</li>
+<li>
+I have been watching the new Android Market crash report tool. It only reports for version 
+2.1+, I believe. However, I think I have gotten all of the "crash to ground" issues in the app worked out now. 
+If you see a complete crash (and not a "Wait"), please <a href="mailto:kebernet@gmail.com">email me</a>.
+</li>
+<li>
+Automatic downloads will only be retried once every twelve hours. Yay!
+</li>
+<li>
+Brendan Emmett Quigley's blog scraper is promoted out of experimental. It seems to be working
+well.
+<li>
+<li>
+With "Show Errors" on, I now invert the color on your highlight row, so there is a way to
+see incorrect squares without moving the cursor.
+</li>
+<li>
+Some minor changes to the playboard renderer to help with multitouch scaling.
+</li>
+<li>
+The "Search" button, if your device has one, will now skip you to the next clue in the 
+same direction as you are currently playing.
+</li>
+<li>
+There is now an confirmation on "Reveal Puzzle."
+</li>
+<li>
+Show Errors and Reveal will be disabled for NYT puzzles that have not updated the answer key.
+<li>
+<li>
+All un-updated NYT puzzles will have their answer key update on the next download event.
+</li>
+<li>
+There are some minor changes to the .shortyz data file format to support future features. 
+(I'm working on some cool stuff for Froyo) You shouldn't notice any difference.
+</li>
 </ul>
 </p>
 
 
 
-<h3>Previously 2.1.1</h3>
+<h3>Previously: 2.1.8</h3>
+<p>Quick update. Mostly bug fixes. Two noticeable changes:
+<ul>
+<li>
+New look for the puzzle browse screen
+</li>
+<li>
+Show Errors is now persistent.
+</li>
+<li>
+<b>2.1.7 to 2.1.8</b>: Quick fix to make "Show Errors" default to off. 
+	This was my mistake.
+</li>
+</ul>
+</p>
+
+
+
+<h3>Previously: 2.1.1</h3>
 
 <p>Some updates here most of you won't notice. A few bug fixes. However, if you are running
 Froyo (Android 2.2) you now have pinch zoom on the play board and Shortyz will install to external
@@ -27,7 +91,7 @@ storage, saving you that whole 100K on your internal storage. :P</p>
 this will reduce support issues for me.</p>
 
 
-<h3>Previously 2.1.0</h3>
+<h3>Previously: 2.1.0</h3>
 
 <p>Sorry if you feel spammed the last few days with updates. I am using the holiday to try
 and get to all the feature requests and known bugs, so I am pumping them out. This time, though
@@ -67,7 +131,7 @@ moving up a whole minor version number!</p>
 </p>
 
 
-<h3>Previously 2.0.30</h3>
+<h3>Previously: 2.0.30</h3>
 
 <p>Fast update, but this is mostly just bug fixes.
 <ul>

@@ -26,11 +26,13 @@ public class InkwellDownloader extends AbstractDownloader {
         if (date.getDay() != 5) {
             return null;
         }
-
-        String name = "vv" + (date.getYear() - 100) +
-            nf.format(date.getMonth() + 1) + nf.format(date.getDate()) +
-            ".puz";
-
-        return super.download(date, name);
+        return super.download(date, this.createUrlSuffix(date));
     }
+
+	@Override
+	protected String createUrlSuffix(Date date) {
+		return "vv" + (date.getYear() - 100) +
+        nf.format(date.getMonth() + 1) + nf.format(date.getDate()) +
+        ".puz";
+	}
 }

@@ -25,10 +25,13 @@ public class WSJDownloader extends AbstractDownloader {
         if (date.getDay() != 5) {
             return null;
         }
-        String name = "wsj" + nf.format(date.getYear() - 100) +
-            nf.format(date.getMonth() + 1) + nf.format(date.getDate()) +
-            ".puz";
-
-        return super.download(date, name);
+        return super.download(date, this.createUrlSuffix(date));
     }
+
+	@Override
+	protected String createUrlSuffix(Date date) {
+		return "wsj" + nf.format(date.getYear() - 100) +
+        nf.format(date.getMonth() + 1) + nf.format(date.getDate()) +
+        ".puz";
+	}
 }

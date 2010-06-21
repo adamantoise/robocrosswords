@@ -28,10 +28,7 @@ public class LATDownloader extends AbstractDownloader {
     }
 
     public File download(Date date) {
-        return this.download(date,
-            "lat" + this.nf.format(date.getYear() - 100) +
-            this.nf.format(date.getMonth() + 1) +
-            this.nf.format(date.getDate()) + ".puz");
+        return this.download(date,this.createUrlSuffix(date));
     }
 
     @Override
@@ -63,4 +60,11 @@ public class LATDownloader extends AbstractDownloader {
 
         return null;
     }
+
+	@Override
+	protected String createUrlSuffix(Date date) {
+		return "lat" + this.nf.format(date.getYear() - 100) +
+        this.nf.format(date.getMonth() + 1) +
+        this.nf.format(date.getDate()) + ".puz";
+	}
 }

@@ -199,8 +199,11 @@ public class BrowseActivity extends ListActivity {
 		this.nm = (NotificationManager) this
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 
-		if (prefs.getBoolean("dlOnStartup", true)) {
+		long lastDL = prefs.getLong("dlLast", 0);
+		
+		if (prefs.getBoolean("dlOnStartup", true) && System.currentTimeMillis() - (long)(12 * 60 * 60 * 1000) > lastDL ) {
 			this.download(new Date());
+			prefs.edit().putLong("dlLast", System.currentTimeMillis()).commit();
 		}
 
 		switch (prefs.getInt("sort", 0)) {
@@ -306,6 +309,7 @@ public class BrowseActivity extends ListActivity {
 
 				try {
 					m = IO.meta(f);
+					//System.out.println("Read meta for "+f);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -364,7 +368,7 @@ public class BrowseActivity extends ListActivity {
 					m = IO.meta(f);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					// e.printStackTrace();
+					e.printStackTrace();
 				}
 
 				files.add(new FileHandle(f, m));

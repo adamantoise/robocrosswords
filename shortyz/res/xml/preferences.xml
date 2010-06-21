@@ -60,19 +60,17 @@
 	android:summary="Philadelphia Inquirer Sunday Puzzle"
 	android:key="downloadPhilly"
 	/>
-	
-	
-</PreferenceCategory>
-
-<PreferenceCategory
-	android:title="Other Puzzle Sources (Experimental)">
-	
 	<CheckBoxPreference
 	android:title="Brendan Emmett Quigley"
 	android:defaultValue="true"
 	android:summary="brendanemmettquigley.com"
 	android:key="scrapeBEQ"
 	/>
+	
+</PreferenceCategory>
+
+<PreferenceCategory
+	android:title="Other Puzzle Sources (Experimental)">
 	
 	<CheckBoxPreference
 	android:title="Cru Puzzle Workshop"
@@ -115,7 +113,7 @@
 	 <PreferenceCategory
 	android:title="Application Settings">
 	<CheckBoxPreference
-	android:title="Download on Startup"
+	android:title="Automatic Download"
 	android:defaultValue="true"
 	android:summary="Download today's puzzles when starting the application"
 	android:key="dlOnStartup"

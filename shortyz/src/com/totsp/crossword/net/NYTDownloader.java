@@ -58,9 +58,7 @@ public class NYTDownloader extends AbstractDownloader {
 
     public File download(Date date) {
         //Feb2310.puz
-        return this.download(date,
-            MONTHS[date.getMonth()] + this.nf.format(date.getDate()) +
-            this.nf.format(date.getYear() - 100) + ".puz");
+        return this.download(date, this.createUrlSuffix(date));
     }
 
     @Override
@@ -156,8 +154,7 @@ public class NYTDownloader extends AbstractDownloader {
     
     public File update(Date date){
     	try {
-    		String urlSuffix = MONTHS[date.getMonth()] + this.nf.format(date.getDate()) +
-            this.nf.format(date.getYear() - 100) + ".puz";
+    		String urlSuffix = this.createUrlSuffix(date);
     		
             URL url = new URL(this.baseUrl + urlSuffix);
             HttpClient client = this.login();
@@ -210,4 +207,10 @@ public class NYTDownloader extends AbstractDownloader {
 
         return null;
     }
+
+	@Override
+	protected String createUrlSuffix(Date date) {
+		return MONTHS[date.getMonth()] + this.nf.format(date.getDate()) +
+        this.nf.format(date.getYear() - 100) + ".puz";
+	}
 }

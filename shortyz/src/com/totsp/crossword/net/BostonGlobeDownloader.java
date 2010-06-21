@@ -25,10 +25,12 @@ public class BostonGlobeDownloader extends AbstractDownloader {
         if (date.getDay() != 0) {
             return null;
         }
-
-        String name = "boston_" + nf.format(date.getMonth() + 1) +
-            nf.format(date.getDate()) + (date.getYear() + 1900) + ".puz";
-
-        return super.download(date, name);
+        return super.download(date, this.createUrlSuffix(date));
     }
+
+	@Override
+	protected String createUrlSuffix(Date date) {
+		return "boston_" + nf.format(date.getMonth() + 1) +
+        nf.format(date.getDate()) + (date.getYear() + 1900) + ".puz";
+	}
 }

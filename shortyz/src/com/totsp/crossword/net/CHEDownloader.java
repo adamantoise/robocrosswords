@@ -22,10 +22,12 @@ public class CHEDownloader extends AbstractDownloader{
         if (date.getDay() != 5) {
             return null;
         }
-        //20100521.puz
-        String name = (date.getYear() + 1900) + nf.format(date.getMonth() + 1) +
-            nf.format(date.getDate()) +  ".puz";
-
-        return super.download(date, name);
+        return super.download(date, this.createUrlSuffix(date));
     }
+
+	@Override
+	protected String createUrlSuffix(Date date) {
+		return (date.getYear() + 1900) + nf.format(date.getMonth() + 1) +
+        nf.format(date.getDate()) +  ".puz";
+	}
 }

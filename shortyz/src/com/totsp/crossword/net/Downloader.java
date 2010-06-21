@@ -11,4 +11,6 @@ public interface Downloader {
     public String createFileName(Date date);
 
     public File download(Date date);
+    
+    public String sourceUrl(Date date);
 }

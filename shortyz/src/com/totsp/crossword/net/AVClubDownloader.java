@@ -22,12 +22,11 @@ public class AVClubDownloader extends AbstractDownloader {
 	public String getName() {
 		return NAME;
 	}
+	
+	
 
 	public File download(Date date) {
-		// av100224.puz
-		return this.download(date, "av" + this.nf.format(date.getYear() - 100)
-				+ this.nf.format(date.getMonth() + 1)
-				+ this.nf.format(date.getDate()) + ".puz");
+		return this.download(date, this.createUrlSuffix(date));
 	}
 
 	@Override
@@ -62,5 +61,12 @@ public class AVClubDownloader extends AbstractDownloader {
 		}
 
 		return null;
+	}
+
+	@Override
+	protected String createUrlSuffix(Date date) {
+		return "av" + this.nf.format(date.getYear() - 100)
+		+ this.nf.format(date.getMonth() + 1)
+		+ this.nf.format(date.getDate()) + ".puz";
 	}
 }
