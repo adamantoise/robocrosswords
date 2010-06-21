@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import com.totsp.crossword.io.versions.IOVersion;
 import com.totsp.crossword.io.versions.IOVersion1;
+import com.totsp.crossword.io.versions.IOVersion2;
 import com.totsp.crossword.puz.Box;
 import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.puz.PuzzleMeta;
@@ -20,7 +21,7 @@ import com.totsp.crossword.puz.PuzzleMeta;
 
 public class IO {
     public static Puzzle loadNative(InputStream is) throws IOException {
-        DataInputStream input = new DataInputStream(is);
+        DataInputStream input = is instanceof DataInputStream ? (DataInputStream) is : new DataInputStream(is);
         Puzzle puz = new Puzzle();
         puz.setFileChecksum(input.readShort());
 
@@ -156,8 +157,8 @@ public class IO {
     }
     
     public static void writeCustom(Puzzle puz, OutputStream os) throws IOException {
-    	os.write(1);
-    	IOVersion v = new IOVersion1();
+    	os.write(2);
+    	IOVersion v = new IOVersion2();
     	v.write(puz, os);
     }
     
@@ -168,8 +169,12 @@ public class IO {
         switch (version) {
         case 1:
             v = new IOVersion1();
-
             break;
+            
+        case 2:
+        	v = new IOVersion2();
+            break;
+
 
         default:
             throw new IOException("UnknownVersion");
@@ -187,7 +192,9 @@ public class IO {
         switch (version) {
         case 1:
             v = new IOVersion1();
-
+            break;
+        case 2:
+        	v = new IOVersion2();
             break;
 
         default:
@@ -219,7 +226,7 @@ public class IO {
 
     public static void saveNative(Puzzle puz, OutputStream os)
         throws IOException {
-        DataOutputStream dos = new DataOutputStream(os);
+        DataOutputStream dos = os instanceof DataOutputStream ? (DataOutputStream) os : new DataOutputStream(os);
         dos.writeShort(puz.getFileChecksum());
 
         for (char c : puz.getFileMagic().toCharArray()) {
@@ -304,7 +311,7 @@ public class IO {
     	File metaFile = new File(baseFile.getParentFile(), baseFile.getName().substring(0, baseFile.getName().lastIndexOf(".")) + ".shortyz");
     	FileOutputStream puzzle= new FileOutputStream(baseFile);
     	FileOutputStream meta = new FileOutputStream(metaFile);
-    	IO.save(puz, puzzle, meta);
+    	IO.save(puz, new DataOutputStream(puzzle), new DataOutputStream(meta));
     }
 
     public static Puzzle load(InputStream puzzleInput, InputStream metaInput ) throws IOException{
@@ -317,11 +324,11 @@ public class IO {
     public static Puzzle load(File baseFile) throws IOException {
     	File metaFile = new File(baseFile.getParentFile(), baseFile.getName().substring(0, baseFile.getName().lastIndexOf(".")) + ".shortyz");
     	FileInputStream fis = new FileInputStream(baseFile);
-    	Puzzle puz = IO.loadNative(fis);
+    	Puzzle puz = IO.loadNative( new DataInputStream(fis));
     	fis.close();
     	if(metaFile.exists()){
 	    	fis = new FileInputStream(metaFile);
-	    	IO.readCustom(puz, fis);
+	    	IO.readCustom(puz, new DataInputStream(fis));
 	    	fis.close();
     	}
     	return puz;

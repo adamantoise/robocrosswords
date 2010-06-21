@@ -31,9 +31,11 @@ public class Puzzle implements Serializable {
     private transient short unknown32; //2bytes;
     private Date pubdate = new Date();
     private String source;
+    private String sourceUrl = "";
     private Box[][] boxes;
     private Box[] boxesList;
     private String[] rawClues;
+    private boolean updatable;
     private int height; //on byte
     private int width; //one byte;
     private long playedTime;
@@ -75,7 +77,8 @@ public class Puzzle implements Serializable {
                     continue;
                 }
 
-                if ( ((x == 0) || (boxes[x - 1][y] == null) ) && ( x +1 < boxes.length && boxes[x + 1][y] != null)) {
+                if (((x == 0) || (boxes[x - 1][y] == null)) &&
+                        (((x + 1) < boxes.length) && (boxes[x + 1][y] != null))) {
                     boxes[x][y].setDown(true);
 
                     if ((x == 0) || (boxes[x - 1][y] == null)) {
@@ -84,7 +87,9 @@ public class Puzzle implements Serializable {
                     }
                 }
 
-                if ( ((y == 0) || (boxes[x][y - 1] == null)) && (y+1 < boxes[x].length && boxes[x][y+1] != null)) {
+                if (((y == 0) || (boxes[x][y - 1] == null)) &&
+                        (((y + 1) < boxes[x].length) &&
+                        (boxes[x][y + 1] != null))) {
                     boxes[x][y].setAcross(true);
 
                     if ((y == 0) || (boxes[x][y - 1] == null)) {
@@ -106,7 +111,7 @@ public class Puzzle implements Serializable {
     }
 
     public void setBoxesList(Box[] value) {
-        System.out.println("Setting list "+value.length);
+        System.out.println("Setting list " + value.length);
         this.boxesList = value;
     }
 
@@ -276,6 +281,14 @@ public class Puzzle implements Serializable {
         return source;
     }
 
+    public void setSourceUrl(String sourceUrl) {
+        this.sourceUrl = sourceUrl;
+    }
+
+    public String getSourceUrl() {
+        return sourceUrl;
+    }
+
     public void setTime(long time) {
         this.playedTime = time;
     }
@@ -316,6 +329,14 @@ public class Puzzle implements Serializable {
         return unknown32;
     }
 
+    public void setUpdatable(boolean updatable) {
+        this.updatable = updatable;
+    }
+
+    public boolean isUpdatable() {
+        return updatable;
+    }
+
     public void setVersionString(String versionString) {
         this.versionString = versionString;
     }
@@ -339,7 +360,8 @@ public class Puzzle implements Serializable {
     }
 
     public Box[][] buildBoxes() {
-        System.out.println("Building boxes "+this.height+"x"+this.width);
+        System.out.println("Building boxes " + this.height + "x" + this.width);
+
         int i = 0;
         boxes = new Box[this.height][this.width];
 
@@ -370,8 +392,9 @@ public class Puzzle implements Serializable {
 
         if (!Arrays.equals(acrossClues, other.acrossClues)) {
             System.out.println("acrossClues");
-//            for(int i=0; i < acrossClues.length; i++)
-//            	System.out.println((acrossClues[i].equals(other.acrossClues[i]))+"["+acrossClues[i]+"]==["+other.acrossClues[i]+"]");
+
+            //            for(int i=0; i < acrossClues.length; i++)
+            //            	System.out.println((acrossClues[i].equals(other.acrossClues[i]))+"["+acrossClues[i]+"]==["+other.acrossClues[i]+"]");
             return false;
         }
 
@@ -410,13 +433,15 @@ public class Puzzle implements Serializable {
         }
 
         if (getCibChecksum() != other.getCibChecksum()) {
-        	System.out.println("checksum");
+            System.out.println("checksum");
+
             return false;
         }
 
         if (copyright == null) {
             if (other.copyright != null) {
-            	System.out.println("copyright");
+                System.out.println("copyright");
+
                 return false;
             }
         } else if (!copyright.equals(other.copyright)) {

@@ -15,10 +15,9 @@ import com.totsp.crossword.puz.PuzzleMeta;
 public class IOVersion1 implements IOVersion {
 
 	public void read(Puzzle puz, InputStream is) throws IOException {
-		PuzzleMeta meta = this.readMeta(is);
-		puz.setSource(meta.source);
-		puz.setDate(meta.date);
-		DataInputStream dis = new DataInputStream(is);
+		DataInputStream dis = is instanceof DataInputStream ? (DataInputStream) is : new DataInputStream(is);
+		PuzzleMeta meta = readMeta(dis);
+		applyMeta(puz, meta);
 		Box[][] boxes = puz.getBoxes();
 		for(Box[] row : boxes ){
 			for(Box b : row){
@@ -37,9 +36,16 @@ public class IOVersion1 implements IOVersion {
 		
 		
 	}
+	
+	protected void applyMeta(Puzzle puz, PuzzleMeta meta){
+		System.out.println("Applying V1 Meta");
+		puz.setSource(meta.source);
+		puz.setDate(meta.date);
+	}
 
 	public PuzzleMeta readMeta(InputStream is) throws IOException {
-		DataInputStream dis = new DataInputStream(is);
+		System.out.println("Read V1");
+		DataInputStream dis = is instanceof DataInputStream ? (DataInputStream) is : new DataInputStream(is);
 		PuzzleMeta meta = new PuzzleMeta();
 		meta.author = IO.readNullTerminatedString(dis);
 		meta.source = IO.readNullTerminatedString(dis);
@@ -51,12 +57,9 @@ public class IOVersion1 implements IOVersion {
 	}
 
 	public void write(Puzzle puz, OutputStream os) throws IOException {
-		DataOutputStream dos = new DataOutputStream(os);
-		IO.writeNullTerminatedString(dos, puz.getAuthor());
-		IO.writeNullTerminatedString(dos, puz.getSource());
-		IO.writeNullTerminatedString(dos, puz.getTitle());
-		dos.writeLong(puz.getDate() == null ? 0 : puz.getDate().getTime());
-		dos.writeInt(puz.getPercentComplete());
+		DataOutputStream dos = os instanceof DataOutputStream ? (DataOutputStream) os : new DataOutputStream(os);
+		writeMeta(puz, dos);
+		System.out.println("Meta written.");
 		Box[][] boxes = puz.getBoxes();
 		for(Box[] row : boxes ){
 			for(Box b : row){
@@ -70,4 +73,12 @@ public class IOVersion1 implements IOVersion {
 		dos.writeLong(puz.getTime());
 	}
 
+	protected void writeMeta(Puzzle puz, DataOutputStream dos) throws IOException {
+		System.out.println("Writing V1 meta.");
+		IO.writeNullTerminatedString(dos, puz.getAuthor());
+		IO.writeNullTerminatedString(dos, puz.getSource());
+		IO.writeNullTerminatedString(dos, puz.getTitle());
+		dos.writeLong(puz.getDate() == null ? 0 : puz.getDate().getTime());
+		dos.writeInt(puz.getPercentComplete());
+	}
 }
