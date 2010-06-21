@@ -478,7 +478,9 @@ public class BrowseActivity extends ListActivity {
 		dialog.setCancelable(false);
 		final File directory = viewArchive ? BrowseActivity.this.archiveFolder
 				: BrowseActivity.this.crosswordsFolder;
-		if(directory.list().length > 70 ){ //Only spawn a thread if there are a lot of puzzles.
+		 //Only spawn a thread if there are a lot of puzzles.
+		// Using SDK rev as a proxy to decide whether you have a slow processor or not.
+		if( (android.os.Build.VERSION.SDK_INT >= 7 && directory.list().length > 300)  || directory.list().length > 80 ){
 			Runnable r = new Runnable(){
 				public void run() {
 					currentAdapter = BrowseActivity.this.buildList( dialog, directory, BrowseActivity.this.accessor);

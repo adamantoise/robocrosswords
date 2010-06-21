@@ -78,6 +78,7 @@ public class PlayActivity extends Activity {
     static Playboard BOARD;
     static PlayboardRenderer RENDERER;
     static File BASE_FILE;
+    MovementStrategy movement = null;
     private AlertDialog completeDialog;
     private AlertDialog revealPuzzleDialog;
     private Configuration configuration;
@@ -89,10 +90,10 @@ public class PlayActivity extends Activity {
     private ScrollingImageView boardView;
     private SharedPreferences prefs;
     private TextView clue;
+    private boolean showCount = false;
+    private boolean showErrors = false;
     private boolean useNativeKeyboard = false;
     private long lastKey;
-    private boolean showErrors = false;
-    private boolean showCount = false;
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -132,6 +133,7 @@ public class PlayActivity extends Activity {
         this.configuration = getBaseContext().getResources().getConfiguration();
         this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
         this.showErrors = this.prefs.getBoolean("showErrors", false);
+
         MovementStrategy movement = this.getMovementStrategy();
 
         DisplayMetrics metrics = new DisplayMetrics();
@@ -339,24 +341,24 @@ public class PlayActivity extends Activity {
                     return;
                 }
             });
-        
+
         revealPuzzleDialog = new AlertDialog.Builder(this).create();
         revealPuzzleDialog.setTitle("Reveal Entire Puzzle");
         revealPuzzleDialog.setMessage("Are you sure?");
-        
-        revealPuzzleDialog.setButton("OK", new DialogInterface.OnClickListener() {
-			
-			public void onClick(DialogInterface dialog, int which) {
-				PlayActivity.BOARD.revealPuzzle();
-	            render();
-			}
-		});
-        revealPuzzleDialog.setButton2("Cancel", new DialogInterface.OnClickListener() {
-			
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-			}
-		});
+
+        revealPuzzleDialog.setButton("OK",
+            new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    PlayActivity.BOARD.revealPuzzle();
+                    render();
+                }
+            });
+        revealPuzzleDialog.setButton2("Cancel",
+            new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
 
         this.boardView.setScaleListener(new ScaleListener() {
                 float scale;
@@ -389,12 +391,15 @@ public class PlayActivity extends Activity {
                     renderTimer.schedule(t, 500);
                 }
             });
-        if(puz.isUpdatable()){
-        	this.showErrors = false;
+
+        if (puz.isUpdatable()) {
+            this.showErrors = false;
         }
-        if(BOARD.isShowErrors() != this.showErrors){
-        	BOARD.toggleShowErrors();
+
+        if (BOARD.isShowErrors() != this.showErrors) {
+            BOARD.toggleShowErrors();
         }
+
         this.showCount = prefs.getBoolean("showCount", false);
         this.render();
     }
@@ -405,40 +410,35 @@ public class PlayActivity extends Activity {
         System.out.println("CCM " + view);
 
         if (view == boardView) {
-        	Menu clueSize = menu.addSubMenu("Clue Text Size");
-        	clueSize.add("Small");
-        	clueSize.add("Medium");
-        	clueSize.add("Large");
-        	
+            Menu clueSize = menu.addSubMenu("Clue Text Size");
+            clueSize.add("Small");
+            clueSize.add("Medium");
+            clueSize.add("Large");
+
             menu.add("Zoom In");
             menu.add("Zoom Out");
             menu.add("Zoom Reset");
         }
     }
-    
-    
-    private void setClueSize(int dps){
-    	this.clue.setTextSize(TypedValue.COMPLEX_UNIT_SP, dps);
-    	if(prefs.getInt("clueSize", 12) != dps){
-    		this.prefs.edit().putInt("clueSize", dps).commit();
-    	}
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-    	if(!puz.isUpdatable()){
-	        menu.add( this.showErrors ? "Hide Errors" : "Show Errors").setIcon(android.R.drawable.ic_menu_view)
-	            .setCheckable(true);
-	
-	        Menu reveal = menu.addSubMenu("Reveal")
-	                          .setIcon(android.R.drawable.ic_menu_view);
-	        reveal.add("Letter");
-	        reveal.add("Word");
-	        reveal.add("Puzzle");
-    	} else {
-    		menu.add("Show Errors").setEnabled(false).setIcon(android.R.drawable.ic_menu_view);
-    		menu.add("Reveal").setIcon(android.R.drawable.ic_menu_view).setEnabled(false);
-    	}
+        if (!puz.isUpdatable()) {
+            menu.add(this.showErrors ? "Hide Errors" : "Show Errors")
+                .setIcon(android.R.drawable.ic_menu_view).setCheckable(true);
+
+            Menu reveal = menu.addSubMenu("Reveal")
+                              .setIcon(android.R.drawable.ic_menu_view);
+            reveal.add("Letter");
+            reveal.add("Word");
+            reveal.add("Puzzle");
+        } else {
+            menu.add("Show Errors").setEnabled(false)
+                .setIcon(android.R.drawable.ic_menu_view);
+            menu.add("Reveal").setIcon(android.R.drawable.ic_menu_view)
+                .setEnabled(false);
+        }
+
         menu.add("Clues").setIcon(android.R.drawable.ic_menu_agenda);
         menu.add("Info").setIcon(android.R.drawable.ic_menu_info_details);
         menu.add("Help").setIcon(android.R.drawable.ic_menu_help);
@@ -452,11 +452,20 @@ public class PlayActivity extends Activity {
         Word previous;
 
         switch (keyCode) {
-        
+        case KeyEvent.KEYCODE_SEARCH:
+        	System.out.println("Next clue.");
+            PlayActivity.BOARD.setMovementStrategy(MovementStrategy.MOVE_NEXT_CLUE);
+            previous = PlayActivity.BOARD.nextWord();
+            PlayActivity.BOARD.setMovementStrategy(this.getMovementStrategy());
+            this.render(previous);
+
+            return true;
+
         case KeyEvent.KEYCODE_BACK:
-        	this.finish();
-        	return true;
-        	
+            this.finish();
+
+            return true;
+
         case KeyEvent.KEYCODE_MENU:
             return false;
 
@@ -530,17 +539,7 @@ public class PlayActivity extends Activity {
 
                 return true;
             } else {
-                previous = PlayActivity.BOARD.getCurrentWord();
-
-                Position p = PlayActivity.BOARD.getHighlightLetter();
-
-                if (previous.across) {
-                    p.across = (previous.start.across + previous.length) - 1;
-                } else {
-                    p.down = (previous.start.down + previous.length) - 1;
-                }
-
-                PlayActivity.BOARD.nextLetter();
+                previous = PlayActivity.BOARD.nextWord();
                 this.render(previous);
 
                 return true;
@@ -586,14 +585,16 @@ public class PlayActivity extends Activity {
 
             return true;
         } else if (item.getTitle().equals("Puzzle")) {
-        	this.showDialog(REVEAL_PUZZLE_DIALOG);
+            this.showDialog(REVEAL_PUZZLE_DIALOG);
+
             return true;
         } else if (item.getTitle().equals("Show Errors") ||
                 item.getTitle().equals("Hide Errors")) {
             PlayActivity.BOARD.toggleShowErrors();
             item.setTitle(PlayActivity.BOARD.isShowErrors() ? "Hide Errors"
                                                             : "Show Errors");
-            this.prefs.edit().putBoolean("showErrors", BOARD.isShowErrors()).commit();
+            this.prefs.edit().putBoolean("showErrors", BOARD.isShowErrors())
+                      .commit();
             this.render();
 
             return true;
@@ -659,13 +660,13 @@ public class PlayActivity extends Activity {
                     Uri.parse("file:///android_asset/playscreen.html"), this,
                     HTMLActivity.class);
             this.startActivity(i);
-        } else if(item.getTitle().equals("Small") ){
-        	this.setClueSize(12);
-        } else if(item.getTitle().equals("Medium") ){
-        	this.setClueSize(16);
-        } else if(item.getTitle().equals("Large") ){
-        	this.setClueSize(20);
-        } 
+        } else if (item.getTitle().equals("Small")) {
+            this.setClueSize(12);
+        } else if (item.getTitle().equals("Medium")) {
+            this.setClueSize(16);
+        } else if (item.getTitle().equals("Large")) {
+            this.setClueSize(20);
+        }
 
         return false;
     }
@@ -683,8 +684,8 @@ public class PlayActivity extends Activity {
             return completeDialog;
 
         case REVEAL_PUZZLE_DIALOG:
-        	return revealPuzzleDialog;
-        	
+            return revealPuzzleDialog;
+
         default:
             return null;
         }
@@ -729,26 +730,38 @@ public class PlayActivity extends Activity {
             timer = new ImaginaryTimer(this.puz.getTime());
             timer.start();
         }
+
         render();
     }
 
-    private MovementStrategy getMovementStrategy() {
-        MovementStrategy movement = null;
-        String stratName = this.prefs.getString("movementStrategy",
-                "MOVE_NEXT_ON_AXIS");
-        System.out.println("Movement Strategy:" + stratName);
+    private void setClueSize(int dps) {
+        this.clue.setTextSize(TypedValue.COMPLEX_UNIT_SP, dps);
 
-        if (stratName.equals("MOVE_NEXT_ON_AXIS")) {
-            movement = MovementStrategy.MOVE_NEXT_ON_AXIS;
-        } else if (stratName.equals("STOP_ON_END")) {
-            movement = MovementStrategy.STOP_ON_END;
-        } else if (stratName.equals("MOVE_NEXT_CLUE")) {
-            movement = MovementStrategy.MOVE_NEXT_CLUE;
-        } else if (stratName.equals("MOVE_PARALLEL_WORD")) {
-            movement = MovementStrategy.MOVE_PARALLEL_WORD;
+        if (prefs.getInt("clueSize", 12) != dps) {
+            this.prefs.edit().putInt("clueSize", dps).commit();
         }
+    }
 
-        return movement;
+    private MovementStrategy getMovementStrategy() {
+        if (movement != null) {
+            return movement;
+        } else {
+            String stratName = this.prefs.getString("movementStrategy",
+                    "MOVE_NEXT_ON_AXIS");
+            System.out.println("Movement Strategy:" + stratName);
+
+            if (stratName.equals("MOVE_NEXT_ON_AXIS")) {
+                movement = MovementStrategy.MOVE_NEXT_ON_AXIS;
+            } else if (stratName.equals("STOP_ON_END")) {
+                movement = MovementStrategy.STOP_ON_END;
+            } else if (stratName.equals("MOVE_NEXT_CLUE")) {
+                movement = MovementStrategy.MOVE_NEXT_CLUE;
+            } else if (stratName.equals("MOVE_PARALLEL_WORD")) {
+                movement = MovementStrategy.MOVE_PARALLEL_WORD;
+            }
+
+            return movement;
+        }
     }
 
     private void render() {
@@ -771,11 +784,12 @@ public class PlayActivity extends Activity {
         }
 
         Clue c = PlayActivity.BOARD.getClue();
-         if (c.hint == null) {
+
+        if (c.hint == null) {
             PlayActivity.BOARD.toggleDirection();
             c = PlayActivity.BOARD.getClue();
         }
-        
+
         this.boardView.setBitmap(RENDERER.draw(previous));
 
         Point topLeft = RENDERER.findPointTopLeft(PlayActivity.BOARD.getHighlightLetter());
@@ -788,7 +802,9 @@ public class PlayActivity extends Activity {
 
         this.clue.setText("(" +
             (PlayActivity.BOARD.isAcross() ? "across" : "down") + ") " +
-            c.number + ". " + c.hint + ( this.showCount ? "  [" +PlayActivity.BOARD.getCurrentWord().length+"]" : ""));
+            c.number + ". " + c.hint +
+            (this.showCount
+            ? ("  [" + PlayActivity.BOARD.getCurrentWord().length + "]") : ""));
 
         if ((puz.getPercentComplete() == 100) && (timer != null)) {
             timer.stop();
