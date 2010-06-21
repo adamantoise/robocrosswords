@@ -50,7 +50,7 @@ public final class R {
         public static final int box_layout=0x7f030000;
         public static final int clue_list=0x7f030001;
         public static final int html_view=0x7f030002;
-        public static final int main=0x7f030003;
+        public static final int play=0x7f030003;
         public static final int puzzle_info_dialog=0x7f030004;
         public static final int puzzle_list_header=0x7f030005;
         public static final int puzzle_list_item=0x7f030006;

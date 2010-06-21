@@ -37,6 +37,17 @@ public class PreferencesActivity extends PreferenceActivity {
         	
         });
         
+        Preference subscribeNyt = (Preference) findPreference("nytSubscribe");
+        subscribeNyt.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+			public boolean onPreferenceClick(Preference arg0) {
+				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.nytimes.com/puzzle"));
+				PreferencesActivity.this.startActivity(i);
+				return true;
+			}
+        	
+        });
+        
         Preference scrapeInfo = (Preference) findPreference("aboutScrapes");
         scrapeInfo.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 

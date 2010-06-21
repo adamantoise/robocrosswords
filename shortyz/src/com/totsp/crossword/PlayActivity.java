@@ -178,7 +178,7 @@ public class PlayActivity extends Activity {
                 this.timer.start();
             }
 
-            setContentView(R.layout.main);
+            setContentView(R.layout.play);
 
             Keyboard keyboard = new Keyboard(this, R.xml.keyboard);
             keyboardView = (KeyboardView) this.findViewById(R.id.playKeyboard);

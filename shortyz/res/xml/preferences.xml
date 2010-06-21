@@ -109,6 +109,10 @@
 	android:summary="NYT Password"
 	android:key="nytPassword" 
 	/>
+	
+	<Preference
+ 	android:title="Get a Subscription" 
+ 	android:key="nytSubscribe"/>
 	</PreferenceCategory>
 	 <PreferenceCategory
 	android:title="Application Settings">

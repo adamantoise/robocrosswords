@@ -158,8 +158,6 @@ public class ClueListActivity extends Activity {
 						p.down += box;
 				}
 				if(!p.equals(PlayActivity.BOARD.getHighlightLetter())){
-	                Word old = PlayActivity.BOARD.setHighlightLetter(p);
-	                //PlayActivity.BOARD.setAcross(tabHost.getCurrentTab() == 0);
 	                ClueListActivity.this.render();
 				}
 			}

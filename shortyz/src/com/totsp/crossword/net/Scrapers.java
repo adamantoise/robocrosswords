@@ -3,7 +3,6 @@ package com.totsp.crossword.net;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -17,8 +16,7 @@ import com.totsp.crossword.PlayActivity;
 
 public class Scrapers {
 	
-	private static final Logger LOG = Logger.getLogger("com.totsp.crossword");
-    private ArrayList<AbstractPageScraper> scrapers = new ArrayList<AbstractPageScraper>();
+	private ArrayList<AbstractPageScraper> scrapers = new ArrayList<AbstractPageScraper>();
     private Context context;
     private NotificationManager notificationManager;
     private boolean supressMessages;

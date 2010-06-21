@@ -1,23 +1,16 @@
 package com.totsp.crossword.view;
 
-import android.content.Context;
-
-import android.graphics.Bitmap;
-
-import android.util.AttributeSet;
-
-import android.view.GestureDetector;
-
-import android.view.GestureDetector.OnGestureListener;
-
-import android.view.MotionEvent;
-
-import android.widget.AbsoluteLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-
 import java.util.Timer;
 import java.util.logging.Logger;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.util.AttributeSet;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.GestureDetector.OnGestureListener;
+import android.widget.AbsoluteLayout;
+import android.widget.ImageView;
 
 
 public class ScrollingImageView extends AbsoluteLayout
@@ -25,7 +18,6 @@ public class ScrollingImageView extends AbsoluteLayout
     private static final Logger LOG = Logger.getLogger("com.totsp.crossword");
     private AuxTouchHandler aux = null;
     private ClickListener ctxListener;
-    private Context context;
     private GestureDetector gestureDetector;
     private ImageView imageView;
     private ScaleListener scaleListener = null;
@@ -37,7 +29,6 @@ public class ScrollingImageView extends AbsoluteLayout
 
     public ScrollingImageView(Context context, AttributeSet as) {
         super(context, as);
-        this.context = context;
         gestureDetector = new GestureDetector(this);
         gestureDetector.setIsLongpressEnabled(true);
         imageView = new ImageView(context);
