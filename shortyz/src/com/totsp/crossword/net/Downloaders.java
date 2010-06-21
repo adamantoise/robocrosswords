@@ -1,9 +1,11 @@
 package com.totsp.crossword.net;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,6 +22,7 @@ import com.totsp.crossword.BrowseActivity;
 import com.totsp.crossword.PlayActivity;
 import com.totsp.crossword.io.IO;
 import com.totsp.crossword.puz.Puzzle;
+import com.totsp.crossword.puz.PuzzleMeta;
 
 
 public class Downloaders {
@@ -28,6 +31,7 @@ public class Downloaders {
     private Context context;
     private NotificationManager notificationManager;
     private boolean supressMessages;
+    private NYTDownloader nyt = null;
     public Downloaders(SharedPreferences prefs,
         NotificationManager notificationManager, Context context) {
         this.notificationManager = notificationManager;
@@ -67,7 +71,7 @@ public class Downloaders {
         }
 
         if (prefs.getBoolean("downloadNYT", false)) {
-            downloaders.add(new NYTDownloader(prefs.getString("nytUsername", ""),
+            downloaders.add(nyt = new NYTDownloader(prefs.getString("nytUsername", ""),
                     prefs.getString("nytPassword", "")));
         }
         this.supressMessages = prefs.getBoolean("supressMessages", false);
@@ -95,6 +99,11 @@ public class Downloaders {
         Notification not = new Notification(android.R.drawable.stat_sys_download,
                 contentTitle, System.currentTimeMillis());
         boolean somethingDownloaded = false;
+        File crosswords = new File(Environment.getExternalStorageDirectory(),
+                "crosswords/");
+        File archive =  new File(Environment.getExternalStorageDirectory(),
+                "crosswords/archive/");
+        HashSet<File> newlyDownloaded = new HashSet<File>();
         for (Downloader d : downloaders) {
             String contentText = "Downloading from " + d.getName();
             Intent notificationIntent = new Intent(context, PlayActivity.class);
@@ -107,21 +116,11 @@ public class Downloaders {
                 this.notificationManager.notify(0, not);
             }
 
-            File downloaded = new File(Environment.getExternalStorageDirectory(),
-                    "crosswords/" + d.createFileName(date));
-            File archived  = new File(Environment.getExternalStorageDirectory(),
-                    "crosswords/archive/" + d.createFileName(date));
+            File downloaded = new File( crosswords, d.createFileName(date));
+            File archived  = new File( archive, d.createFileName(date));
 
             System.out.println(downloaded.getAbsolutePath()+" "+downloaded.exists() + " OR "+archived.getAbsolutePath()+" "+archived.exists());
-            if(d instanceof NYTDownloader && downloaded.exists() ){
-            	NYTDownloader updater = (NYTDownloader) d;
-            	File updated = updater.update(date);
-            	if(updated != null){
-            		this.postUpdatedNotification(i, d.getName(), downloaded);
-            	}
-            	continue;
-            	
-            } else if (downloaded.exists() || archived.exists()) {
+            if (downloaded.exists() || archived.exists()) {
                 continue;
             } 
 
@@ -143,6 +142,7 @@ public class Downloaders {
                     if(!this.supressMessages){
                     	this.postDownloadedNotification(i, d.getName(), downloaded);
                     }
+                    newlyDownloaded.add(downloaded);
                     somethingDownloaded = true;
                 } catch (Exception ioe) {
                     LOG.log(Level.WARNING, "Exception reading " + downloaded,
@@ -154,9 +154,44 @@ public class Downloaders {
             i++;
         }
 
-        if (this.notificationManager != null) {
-            this.notificationManager.cancel(0);
+        
+        
+        // DO UPDATES
+        ArrayList<File> checkUpdate = new ArrayList<File>();
+        for(File file : crosswords.listFiles()){
+        	if(file.getName().endsWith(".shortyz") ){
+        		File puz = new File(file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf('.')+1) +"puz");
+        		System.out.println(puz.getAbsolutePath());
+        		if(!newlyDownloaded.contains(puz)){
+        			checkUpdate.add(puz);
+        		}
+        	}
         }
+        for(File file : archive.listFiles()){
+        	if(file.getName().endsWith(".shortyz") ){
+        		checkUpdate.add(new File(file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf('.')+1) +"puz"));
+        	}
+        }
+        
+        for(File file : checkUpdate){
+        	try{
+        	PuzzleMeta meta = IO.meta(file);
+	        	if(meta.updateable && nyt.getName().equals(meta.source)){
+	        		System.out.println("Trying update for "+file);
+	        		File updated = nyt.update(file);
+	        		if(updated != null){
+	            		this.postUpdatedNotification(i, nyt.getName(), updated);
+	            	}
+	        	}
+        	} catch(IOException e){
+        		e.printStackTrace();
+        	}
+        }
+    
+    	if (this.notificationManager != null) {
+            this.notificationManager.cancel(0);
+        }	
+        	
         if( somethingDownloaded && this.supressMessages){
         	this.postDownloadedGeneral();
         }

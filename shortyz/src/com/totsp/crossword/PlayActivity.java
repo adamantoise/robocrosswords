@@ -366,6 +366,9 @@ public class PlayActivity extends Activity {
                     renderTimer.schedule(t, 500);
                 }
             });
+        if(puz.isUpdatable()){
+        	this.showErrors = false;
+        }
         if(BOARD.isShowErrors() != this.showErrors){
         	BOARD.toggleShowErrors();
         }
@@ -386,15 +389,20 @@ public class PlayActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add( this.showErrors ? "Hide Errors" : "Show Errors").setIcon(android.R.drawable.ic_menu_view)
-            .setCheckable(true);
-
-        Menu reveal = menu.addSubMenu("Reveal")
-                          .setIcon(android.R.drawable.ic_menu_view);
+    	if(!puz.isUpdatable()){
+	        menu.add( this.showErrors ? "Hide Errors" : "Show Errors").setIcon(android.R.drawable.ic_menu_view)
+	            .setCheckable(true);
+	
+	        Menu reveal = menu.addSubMenu("Reveal")
+	                          .setIcon(android.R.drawable.ic_menu_view);
+	        reveal.add("Letter");
+	        reveal.add("Word");
+	        reveal.add("Puzzle");
+    	} else {
+    		menu.add("Show Errors").setEnabled(false).setIcon(android.R.drawable.ic_menu_view);
+    		menu.add("Reveal").setIcon(android.R.drawable.ic_menu_view).setEnabled(false);
+    	}
         menu.add("Clues").setIcon(android.R.drawable.ic_menu_agenda);
-        reveal.add("Letter");
-        reveal.add("Word");
-        reveal.add("Puzzle");
         menu.add("Info").setIcon(android.R.drawable.ic_menu_info_details);
         menu.add("Help").setIcon(android.R.drawable.ic_menu_help);
         menu.add("Settings").setIcon(android.R.drawable.ic_menu_preferences);

@@ -152,26 +152,27 @@ public class NYTDownloader extends AbstractDownloader {
         return httpclient;
     }
     
-    public File update(Date date){
+    public File update(File source){
     	try {
-    		String urlSuffix = this.createUrlSuffix(date);
-    		
-            URL url = new URL(this.baseUrl + urlSuffix);
+    		Puzzle oPuz = IO.load(source);
+    		if(!oPuz.isUpdatable()){
+    			return null;
+    		}
+    		System.out.println("Source URL:" +oPuz.getSourceUrl());
+            URL url = new URL(oPuz.getSourceUrl());
             HttpClient client = this.login();
 
             HttpGet get = new HttpGet(url.toString());
             HttpResponse response = client.execute(get);
 
             if (response.getStatusLine().getStatusCode() == 200) {
-                File f = new File(downloadDirectory, this.createFileName(date)+".tmp");
+            	File f = File.createTempFile("update"+System.currentTimeMillis(), ".tmp");
+            	f.deleteOnExit();
                 FileOutputStream fos = new FileOutputStream(f);
                 AbstractDownloader.copyStream(response.getEntity().getContent(),
                     fos);
                 fos.close();
 
-                File original = new File(downloadDirectory, this.createFileName(date));
-                
-                Puzzle oPuz = IO.load(original);
                 Puzzle nPuz = IO.load(f);
                 
                 boolean updated = false;
@@ -187,13 +188,14 @@ public class NYTDownloader extends AbstractDownloader {
                 }
                 f.delete();
                 if(updated){
-                	IO.save(oPuz, original);
+                	oPuz.setUpdatable(false);
+                	IO.save(oPuz, source);
                 } else {
                 	return null;
                 }
                 
                 
-                return original;
+                return source;
             } else {
                 return null;
             }
