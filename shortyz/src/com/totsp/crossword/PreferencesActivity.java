@@ -25,6 +25,17 @@ public class PreferencesActivity extends PreferenceActivity {
 			}
         	
         });
+        Preference license = (Preference) findPreference("license");
+        license.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+			public boolean onPreferenceClick(Preference arg0) {
+				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/license.html"), PreferencesActivity.this,
+		                HTMLActivity.class);
+				PreferencesActivity.this.startActivity(i);
+				return true;
+			}
+        	
+        });
         
         Preference scrapeInfo = (Preference) findPreference("aboutScrapes");
         scrapeInfo.setOnPreferenceClickListener(new OnPreferenceClickListener() {

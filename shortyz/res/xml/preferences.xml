@@ -141,6 +141,13 @@
 	/>
 	
 	<CheckBoxPreference
+	android:title="Show Length"
+	android:defaultValue="false"
+	android:summary="Shows the number of letters in the answer on the clue line"
+	android:key="showCount"
+	/>
+	
+	<CheckBoxPreference
 	android:title="Scroll To Clue"
 	android:defaultValue="false"
 	android:summary="Toggles the auto-scrolling to the selected clue in the clues list mode. (Works like Shortyz 1)"
@@ -189,9 +196,14 @@
 	
 	<PreferenceCategory
 	android:title="About Shortyz">
+	
 	<Preference
  	android:title="Release Notes" 
  	android:key="releaseNotes"/>
+	
+	<Preference
+ 	android:title="License" 
+ 	android:key="license"/>
  	
 	</PreferenceCategory>
 </PreferenceScreen>

@@ -61,8 +61,16 @@ public class PlayboardRenderer {
         currentLetterBox.setColor(Color.parseColor("#FFFFFF"));
         currentLetterBox.setStrokeWidth(2.0F);
 
+        white.setTextAlign(Align.CENTER);
         white.setColor(Color.WHITE);
+        white.setAntiAlias(true);
+        white.setTypeface(Typeface.SANS_SERIF);
+        
+        
+        red.setTextAlign(Align.CENTER);
         red.setColor(Color.RED);
+        red.setAntiAlias(true);
+        red.setTypeface(Typeface.SANS_SERIF);
 
         this.cheated.setColor(Color.parseColor("#FFE0E0"));
     }
@@ -108,7 +116,7 @@ public class PlayboardRenderer {
                 bitmap = Bitmap.createBitmap((int) (boxes.length * BOX_SIZE * scale),
                         (int) (boxes[0].length * BOX_SIZE * scale),
                         Bitmap.Config.RGB_565);
-                bitmap.eraseColor(Color.WHITE);
+                bitmap.eraseColor(Color.BLACK);
                 renderAll = true;
             }
 
@@ -117,11 +125,12 @@ public class PlayboardRenderer {
             // scale paints
             numberText.setTextSize(scale * 8F);
             letterText.setTextSize(scale * 20F);
-
+            red.setTextSize(scale * 20F);
+            white.setTextSize(scale * 20F);
             // board data
             Word currentWord = this.board.getCurrentWord();
             Position highlight = this.board.getHighlightLetter();
-
+            Paint thisLetter = null;
             for (int col = 0; col < boxes.length; col++) {
                 for (int row = 0; row < boxes[col].length; row++) {
                     int boxSize = (int) (BOX_SIZE * scale);
@@ -194,12 +203,22 @@ public class PlayboardRenderer {
                                 startX + 2, startY + numberTextSize + 2,
                                 this.numberText);
                         }
+                        thisLetter = this.letterText;
+                        if(board.isShowErrors()&& 
+                                boxes[col][row].getSolution() != boxes[col][row].getResponse() ){
+                        	if(highlight.across == col &&
+                    				highlight.down == row){
+                        		thisLetter = this.white;
+                        	} else if(currentWord.checkInWord(col, row)){
+                        		thisLetter = red;
+                        	}
+                        }
 
                         canvas.drawText(Character.toString(
                                 boxes[col][row].getResponse()),
                             startX + (boxSize / 2),
                             startY + (int) (letterTextSize * 1.25),
-                            this.letterText);
+                            thisLetter);
                     }
                 }
             }
@@ -219,11 +238,13 @@ public class PlayboardRenderer {
 
         Canvas canvas = new Canvas(bitmap);
         // scale paints
-        numberText.setTextSize(this.logicalDensity * 8F);
+        int numberTextSize = (int) (this.logicalDensity * 8F);
+        
+        numberText.setTextSize(numberTextSize);
         letterText.setTextSize(this.logicalDensity * 20F);
-
+        red.setTextSize(this.logicalDensity * 20F);
+        white.setTextSize(this.logicalDensity * 20F);
         for (int col = 0; col < word.length; col++) {
-            int numberTextSize = (int) (scale * 8F);
             int startX = (int) (col * boxSize);
             int startY = 0;
             Paint boxColor = this.blackLine;

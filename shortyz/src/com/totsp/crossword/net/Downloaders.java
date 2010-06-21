@@ -103,6 +103,14 @@ public class Downloaders {
                 "crosswords/");
         File archive =  new File(Environment.getExternalStorageDirectory(),
                 "crosswords/archive/");
+        
+        for(File isDel : crosswords.listFiles()){
+        	if(isDel.getName().endsWith(".tmp")){
+        		isDel.delete();
+        	}
+        }
+        
+        
         HashSet<File> newlyDownloaded = new HashSet<File>();
         for (Downloader d : downloaders) {
             String contentText = "Downloading from " + d.getName();

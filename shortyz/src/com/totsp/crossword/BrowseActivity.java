@@ -199,12 +199,7 @@ public class BrowseActivity extends ListActivity {
 		this.nm = (NotificationManager) this
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 
-		long lastDL = prefs.getLong("dlLast", 0);
 		
-		if (prefs.getBoolean("dlOnStartup", true) && System.currentTimeMillis() - (long)(12 * 60 * 60 * 1000) > lastDL ) {
-			this.download(new Date());
-			prefs.edit().putLong("dlLast", System.currentTimeMillis()).commit();
-		}
 
 		switch (prefs.getInt("sort", 0)) {
 		case 2:
@@ -226,9 +221,9 @@ public class BrowseActivity extends ListActivity {
 			this.startActivity(i);
 
 			return;
-		} else if (prefs.getBoolean("release_2.1.8", true)) {
+		} else if (prefs.getBoolean("release_2.2.0", true)) {
 			Editor e = prefs.edit();
-			e.putBoolean("release_2.1.8", false);
+			e.putBoolean("release_2.2.0", false);
 			e.commit();
 
 			Intent i = new Intent(Intent.ACTION_VIEW, Uri
@@ -239,6 +234,13 @@ public class BrowseActivity extends ListActivity {
 			return;
 		}
 
+		long lastDL = prefs.getLong("dlLast", 0);
+		
+		if (prefs.getBoolean("dlOnStartup", true) && System.currentTimeMillis() - (long)(12 * 60 * 60 * 1000) > lastDL ) {
+			this.download(new Date());
+			prefs.edit().putLong("dlLast", System.currentTimeMillis()).commit();
+		}
+		
 		render();
 	}
 
@@ -278,7 +280,11 @@ public class BrowseActivity extends ListActivity {
 				try{
 					lastOpenedHandle.meta = IO.meta(lastOpenedHandle.file);
 					VerticalProgressBar bar = (VerticalProgressBar) lastOpenedView.findViewById(R.id.puzzle_progress);
-					bar.setPercentComplete(lastOpenedHandle.getProgress());
+					if(lastOpenedHandle.meta.updateable){
+						bar.setPercentComplete(-1);
+					} else {
+						bar.setPercentComplete(lastOpenedHandle.getProgress());
+					}
 				} catch(Exception e){
 					e.printStackTrace();
 				}
@@ -294,9 +300,9 @@ public class BrowseActivity extends ListActivity {
 		this.startActivity(i);
 	}
 
-	private SeparatedListAdapter buildList(File directory, Accessor accessor) {
+	private SeparatedListAdapter buildList(final Dialog dialog, File directory, Accessor accessor) {
 		directory.mkdirs();
-		
+		long incept = System.currentTimeMillis();
 		ArrayList<FileHandle> files = new ArrayList<FileHandle>();
 		FileHandle[] puzFiles = null;
 		if(!directory.exists()){
@@ -304,6 +310,20 @@ public class BrowseActivity extends ListActivity {
 			return new SeparatedListAdapter(this);
 		}
 		for (File f : directory.listFiles()) {
+			// if this is taking a while and we are off the EDT, pop up the dialog.
+			if(dialog != null && System.currentTimeMillis() - incept > 2000 && !dialog.isShowing() ){
+				handler.post(new Runnable(){
+
+					public void run() {
+						try{
+							dialog.show();
+						} catch(RuntimeException e){
+							e.printStackTrace();
+						}
+					}
+					
+				});
+			}
 			if (f.getName().endsWith(".puz")) {
 				PuzzleMeta m = null;
 
@@ -457,33 +477,30 @@ public class BrowseActivity extends ListActivity {
 		final ProgressDialog dialog = new ProgressDialog(this);
 		dialog.setMessage("Please Wait...");
 		dialog.setCancelable(false);
-		try{
-			dialog.show();
-		} catch(RuntimeException e){
-			e.printStackTrace();
-		}
-		Runnable r = new Runnable(){
-
-			public void run() {
-				currentAdapter = BrowseActivity.this.buildList((viewArchive ? BrowseActivity.this.archiveFolder
-						: BrowseActivity.this.crosswordsFolder), BrowseActivity.this.accessor);
-				BrowseActivity.this.handler.post(new Runnable(){
-
-					public void run() {
-						BrowseActivity.this.setListAdapter(currentAdapter);
-						if(dialog.isShowing()){
-							dialog.hide();
+		final File directory = viewArchive ? BrowseActivity.this.archiveFolder
+				: BrowseActivity.this.crosswordsFolder;
+		if(directory.list().length > 70 ){ //Only spawn a thread if there are a lot of puzzles.
+			Runnable r = new Runnable(){
+				public void run() {
+					currentAdapter = BrowseActivity.this.buildList( dialog, directory, BrowseActivity.this.accessor);
+					BrowseActivity.this.handler.post(new Runnable(){
+	
+						public void run() {
+							BrowseActivity.this.setListAdapter(currentAdapter);
+							if(dialog.isShowing()){
+								dialog.hide();
+							}
 						}
-					}
+						
+					});
 					
-				});
+				}
 				
-			}
-			
-		};
-		
-
-		new Thread(r).start();
+			};
+			new Thread(r).start();
+		} else {
+			this.setListAdapter( this.buildList(null, directory, accessor));
+		}
 	}
 
 	private class FileAdapter extends BaseAdapter {

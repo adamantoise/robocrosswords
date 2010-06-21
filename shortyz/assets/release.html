@@ -5,7 +5,7 @@ body { background: black;}
 </style>
 <body>
 
-<form action="https://mobile.paypal.com/cgi-bin/webscr" method="get" target="_blank">
+<form action="https://www.paypal.com/cgi-bin/webscr" method="get" target="_blank">
 <input type="hidden" name="cmd" value="_xclick">
 <input type="hidden" name="business" value="kebernet@gmail.com">
 <input type="hidden" name="no_shipping" value="2">
@@ -15,13 +15,14 @@ body { background: black;}
 <input type="hidden" name="bn" value="PP-DonationsBF">
 <input style="float: right;" type="image" src="donate.gif" border="0" name="submit" alt="Make payments with PayPal - it's fast, free and secure!">
 </form>
-<h2>Shortyz 2.1.9</h2>
-<p>Shortyz is free and open source. No ads, no whatever. Honestly, I started working on it because
+<h2>Shortyz 2.2.0</h2>
+<h4>A Brief Note (release info follows):</h4>
+<p>Shortyz is free and <a href="http://code.google.com/p/shortyz">open source</a>. No ads, no whatever. Honestly, I started working on it because
 last fall when I switched from the iPhone world to the Android world, there wasn't an app that
 would let me do the NYT puzzle easily on the train ride to work. A number of people have asked about 
 a paid version. Honestly, a paid version puts me into copyright issues territory, and I really
 don't want to get into that. This is not a business, and I don't want to give the appearance 
-I am reselling anyone else's property. I don't host the puzzles you download in the app, you 
+I am reselling anyone else's property. I don't host or copy the puzzles you download in the app in any way; you 
 download them directly from their publicly available sources with the app.  
 </p>
 <p>
@@ -29,7 +30,7 @@ So, I have added a donate button at the top of this screen. Want to buy me a bee
 but don't feel obligated. You won't get anything more or less out of the app than anyone else.
 Also, if you feel like spreading the wealth, consider visiting 
 <a href="http://inkwellxwords.com/iwxbooks.html">Ink Well</a> and 
-<a href="http://www.brendanemmettquigley.com/">Brendan Emmett Quigley's site</a> and buy their 
+<a href="http://www.brendanemmettquigley.com/">Brendan Emmett Quigley's site</a> and buying their 
 fine wares.
 </p>
 <p>End of speech. At any rate. What is up with this version? Lots of stuff!
@@ -51,7 +52,7 @@ With "Show Errors" on, I now invert the text color on your highlight row, so the
 see incorrect squares without moving the cursor.
 </li>
 <li>
-Some minor changes to the playboard renderer to help with multitouch scaling. Not 100% where it
+Some minor changes to the playboard renderer to help with multitouch scaling on Froyo. Not 100% where it
 should be, but getting close.
 </li>
 <li>
@@ -68,13 +69,33 @@ Show Errors and Reveal will be disabled for NYT puzzles that have not updated th
 All un-updated NYT puzzles will have their answer key updated on the next download event.
 </li>
 <li>
+NYT Puzzles don't have an answer key have a red progress indicator.
+</li>
+<li>You also may have noticed in a previous silent version that non-US English characters now
+appear (hopefully) correctly in the clues. If you spot a puzzle where they don't, please email me the puzzle
+source. This is kind of a guessing game for me, since not all the puzzles seem to be created with
+the same characters set.
+</li>
+<li>There is a new preference option to make the number of characters in a clue appear at the end
+of the clue line. This isn't the default because some puzzles include this in the clue, separated
+with commas. So "OHGOON" might show as [2,2,2]. I can't synthesize the word breaks (Is that "Oh go on" or "Oh Goon?"), 
+but I can show you the total number of characters [6] if you want to see it.
+</li>
+<li>You can now embiggen the clue text. This is via the "Zoom" context menu (Long touch
+the playboard).
+</li>
+<li>
 There are some minor changes to the .shortyz data file format to support future features. 
 (I'm working on some cool stuff for Froyo) You shouldn't notice any difference.
 </li>
+<li>Now waits a moment before showing the busy dialog when rendering the browse view. Some people
+have complained about speed, but it hasn't actually changed. I honestly think seeing the busy dialog
+just gives that impression. So if I can render the list quickly, I don't show it at all. If this
+is actually taking more than a few seconds for you, consider using the "Cleanup" operation to 
+move your old and completed puzzles to the archive.
+</li>
 </ul>
 </p>
-
-
 
 <h3>Previously: 2.1.8</h3>
 <p>Quick update. Mostly bug fixes. Two noticeable changes:

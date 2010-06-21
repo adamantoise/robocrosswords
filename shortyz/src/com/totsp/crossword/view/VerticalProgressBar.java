@@ -18,6 +18,8 @@ public class VerticalProgressBar extends View {
     private static final int GRAY = Color.rgb(49, 49, 49);
     private static final int ORANGE = Color.rgb(213, 165, 24);
     private static final int GREEN = Color.rgb(49, 145, 90);
+    private static final int RED = Color.rgb(255, 74, 77);
+    
     private int height;
     private int percentComplete;
     private int width;
@@ -48,7 +50,11 @@ public class VerticalProgressBar extends View {
         paint.setColor(GRAY);
         paint.setStyle(Style.FILL);
         //System.out.println("Draw "+this.width + " " +this.height);
-        if (this.percentComplete == 0) {
+        if( this.percentComplete < 0 ){
+        	paint.setColor(RED);
+        	paint.setStyle(Style.FILL);
+        	canvas.drawRect(0, 0, this.width, this.height, paint);
+        }else if (this.percentComplete == 0) {
             canvas.drawRect(0, 0, this.width, this.height, paint);
         } else if (this.percentComplete == 100) {
             paint.setColor(GREEN);

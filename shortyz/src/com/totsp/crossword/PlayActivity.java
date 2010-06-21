@@ -25,6 +25,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 
 import android.view.ContextMenu;
 
@@ -72,11 +73,13 @@ public class PlayActivity extends Activity {
     private static final Logger LOG = Logger.getLogger("com.totsp.crossword");
     private static final int INFO_DIALOG = 0;
     private static final int COMPLETE_DIALOG = 1;
+    private static final int REVEAL_PUZZLE_DIALOG = 2;
     static final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     static Playboard BOARD;
     static PlayboardRenderer RENDERER;
     static File BASE_FILE;
     private AlertDialog completeDialog;
+    private AlertDialog revealPuzzleDialog;
     private Configuration configuration;
     private Dialog dialog;
     private Handler handler = new Handler();
@@ -89,6 +92,7 @@ public class PlayActivity extends Activity {
     private boolean useNativeKeyboard = false;
     private long lastKey;
     private boolean showErrors = false;
+    private boolean showCount = false;
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -276,6 +280,7 @@ public class PlayActivity extends Activity {
                         PlayActivity.this.startActivityForResult(i, 0);
                     }
                 });
+            this.setClueSize(prefs.getInt("clueSize", 12));
 
             boardView = (ScrollingImageView) this.findViewById(R.id.board);
 
@@ -334,6 +339,24 @@ public class PlayActivity extends Activity {
                     return;
                 }
             });
+        
+        revealPuzzleDialog = new AlertDialog.Builder(this).create();
+        revealPuzzleDialog.setTitle("Reveal Entire Puzzle");
+        revealPuzzleDialog.setMessage("Are you sure?");
+        
+        revealPuzzleDialog.setButton("OK", new DialogInterface.OnClickListener() {
+			
+			public void onClick(DialogInterface dialog, int which) {
+				PlayActivity.BOARD.revealPuzzle();
+	            render();
+			}
+		});
+        revealPuzzleDialog.setButton2("Cancel", new DialogInterface.OnClickListener() {
+			
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
 
         this.boardView.setScaleListener(new ScaleListener() {
                 float scale;
@@ -372,6 +395,7 @@ public class PlayActivity extends Activity {
         if(BOARD.isShowErrors() != this.showErrors){
         	BOARD.toggleShowErrors();
         }
+        this.showCount = prefs.getBoolean("showCount", false);
         this.render();
     }
 
@@ -381,10 +405,23 @@ public class PlayActivity extends Activity {
         System.out.println("CCM " + view);
 
         if (view == boardView) {
+        	Menu clueSize = menu.addSubMenu("Clue Text Size");
+        	clueSize.add("Small");
+        	clueSize.add("Medium");
+        	clueSize.add("Large");
+        	
             menu.add("Zoom In");
             menu.add("Zoom Out");
             menu.add("Zoom Reset");
         }
+    }
+    
+    
+    private void setClueSize(int dps){
+    	this.clue.setTextSize(TypedValue.COMPLEX_UNIT_SP, dps);
+    	if(prefs.getInt("clueSize", 12) != dps){
+    		this.prefs.edit().putInt("clueSize", dps).commit();
+    	}
     }
 
     @Override
@@ -415,6 +452,11 @@ public class PlayActivity extends Activity {
         Word previous;
 
         switch (keyCode) {
+        
+        case KeyEvent.KEYCODE_BACK:
+        	this.finish();
+        	return true;
+        	
         case KeyEvent.KEYCODE_MENU:
             return false;
 
@@ -544,9 +586,7 @@ public class PlayActivity extends Activity {
 
             return true;
         } else if (item.getTitle().equals("Puzzle")) {
-            PlayActivity.BOARD.revealPuzzle();
-            this.render();
-
+        	this.showDialog(REVEAL_PUZZLE_DIALOG);
             return true;
         } else if (item.getTitle().equals("Show Errors") ||
                 item.getTitle().equals("Hide Errors")) {
@@ -619,7 +659,13 @@ public class PlayActivity extends Activity {
                     Uri.parse("file:///android_asset/playscreen.html"), this,
                     HTMLActivity.class);
             this.startActivity(i);
-        }
+        } else if(item.getTitle().equals("Small") ){
+        	this.setClueSize(12);
+        } else if(item.getTitle().equals("Medium") ){
+        	this.setClueSize(16);
+        } else if(item.getTitle().equals("Large") ){
+        	this.setClueSize(20);
+        } 
 
         return false;
     }
@@ -636,6 +682,9 @@ public class PlayActivity extends Activity {
         case COMPLETE_DIALOG:
             return completeDialog;
 
+        case REVEAL_PUZZLE_DIALOG:
+        	return revealPuzzleDialog;
+        	
         default:
             return null;
         }
@@ -673,12 +722,14 @@ public class PlayActivity extends Activity {
         BOARD.setSkipCompletedLetters(this.prefs.getBoolean("skipFilled", false));
         BOARD.setMovementStrategy(this.getMovementStrategy());
         this.useNativeKeyboard = prefs.getBoolean("useNativeKeyboard", false);
+        this.showCount = prefs.getBoolean("showCount", false);
         this.onConfigurationChanged(this.configuration);
 
         if (puz.getPercentComplete() != 100) {
             timer = new ImaginaryTimer(this.puz.getTime());
             timer.start();
         }
+        render();
     }
 
     private MovementStrategy getMovementStrategy() {
@@ -720,12 +771,11 @@ public class PlayActivity extends Activity {
         }
 
         Clue c = PlayActivity.BOARD.getClue();
-
-        if (c.hint == null) {
+         if (c.hint == null) {
             PlayActivity.BOARD.toggleDirection();
             c = PlayActivity.BOARD.getClue();
         }
-
+        
         this.boardView.setBitmap(RENDERER.draw(previous));
 
         Point topLeft = RENDERER.findPointTopLeft(PlayActivity.BOARD.getHighlightLetter());
@@ -738,7 +788,7 @@ public class PlayActivity extends Activity {
 
         this.clue.setText("(" +
             (PlayActivity.BOARD.isAcross() ? "across" : "down") + ") " +
-            c.number + ". " + c.hint);
+            c.number + ". " + c.hint + ( this.showCount ? "  [" +PlayActivity.BOARD.getCurrentWord().length+"]" : ""));
 
         if ((puz.getPercentComplete() == 100) && (timer != null)) {
             timer.stop();
