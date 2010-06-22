@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
+
 public class Playboard implements Serializable {
    
 	private HashMap<Integer, Position> acrossWordStarts = new HashMap<Integer, Position>();
@@ -373,6 +374,21 @@ public class Playboard implements Serializable {
         return moveRight(false);
     }
 
+    public Word nextWord(){
+    	Word previous = this.getCurrentWord();
+
+        Position p = this.getHighlightLetter();
+
+        if (previous.across) {
+            p.across = (previous.start.across + previous.length) - 1;
+        } else {
+            p.down = (previous.start.down + previous.length) - 1;
+        }
+
+        this.nextLetter();
+        return previous;
+    }
+    
     public Position moveRight(Position original, boolean skipCompleted) {
         Position next = new Position(original.across + 1, original.down);
         Box value = this.getBoxes()[next.across][next.down];

@@ -78,6 +78,9 @@ public interface MovementStrategy {
 						System.out.println("Current Clue Index: "
 								+ nextClueIndex++ + " " + w.across);
 						board.jumpTo(nextClueIndex, w.across);
+						if(!board.getHighlightLetter().equals(board.getCurrentWordStart())){
+							board.setHighlightLetter(board.getCurrentWordStart());
+						}
 					} else {
 						int nextClueIndex = Arrays.binarySearch(board
 								.getPuzzle().getDownCluesLookup(),
@@ -86,6 +89,9 @@ public interface MovementStrategy {
 								+ nextClueIndex++ + " " + w.across);
 
 						board.jumpTo(nextClueIndex, w.across);
+						if(!board.getHighlightLetter().equals(board.getCurrentWordStart())){
+							board.setHighlightLetter(board.getCurrentWordStart());
+						}
 					}
 					return w;
 
