@@ -166,19 +166,25 @@ public class Downloaders {
         
         // DO UPDATES
         ArrayList<File> checkUpdate = new ArrayList<File>();
-        for(File file : crosswords.listFiles()){
-        	if(file.getName().endsWith(".shortyz") ){
-        		File puz = new File(file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf('.')+1) +"puz");
-        		System.out.println(puz.getAbsolutePath());
-        		if(!newlyDownloaded.contains(puz)){
-        			checkUpdate.add(puz);
-        		}
-        	}
-        }
-        for(File file : archive.listFiles()){
-        	if(file.getName().endsWith(".shortyz") ){
-        		checkUpdate.add(new File(file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf('.')+1) +"puz"));
-        	}
+        try{
+	        for(File file : crosswords.listFiles()){
+	        	if(file.getName().endsWith(".shortyz") ){
+	        		File puz = new File(file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf('.')+1) +"puz");
+	        		System.out.println(puz.getAbsolutePath());
+	        		if(!newlyDownloaded.contains(puz)){
+	        			checkUpdate.add(puz);
+	        		}
+	        	}
+	        }
+	        archive.mkdirs();
+	        
+	        for(File file : archive.listFiles()){
+	        	if(file.getName().endsWith(".shortyz") ){
+	        		checkUpdate.add(new File(file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf('.')+1) +"puz"));
+	        	}
+	        }
+        } catch(Exception e){
+        	e.printStackTrace();
         }
         
         for(File file : checkUpdate){
