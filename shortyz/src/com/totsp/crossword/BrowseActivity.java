@@ -510,7 +510,7 @@ public class BrowseActivity extends ListActivity {
 
         final File directory = viewArchive ? BrowseActivity.this.archiveFolder
                                            : BrowseActivity.this.crosswordsFolder;
-
+        directory.mkdirs();
         //Only spawn a thread if there are a lot of puzzles.
         // Using SDK rev as a proxy to decide whether you have a slow processor or not.
         if (((android.os.Build.VERSION.SDK_INT >= 7) && directory != null && directory.exists() && 

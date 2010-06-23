@@ -190,7 +190,7 @@ public class Downloaders {
         for(File file : checkUpdate){
         	try{
         	PuzzleMeta meta = IO.meta(file);
-	        	if(meta.updateable && nyt.getName().equals(meta.source)){
+	        	if(meta != null && meta.updateable && nyt.getName().equals(meta.source)){
 	        		System.out.println("Trying update for "+file);
 	        		File updated = nyt.update(file);
 	        		if(updated != null){

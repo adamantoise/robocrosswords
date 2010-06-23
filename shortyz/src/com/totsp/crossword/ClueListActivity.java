@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.TabHost.TabSpec;
@@ -150,7 +151,6 @@ public class ClueListActivity extends Activity {
 				Word current = PlayActivity.BOARD.getCurrentWord();
 				Position p = current.start;
 				int box = PlayActivity.RENDERER.findBoxNoScale(e);
-				System.out.println("box "+box);
 				if(box < current.length){
 					if(tabHost.getCurrentTab() == 0)
 						p.across += box;
@@ -158,6 +158,7 @@ public class ClueListActivity extends Activity {
 						p.down += box;
 				}
 				if(!p.equals(PlayActivity.BOARD.getHighlightLetter())){
+					PlayActivity.BOARD.setHighlightLetter(p);
 	                ClueListActivity.this.render();
 				}
 			}
@@ -168,20 +169,21 @@ public class ClueListActivity extends Activity {
         this.tabHost.setup();
 
         TabSpec ts = tabHost.newTabSpec("TAB1");
-
-        ts.setIndicator("Across",
-            this.getResources().getDrawable(R.drawable.across));
+        
+        ts.setIndicator("Across", this.getResources().getDrawable(R.drawable.across));
 
         ts.setContent(R.id.acrossList);
 
         this.tabHost.addTab(ts);
 
         ts = this.tabHost.newTabSpec("TAB2");
-
+        
         ts.setIndicator("Down", this.getResources().getDrawable(R.drawable.down));
-
+        
         ts.setContent(R.id.downList);
         this.tabHost.addTab(ts);
+        
+        
         this.tabHost.setCurrentTab(PlayActivity.BOARD.isAcross() ? 0 : 1);
 
         this.across = (ListView) this.findViewById(R.id.acrossList);
@@ -190,13 +192,14 @@ public class ClueListActivity extends Activity {
         across.setAdapter(new ArrayAdapter<Clue>(this,
                 android.R.layout.simple_list_item_1,
                 PlayActivity.BOARD.getAcrossClues()));
+        across.setFocusableInTouchMode(true);
         down.setAdapter(new ArrayAdapter<Clue>(this,
                 android.R.layout.simple_list_item_1,
                 PlayActivity.BOARD.getDownClues()));
-
         across.setOnItemClickListener(new OnItemClickListener() {
                 public void onItemClick(AdapterView<?> arg0, View arg1,
                     int arg2, long arg3) {
+                	arg0.setSelected(true);
                     PlayActivity.BOARD.jumpTo(arg2, true);
                     imageView.scrollTo(0, 0);
                     render();
@@ -226,17 +229,16 @@ public class ClueListActivity extends Activity {
                 }
             }); 
         down.setOnItemClickListener(new OnItemClickListener() {
+        	
                 public void onItemClick(AdapterView<?> arg0, View arg1,
-                    int arg2, long arg3) {
-                	
-                    PlayActivity.BOARD.jumpTo(arg2, false);
+                    final int arg2, long arg3) {
+                	PlayActivity.BOARD.jumpTo(arg2, false);
                     imageView.scrollTo(0, 0);
                     render();
                     if(prefs.getBoolean("snapClue", false)){
 	                    down.setSelectionFromTop(arg2, 5);
 	                    down.setSelection(arg2);
                     }
-                	
                 }
             });
         

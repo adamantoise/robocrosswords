@@ -78,7 +78,7 @@ public class PlayActivity extends Activity {
     static Playboard BOARD;
     static PlayboardRenderer RENDERER;
     static File BASE_FILE;
-    MovementStrategy movement = null;
+    private MovementStrategy movement = null;
     private AlertDialog completeDialog;
     private AlertDialog revealPuzzleDialog;
     private Configuration configuration;
