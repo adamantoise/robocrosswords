@@ -108,6 +108,8 @@
 	android:title="Password"
 	android:summary="NYT Password"
 	android:key="nytPassword" 
+	android:password="true"
+        android:inputType="textPassword"
 	/>
 	
 	<Preference
@@ -187,14 +189,20 @@
 	android:key="enterChangesDirection"
 	/>
 	
-	<CheckBoxPreference
+	<!--  CheckBoxPreference
 	android:title="Use Native Keyboard"
 	android:defaultValue="false"
 	android:summary="Uses the Android soft keyboard for input. Unchecked, use the Shortyz condensed keyboard"
 	android:key="useNativeKeyboard"
-	/>
+	/-->
 	
-
+	<ListPreference
+		android:title="Keyboard Style"
+		android:summary="Select soft keyboard layout."
+		android:key="keyboardType"
+		android:defaultValue="CONDENSED"
+		android:entries="@array/keyboardTypeLabels"
+		android:entryValues="@array/keyboardTypeValues" />
 	
  </PreferenceCategory>
 	

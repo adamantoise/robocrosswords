@@ -9,6 +9,8 @@ package com.totsp.crossword.shortyz;
 
 public final class R {
     public static final class array {
+        public static final int keyboardTypeLabels=0x7f060002;
+        public static final int keyboardTypeValues=0x7f060003;
         public static final int movementStrategyLabels=0x7f060000;
         public static final int movementStrategyValues=0x7f060001;
     }
@@ -19,7 +21,11 @@ public final class R {
         public static final int delete=0x7f020001;
         public static final int down=0x7f020002;
         public static final int icon=0x7f020003;
-        public static final int space=0x7f020004;
+        public static final int icondown=0x7f020004;
+        public static final int iconleft=0x7f020005;
+        public static final int iconright=0x7f020006;
+        public static final int iconup=0x7f020007;
+        public static final int space=0x7f020008;
     }
     public static final class id {
         public static final int acrossList=0x7f080006;
@@ -64,6 +70,7 @@ public final class R {
     }
     public static final class xml {
         public static final int keyboard=0x7f040000;
-        public static final int preferences=0x7f040001;
+        public static final int keyboard_dpad=0x7f040001;
+        public static final int preferences=0x7f040002;
     }
 }

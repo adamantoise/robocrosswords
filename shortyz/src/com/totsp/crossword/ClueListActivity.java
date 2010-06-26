@@ -240,7 +240,7 @@ public class ClueListActivity extends Activity {
 	                    down.setSelection(arg2);
                     }
                 }
-            });
+            }); 
         
         down.setOnItemSelectedListener(new OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> arg0, View arg1,

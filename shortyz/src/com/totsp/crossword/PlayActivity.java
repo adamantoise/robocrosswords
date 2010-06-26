@@ -94,6 +94,7 @@ public class PlayActivity extends Activity {
     private boolean showErrors = false;
     private boolean useNativeKeyboard = false;
     private long lastKey;
+    private long resumedOn;
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -181,11 +182,16 @@ public class PlayActivity extends Activity {
             }
 
             setContentView(R.layout.play);
-
-            Keyboard keyboard = new Keyboard(this, R.xml.keyboard);
+            int keyboardType = "CONDENSED_ARROWS".equals(prefs.getString("keyboardType", "")) ? R.xml.keyboard_dpad : R.xml.keyboard;
+            Keyboard keyboard = new Keyboard(this, keyboardType);
             keyboardView = (KeyboardView) this.findViewById(R.id.playKeyboard);
             keyboardView.setKeyboard(keyboard);
+            this.useNativeKeyboard = "NATIVE".equals(prefs.getString("keyboardType", ""));
 
+            if (this.useNativeKeyboard) {
+                keyboardView.setVisibility(View.GONE);
+            }
+            
             keyboardView.setOnKeyboardActionListener(new OnKeyboardActionListener() {
                     private long lastSwipe = 0;
 
@@ -266,11 +272,7 @@ public class PlayActivity extends Activity {
                     }
                 });
 
-            this.useNativeKeyboard = prefs.getBoolean("useNativeKeyboard", false);
-
-            if (this.useNativeKeyboard) {
-                keyboardView.setVisibility(View.GONE);
-            }
+            
 
             this.clue = (TextView) this.findViewById(R.id.clueLine);
 
@@ -450,7 +452,9 @@ public class PlayActivity extends Activity {
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         Word previous;
-
+        if(System.currentTimeMillis() - this.resumedOn < 500){
+        	return true;
+        }
         switch (keyCode) {
         case KeyEvent.KEYCODE_SEARCH:
         	System.out.println("Next clue.");
@@ -720,9 +724,18 @@ public class PlayActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        this.resumedOn = System.currentTimeMillis();
         BOARD.setSkipCompletedLetters(this.prefs.getBoolean("skipFilled", false));
         BOARD.setMovementStrategy(this.getMovementStrategy());
-        this.useNativeKeyboard = prefs.getBoolean("useNativeKeyboard", false);
+        int keyboardType = "CONDENSED_ARROWS".equals(prefs.getString("keyboardType", "")) ? R.xml.keyboard_dpad : R.xml.keyboard;
+        Keyboard keyboard = new Keyboard(this, keyboardType);
+        keyboardView = (KeyboardView) this.findViewById(R.id.playKeyboard);
+        keyboardView.setKeyboard(keyboard);
+        this.useNativeKeyboard = "NATIVE".equals(prefs.getString("keyboardType", ""));
+
+        if (this.useNativeKeyboard) {
+            keyboardView.setVisibility(View.GONE);
+        }
         this.showCount = prefs.getBoolean("showCount", false);
         this.onConfigurationChanged(this.configuration);
 

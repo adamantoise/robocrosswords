@@ -11,4 +11,14 @@
        <item>MOVE_NEXT_CLUE</item>
        <item>MOVE_PARALLEL_WORD</item>
      </string-array>
+     <string-array name="keyboardTypeLabels">
+       <item>Condensed</item>
+       <item>Condensed w/Arrows</item>
+       <item>Native</item>
+     </string-array>
+     <string-array name="keyboardTypeValues">
+       <item>CONDENSED</item>
+       <item>CONDENSED_ARROWS</item>
+       <item>NATIVE</item>
+     </string-array>
 </resources>
