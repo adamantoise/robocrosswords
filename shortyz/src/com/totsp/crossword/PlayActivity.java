@@ -77,7 +77,7 @@ public class PlayActivity extends Activity {
     static final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     static Playboard BOARD;
     static PlayboardRenderer RENDERER;
-    static File BASE_FILE;
+    private File baseFile;
     private MovementStrategy movement = null;
     private AlertDialog completeDialog;
     private AlertDialog revealPuzzleDialog;
@@ -95,6 +95,7 @@ public class PlayActivity extends Activity {
     private boolean useNativeKeyboard = false;
     private long lastKey;
     private long resumedOn;
+    private float oldScale = -1;
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -142,17 +143,15 @@ public class PlayActivity extends Activity {
 
         try {
             Uri u = this.getIntent().getData();
-
+            
             if (u != null) {
                 if (u.getScheme().equals("file")) {
-                    BASE_FILE = new File(u.getPath());
-                    puz = IO.load(BASE_FILE);
+                    baseFile = new File(u.getPath());
+                    puz = IO.load(baseFile);
                 }
             }
-
-            if (puz == null) {
-                puz = IO.loadNative(this.getResources()
-                                        .openRawResource(R.raw.test));
+            if(puz == null){
+            	throw new IOException();
             }
 
             BOARD = new Playboard(puz, movement);
@@ -281,6 +280,7 @@ public class PlayActivity extends Activity {
                     public void onClick(View arg0) {
                         Intent i = new Intent(PlayActivity.this,
                                 ClueListActivity.class);
+                        i.setData(Uri.fromFile(baseFile));
                         PlayActivity.this.startActivityForResult(i, 0);
                     }
                 });
@@ -290,6 +290,7 @@ public class PlayActivity extends Activity {
 
             this.registerForContextMenu(boardView);
             boardView.setContextMenuListener(new ClickListener() {
+            	long lastTap = 0;
                     public void onContextMenu(final Point e) {
                         handler.post(new Runnable() {
                                 public void run() {
@@ -307,9 +308,25 @@ public class PlayActivity extends Activity {
 
                     public void onTap(Point e) {
                         try {
-                            Position p = PlayActivity.RENDERER.findBox(e);
-                            Word old = PlayActivity.BOARD.setHighlightLetter(p);
-                            PlayActivity.this.render(old);
+                        	Position currentPos = PlayActivity.BOARD.getHighlightLetter();
+                        	if(System.currentTimeMillis() - lastTap < 500){
+                        		if(oldScale == -1){
+                        			int w = boardView.getWidth();
+                        			int h = boardView.getHeight();
+                        			int shortDim = w < h ? w : h;
+                        			oldScale = PlayActivity.RENDERER.fitTo(shortDim);
+                        		} else {
+                        			PlayActivity.RENDERER.setScale(oldScale);
+                        			oldScale = -1;
+                        		}
+                        		PlayActivity.this.boardView.scrollTo(0, 0);
+                        		PlayActivity.this.render();
+                        	} else {
+                        		Position p = PlayActivity.RENDERER.findBox(e);
+                                Word old = PlayActivity.BOARD.setHighlightLetter(p);
+                                PlayActivity.this.render(old);
+                                lastTap = System.currentTimeMillis();
+                        	}
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
@@ -321,7 +338,7 @@ public class PlayActivity extends Activity {
 
             Toast t = Toast.makeText(this,
                     "Unable to read file \n" +
-                    PlayActivity.BASE_FILE.getName(), Toast.LENGTH_SHORT);
+                    PlayActivity.this.baseFile.getName(), Toast.LENGTH_SHORT);
             t.show();
             this.finish();
 
@@ -409,7 +426,7 @@ public class PlayActivity extends Activity {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View view,
         ContextMenuInfo info) {
-        System.out.println("CCM " + view);
+        //System.out.println("CCM " + view);
 
         if (view == boardView) {
             Menu clueSize = menu.addSubMenu("Clue Text Size");
@@ -656,6 +673,7 @@ public class PlayActivity extends Activity {
             return true;
         } else if (item.getTitle().equals("Clues")) {
             Intent i = new Intent(PlayActivity.this, ClueListActivity.class);
+            i.setData(Uri.fromFile(baseFile));
             PlayActivity.this.startActivityForResult(i, 0);
 
             return true;
@@ -698,13 +716,13 @@ public class PlayActivity extends Activity {
     @Override
     protected void onPause() {
         try {
-            if ((puz != null) && (BASE_FILE != null)) {
+            if ((puz != null) && (baseFile != null)) {
                 if ((puz.getPercentComplete() != 100) && (this.timer != null)) {
                     this.timer.stop();
                     puz.setTime(timer.getElapsed());
                 }
 
-                IO.save(puz, BASE_FILE);
+                IO.save(puz, baseFile);
             }
         } catch (IOException ioe) {
             LOG.log(Level.SEVERE, null, ioe);

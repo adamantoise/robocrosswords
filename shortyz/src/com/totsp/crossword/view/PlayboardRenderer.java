@@ -65,8 +65,7 @@ public class PlayboardRenderer {
         white.setColor(Color.WHITE);
         white.setAntiAlias(true);
         white.setTypeface(Typeface.SANS_SERIF);
-        
-        
+
         red.setTextAlign(Align.CENTER);
         red.setColor(Color.RED);
         red.setAntiAlias(true);
@@ -77,25 +76,30 @@ public class PlayboardRenderer {
 
     public float setLogicalScale(float scale) {
         this.scale *= scale;
-        if(scale > 2.5f){
-        	scale = 2.5f;
-        } else if(scale < 0.5f){
-        	scale = 0.5f;
-        }else if((""+scale).equals("NaN")){
-        	scale = 1.0f * this.logicalDensity;
+
+        if (scale > 2.5f) {
+            scale = 2.5f;
+        } else if (scale < 0.5f) {
+            scale = 0.5f;
+        } else if (("" + scale).equals("NaN")) {
+            scale = 1.0f * this.logicalDensity;
         }
+
         this.bitmap = null;
+
         return this.scale;
     }
 
     public void setScale(float scale) {
-    	if(scale > 2.5f){
-        	scale = 2.5f;
-        } else if(scale < 0.5f){
-        	scale = 0.5f;
-        } else if((""+scale).equals("NaN")){
-        	scale = 1.0f * this.logicalDensity;
+        if (scale > 2.5f) {
+            scale = 2.5f;
+        } else if (scale < 0.5f) {
+            scale = 0.5f;
+        } else if (("" + scale).equals("NaN")) {
+            scale = 1.0f * this.logicalDensity;
         }
+
+        this.bitmap = null;
         this.scale = scale;
     }
 
@@ -103,14 +107,17 @@ public class PlayboardRenderer {
         try {
             Box[][] boxes = this.board.getBoxes();
             boolean renderAll = reset == null;
-            if(scale > 2.5f){
-            	scale = 2.5f;
-            } else if(scale < 0.5f){
-            	scale = 0.5f;
-            } else if(scale == Float.NaN){
-            	scale = 1.0f * this.logicalDensity;
+
+            if (scale > 2.5f) {
+                scale = 2.5f;
+            } else if (scale < 0.5f) {
+                scale = 0.5f;
+            } else if (scale == Float.NaN) {
+                scale = 1.0f * this.logicalDensity;
             }
-            System.out.println("----"+scale);
+
+            System.out.println("----" + scale);
+
             if (bitmap == null) {
                 LOG.warning("New bitmap");
                 bitmap = Bitmap.createBitmap((int) (boxes.length * BOX_SIZE * scale),
@@ -127,10 +134,12 @@ public class PlayboardRenderer {
             letterText.setTextSize(scale * 20F);
             red.setTextSize(scale * 20F);
             white.setTextSize(scale * 20F);
+
             // board data
             Word currentWord = this.board.getCurrentWord();
             Position highlight = this.board.getHighlightLetter();
             Paint thisLetter = null;
+
             for (int col = 0; col < boxes.length; col++) {
                 for (int row = 0; row < boxes[col].length; row++) {
                     int boxSize = (int) (BOX_SIZE * scale);
@@ -203,22 +212,23 @@ public class PlayboardRenderer {
                                 startX + 2, startY + numberTextSize + 2,
                                 this.numberText);
                         }
+
                         thisLetter = this.letterText;
-                        if(board.isShowErrors()&& 
-                                boxes[col][row].getSolution() != boxes[col][row].getResponse() ){
-                        	if(highlight.across == col &&
-                    				highlight.down == row){
-                        		thisLetter = this.white;
-                        	} else if(currentWord.checkInWord(col, row)){
-                        		thisLetter = red;
-                        	}
+
+                        if (board.isShowErrors() &&
+                                (boxes[col][row].getSolution() != boxes[col][row].getResponse())) {
+                            if ((highlight.across == col) &&
+                                    (highlight.down == row)) {
+                                thisLetter = this.white;
+                            } else if (currentWord.checkInWord(col, row)) {
+                                thisLetter = red;
+                            }
                         }
 
                         canvas.drawText(Character.toString(
                                 boxes[col][row].getResponse()),
                             startX + (boxSize / 2),
-                            startY + (int) (letterTextSize * 1.25),
-                            thisLetter);
+                            startY + (int) (letterTextSize * 1.25), thisLetter);
                     }
                 }
             }
@@ -237,13 +247,15 @@ public class PlayboardRenderer {
         bitmap.eraseColor(Color.WHITE);
 
         Canvas canvas = new Canvas(bitmap);
+
         // scale paints
         int numberTextSize = (int) (this.logicalDensity * 8F);
-        
+
         numberText.setTextSize(numberTextSize);
         letterText.setTextSize(this.logicalDensity * 20F);
         red.setTextSize(this.logicalDensity * 20F);
         white.setTextSize(this.logicalDensity * 20F);
+
         for (int col = 0; col < word.length; col++) {
             int startX = (int) (col * boxSize);
             int startY = 0;
@@ -312,6 +324,16 @@ public class PlayboardRenderer {
         int y = p.down * boxSize;
 
         return new Point(x, y);
+    }
+
+    public float fitTo(int shortDimension) {
+        this.bitmap = null;
+
+        float oldScale = this.scale;
+        double newScale = (double) shortDimension / (double) (this.board.getBoxes().length) / (double) BOX_SIZE;
+        this.scale = (float) newScale;
+
+        return oldScale;
     }
 
     public float zoomIn() {

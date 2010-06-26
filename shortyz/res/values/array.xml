@@ -12,8 +12,8 @@
        <item>MOVE_PARALLEL_WORD</item>
      </string-array>
      <string-array name="keyboardTypeLabels">
-       <item>Condensed</item>
-       <item>Condensed w/Arrows</item>
+       <item>Small</item>
+       <item>With Arrows</item>
        <item>Native</item>
      </string-array>
      <string-array name="keyboardTypeValues">

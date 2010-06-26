@@ -1,5 +1,6 @@
 package com.totsp.crossword;
 
+import java.io.File;
 import java.io.IOException;
 
 import android.app.Activity;
@@ -9,6 +10,7 @@ import android.content.res.Configuration;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.inputmethodservice.KeyboardView.OnKeyboardActionListener;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.KeyEvent;
@@ -18,7 +20,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
-import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.TabHost.TabSpec;
@@ -45,6 +46,8 @@ public class ClueListActivity extends Activity {
     private Configuration configuration;
     private KeyboardView keyboardView = null;
     private boolean useNativeKeyboard = false;
+    private File baseFile;
+    private Puzzle puz;
     
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -66,12 +69,26 @@ public class ClueListActivity extends Activity {
         this.configuration = getBaseContext().getResources().getConfiguration();
         this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
         this.timer = new ImaginaryTimer(PlayActivity.BOARD.getPuzzle().getTime());
+        Uri u = this.getIntent().getData();
+        
+        if (u != null) {
+            if (u.getScheme().equals("file")) {
+                baseFile = new File(u.getPath());
+            }
+        }
+        puz = PlayActivity.BOARD.getPuzzle();
         timer.start();
         setContentView(R.layout.clue_list);
         
-        Keyboard keyboard = new Keyboard(this, R.xml.keyboard);
-    	keyboardView = (KeyboardView) this.findViewById(R.id.clueKeyboard);
-    	keyboardView.setKeyboard(keyboard);
+        int keyboardType = "CONDENSED_ARROWS".equals(prefs.getString("keyboardType", "")) ? R.xml.keyboard_dpad : R.xml.keyboard;
+        Keyboard keyboard = new Keyboard(this, keyboardType);
+        keyboardView = (KeyboardView) this.findViewById(R.id.clueKeyboard);
+        keyboardView.setKeyboard(keyboard);
+        this.useNativeKeyboard = "NATIVE".equals(prefs.getString("keyboardType", ""));
+
+        if (this.useNativeKeyboard) {
+            keyboardView.setVisibility(View.GONE);
+        }
     	
     	keyboardView.setOnKeyboardActionListener(new OnKeyboardActionListener(){
     		private long lastSwipe = 0;
@@ -131,12 +148,7 @@ public class ClueListActivity extends Activity {
     	});
     	
         
-    	this.useNativeKeyboard = prefs.getBoolean("useNativeKeyboard", false);
-    	if(this.useNativeKeyboard){
-    		keyboardView.setVisibility(View.GONE);
-    	}
-        
-        
+    	
         
         this.imageView = (ScrollingImageView) this.findViewById(R.id.miniboard);
         
@@ -355,17 +367,18 @@ public class ClueListActivity extends Activity {
 
     @Override
     protected void onPause() {
-        // TODO Auto-generated method stub
+    	
+    	
         super.onPause();
         timer.stop();
-        Puzzle puz = PlayActivity.BOARD.getPuzzle();
+        
         try {
-            if ((puz != null) && (PlayActivity.BASE_FILE != null)) {
+            if ((puz != null) && (baseFile != null)) {
             	if(puz.getPercentComplete() != 100){
 	                this.timer.stop();
 	                puz.setTime(timer.getElapsed());
             	}
-                IO.save(puz, PlayActivity.BASE_FILE);
+                IO.save(puz, baseFile);
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();
