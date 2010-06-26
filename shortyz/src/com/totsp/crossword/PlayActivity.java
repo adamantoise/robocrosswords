@@ -308,7 +308,6 @@ public class PlayActivity extends Activity {
 
                     public void onTap(Point e) {
                         try {
-                        	Position currentPos = PlayActivity.BOARD.getHighlightLetter();
                         	if(System.currentTimeMillis() - lastTap < 500){
                         		if(oldScale == -1){
                         			int w = boardView.getWidth();
