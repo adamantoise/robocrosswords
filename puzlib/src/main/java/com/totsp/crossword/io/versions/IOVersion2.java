@@ -23,24 +23,22 @@ public class IOVersion2 extends IOVersion1 {
 	}
 	
 	@Override
-	public PuzzleMeta readMeta(InputStream is) throws IOException{
+	public PuzzleMeta readMeta(DataInputStream dis) throws IOException{
 		//System.out.println("Read V2");
 		PuzzleMeta meta = new PuzzleMeta();
-		DataInputStream dis = is instanceof DataInputStream ? (DataInputStream) is : new DataInputStream(is);
 		meta.author = IO.readNullTerminatedString(dis);
 		meta.source = IO.readNullTerminatedString(dis);
 		meta.title = IO.readNullTerminatedString(dis);
 		meta.date = new Date( dis.readLong() );
 		meta.percentComplete = dis.readInt();
-		meta.updateable = is.read() == 1;
-		meta.sourceUrl = IO.readNullTerminatedString(is);
+		meta.updateable = dis.read() == 1;
+		meta.sourceUrl = IO.readNullTerminatedString(dis);
 		//System.out.println(meta);
 		return meta;
 	}
 	
 	@Override 
-	public void write(Puzzle puz, OutputStream os) throws IOException {
-		DataOutputStream dos = os instanceof DataOutputStream ? (DataOutputStream) os : new DataOutputStream(os);
+	public void write(Puzzle puz, DataOutputStream dos) throws IOException {
 		IO.writeNullTerminatedString(dos, puz.getAuthor());
 		IO.writeNullTerminatedString(dos, puz.getSource());
 		IO.writeNullTerminatedString(dos, puz.getTitle());

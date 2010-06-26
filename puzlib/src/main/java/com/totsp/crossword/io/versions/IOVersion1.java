@@ -14,9 +14,8 @@ import com.totsp.crossword.puz.PuzzleMeta;
 
 public class IOVersion1 implements IOVersion {
 
-	public void read(Puzzle puz, InputStream is) throws IOException {
-		DataInputStream dis = is instanceof DataInputStream ? (DataInputStream) is : new DataInputStream(is);
-		PuzzleMeta meta = readMeta(is);
+	public void read(Puzzle puz, DataInputStream dis) throws IOException {
+		PuzzleMeta meta = readMeta(dis);
 		applyMeta(puz, meta);
 		Box[][] boxes = puz.getBoxes();
 		for(Box[] row : boxes ){
@@ -43,9 +42,8 @@ public class IOVersion1 implements IOVersion {
 		puz.setDate(meta.date);
 	}
 
-	public PuzzleMeta readMeta(InputStream is) throws IOException {
+	public PuzzleMeta readMeta(DataInputStream dis) throws IOException {
 		//System.out.println("Read V1");
-		DataInputStream dis = is instanceof DataInputStream ? (DataInputStream) is : new DataInputStream(is);
 		PuzzleMeta meta = new PuzzleMeta();
 		meta.author = IO.readNullTerminatedString(dis);
 		meta.source = IO.readNullTerminatedString(dis);
@@ -56,8 +54,7 @@ public class IOVersion1 implements IOVersion {
 		
 	}
 
-	public void write(Puzzle puz, OutputStream os) throws IOException {
-		DataOutputStream dos = os instanceof DataOutputStream ? (DataOutputStream) os : new DataOutputStream(os);
+	public void write(Puzzle puz, DataOutputStream dos) throws IOException {
 		IO.writeNullTerminatedString(dos, puz.getAuthor());
 		IO.writeNullTerminatedString(dos, puz.getSource());
 		IO.writeNullTerminatedString(dos, puz.getTitle());

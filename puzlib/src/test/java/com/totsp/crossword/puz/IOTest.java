@@ -5,14 +5,16 @@
 
 package com.totsp.crossword.puz;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Date;
 
-import com.totsp.crossword.io.IO;
-
 import junit.framework.TestCase;
+
+import com.totsp.crossword.io.IO;
 
 /**
  *
@@ -38,7 +40,7 @@ public class IOTest extends TestCase {
      * Test of load method, of class IO.
      */
     public void testLoad() throws Exception {
-        Puzzle puz = IO.loadNative(IOTest.class.getResourceAsStream("/test.puz"));
+        Puzzle puz = IO.loadNative(new DataInputStream(IOTest.class.getResourceAsStream("/test.puz")));
         System.out.println("Loaded.");
         Box[][] boxes = puz.getBoxes();
         for(int x=0; x<boxes.length; x++){
@@ -54,13 +56,13 @@ public class IOTest extends TestCase {
     }
     
     public void testSave() throws Exception {
-    	Puzzle puz = IO.loadNative(IOTest.class.getResourceAsStream("/test.puz"));
+    	Puzzle puz = IO.loadNative(new DataInputStream(IOTest.class.getResourceAsStream("/test.puz")));
         System.out.println("Loaded.");
         File tmp = File.createTempFile("test", ".puz");
         tmp.deleteOnExit();
-        IO.saveNative(puz, new FileOutputStream(tmp));
+        IO.saveNative(puz, new DataOutputStream(new FileOutputStream(tmp)));
         
-        Puzzle puz2 = IO.loadNative(new FileInputStream(tmp));
+        Puzzle puz2 = IO.loadNative(new DataInputStream(new FileInputStream(tmp)));
 //        System.out.println(puz.acrossClues[puz2.acrossClues.length -1 ]+" \n"+puz2.acrossClues[puz2.acrossClues.length -1 ]);
 //        System.out.println(puz.acrossClues.length +" == "+puz2.acrossClues.length);
 //        System.out.println(Arrays.equals(puz.acrossClues, puz2.acrossClues));

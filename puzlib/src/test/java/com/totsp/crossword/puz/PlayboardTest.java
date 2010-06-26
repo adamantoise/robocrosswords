@@ -5,9 +5,12 @@
 
 package com.totsp.crossword.puz;
 
+import java.io.DataInputStream;
+
+import junit.framework.TestCase;
+
 import com.totsp.crossword.io.IO;
 import com.totsp.crossword.puz.Playboard.Position;
-import junit.framework.TestCase;
 
 /**
  *
@@ -30,7 +33,7 @@ public class PlayboardTest extends TestCase {
     }
 
     public void testMoveUp() throws Exception {
-         Puzzle puz = IO.loadNative(IOTest.class.getResourceAsStream("/test.puz"));
+         Puzzle puz = IO.loadNative(new DataInputStream(IOTest.class.getResourceAsStream("/test.puz")));
 
          Playboard board = new Playboard(puz);
          board.setHighlightLetter(new Position(5, 5));

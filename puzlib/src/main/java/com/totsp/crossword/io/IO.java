@@ -1,5 +1,6 @@
 package com.totsp.crossword.io;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
@@ -9,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 import com.totsp.crossword.io.versions.IOVersion;
@@ -20,8 +22,9 @@ import com.totsp.crossword.puz.PuzzleMeta;
 
 
 public class IO {
-    public static Puzzle loadNative(InputStream is) throws IOException {
-        DataInputStream input = is instanceof DataInputStream ? (DataInputStream) is : new DataInputStream(is);
+	private static final Charset CHARSET = Charset.forName("Cp1252");
+	
+    public static Puzzle loadNative(DataInputStream input) throws IOException {
         Puzzle puz = new Puzzle();
         puz.setFileChecksum(input.readShort());
 
@@ -75,8 +78,8 @@ public class IO {
         for (int x = 0; x < boxes.length; x++) {
             for (int y = 0; y < boxes[x].length; y++) {
             	answerByte[0] = input.readByte();
-                char solution = new String(answerByte, "Cp1252").charAt(0);
-
+                char solution = new String(answerByte, CHARSET.name() ).charAt(0);
+                
                 if (solution != '.') {
                     boxes[x][y] = new Box();
                     boxes[x][y].setSolution((char) solution);
@@ -87,7 +90,8 @@ public class IO {
         for (int x = 0; x < boxes.length; x++) {
             for (int y = 0; y < boxes[x].length; y++) {
                 answerByte[0] = input.readByte();
-                char answer = new String(answerByte, "Cp1252").charAt(0);
+                char answer = new String(answerByte, CHARSET.name()).charAt(0);
+
                 if (answer == '.') {
                     continue;
                 } else if (answer == '-') {
@@ -156,13 +160,13 @@ public class IO {
         return puz;
     }
     
-    public static void writeCustom(Puzzle puz, OutputStream os) throws IOException {
+    public static void writeCustom(Puzzle puz, DataOutputStream os) throws IOException {
     	os.write(2);
     	IOVersion v = new IOVersion2();
     	v.write(puz, os);
     }
     
-    public static void readCustom(Puzzle puz, InputStream is) throws IOException{
+    public static void readCustom(Puzzle puz, DataInputStream is) throws IOException{
         int version = is.read();
         IOVersion v;
 
@@ -185,7 +189,7 @@ public class IO {
         
     }
 
-    public static PuzzleMeta readMeta(InputStream is) throws IOException {
+    public static PuzzleMeta readMeta(DataInputStream is) throws IOException {
         int version = is.read();
         IOVersion v;
 
@@ -209,24 +213,22 @@ public class IO {
     public static String readNullTerminatedString(InputStream is)
         throws IOException {
         StringBuilder sb = new StringBuilder();
-        byte[] temp = new byte[1];
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(128);
         for (byte nextByte = (byte) is.read(); nextByte != 0x0;
                 nextByte = (byte) is.read()) {
             if (nextByte != 0x0) {
-            	temp[0] = nextByte;
-                sb.append(new String(temp, "Cp1252"));
+            	baos.write(nextByte);
             }
-            if(sb.length() > 4096){
+            if(baos.size() > 4096){
             	throw new IOException("Run on string!");
             }
         }
-
+        sb.append(new String(baos.toByteArray(), CHARSET.name()));
         return (sb.length() == 0) ? null : sb.toString();
     }
 
-    public static void saveNative(Puzzle puz, OutputStream os)
+    public static void saveNative(Puzzle puz, DataOutputStream dos)
         throws IOException {
-        DataOutputStream dos = os instanceof DataOutputStream ? (DataOutputStream) os : new DataOutputStream(os);
         dos.writeShort(puz.getFileChecksum());
 
         for (char c : puz.getFileMagic().toCharArray()) {
@@ -260,7 +262,7 @@ public class IO {
                 if (boxes[x][y] == null) {
                     dos.writeByte('.');
                 } else {
-                	byte val = Character.toString(boxes[x][y].getSolution()).getBytes("Cp1252")[0];
+                	byte val = (byte) boxes[x][y].getSolution();//Character.toString().getBytes("Cp1252")[0];
                     dos.writeByte(val);
                 }
             }
@@ -271,7 +273,7 @@ public class IO {
                 if (boxes[x][y] == null) {
                     dos.writeByte('.');
                 } else {
-                	byte val = Character.toString(boxes[x][y].getResponse()).getBytes("Cp1252")[0];
+                	byte val = (byte) boxes[x][y].getResponse(); //Character.toString().getBytes("Cp1252")[0];
                     dos.writeByte((boxes[x][y].getResponse() == ' ') ? '-'
                                                                 : val);
                 }
@@ -291,16 +293,14 @@ public class IO {
 
     public static void writeNullTerminatedString(OutputStream os, String value)
         throws IOException {
+    	
         value = (value == null) ? "" : value;
-
-        for (byte c : value.getBytes("Cp1252")) {
-            os.write(c);
-        }
-
+        byte[] encoded = CHARSET.encode(value).array();
+        os.write(encoded);
         os.write(0);
     }
 
-    public static void save(Puzzle puz, OutputStream puzzleOutputStream, OutputStream metaOutputStream) throws IOException{
+    public static void save(Puzzle puz, DataOutputStream puzzleOutputStream, DataOutputStream metaOutputStream) throws IOException{
         IO.saveNative(puz, puzzleOutputStream);
     	puzzleOutputStream.close();
         IO.writeCustom(puz, metaOutputStream);
@@ -308,13 +308,15 @@ public class IO {
     }
     
     public static void save(Puzzle puz, File baseFile) throws IOException {
+    	long incept = System.currentTimeMillis();
     	File metaFile = new File(baseFile.getParentFile(), baseFile.getName().substring(0, baseFile.getName().lastIndexOf(".")) + ".shortyz");
     	FileOutputStream puzzle= new FileOutputStream(baseFile);
     	FileOutputStream meta = new FileOutputStream(metaFile);
     	IO.save(puz, new DataOutputStream(puzzle), new DataOutputStream(meta));
+    	System.out.println("Save complete in "+(System.currentTimeMillis() - incept));
     }
 
-    public static Puzzle load(InputStream puzzleInput, InputStream metaInput ) throws IOException{
+    public static Puzzle load(DataInputStream puzzleInput, DataInputStream metaInput ) throws IOException{
         Puzzle puz = IO.loadNative(puzzleInput);
         puzzleInput.close();
         IO.readCustom(puz, metaInput);
@@ -338,7 +340,7 @@ public class IO {
     public static PuzzleMeta meta(File baseFile) throws IOException {
     	File metaFile = new File(baseFile.getParentFile(), baseFile.getName().substring(0, baseFile.getName().lastIndexOf(".")) + ".shortyz");
     	FileInputStream fis = new FileInputStream(metaFile);
-    	PuzzleMeta m = IO.readMeta(fis);
+    	PuzzleMeta m = IO.readMeta(new DataInputStream(fis));
     	fis.close();
     	return m;
     }
