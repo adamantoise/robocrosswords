@@ -212,7 +212,6 @@ public class IO {
 
     public static String readNullTerminatedString(InputStream is)
         throws IOException {
-        StringBuilder sb = new StringBuilder();
         ByteArrayOutputStream baos = new ByteArrayOutputStream(128);
         for (byte nextByte = (byte) is.read(); nextByte != 0x0;
                 nextByte = (byte) is.read()) {
@@ -223,8 +222,7 @@ public class IO {
             	throw new IOException("Run on string!");
             }
         }
-        sb.append(new String(baos.toByteArray(), CHARSET.name()));
-        return (sb.length() == 0) ? null : sb.toString();
+        return (baos.size() == 0) ? null : new String(baos.toByteArray(), CHARSET.name());
     }
 
     public static void saveNative(Puzzle puz, DataOutputStream dos)
