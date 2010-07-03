@@ -329,11 +329,10 @@ public class PlayboardRenderer {
     public float fitTo(int shortDimension) {
         this.bitmap = null;
 
-        float oldScale = this.scale;
         double newScale = (double) shortDimension / (double) (this.board.getBoxes().length) / (double) BOX_SIZE;
         this.scale = (float) newScale;
 
-        return oldScale;
+        return this.scale;
     }
 
     public float zoomIn() {
