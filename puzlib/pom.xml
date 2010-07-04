@@ -44,7 +44,7 @@
     <dependency>
         <groupId>com.totsp.gwittir</groupId>
         <artifactId>gwittir-core</artifactId>
-        <version>0.5-SNAPSHOT</version>
+        <version>0.4.5</version>
         <scope>provided</scope>
     </dependency>
     <dependency>
