@@ -73,7 +73,7 @@ public class IO {
         puz.setUnknown30(input.readShort());
         puz.setUnknown32(input.readShort());
 
-        Box[][] boxes = new Box[puz.getWidth()][puz.getHeight()];
+        Box[][] boxes = new Box[puz.getHeight()][puz.getWidth()];
         byte[] answerByte = new byte[1];
         for (int x = 0; x < boxes.length; x++) {
             for (int y = 0; y < boxes[x].length; y++) {
