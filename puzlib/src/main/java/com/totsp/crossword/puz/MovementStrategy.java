@@ -146,7 +146,8 @@ public interface MovementStrategy {
 			Position p = board.getHighlightLetter();
 			Word w = board.getCurrentWord();
 			
-			if(board.getPuzzle().getPercentComplete() == 100) {
+			if((!board.isShowErrors() && board.getPuzzle().getPercentFilled() == 100) || 
+					board.getPuzzle().getPercentComplete() == 100) {
 				// Puzzle complete - don't move.
 				return w;
 			}

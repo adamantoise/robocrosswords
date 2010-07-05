@@ -224,6 +224,12 @@ public class PlayboardRenderer {
                                 thisLetter = red;
                             }
                         }
+                        
+                        // Draw circle
+                        if (boxes[col][row].isCircled()) {
+                        	System.out.println("drawing circles");
+                        	canvas.drawCircle(startX + (boxSize / 2), startY + (boxSize / 2), boxSize / 2, boxColor);
+                        }
 
                         canvas.drawText(Character.toString(
                                 boxes[col][row].getResponse()),
