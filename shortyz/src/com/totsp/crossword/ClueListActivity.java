@@ -161,16 +161,18 @@ public class ClueListActivity extends Activity {
 
 			public void onTap(Point e) {
 				Word current = PlayActivity.BOARD.getCurrentWord();
-				Position p = current.start;
+				int newAcross = current.start.across;
+				int newDown = current.start.down;
 				int box = PlayActivity.RENDERER.findBoxNoScale(e);
 				if(box < current.length){
 					if(tabHost.getCurrentTab() == 0)
-						p.across += box;
+						newAcross += box;
 					else
-						p.down += box;
+						newDown += box;
 				}
-				if(!p.equals(PlayActivity.BOARD.getHighlightLetter())){
-					PlayActivity.BOARD.setHighlightLetter(p);
+				Position newPos = new Position(newAcross, newDown);
+				if(!newPos.equals(PlayActivity.BOARD.getHighlightLetter())){
+					PlayActivity.BOARD.setHighlightLetter(newPos);
 	                ClueListActivity.this.render();
 				}
 			}
