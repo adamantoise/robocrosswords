@@ -7,6 +7,7 @@ public class Box implements Serializable {
     private boolean across;
     private boolean cheated;
     private boolean down;
+    private boolean circled;
     private char response = ' ';
     private char solution;
     private int clueNumber;
@@ -46,6 +47,11 @@ public class Box implements Serializable {
         	System.out.println("down");
             return false;
         }
+        
+        if (isCircled() != other.isCircled()) {
+        	System.out.println("circled");
+        	return false;
+        }
 
         if (getResponder() == null) {
             if (other.getResponder() != null) {
@@ -75,6 +81,7 @@ public class Box implements Serializable {
         result = (prime * result) + (isCheated() ? 1231 : 1237);
         result = (prime * result) + getClueNumber();
         result = (prime * result) + (isDown() ? 1231 : 1237);
+        result = (prime * result) + (isCircled() ? 1231 : 1237);
         result = (prime * result) +
             ((getResponder() == null) ? 0 : getResponder().hashCode());
         result = (prime * result) + getResponse();
@@ -135,6 +142,20 @@ public class Box implements Serializable {
      */
     public void setDown(boolean down) {
         this.down = down;
+    }
+    
+    /**
+     * @return if the box is circled
+     */
+    public boolean isCircled() {
+    	return circled;
+    }
+    
+    /**
+     * @param circled the circled to set
+     */
+    public void setCircled(boolean circled) {
+    	this.circled = circled;
     }
 
     /**

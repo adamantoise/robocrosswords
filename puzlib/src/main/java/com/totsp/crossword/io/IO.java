@@ -24,6 +24,12 @@ import com.totsp.crossword.puz.PuzzleMeta;
 public class IO {
 	private static final Charset CHARSET = Charset.forName("Cp1252");
 	
+	// Extra Section IDs
+	private static final int GEXT = 0;
+	
+	// GEXT section bitmasks
+	private static final int GEXT_SQUARE_CIRCLED = 0x80;
+	
     public static Puzzle loadNative(DataInputStream input) throws IOException {
         Puzzle puz = new Puzzle();
         puz.setFileChecksum(input.readShort());
@@ -150,14 +156,44 @@ public class IO {
 
         boolean eof = false;
 
-        try {
-            input.readByte();
-        } catch (EOFException e) {
-            eof = true;
+        while(!eof) {
+        	try {
+        		switch(readExtraSectionType(input)) {
+	        		case GEXT:
+	        			readGextSection(input, puz);
+	        			break;
+        		}
+        	} catch(EOFException e) {
+        		eof = true;
+        	}
         }
-        assert eof : "Should have been the end of file.";
-
+        
         return puz;
+    }
+    
+    public static int readExtraSectionType(DataInputStream input) throws IOException {
+    	byte[] title = new byte[4];
+    	for(int i = 0; i < title.length; i++) {
+    		title[i] = input.readByte();
+    	}
+    	String section = new String(title);
+    	if("GEXT".equals(section)) {
+    		return GEXT;
+    	}
+    	return -1;
+    }
+    
+    public static void readGextSection(DataInputStream input, Puzzle puz) throws IOException {
+    	input.skipBytes(4);
+    	Box[][] boxes = puz.getBoxes();
+        for (int x = 0; x < boxes.length; x++) {
+            for (int y = 0; y < boxes[x].length; y++) {
+            	int gextInfo = 0xFFFF & input.readByte();
+            	if((gextInfo & GEXT_SQUARE_CIRCLED) != 0) {
+            		boxes[x][y].setCircled(true);
+            	}
+            }
+        }
     }
     
     public static void writeCustom(Puzzle puz, DataOutputStream os) throws IOException {
