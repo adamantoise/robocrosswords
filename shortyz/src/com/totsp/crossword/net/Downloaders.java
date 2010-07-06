@@ -56,6 +56,10 @@ public class Downloaders {
         if (prefs.getBoolean("downloadWaPoPuzzler", true)) {
         	downloaders.add(new WaPoPuzzlerDownloader());
         }
+        
+        if (prefs.getBoolean("downloadNYTClassic", true)) {
+        	downloaders.add(new NYTClassicDownloader());
+        }
 
         if (prefs.getBoolean("downloadInkwell", true)) {
             downloaders.add(new InkwellDownloader());

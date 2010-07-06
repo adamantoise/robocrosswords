@@ -66,6 +66,11 @@
 				android:summary="Updates Thursdays"
 				android:key="downloadJonesin" />
 			<CheckBoxPreference
+				android:title="New York Times Classic"
+				android:defaultValue="true"
+				android:summary="Updates Mondays"
+				android:key="downloadNYTClassic" />
+			<CheckBoxPreference
 				android:title="The Onion AV Club"
 				android:defaultValue="true"
 				android:summary="Updates Wednesdays"
