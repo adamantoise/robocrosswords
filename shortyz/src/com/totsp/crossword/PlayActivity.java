@@ -828,10 +828,11 @@ public class PlayActivity extends Activity {
 
 		this.boardView.setBitmap(RENDERER.draw(previous));
 
+		// If ensureVisible is enabled, snap to the first letter of the current word.
 		Point topLeft = RENDERER.findPointTopLeft(PlayActivity.BOARD
-				.getHighlightLetter());
+				.getCurrentWordStart());
 		Point bottomRight = RENDERER.findPointBottomRight(PlayActivity.BOARD
-				.getHighlightLetter());
+				.getCurrentWordStart());
 
 		if (this.prefs.getBoolean("ensureVisible", true)) {
 			this.boardView.ensureVisible(bottomRight);
