@@ -3,126 +3,123 @@
   xmlns:android="http://schemas.android.com/apk/res/android">
  
 <PreferenceCategory
-	android:title="Free Puzzle Downloads">
-	<CheckBoxPreference
-	android:title="Houston Chronicle"
-	android:defaultValue="true"
-	android:summary="Houston Chronicle Daily Puzzle"
-	android:key="downloadChron"
-	/>
-	<CheckBoxPreference
-	android:title="Los Angeles Times"
-	android:defaultValue="true"
-	android:summary="Los Angeles Times Daily Puzzle"
-	android:key="downloadLat"
-	/>
-	<CheckBoxPreference
-	android:title="Thinks.com"
-	android:defaultValue="true"
-	android:summary="Thinks.com Daily Puzzle"
-	android:key="downloadThinks"
-	/>
-	<CheckBoxPreference
-	android:title="The Onion AV Club"
-	android:defaultValue="true"
-	android:summary="The Onion AV Club Wednesday Puzzle"
-	android:key="downloadAvClub"
-	/>
-	<CheckBoxPreference
-	android:title="Jonesin'"
-	android:defaultValue="true"
-	android:summary="Jonesin' Crosswords Thursday Puzzle"
-	android:key="downloadJonesin"
-	/>
-	<CheckBoxPreference
-	android:title="Ink Well"
-	android:defaultValue="true"
-	android:summary="InkWellXWords.com Friday Puzzle"
-	android:key="downloadInkwell"
-	/>
-	<CheckBoxPreference
-	android:title="The Wall Street Journal"
-	android:defaultValue="true"
-	android:summary="The WSJ Friday Puzzle"
-	android:key="downloadWsj"
-	/>
-	
-	<CheckBoxPreference
-	android:title="The Chronicle of Higher Education"
-	android:defaultValue="true"
-	android:summary="The CoHE Friday Puzzle (biweekly during the summer)"
-	android:key="downloadCHE"
-	/>
-	
-	<CheckBoxPreference
-	android:title="Boston Globe"
-	android:defaultValue="true"
-	android:summary="Boston Globe Sunday Puzzle"
-	android:key="downloadGlobe"
-	/>
-	<CheckBoxPreference
-	android:title="Philadelphia Inquirer"
-	android:defaultValue="true"
-	android:summary="Philadelphia Inquirer Sunday Puzzle"
-	android:key="downloadPhilly"
-	/>
-	<CheckBoxPreference
-	android:title="Brendan Emmett Quigley"
-	android:defaultValue="true"
-	android:summary="brendanemmettquigley.com"
-	android:key="scrapeBEQ"
-	/>
-	
+	android:title="Select Puzzle Sources">
+	<!-- Organized alphabetically and by category. -->
+	<PreferenceScreen
+		android:title="Daily Crosswords"
+		android:summary="Puzzles which update daily."
+		android:key="selectDaily">
+		<PreferenceScreen
+			android:title="New York Times"
+			android:summary="Requires subscription."
+			android:key="selectNYTimes">
+			<CheckBoxPreference
+				android:title="New York Times"
+				android:defaultValue="false"
+				android:key="downloadNYT" />
+			<EditTextPreference
+				android:title="Username"
+				android:summary="NYT Username or Email Address"
+				android:key="nytUsername" />
+			<EditTextPreference
+				android:title="Password"
+				android:summary="NYT Password"
+				android:key="nytPassword" 
+				android:password="true"
+			    android:inputType="textPassword" />
+			<Preference
+			 	android:title="Get a Subscription" 
+			 	android:key="nytSubscribe"/>
+		</PreferenceScreen>
+		<CheckBoxPreference
+			android:title="Houston Chronicle"
+			android:defaultValue="true"
+			android:summary="Also known as CrosSynergy."
+			android:key="downloadChron" />
+		<CheckBoxPreference
+			android:title="Los Angeles Times"
+			android:defaultValue="true"
+			android:key="downloadLat" />
+		<CheckBoxPreference
+			android:title="Thinks.com"
+			android:defaultValue="true"
+			android:key="downloadThinks" />
+	</PreferenceScreen>
+	<PreferenceScreen
+		android:title="Weekly Crosswords"
+		android:summary="Puzzles which update weekly."
+		android:key="selectWeekly">
+		<PreferenceCategory android:title="Regular Sized">
+			<CheckBoxPreference
+				android:title="Brendan Emmett Quigley"
+				android:defaultValue="true"
+				android:summary="Updates Mondays &amp; Thursdays - brendanemmettquigley.com"
+				android:key="scrapeBEQ" />
+			<CheckBoxPreference
+				android:title="Ink Well"
+				android:defaultValue="true"
+				android:summary="Updates Fridays"
+				android:key="downloadInkwell" />
+			<CheckBoxPreference
+				android:title="Jonesin' Crosswords"
+				android:defaultValue="true"
+				android:summary="Updates Thursdays"
+				android:key="downloadJonesin" />
+			<CheckBoxPreference
+				android:title="The Onion AV Club"
+				android:defaultValue="true"
+				android:summary="Updates Wednesdays"
+				android:key="downloadAvClub" />
+			<CheckBoxPreference
+				android:title="Washington Post Puzzler"
+				android:defaultValue="true"
+				android:summary="Updates Sundays"
+				android:key="downloadWaPoPuzzler" />
+		</PreferenceCategory>
+		<PreferenceCategory android:title="Large Sized">
+			<CheckBoxPreference
+				android:title="Boston Globe"
+				android:defaultValue="true"
+				android:summary="Updates Sundays"
+				android:key="downloadGlobe" />
+			<CheckBoxPreference
+				android:title="The Chronicle of Higher Education"
+				android:defaultValue="true"
+				android:summary="Updates Fridays (Currently Biweekly)"
+				android:key="downloadCHE" />
+			<CheckBoxPreference
+				android:title="Philadelphia Inquirer"
+				android:defaultValue="true"
+				android:summary="Updates Sundays - By Merl Reagle"
+				android:key="downloadPhilly" />
+			<CheckBoxPreference
+				android:title="The Wall Street Journal"
+				android:defaultValue="true"
+				android:summary="Updates Fridays"
+				android:key="downloadWsj" />
+		</PreferenceCategory>
+	</PreferenceScreen>
+	<PreferenceScreen
+		android:title="Experimental Sources"
+		android:summary="May or may not function correctly."
+		android:key="selectExperimental">
+		<CheckBoxPreference
+			android:title="Cru Puzzle Workshop"
+			android:defaultValue="false"
+			android:summary="NYT Cru Cryptic Fan Puzzles\nhttp://web.me.com/joecab/nytcru/\n(Please Read the help item below)"
+			android:key="scrapeCru" />
+		<CheckBoxPreference
+			android:title="Kegler's Kryptics"
+			android:defaultValue="false"
+			android:summary="Ron &quot;Kegler&quot; Sweet's Cryptic Archive\nhttp://www.lafn.org/~keglerron/kegler.html\n(Please Read the help item below)"
+			android:key="scrapeKegler" />
+		<Preference
+		 	android:title="About These Sources" 
+		 	android:key="aboutScrapes" />
+	</PreferenceScreen>
 </PreferenceCategory>
-
+	
 <PreferenceCategory
-	android:title="Other Puzzle Sources (Experimental)">
-	
-	<CheckBoxPreference
-	android:title="Cru Puzzle Workshop"
-	android:defaultValue="false"
-	android:summary="NYT Cru Cryptic Fan Puzzles\nhttp://web.me.com/joecab/nytcru/\n(Please Read the help item below)"
-	android:key="scrapeCru"
-	/>
-	
-	
-	<CheckBoxPreference
-	android:title="Kegler's Kryptics"
-	android:defaultValue="false"
-	android:summary="Ron &quot;Kegler&quot; Sweet's Cryptic Archive\nhttp://www.lafn.org/~keglerron/kegler.html\n(Please Read the help item below)"
-	android:key="scrapeKegler"
-	/>
-	<Preference
- 	android:title="About These Sources" 
- 	android:key="aboutScrapes"/>
-	
-</PreferenceCategory>	
-
-<PreferenceCategory
-	android:title="New York Times Select Membership">
-	<CheckBoxPreference
-	android:title="NYT.com"
-	android:defaultValue="false"
-	android:summary="New York Times Daily Puzzle"
-	android:key="downloadNYT"
-	/>
-	<EditTextPreference
-	android:title="Username"
-	android:summary="NYT Username or Email Address"
-	android:key="nytUsername" />
-	<EditTextPreference
-	android:title="Password"
-	android:summary="NYT Password"
-	android:key="nytPassword" 
-	android:password="true"
-        android:inputType="textPassword"
-	/>
-	
-	<Preference
- 	android:title="Get a Subscription" 
- 	android:key="nytSubscribe"/>
-	</PreferenceCategory>
-	 <PreferenceCategory
 	android:title="Application Settings">
 	<CheckBoxPreference
 	android:title="Automatic Download"

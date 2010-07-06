@@ -52,6 +52,10 @@ public class Downloaders {
         if (prefs.getBoolean("downloadWsj", true)) {
             downloaders.add(new WSJDownloader());
         }
+        
+        if (prefs.getBoolean("downloadWaPoPuzzler", true)) {
+        	downloaders.add(new WaPoPuzzlerDownloader());
+        }
 
         if (prefs.getBoolean("downloadInkwell", true)) {
             downloaders.add(new InkwellDownloader());
@@ -64,13 +68,16 @@ public class Downloaders {
         if (prefs.getBoolean("downloadLat", true)) {
             downloaders.add(new LATDownloader());
         }
+        
         if (prefs.getBoolean("downloadAvClub", true)) {
             downloaders.add(new AVClubDownloader());
         }
+        
         if (prefs.getBoolean("downloadPhilly", true)) {
             downloaders.add(new PhillyDownloader());
         }
-        if(prefs.getBoolean("downloadCHE", true)){
+        
+        if (prefs.getBoolean("downloadCHE", true)){
         	downloaders.add(new CHEDownloader());
         }
 
