@@ -29,6 +29,12 @@
 	android:key="downloadAvClub"
 	/>
 	<CheckBoxPreference
+	android:title="Jonesin'"
+	android:defaultValue="true"
+	android:summary="Jonesin' Crosswords Thursday Puzzle"
+	android:key="downloadJonesin"
+	/>
+	<CheckBoxPreference
 	android:title="Ink Well"
 	android:defaultValue="true"
 	android:summary="InkWellXWords.com Friday Puzzle"

@@ -56,6 +56,10 @@ public class Downloaders {
         if (prefs.getBoolean("downloadInkwell", true)) {
             downloaders.add(new InkwellDownloader());
         }
+        
+        if (prefs.getBoolean("downloadJonesin", true)) {
+        	downloaders.add(new JonesinDownloader());
+        }
 
         if (prefs.getBoolean("downloadLat", true)) {
             downloaders.add(new LATDownloader());
