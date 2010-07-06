@@ -91,6 +91,16 @@ public class ScrollingImageView extends AbsoluteLayout
 
         return true;
     }
+    
+    public boolean isVisible(Point p) {
+    	int currentMinX = this.getScrollX();
+        int currentMaxX = this.getWidth() + this.getScrollX();
+        int currentMinY = this.getScrollY();
+        int currentMaxY = this.getHeight() + this.getScrollY();
+        
+        return p.x >= currentMinX && p.x <= currentMaxX && 
+        	p.y >= currentMinY && p.y <= currentMaxY;
+    }
 
     public void ensureVisible(Point p) {
         int maxScrollX = imageView.getWidth() - this.getWidth() + 5;
