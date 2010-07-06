@@ -828,10 +828,22 @@ public class PlayActivity extends Activity {
 
 		this.boardView.setBitmap(RENDERER.draw(previous));
 
-		Point topLeft = RENDERER.findPointTopLeft(PlayActivity.BOARD
-				.getHighlightLetter());
-		Point bottomRight = RENDERER.findPointBottomRight(PlayActivity.BOARD
-				.getHighlightLetter());
+		/*
+		 *  If we jumped to a new word, ensure the first letter is visible.  Otherwise, insure that
+		 *  the current letter is visible.
+		 */
+		Point topLeft, bottomRight;
+		if (previous != null && previous.equals(PlayActivity.BOARD.getCurrentWord())) {
+			topLeft = RENDERER.findPointTopLeft(PlayActivity.BOARD
+					.getHighlightLetter());
+			bottomRight = RENDERER.findPointBottomRight(PlayActivity.BOARD
+					.getHighlightLetter());
+		} else {
+			topLeft = RENDERER.findPointTopLeft(PlayActivity.BOARD
+					.getCurrentWordStart());
+			bottomRight = RENDERER.findPointBottomRight(PlayActivity.BOARD
+					.getCurrentWordStart());
+		}
 
 		if (this.prefs.getBoolean("ensureVisible", true)) {
 			this.boardView.ensureVisible(bottomRight);

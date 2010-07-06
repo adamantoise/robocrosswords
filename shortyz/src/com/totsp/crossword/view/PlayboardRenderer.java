@@ -1,14 +1,15 @@
 package com.totsp.crossword.view;
 
+import java.util.logging.Logger;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-
-import android.graphics.Paint.Align;
-
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.graphics.Paint.Align;
+import android.graphics.Paint.Style;
 
 import com.totsp.crossword.puz.Box;
 import com.totsp.crossword.puz.Playboard;
@@ -16,12 +17,11 @@ import com.totsp.crossword.puz.Playboard.Position;
 import com.totsp.crossword.puz.Playboard.Word;
 import com.totsp.crossword.view.ScrollingImageView.Point;
 
-import java.util.logging.Logger;
-
 public class PlayboardRenderer {
 	private static final int BOX_SIZE = 30;
 	private static final Logger LOG = Logger.getLogger("com.totsp.crossword");
 	Paint blackBox = new Paint();
+	Paint blackCircle = new Paint();
 	Paint blackLine = new Paint();
 	Paint cheated = new Paint();
 	Paint currentLetterBox = new Paint();
@@ -54,7 +54,11 @@ public class PlayboardRenderer {
 		letterText.setTypeface(Typeface.SANS_SERIF);
 
 		blackBox.setColor(Color.BLACK);
-
+		
+		blackCircle.setColor(Color.BLACK);
+        blackCircle.setAntiAlias(true);
+        blackCircle.setStyle(Style.STROKE);
+        
 		currentWordHighlight.setColor(Color.parseColor("#FFAE57"));
 		currentLetterHighlight.setColor(Color.parseColor("#EB6000"));
 		currentLetterBox.setColor(Color.parseColor("#FFFFFF"));
@@ -194,6 +198,13 @@ public class PlayboardRenderer {
 						+ numberTextSize + 2, this.numberText);
 			}
 
+			// Draw circle
+			if (box.isCircled()) {
+	        	canvas.drawCircle(x + (boxSize / 2) + 0.5F, y + (boxSize / 2) + 0.5F,
+	        			boxSize / 2 - 1.5F, blackCircle);
+	        }
+			 
+			
 			thisLetter = this.letterText;
 
 			if (board.isShowErrors()
@@ -232,6 +243,10 @@ public class PlayboardRenderer {
 		if (row != (highlight.down - 1)) {
 			canvas.drawLine(x, y + boxSize, x + boxSize, y + boxSize, boxColor);
 		}
+		
+		
+
+		
 	}
 
 	public Bitmap drawWord() {

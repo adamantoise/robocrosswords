@@ -1,7 +1,6 @@
 package com.totsp.crossword.puz;
 
 import java.io.Serializable;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -301,14 +300,20 @@ public class Playboard implements Serializable {
         }
     }
 
+    /**
+     * Handler for the backspace key.  Uses the following algorithm:
+     * -If current box is empty, move back one character.  If not, stay still.
+     * -Delete the letter in the current box.
+     */
     public Word deleteLetter() {
-        try {
-            this.boxes[this.highlightLetter.across][this.highlightLetter.down].setResponse(' ');
-        } catch (NullPointerException npe) {
-            npe.printStackTrace();
+    	Box currentBox = this.boxes[this.highlightLetter.across][this.highlightLetter.down];
+    	Word wordToReturn = this.getCurrentWord();
+        if(currentBox.getResponse() == ' ') {
+        	wordToReturn = this.previousLetter();
+        	currentBox = this.boxes[this.highlightLetter.across][this.highlightLetter.down];
         }
-
-        return this.previousLetter();
+        currentBox.setResponse(' ');
+        return wordToReturn;
     }
     
     public void setMovementStrategy(MovementStrategy movementStrategy){
@@ -335,12 +340,10 @@ public class Playboard implements Serializable {
         Position next = new Position(original.across, original.down + 1);
         Box value = this.getBoxes()[next.across][next.down];
 
-        if ((value == null) || (skipCompleted && (value.getResponse() != ' '))) {
+        if ((value == null) || skipCurrentBox(value, skipCompleted)) {
             try {
                 next = moveDown(next, skipCompleted);
-                System.out.println(next.down);
             } catch (ArrayIndexOutOfBoundsException e) {
-                System.out.println("Inner " + next.across + " " + next.down);
             }
         }
 
@@ -364,7 +367,7 @@ public class Playboard implements Serializable {
         Position next = new Position(original.across - 1, original.down);
         Box value = this.getBoxes()[next.across][next.down];
 
-        if ((value == null) || (skipCompleted && (value.getResponse() != ' '))) {
+        if ((value == null) || skipCurrentBox(value, skipCompleted)) {
             try {
                 next = moveLeft(next, skipCompleted);
             } catch (ArrayIndexOutOfBoundsException e) {
@@ -400,12 +403,18 @@ public class Playboard implements Serializable {
 
         Position p = this.getHighlightLetter();
 
+        int newAcross = p.across;
+        int newDown = p.down;
         if (previous.across) {
-            p.across = (previous.start.across + previous.length) - 1;
+            newAcross = (previous.start.across + previous.length) - 1;
         } else {
-            p.down = (previous.start.down + previous.length) - 1;
+            newDown = (previous.start.down + previous.length) - 1;
         }
-
+        
+        Position newPos = new Position(newAcross, newDown);
+        if (!newPos.equals(p)) {
+        	this.setHighlightLetter(new Position(newAcross, newDown));
+        }
         this.nextLetter();
         return previous;
     }
@@ -414,7 +423,7 @@ public class Playboard implements Serializable {
         Position next = new Position(original.across + 1, original.down);
         Box value = this.getBoxes()[next.across][next.down];
 
-        if ((value == null) || (skipCompleted && (value.getResponse() != ' '))) {
+        if ((value == null) || skipCurrentBox(value, skipCompleted)) {
             try {
                 next = moveRight(next, skipCompleted);
             } catch (ArrayIndexOutOfBoundsException e) {
@@ -441,7 +450,7 @@ public class Playboard implements Serializable {
         Position next = new Position(original.across, original.down - 1);
         Box value = this.getBoxes()[next.across][next.down];
 
-        if ((value == null) || (skipCompleted && (value.getResponse() != ' '))) {
+        if ((value == null) || skipCurrentBox(value, skipCompleted)) {
             try {
                 next = moveUp(next, skipCompleted);
             } catch (ArrayIndexOutOfBoundsException e) {
@@ -468,12 +477,17 @@ public class Playboard implements Serializable {
         return w;
     }
     
-    public Word nextLetter(boolean overWrite){
-    	return this.movementStrategy.move(this, !overWrite);
+    public boolean skipCurrentBox(Box b, boolean skipCompleted) {
+		return skipCompleted && b.getResponse() != ' ' && 
+			   (!this.isShowErrors() || b.getResponse() == b.getSolution());
+	}
+    
+    public Word nextLetter(boolean skipCompletedLetters){
+    	return this.movementStrategy.move(this, skipCompletedLetters);
     }
 
     public Word nextLetter() {
-            return this.movementStrategy.move(this, this.skipCompletedLetters);
+        return nextLetter(this.skipCompletedLetters);
     }
 
     public Word playLetter(char letter) {
@@ -482,10 +496,9 @@ public class Playboard implements Serializable {
         if (b == null) {
             return null;
         }
-        boolean overWrite = b.getResponse() != ' ';
         b.setResponse(letter);
         b.setResponder(this.responder);
-        return this.skipCompletedLetters ? this.nextLetter(overWrite) : this.nextLetter();
+        return this.nextLetter();
     }
 
     public Word previousLetter() {
@@ -536,7 +549,7 @@ public class Playboard implements Serializable {
                 changes.add(p);
             }
 
-            nextLetter();
+            nextLetter(false);
         }
 
         this.highlightLetter = oldHighlight;
@@ -595,8 +608,8 @@ public class Playboard implements Serializable {
     }
 
     public static class Position {
-        public int across;
-        public int down;
+        public final int across;
+        public final int down;
 
         public Position(int across, int down) {
             this.down = down;

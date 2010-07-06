@@ -39,6 +39,12 @@ public class Puzzle implements Serializable {
     private int height; //on byte
     private int width; //one byte;
     private long playedTime;
+    
+    // GEXT Section
+    private boolean hasGEXT;
+    private transient short gextLength;
+    private transient short gextChecksum;
+    
 
     public void setAcrossClues(String[] acrossClues) {
         this.acrossClues = acrossClues;
@@ -248,6 +254,25 @@ public class Puzzle implements Serializable {
 
         return (correct * 100) / (total);
     }
+    
+    public int getPercentFilled() {
+    	int total = 0;
+    	int filled = 0;
+
+        for (int x = 0; x < boxes.length; x++) {
+            for (int y = 0; y < boxes[x].length; y++) {
+                if (boxes[x][y] != null) {
+                    total++;
+
+                    if (boxes[x][y].getResponse() != ' ') {
+                        filled++;
+                    }
+                }
+            }
+        }
+
+        return (filled * 100) / (total);
+    }
 
     public void setRawClues(String[] rawClues) {
         this.rawClues = rawClues;
@@ -343,6 +368,30 @@ public class Puzzle implements Serializable {
 
     public String getVersionString() {
         return versionString;
+    }
+    
+    public void setGEXT(boolean hasGEXT) {
+    	this.hasGEXT = hasGEXT;
+    }
+    
+    public boolean getGEXT() {
+    	return hasGEXT;
+    }
+    
+    public void setGextLength(short gextLength) {
+    	this.gextLength = gextLength;
+    }
+    
+    public short getGextLength() {
+    	return gextLength;
+    }
+    
+    public void setGextChecksum(short gextChecksum) {
+    	this.gextChecksum = gextChecksum;
+    }
+    
+    public short getGextChecksum() {
+    	return gextChecksum;
     }
 
     /**
