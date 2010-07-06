@@ -89,6 +89,15 @@ public class IOTest extends TestCase {
         
         
     }
+    
+    public void testGext() throws Exception{
+    	System.out.println("GEXT Test --------------------------");
+    	
+    	Puzzle puz = IO.loadNative(new DataInputStream(IOTest.class.getResourceAsStream("/2010-7-4-LosAngelesTimes.puz")));
+    	
+    	assertTrue(puz.getGEXT());
+    	
+    }
 
     
 }

@@ -121,23 +121,42 @@ public class Playboard implements Serializable {
         Word currentWord = this.getCurrentWord();
         Box[] result = new Box[currentWord.length];
 
+        int across = currentWord.start.across;
+        int down = currentWord.start.down;
         for (int i = 0; i < result.length; i++) {
-            Position pos = new Position(currentWord.start.across,
-                    currentWord.start.down);
-
-            int newAcross = pos.across;
-            int newDown = pos.down;
+        	int newAcross = across;
+        	int newDown = down;
             if (currentWord.across) {
-                newAcross += i;
+               newAcross += i;
             } else {
-                newDown += i;
+               newDown += i;
             }
 
             result[i] = this.boxes[newAcross][newDown];
         }
+        return result;
+    }
+    
+    public Position[] getCurrentWordPositions() {
+        Word currentWord = this.getCurrentWord();
+        Position[] result = new Position[currentWord.length];
+        int across = currentWord.start.across;
+        int down = currentWord.start.down;
+        for (int i = 0; i < result.length; i++) {
+        	int newAcross = across;
+        	int newDown = down;
+            if (currentWord.across) {
+               newAcross += i;
+            } else {
+               newDown += i;
+            }
+
+            result[i] =  new Position(newAcross, newDown);
+        }
 
         return result;
     }
+    
 
     public Position getCurrentWordStart() {
         if (this.isAcross()) {

@@ -4,6 +4,6 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
-	<classpathentry kind="lib" path="D:/Documents/Android/jeff-shortyz/supermonkey-shortyz/puzlib/target/puzlib-1.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="../puzlib/target/puzlib-1.0-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
