@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 import android.graphics.Paint.Align;
+import android.graphics.Paint.Style;
 
 import android.graphics.Rect;
 import android.graphics.Typeface;
@@ -24,6 +25,7 @@ public class PlayboardRenderer {
     private static final Logger LOG = Logger.getLogger("com.totsp.crossword");
     Paint blackBox = new Paint();
     Paint blackLine = new Paint();
+    Paint blackCircle = new Paint();
     Paint cheated = new Paint();
     Paint currentLetterBox = new Paint();
     Paint currentLetterHighlight = new Paint();
@@ -41,8 +43,13 @@ public class PlayboardRenderer {
         this.scale = scale * logicalDensity;
         this.logicalDensity = logicalDensity;
         this.board = board;
+        
         blackLine.setColor(Color.BLACK);
         blackLine.setStrokeWidth(2.0F);
+        
+        blackCircle.setColor(Color.BLACK);
+        blackCircle.setAntiAlias(true);
+        blackCircle.setStyle(Style.STROKE);
 
         numberText.setTextAlign(Align.LEFT);
         numberText.setColor(Color.BLACK);
@@ -204,6 +211,12 @@ public class PlayboardRenderer {
                         } else {
                             canvas.drawRect(r, this.white);
                         }
+                        
+                        // Draw circle
+                        if (boxes[col][row].isCircled()) {
+                        	canvas.drawCircle(startX + (boxSize / 2) + 0.5F, startY + (boxSize / 2) + 0.5F,
+                        			boxSize / 2 - 1.5F, blackCircle);
+                        }
 
                         if (boxes[col][row].isAcross() |
                                 boxes[col][row].isDown()) {
@@ -223,12 +236,6 @@ public class PlayboardRenderer {
                             } else if (currentWord.checkInWord(col, row)) {
                                 thisLetter = red;
                             }
-                        }
-                        
-                        // Draw circle
-                        if (boxes[col][row].isCircled()) {
-                        	System.out.println("drawing circles");
-                        	canvas.drawCircle(startX + (boxSize / 2), startY + (boxSize / 2), boxSize / 2, boxColor);
                         }
 
                         canvas.drawText(Character.toString(

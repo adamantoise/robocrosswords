@@ -28,7 +28,7 @@ public class IO {
 	private static final int GEXT = 0;
 	
 	// GEXT section bitmasks
-	private static final int GEXT_SQUARE_CIRCLED = 0x80;
+	private static final byte GEXT_SQUARE_CIRCLED = (byte) 0x80;
 	
     public static Puzzle loadNative(DataInputStream input) throws IOException {
         Puzzle puz = new Puzzle();
@@ -184,11 +184,13 @@ public class IO {
     }
     
     public static void readGextSection(DataInputStream input, Puzzle puz) throws IOException {
-    	input.skipBytes(4);
+    	puz.setGEXT(true);
+    	puz.setGextLength(input.readShort());
+    	puz.setGextChecksum(input.readShort());
     	Box[][] boxes = puz.getBoxes();
         for (int x = 0; x < boxes.length; x++) {
             for (int y = 0; y < boxes[x].length; y++) {
-            	int gextInfo = 0xFFFF & input.readByte();
+            	byte gextInfo = input.readByte();
             	if((gextInfo & GEXT_SQUARE_CIRCLED) != 0) {
             		boxes[x][y].setCircled(true);
             	}
@@ -290,13 +292,20 @@ public class IO {
         dos.writeShort(puz.getUnknown32());
 
         Box[][] boxes = puz.getBoxes();
-
+        byte[][] gextSection = null;
+        if (puz.getGEXT()) {
+        	gextSection = new byte[boxes.length][boxes[0].length];
+        }
+        
         for (int x = 0; x < boxes.length; x++) {
             for (int y = 0; y < boxes[x].length; y++) {
                 if (boxes[x][y] == null) {
                     dos.writeByte('.');
                 } else {
                 	byte val = (byte) boxes[x][y].getSolution();//Character.toString().getBytes("Cp1252")[0];
+                	if (puz.getGEXT() && boxes[x][y].isCircled()) {
+                		gextSection[x][y] = GEXT_SQUARE_CIRCLED;
+                	}
                     dos.writeByte(val);
                 }
             }
@@ -323,6 +332,18 @@ public class IO {
         }
 
         writeNullTerminatedString(dos, puz.getNotes());
+        
+        if (puz.getGEXT()) {
+        	dos.writeBytes("GEXT");
+        	dos.writeShort(puz.getGextLength());
+        	dos.writeShort(puz.getGextChecksum());
+        	for (int x = 0; x < boxes.length; x++) {
+        		for (int y = 0; y < boxes.length; y++) {
+        			dos.writeByte(gextSection[x][y]);
+        		}
+        	}
+        	dos.writeByte(0);
+        }
     }
 
     public static void writeNullTerminatedString(OutputStream os, String value)
