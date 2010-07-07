@@ -169,7 +169,7 @@ public class PlayboardRenderer {
 		letterText.setTextSize(scale * 20F);
 		red.setTextSize(scale * 20F);
 		white.setTextSize(scale * 20F);
-
+		boolean inCurrentWord = currentWord != null && currentWord.checkInWord(col, row);
 		Position highlight = this.board.getHighlightLetter();
 
 		Paint thisLetter = null;
@@ -211,8 +211,7 @@ public class PlayboardRenderer {
 					&& (box.getSolution() != box.getResponse())) {
 				if ((highlight.across == col) && (highlight.down == row)) {
 					thisLetter = this.white;
-				} else if (currentWord != null
-						&& currentWord.checkInWord(col, row)) {
+				} else if (inCurrentWord) {
 					thisLetter = red;
 				}
 			}
@@ -230,7 +229,7 @@ public class PlayboardRenderer {
 		}
 
 		// Draw top
-		if (row != (highlight.down + 1)) {
+		if (row != (highlight.down + 1) || col != highlight.across) {
 			canvas.drawLine(x, y, x + boxSize, y, boxColor);
 		}
 
@@ -240,7 +239,7 @@ public class PlayboardRenderer {
 		}
 
 		// Draw bottom
-		if (row != (highlight.down - 1)) {
+		if (row != (highlight.down - 1)  || col != highlight.across) {
 			canvas.drawLine(x, y + boxSize, x + boxSize, y + boxSize, boxColor);
 		}
 		

@@ -834,21 +834,34 @@ public class PlayActivity extends Activity {
 		 */
 		if (this.prefs.getBoolean("ensureVisible", true)) {
 			Point topLeft, bottomRight;
+			Point cursorTopLeft, cursorBottomRight;
+			cursorTopLeft = RENDERER.findPointTopLeft(PlayActivity.BOARD
+					.getHighlightLetter());
+			cursorBottomRight = RENDERER.findPointBottomRight(PlayActivity.BOARD
+					.getHighlightLetter());
+					
 			if (previous != null && previous.equals(PlayActivity.BOARD.getCurrentWord())) {
-				topLeft = RENDERER.findPointTopLeft(PlayActivity.BOARD
-						.getHighlightLetter());
-				bottomRight = RENDERER.findPointBottomRight(PlayActivity.BOARD
-						.getHighlightLetter());
+				topLeft = cursorTopLeft;
+				bottomRight = cursorBottomRight;
 			} else {
 				topLeft = RENDERER.findPointTopLeft(PlayActivity.BOARD
 						.getCurrentWordStart());
 				bottomRight = RENDERER.findPointBottomRight(PlayActivity.BOARD
 						.getCurrentWordStart());
 			}
-			if (!this.boardView.isVisible(topLeft) || !this.boardView.isVisible(bottomRight)) {
-				this.boardView.ensureVisible(bottomRight);
+			int tlDistance = cursorTopLeft.distance(topLeft);
+			int brDistance = cursorBottomRight.distance(bottomRight);
+			
+			if (!this.boardView.isVisible(topLeft) && tlDistance < brDistance) {
 				this.boardView.ensureVisible(topLeft);
 			}
+			if(!this.boardView.isVisible(bottomRight) && brDistance < tlDistance){
+				this.boardView.ensureVisible(bottomRight);
+			}
+			
+			//ensure the cursor is always on the screen.
+			this.boardView.ensureVisible(cursorTopLeft);
+			this.boardView.ensureVisible(cursorBottomRight);
 		}
 
 		this.clue.setText("("
