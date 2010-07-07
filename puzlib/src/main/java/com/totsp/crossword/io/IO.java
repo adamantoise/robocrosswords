@@ -22,6 +22,9 @@ import com.totsp.crossword.puz.PuzzleMeta;
 
 
 public class IO {
+	public static final String FILE_MAGIC = "ACROSS&DOWN";
+	public static final String VERSION_STRING = "1.2";
+	
 	private static final Charset CHARSET = Charset.forName("Cp1252");
 	
 	// Extra Section IDs
@@ -42,7 +45,7 @@ public class IO {
 
         input.skipBytes(1);
         puz.setFileMagic(new String(fileMagic));
-        assert puz.getFileMagic().equals("ACROSS&DOWN");
+        assert puz.getFileMagic().equals(FILE_MAGIC);
         puz.setCibChecksum(input.readShort());
         puz.setMaskedLowChecksums(new byte[4]);
 
