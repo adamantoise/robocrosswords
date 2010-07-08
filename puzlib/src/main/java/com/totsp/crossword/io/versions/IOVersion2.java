@@ -3,8 +3,6 @@ package com.totsp.crossword.io.versions;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Date;
 
 import com.totsp.crossword.io.IO;
