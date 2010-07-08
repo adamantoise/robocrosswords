@@ -23,13 +23,13 @@ import com.totsp.crossword.puz.Puzzle;
  * -Down Clues
  * 
  * Each section begins with a { character, and each line except the last in a section
- * ends with a | character.  The charset used is x-MacRoman.
+ * ends with a | character.  The charset used is Mac Roman.
  * 
  * For an example puzzle in this format, see:
  * src/test/resources/premiere-20100704.txt.
  */
 public class KingFeaturesPlaintextIO {
-	private static final String CHARSET_NAME = "x-MacRoman";
+	private static final String CHARSET_NAME = "MacRoman";
 	
 	/**
 	 * Take an InputStream containing a plaintext puzzle to a DataOutputStream containing

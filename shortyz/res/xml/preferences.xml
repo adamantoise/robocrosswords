@@ -34,12 +34,22 @@
 		<CheckBoxPreference
 			android:title="Houston Chronicle"
 			android:defaultValue="true"
-			android:summary="Also known as CrosSynergy."
+			android:summary="Also known as CrosSynergy"
 			android:key="downloadChron" />
+		<CheckBoxPreference
+			android:title="Joseph Crosswords"
+			android:defaultValue="true"
+			android:summary="Updates Monday-Saturday"
+			android:key="downloadJoseph" />
 		<CheckBoxPreference
 			android:title="Los Angeles Times"
 			android:defaultValue="true"
 			android:key="downloadLat" />
+		<CheckBoxPreference
+			android:title="Sheffer Crosswords"
+			android:defaultValue="true"
+			android:summary="Updates Monday-Saturday"
+			android:key="downloadSheffer" />
 		<CheckBoxPreference
 			android:title="Thinks.com"
 			android:defaultValue="true"
@@ -88,7 +98,7 @@
 				android:summary="Updates Sundays"
 				android:key="downloadGlobe" />
 			<CheckBoxPreference
-				android:title="The Chronicle of Higher Education"
+				android:title="Chron. of Higher Ed."
 				android:defaultValue="true"
 				android:summary="Updates Fridays (Currently Biweekly)"
 				android:key="downloadCHE" />
@@ -97,6 +107,11 @@
 				android:defaultValue="true"
 				android:summary="Updates Sundays - By Merl Reagle"
 				android:key="downloadPhilly" />
+			<CheckBoxPreference
+				android:title="Premier Crosswords"
+				android:defaultValue="true"
+				android:summary="Updates Sundays"
+				android:key="downloadPremier" />
 			<CheckBoxPreference
 				android:title="The Wall Street Journal"
 				android:defaultValue="true"

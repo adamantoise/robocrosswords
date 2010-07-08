@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 
 
 public abstract class AbstractDownloader implements Downloader {
-    private static final Logger LOG = Logger.getLogger("com.totsp.crossword");
+    protected static final Logger LOG = Logger.getLogger("com.totsp.crossword");
     public static File DOWNLOAD_DIR = new File(Environment.getExternalStorageDirectory(),
             "crosswords");
     public static final int DEFAULT_BUFFER_SIZE = 1024;

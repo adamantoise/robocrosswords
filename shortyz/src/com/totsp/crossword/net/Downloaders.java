@@ -81,8 +81,23 @@ public class Downloaders {
             downloaders.add(new PhillyDownloader());
         }
         
-        if (prefs.getBoolean("downloadCHE", true)){
+        if (prefs.getBoolean("downloadCHE", true)) {
         	downloaders.add(new CHEDownloader());
+        }
+        
+        if (prefs.getBoolean("downloadJoseph", true)) {
+        	downloaders.add(new KFSDownloader("joseph", "Joseph Crosswords", 
+        			"Thomas Joseph", new int[] {1, 2, 3, 4, 5, 6}));
+        }
+        
+        if (prefs.getBoolean("downloadSheffer", true)) {
+        	downloaders.add(new KFSDownloader("sheffer", "Sheffer Crosswords", 
+        			"Eugene Sheffer", new int[] {1, 2, 3, 4, 5, 6}));
+        }
+        
+        if (prefs.getBoolean("downloadPremier", true)) {
+        	downloaders.add(new KFSDownloader("premier", "Premier Crosswords", 
+        			"Frank Longo", new int[] {0}));
         }
 
         if (prefs.getBoolean("downloadNYT", false)) {
