@@ -2,4 +2,5 @@
 <resources>
     <string name="hello">Hello World, Play!</string>
     <string name="app_name">Shortyz</string>
+    <string name="puzzle_select">Select a puzzle:</string>
 </resources>

@@ -28,7 +28,11 @@ import com.totsp.crossword.io.IO;
 import com.totsp.crossword.puz.Box;
 import com.totsp.crossword.puz.Puzzle;
 
-
+/**
+ * New York Times
+ * URL: http://select.nytimes.com/premium/xword/[Mon]DDYY.puz
+ * Date = Daily
+ */
 public class NYTDownloader extends AbstractDownloader {
     private static final String[] MONTHS = new String[] {
             "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct",
@@ -54,6 +58,10 @@ public class NYTDownloader extends AbstractDownloader {
 
     public String getName() {
         return NYTDownloader.NAME;
+    }
+    
+    public int[] getDownloadDates() {
+    	return DATE_DAILY;
     }
 
     public File download(Date date) {

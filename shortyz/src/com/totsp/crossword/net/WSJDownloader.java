@@ -6,7 +6,11 @@ import java.text.NumberFormat;
 
 import java.util.Date;
 
-
+/**
+ * Wall Street Journal
+ * URL: http://mazerlm.home.comcast.net/~mazerlm/wsjYYMMDD.puz
+ * Date = Fridays
+ */
 public class WSJDownloader extends AbstractDownloader {
     private static final String NAME = "Wall Street Journal";
     NumberFormat nf = NumberFormat.getInstance();
@@ -20,11 +24,12 @@ public class WSJDownloader extends AbstractDownloader {
     public String getName() {
         return NAME;
     }
+    
+    public int[] getDownloadDates() {
+    	return DATE_FRIDAY;
+    }
 
     public File download(Date date) {
-        if (date.getDay() != 5) {
-            return null;
-        }
         return super.download(date, this.createUrlSuffix(date));
     }
 

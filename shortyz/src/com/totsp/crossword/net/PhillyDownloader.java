@@ -4,6 +4,11 @@ import java.io.File;
 import java.text.NumberFormat;
 import java.util.Date;
 
+/**
+ * Philadelphia Inquirer
+ * URL: http://mazerlm.home.comcast.net/~mazerlm/piYYMMDD.puz
+ * Date = Sundays
+ */
 public class PhillyDownloader extends AbstractDownloader {
     private static final String NAME = "Phil Inquirer";
     NumberFormat nf = NumberFormat.getInstance();
@@ -17,12 +22,12 @@ public class PhillyDownloader extends AbstractDownloader {
     public String getName() {
         return NAME;
     }
+    
+    public int[] getDownloadDates() {
+    	return DATE_SUNDAY;
+    }
 
     public File download(Date date) {
-        if (date.getDay() != 0) {
-            return null;
-        }
-
         return super.download(date, this.createUrlSuffix(date));
     }
 

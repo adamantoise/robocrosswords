@@ -40,6 +40,10 @@ public class KFSDownloader extends AbstractDownloader {
 		return fullName;
 	}
 	
+	public int[] getDownloadDates() {
+		return days;
+	}
+	
 	private File downloadToTempFile(Date date) {
 		File downloaded = super.download(date, this.createUrlSuffix(date));
 		if(downloaded == null) {

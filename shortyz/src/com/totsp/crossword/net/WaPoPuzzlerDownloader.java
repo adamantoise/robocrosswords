@@ -22,12 +22,12 @@ public class WaPoPuzzlerDownloader extends AbstractDownloader {
     public String getName() {
         return NAME;
     }
+    
+    public int[] getDownloadDates() {
+    	return DATE_SUNDAY;
+    }
 
     public File download(Date date) {
-        if (date.getDay() != 0) {
-            return null;
-        }
-
         return super.download(date, this.createUrlSuffix(date));
     }
 

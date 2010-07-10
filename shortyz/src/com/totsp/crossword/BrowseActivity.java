@@ -6,8 +6,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.NotificationManager;
@@ -32,11 +33,11 @@ import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.totsp.crossword.io.IO;
+import com.totsp.crossword.net.Downloader;
 import com.totsp.crossword.net.Downloaders;
 import com.totsp.crossword.net.Scrapers;
 import com.totsp.crossword.puz.PuzzleMeta;
@@ -46,18 +47,9 @@ import com.totsp.crossword.view.VerticalProgressBar;
 
 
 public class BrowseActivity extends ListActivity {
-    private static final int DATE_DIALOG_ID = 0;
+    private static final int DOWNLOAD_DIALOG_ID = 0;
     private static final long DAY = 24L * 60L * 60L * 1000L;
     SharedPreferences prefs;
-    private DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                int dayOfMonth) {
-                System.out.println(year + " " + monthOfYear + " " + dayOfMonth);
-
-                Date d = new Date(year - 1900, monthOfYear, dayOfMonth);
-                download(d);
-            }
-        };
 
     private Accessor accessor = Accessor.DATE_DESC;
     private BaseAdapter currentAdapter = null;
@@ -71,6 +63,7 @@ public class BrowseActivity extends ListActivity {
     private NotificationManager nm;
     private View lastOpenedView = null;
     private boolean viewArchive;
+    private Downloaders dls;
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
@@ -147,7 +140,7 @@ public class BrowseActivity extends ListActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getTitle().equals("Download")) {
-            showDialog(DATE_DIALOG_ID);
+            showDialog(DOWNLOAD_DIALOG_ID);
 
             return true;
         } else if (item.getTitle().equals("Settings")) {
@@ -206,6 +199,7 @@ public class BrowseActivity extends ListActivity {
         this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
         upgradePreferences();
         this.nm = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        this.dls = new Downloaders(prefs, nm, this);
 
         switch (prefs.getInt("sort", 0)) {
         case 2:
@@ -252,12 +246,33 @@ public class BrowseActivity extends ListActivity {
     @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {
-        case DATE_DIALOG_ID:
-
+        case DOWNLOAD_DIALOG_ID:      
+            DownloadPickerDialog.OnDownloadSelectedListener downloadButtonListener = 
+            		new DownloadPickerDialog.OnDownloadSelectedListener() {
+				public void onDownloadSelected(Date d, List<Downloader> downloaders, int selected) {
+					List<Downloader> toDownload;
+					boolean scrape;
+					if (selected == 0) {
+						// Download all available.
+						downloaders.remove(0);
+						toDownload = downloaders;
+						scrape = true;
+					} else {
+						// Only download selected.
+						toDownload = new LinkedList<Downloader>();
+						toDownload.add(downloaders.get(selected));
+						scrape = false;
+					}
+					download(d, toDownload, scrape);
+				}
+			};
+			
             Date d = new Date();
+            
+            DownloadPickerDialog dialog = new DownloadPickerDialog(this, downloadButtonListener,
+                    d.getYear() + 1900, d.getMonth(), d.getDate(), dls);
 
-            return new DatePickerDialog(this, dateSetListener,
-                d.getYear() + 1900, d.getMonth(), d.getDate());
+            return dialog.getInstance();
         }
 
         return null;
@@ -386,7 +401,7 @@ public class BrowseActivity extends ListActivity {
 
         if (prefs.getBoolean("dlOnStartup", true) &&
                 ((System.currentTimeMillis() - (long) (12 * 60 * 60 * 1000)) > lastDL)) {
-            this.download(new Date());
+            this.download(new Date(), null, true);
             prefs.edit().putLong("dlLast", System.currentTimeMillis()).commit();
         }
     }
@@ -448,16 +463,19 @@ public class BrowseActivity extends ListActivity {
         render();
     }
 
-    private void download(final Date d) {
+    private void download(final Date d, final List<Downloader> downloaders, final boolean scrape) {
         new Thread(new Runnable() {
                 public void run() {
-                    Downloaders dls = new Downloaders(prefs, nm,
-                            BrowseActivity.this);
-                    dls.download(d);
-
-                    Scrapers scrapes = new Scrapers(prefs, nm,
-                            BrowseActivity.this);
-                    scrapes.scrape();
+                	if (downloaders != null) {
+                		dls.download(d, downloaders);
+                	} else {
+                		dls.download(d);
+                	}
+                	if (scrape) {
+	                    Scrapers scrapes = new Scrapers(prefs, nm,
+	                            BrowseActivity.this);
+	                    scrapes.scrape();
+                	}
 
                     handler.post(new Runnable() {
                             public void run() {

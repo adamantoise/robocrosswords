@@ -9,6 +9,11 @@ import java.net.URL;
 import java.text.NumberFormat;
 import java.util.Date;
 
+/**
+ * The Onion AV Club
+ * URL: http://herbach.dnsalias.com/Tausig/avYYMMDD.puz
+ * Date = Wednesdays
+ */
 public class AVClubDownloader extends AbstractDownloader {
 	public static final String NAME = "The Onion AV Club";
 	NumberFormat nf = NumberFormat.getInstance();
@@ -23,7 +28,9 @@ public class AVClubDownloader extends AbstractDownloader {
 		return NAME;
 	}
 	
-	
+	public int[] getDownloadDates() {
+		return DATE_WEDNESDAY;
+	}
 
 	public File download(Date date) {
 		return this.download(date, this.createUrlSuffix(date));
@@ -32,9 +39,6 @@ public class AVClubDownloader extends AbstractDownloader {
 	@Override
 	protected File download(Date date, String urlSuffix) {
 		try {
-			if(date.getDay() != 3){
-				return null;
-			}
 			URL url = new URL(this.baseUrl + urlSuffix);
 			System.out.println(url);
 

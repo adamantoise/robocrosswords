@@ -6,7 +6,11 @@ import java.text.NumberFormat;
 
 import java.util.Date;
 
-
+/**
+ * Thinks.com
+ * URL: http://thinks.com/daily-crossword/puzzles/YYYY-MM/dc1-YYYY-MM-DD.puz
+ * Date = Fridays
+ */
 public class ThinksDownloader extends AbstractDownloader {
     private static final String NAME = "Thinks.com";
     NumberFormat nf = NumberFormat.getInstance();
@@ -19,6 +23,10 @@ public class ThinksDownloader extends AbstractDownloader {
 
     public String getName() {
         return NAME;
+    }
+    
+    public int[] getDownloadDates() {
+    	return DATE_DAILY;
     }
 
     public File download(Date date) {

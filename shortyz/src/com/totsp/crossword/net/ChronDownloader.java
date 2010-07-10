@@ -6,7 +6,11 @@ import java.text.NumberFormat;
 
 import java.util.Date;
 
-
+/**
+ * Houston Chronicle
+ * URL: http://www.chron.com/apps/games/xword/puzzles/csYYYYMMDD.puz
+ * Date = Daily
+ */
 public class ChronDownloader extends AbstractDownloader {
     private static final String NAME = "Houston Chronicle";
     NumberFormat nf = NumberFormat.getInstance();
@@ -20,6 +24,10 @@ public class ChronDownloader extends AbstractDownloader {
 
     public String getName() {
         return NAME;
+    }
+    
+    public int[] getDownloadDates() {
+    	return DATE_DAILY;
     }
 
     public File download(Date date) {

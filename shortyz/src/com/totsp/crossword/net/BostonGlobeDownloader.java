@@ -6,7 +6,11 @@ import java.text.NumberFormat;
 
 import java.util.Date;
 
-
+/**
+ * Boston Globe
+ * URL: http://standalone.com/dl/puz/boston/boston_MMDDYY.puz
+ * Date = Sundays
+ */
 public class BostonGlobeDownloader extends AbstractDownloader {
     private static final String NAME = "Boston Globe";
     NumberFormat nf = NumberFormat.getInstance();
@@ -20,11 +24,12 @@ public class BostonGlobeDownloader extends AbstractDownloader {
     public String getName() {
         return NAME;
     }
+    
+    public int[] getDownloadDates() {
+    	return DATE_SUNDAY;
+    }
 
     public File download(Date date) {
-        if (date.getDay() != 0) {
-            return null;
-        }
         return super.download(date, this.createUrlSuffix(date));
     }
 

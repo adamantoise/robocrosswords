@@ -6,8 +6,11 @@ import java.text.NumberFormat;
 
 import java.util.Date;
 
-
-//http://herbach.dnsalias.com/Tausig/vv100212.puz
+/**
+ * Ink Well Crosswords
+ * URL: http://herbach.dnsalias.com/Tausig/vvYYMMDD.puz
+ * Date = Fridays
+ */
 public class InkwellDownloader extends AbstractDownloader {
     private static final String NAME = "InkWellXWords.com";
     NumberFormat nf = NumberFormat.getInstance();
@@ -21,11 +24,12 @@ public class InkwellDownloader extends AbstractDownloader {
     public String getName() {
         return NAME;
     }
+    
+    public int[] getDownloadDates() {
+    	return DATE_FRIDAY;
+    }
 
     public File download(Date date) {
-        if (date.getDay() != 5) {
-            return null;
-        }
         return super.download(date, this.createUrlSuffix(date));
     }
 

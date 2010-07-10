@@ -3,9 +3,12 @@ package com.totsp.crossword.net;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,9 +28,9 @@ import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.puz.PuzzleMeta;
 
 
-public class Downloaders {
+public class Downloaders {	
     private static final Logger LOG = Logger.getLogger("com.totsp.crossword");
-    private ArrayList<Downloader> downloaders = new ArrayList<Downloader>();
+    private List<Downloader> downloaders = new LinkedList<Downloader>();
     private Context context;
     private NotificationManager notificationManager;
     private boolean supressMessages;
@@ -87,17 +90,17 @@ public class Downloaders {
         
         if (prefs.getBoolean("downloadJoseph", true)) {
         	downloaders.add(new KFSDownloader("joseph", "Joseph Crosswords", 
-        			"Thomas Joseph", new int[] {1, 2, 3, 4, 5, 6}));
+        			"Thomas Joseph", Downloader.DATE_NO_SUNDAY));
         }
         
         if (prefs.getBoolean("downloadSheffer", true)) {
         	downloaders.add(new KFSDownloader("sheffer", "Sheffer Crosswords", 
-        			"Eugene Sheffer", new int[] {1, 2, 3, 4, 5, 6}));
+        			"Eugene Sheffer", Downloader.DATE_NO_SUNDAY));
         }
         
         if (prefs.getBoolean("downloadPremier", true)) {
         	downloaders.add(new KFSDownloader("premier", "Premier Crosswords", 
-        			"Frank Longo", new int[] {0}));
+        			"Frank Longo", Downloader.DATE_SUNDAY));
         }
 
         if (prefs.getBoolean("downloadNYT", false)) {
@@ -106,8 +109,23 @@ public class Downloaders {
         }
         this.supressMessages = prefs.getBoolean("supressMessages", false);
     }
-
+    
+    public List<Downloader> getDownloaders(Date date) {
+    	int dayOfWeek = date.getDay();
+    	List<Downloader> retVal = new LinkedList<Downloader>();
+    	for (Downloader d : downloaders) {
+    		if (Arrays.binarySearch(d.getDownloadDates(), dayOfWeek) >= 0) {
+    			retVal.add(d);
+    		}
+    	}
+    	return retVal;
+    }
+    
     public void download(Date date) {
+    	download(date, getDownloaders(date));
+    }
+
+    public void download(Date date, List<Downloader> downloaders) {
     	Calendar cal = Calendar.getInstance();
     	Calendar now = Calendar.getInstance();
     	cal.setTime(date);
@@ -265,7 +283,7 @@ public class Downloaders {
                null, context, BrowseActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
                 notificationIntent, 0);
-        not.setLatestEventInfo(context, contentTitle, "News Puzzles Were Downloaded",
+        not.setLatestEventInfo(context, contentTitle, "New puzzles were downloaded.",
             contentIntent);
 
         if (this.notificationManager != null) {

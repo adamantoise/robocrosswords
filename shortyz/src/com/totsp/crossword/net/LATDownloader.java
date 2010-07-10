@@ -12,7 +12,11 @@ import java.text.NumberFormat;
 
 import java.util.Date;
 
-
+/**
+ * Los Angeles Times
+ * URL: http://www.cruciverb.com/puzzles/lat/latYYMMDD.puz
+ * Date = Daily
+ */
 public class LATDownloader extends AbstractDownloader {
     public static final String NAME = "Los Angeles Times";
     NumberFormat nf = NumberFormat.getInstance();
@@ -25,6 +29,10 @@ public class LATDownloader extends AbstractDownloader {
 
     public String getName() {
         return LATDownloader.NAME;
+    }
+    
+    public int[] getDownloadDates() {
+    	return DATE_DAILY;
     }
 
     public File download(Date date) {

@@ -10,7 +10,7 @@ import java.util.Date;
 /**
  * Jonesin' Crosswords Downloader
  * URL: http://herbach.dnsalias.com/Jonesin/jzYYMMDD.puz
- * Date = Thursdays (usually posted previous Monday)
+ * Date = Thursdays
  */
 public class JonesinDownloader extends AbstractDownloader {
     private static final String NAME = "Jonesin' Crosswords";
@@ -25,11 +25,12 @@ public class JonesinDownloader extends AbstractDownloader {
     public String getName() {
         return NAME;
     }
+    
+    public int[] getDownloadDates() {
+    	return DATE_THURSDAY;
+    }
 
     public File download(Date date) {
-        if (date.getDay() != 4) {
-            return null;
-        }
         return super.download(date, this.createUrlSuffix(date));
     }
 

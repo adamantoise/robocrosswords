@@ -106,4 +106,8 @@ public abstract class AbstractDownloader implements Downloader {
 
         return downloadTo;
     }
+    
+    public String toString() {
+    	return getName();
+    }
 }
