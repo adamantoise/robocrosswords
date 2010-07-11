@@ -10,6 +10,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 
@@ -35,52 +37,27 @@ public class IO {
 	
     public static Puzzle loadNative(DataInputStream input) throws IOException {
         Puzzle puz = new Puzzle();
-        puz.setFileChecksum(input.readShort());
-
-        byte[] fileMagic = new byte[0xB];
-
-        for (int i = 0; i < fileMagic.length; i++) {
-            fileMagic[i] = input.readByte();
-        }
-
-        input.skipBytes(1);
-        puz.setFileMagic(new String(fileMagic));
-        assert puz.getFileMagic().equals(FILE_MAGIC);
-        puz.setCibChecksum(input.readShort());
-        puz.setMaskedLowChecksums(new byte[4]);
-
-        for (int i = 0; i < puz.getMaskedLowChecksums().length; i++) {
-            puz.getMaskedLowChecksums()[i] = input.readByte();
-        }
-
-        puz.setMaskedHighChecksums(new byte[4]);
-
-        for (int i = 0; i < puz.getMaskedHighChecksums().length; i++) {
-            puz.getMaskedHighChecksums()[i] = input.readByte();
-        }
-
+        
+        input.skipBytes(0x18);
         byte[] versionString = new byte[3];
-
         for (int i = 0; i < versionString.length; i++) {
             versionString[i] = input.readByte();
         }
 
         input.skip(1);
-        puz.setVersionString(new String(versionString));
-        puz.setReserved1C(input.readShort());
-        puz.setUnknown(input.readShort());
-        puz.setReserved20(new byte[0xC]);
-
-        for (int i = 0; i < puz.getReserved20().length; i++) {
-            puz.getReserved20()[i] = input.readByte();
-        }
+        puz.setVersion(new String(versionString));
+        
+        input.skipBytes(2);
+        puz.setScrambledChecksum(Short.reverseBytes(input.readShort()));
+        
+        input.skipBytes(0xC);
 
         puz.setWidth(0xFFFF & input.readByte());
         puz.setHeight(0xFFFF & input.readByte());
-        puz.setNumberOfClues((int) input.readByte() +
-            ((int) input.readByte() >> 8));
-        puz.setUnknown30(input.readShort());
-        puz.setUnknown32(input.readShort());
+        puz.setNumberOfClues(Short.reverseBytes(input.readShort()));
+        
+        input.skipBytes(2);
+        puz.setScrambled(input.readShort() != 0);
 
         Box[][] boxes = new Box[puz.getHeight()][puz.getWidth()];
         byte[] answerByte = new byte[1];
@@ -114,10 +91,7 @@ public class IO {
         puz.setBoxes(boxes);
 
         puz.setTitle(readNullTerminatedString(input));
-
         puz.setAuthor(readNullTerminatedString(input));
-
-        
         puz.setCopyright(readNullTerminatedString(input));
 
         ArrayList<String> acrossClues = new ArrayList<String>();
@@ -188,8 +162,7 @@ public class IO {
     
     public static void readGextSection(DataInputStream input, Puzzle puz) throws IOException {
     	puz.setGEXT(true);
-    	puz.setGextLength(input.readShort());
-    	puz.setGextChecksum(input.readShort());
+    	input.skipBytes(4);
     	Box[][] boxes = puz.getBoxes();
         for (int x = 0; x < boxes.length; x++) {
             for (int y = 0; y < boxes[x].length; y++) {
@@ -268,48 +241,61 @@ public class IO {
 
     public static void saveNative(Puzzle puz, DataOutputStream dos)
         throws IOException {
-        dos.writeShort(puz.getFileChecksum());
+    	/*
+    	 * We write the puzzle to a temporary output stream, with 0 entered for any checksums.
+    	 * Once we have this written out, we can calculate all of the checksums and write the
+    	 * file to the original output stream.
+    	 */
+    	ByteArrayOutputStream tmp = new ByteArrayOutputStream();
+    	DataOutputStream tmpDos = new DataOutputStream(tmp);
+        
+    	tmpDos.writeShort(0);
+    	
+        tmpDos.writeBytes(FILE_MAGIC);
+        tmpDos.writeByte(0);
 
-        for (char c : puz.getFileMagic().toCharArray()) {
-            dos.writeByte(c);
-        }
+        tmpDos.write(new byte[10]);
+        
+        tmpDos.writeBytes(puz.getVersion());
+        tmpDos.writeByte(0);
+        
+        tmpDos.write(new byte[2]);
+        
+        tmpDos.writeShort(Short.reverseBytes(puz.getScrambledChecksum()));
 
-        dos.writeByte(0);
-        dos.writeShort(puz.getCibChecksum());
-        dos.write(puz.getMaskedLowChecksums());
-        dos.write(puz.getMaskedHighChecksums());
-        dos.writeBytes(puz.getVersionString());
-        dos.writeByte(0);
-
-        dos.writeShort(puz.getReserved1C());
-        dos.writeShort(puz.getUnknown());
-
-        dos.write(puz.getReserved20());
-        dos.writeByte(puz.getWidth());
-
-        dos.writeByte(puz.getHeight());
-
-        dos.writeByte(puz.getNumberOfClues());
-        dos.writeByte(puz.getNumberOfClues() << 8);
-        dos.writeShort(puz.getUnknown30());
-        dos.writeShort(puz.getUnknown32());
-
+        tmpDos.write(new byte[0xC]);
+        
+        int width = puz.getWidth();
+        int height = puz.getHeight();
+        int numberOfBoxes = width * height;
+        
+        tmpDos.writeByte(width);
+        tmpDos.writeByte(height);
+        
+        int numberOfClues = puz.getNumberOfClues();
+        
+        tmpDos.writeShort(Short.reverseBytes((short) numberOfClues));
+        tmpDos.writeShort(Short.reverseBytes((short) 1));
+        
+        int scrambled = puz.isScrambled() ? 4 : 0;
+        tmpDos.writeShort(scrambled);
+        
         Box[][] boxes = puz.getBoxes();
-        byte[][] gextSection = null;
+        byte[] gextSection = null;
         if (puz.getGEXT()) {
-        	gextSection = new byte[boxes.length][boxes[0].length];
+        	gextSection = new byte[numberOfBoxes];
         }
         
         for (int x = 0; x < boxes.length; x++) {
             for (int y = 0; y < boxes[x].length; y++) {
                 if (boxes[x][y] == null) {
-                    dos.writeByte('.');
+                    tmpDos.writeByte('.');
                 } else {
                 	byte val = (byte) boxes[x][y].getSolution();//Character.toString().getBytes("Cp1252")[0];
                 	if (puz.getGEXT() && boxes[x][y].isCircled()) {
-                		gextSection[x][y] = GEXT_SQUARE_CIRCLED;
+                		gextSection[height*x+y] = GEXT_SQUARE_CIRCLED;
                 	}
-                    dos.writeByte(val);
+                    tmpDos.writeByte(val);
                 }
             }
         }
@@ -317,36 +303,66 @@ public class IO {
         for (int x = 0; x < boxes.length; x++) {
             for (int y = 0; y < boxes[x].length; y++) {
                 if (boxes[x][y] == null) {
-                    dos.writeByte('.');
+                    tmpDos.writeByte('.');
                 } else {
                 	byte val = (byte) boxes[x][y].getResponse(); //Character.toString().getBytes("Cp1252")[0];
-                    dos.writeByte((boxes[x][y].getResponse() == ' ') ? '-'
+                    tmpDos.writeByte((boxes[x][y].getResponse() == ' ') ? '-'
                                                                 : val);
                 }
             }
         }
 
-        writeNullTerminatedString(dos, puz.getTitle());
-        writeNullTerminatedString(dos, puz.getAuthor());
-        writeNullTerminatedString(dos, puz.getCopyright());
+        writeNullTerminatedString(tmpDos, puz.getTitle());
+        writeNullTerminatedString(tmpDos, puz.getAuthor());
+        writeNullTerminatedString(tmpDos, puz.getCopyright());
 
         for (String clue : puz.getRawClues()) {
-            writeNullTerminatedString(dos, clue);
+            writeNullTerminatedString(tmpDos, clue);
         }
 
-        writeNullTerminatedString(dos, puz.getNotes());
+        writeNullTerminatedString(tmpDos, puz.getNotes());
         
         if (puz.getGEXT()) {
-        	dos.writeBytes("GEXT");
-        	dos.writeShort(puz.getGextLength());
-        	dos.writeShort(puz.getGextChecksum());
-        	for (int x = 0; x < boxes.length; x++) {
-        		for (int y = 0; y < boxes.length; y++) {
-        			dos.writeByte(gextSection[x][y]);
-        		}
-        	}
-        	dos.writeByte(0);
+        	tmpDos.writeBytes("GEXT");
+        	tmpDos.writeShort(Short.reverseBytes((short) numberOfBoxes));
+        	// Calculate checksum here so we don't need to find this place in the file later.
+        	int c_gext = cksum_region(gextSection, 0, numberOfBoxes, 0);
+        	tmpDos.writeShort(Short.reverseBytes((short) c_gext));
+        	tmpDos.write(gextSection);
+        	tmpDos.writeByte(0);
         }
+        
+        byte[] puzByteArray = tmp.toByteArray();
+        ByteBuffer bb = ByteBuffer.wrap(puzByteArray);
+        bb.order(ByteOrder.LITTLE_ENDIAN);
+        
+        // Calculate checksums and write to byte array.
+        int c_cib = cksum_cib(puzByteArray, 0);
+        bb.putShort(0x0E, (short) c_cib);
+        
+        int c_primary = cksum_primary_board(puzByteArray, numberOfBoxes, numberOfClues, c_cib);
+        bb.putShort(0, (short) c_primary);
+        
+        int c_sol = cksum_solution(puzByteArray, numberOfBoxes, 0);
+        int c_grid = cksum_grid(puzByteArray, numberOfBoxes, 0);
+        int c_part = cksum_partial_board(puzByteArray, numberOfBoxes, numberOfClues, 0);
+        
+        bb.position(0x10);
+        bb.put((byte) (0x49 ^ (c_cib & 0xFF)));
+        bb.put((byte) (0x43 ^ (c_sol & 0xFF)));
+        bb.put((byte) (0x48 ^ (c_grid & 0xFF)));
+        bb.put((byte) (0x45 ^ (c_part & 0xFF)));
+        bb.put((byte) (0x41 ^ ((c_cib & 0xFF00) >> 8)));
+        bb.put((byte) (0x54 ^ ((c_sol & 0xFF00) >> 8)));
+        bb.put((byte) (0x45 ^ ((c_grid & 0xFF00) >> 8)));
+        bb.put((byte) (0x44 ^ ((c_part & 0xFF00) >> 8)));
+        
+        if(puz.getGEXT()) {
+        	
+        }
+        
+        // Dump byte array to output stream.
+        dos.write(puzByteArray);
     }
 
     public static void writeNullTerminatedString(OutputStream os, String value)
@@ -394,12 +410,64 @@ public class IO {
     	return puz;
     }
 
-
     public static PuzzleMeta meta(File baseFile) throws IOException {
     	File metaFile = new File(baseFile.getParentFile(), baseFile.getName().substring(0, baseFile.getName().lastIndexOf(".")) + ".shortyz");
     	FileInputStream fis = new FileInputStream(metaFile);
     	PuzzleMeta m = IO.readMeta(new DataInputStream(fis));
     	fis.close();
     	return m;
+    }
+
+    private static int cksum_region(byte[] data, int offset, int length, int cksum) {
+    	for(int i = offset; i < offset + length; i++) {
+    		if ((cksum & 0x1) != 0) {
+    			cksum = (cksum >> 1) + 0x8000;
+    		} else {
+    			cksum = cksum >> 1;
+    		}
+    		cksum += (0xFF & data[i]);
+    		cksum = cksum & 0xFFFF;
+    	}
+    	return cksum;
+    }
+    
+    private static int cksum_cib(byte[] puzByteArray, int cksum) {
+    	return cksum_region(puzByteArray, 0x2C, 8, cksum);
+    }
+    
+    private static int cksum_primary_board(byte[] puzByteArray, int numberOfBoxes,
+    		int numberOfClues, int cksum) {
+    	cksum = cksum_solution(puzByteArray, numberOfBoxes, cksum);
+    	cksum = cksum_grid(puzByteArray, numberOfBoxes, cksum);
+    	cksum = cksum_partial_board(puzByteArray, numberOfBoxes, numberOfClues, cksum);
+    	return cksum;
+    }
+    
+    private static int cksum_solution(byte[] puzByteArray, int numberOfBoxes, int cksum) {
+    	return cksum_region(puzByteArray, 0x34, numberOfBoxes, cksum);
+    }
+    
+    private static int cksum_grid(byte[] puzByteArray, int numberOfBoxes, int cksum) {
+    	return cksum_region(puzByteArray, 0x34 + numberOfBoxes, numberOfBoxes, cksum);
+    }
+    
+    private static int cksum_partial_board(byte[] puzByteArray, int numberOfBoxes,
+    		int numberOfClues, int cksum) {
+    	int offset = 0x34 + 2*numberOfBoxes;
+    	for(int i = 0; i < 4 + numberOfClues; i++) {
+        	int startOffset = offset;
+        	while(puzByteArray[offset] != 0) {
+        		offset++;
+        	}
+        	int length = offset - startOffset;
+        	if (i > 2 && i < 3 + numberOfClues) {
+        		cksum = cksum_region(puzByteArray, startOffset, length, cksum);
+        	}
+        	else if (length > 0) {
+        		cksum = cksum_region(puzByteArray, startOffset, length+1, cksum);
+        	}
+        	offset++;
+        }
+    	return cksum;
     }
 }

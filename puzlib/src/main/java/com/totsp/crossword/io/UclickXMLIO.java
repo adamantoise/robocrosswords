@@ -143,23 +143,8 @@ public class UclickXMLIO {
 		try {
 			SAXParser parser = factory.newSAXParser();
 			parser.parse(is, new UclickXMLParser(puz));
-			
-			// Set empty/default values for other puzzle fields.
-			// TODO: Should not be necessary - IO.saveNative should calculate these.
-	        short emptyShort = 0;
-	        byte[] empty4ByteArray = new byte[4];
-	        byte[] emptyCByteArray = new byte[0xC];
-	        
-	        puz.setFileMagic(IO.FILE_MAGIC);
-	        puz.setCibChecksum(emptyShort);
-	        puz.setMaskedLowChecksums(empty4ByteArray);
-	        puz.setMaskedHighChecksums(empty4ByteArray);
-	        puz.setVersionString(IO.VERSION_STRING);
-	        puz.setReserved1C(emptyShort);
-	        puz.setUnknown(emptyShort);
-	        puz.setReserved20(emptyCByteArray);
-	        puz.setUnknown30(emptyShort);
-	        puz.setUnknown32(emptyShort);
+
+	        puz.setVersion(IO.VERSION_STRING);
 	        puz.setNotes("");
 
 			IO.saveNative(puz, os);

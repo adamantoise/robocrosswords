@@ -1,34 +1,19 @@
 package com.totsp.crossword.puz;
 
-import java.io.Serializable;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 
-public class Puzzle implements Serializable {
+public class Puzzle {
     private String author;
     private String copyright;
-    private transient String fileMagic;
     private String notes;
     private String title;
-    private transient String versionString; // 4bytes
     private String[] acrossClues;
     private Integer[] acrossCluesLookup;
     private String[] downClues;
     private Integer[] downCluesLookup;
-    private transient byte[] maskedHighChecksums; //4bytes
-    private transient byte[] maskedLowChecksums; //4bytes
-    private transient byte[] reserved20; //0xC bytes;
-    private int numberOfClues; //2 bytes;
-    private transient short cibChecksum;
-    private transient short fileChecksum;
-    private transient short reserved1C; //2bytes
-    private transient short unknown; //2bytes
-    private transient short unknown30; //2bytes
-    private transient short unknown32; //2bytes;
+    private int numberOfClues;
     private Date pubdate = new Date();
     private String source;
     private String sourceUrl = "";
@@ -36,14 +21,13 @@ public class Puzzle implements Serializable {
     private Box[] boxesList;
     private String[] rawClues;
     private boolean updatable;
-    private int height; //on byte
-    private int width; //one byte;
+    private int height;
+    private int width;
     private long playedTime;
-    
-    // GEXT Section
+    private boolean scrambled;
+    private short scrambledChecksum;
+    private String version;
     private boolean hasGEXT;
-    private transient short gextLength;
-    private transient short gextChecksum;
     
 
     public void setAcrossClues(String[] acrossClues) {
@@ -134,14 +118,6 @@ public class Puzzle implements Serializable {
         return result;
     }
 
-    public void setCibChecksum(short cibChecksum) {
-        this.cibChecksum = cibChecksum;
-    }
-
-    public short getCibChecksum() {
-        return cibChecksum;
-    }
-
     public void setCopyright(String copyright) {
         this.copyright = copyright;
     }
@@ -174,22 +150,6 @@ public class Puzzle implements Serializable {
         return downCluesLookup;
     }
 
-    public void setFileChecksum(short fileChecksum) {
-        this.fileChecksum = fileChecksum;
-    }
-
-    public short getFileChecksum() {
-        return fileChecksum;
-    }
-
-    public void setFileMagic(String fileMagic) {
-        this.fileMagic = fileMagic;
-    }
-
-    public String getFileMagic() {
-        return fileMagic;
-    }
-
     /**
      * @param height the height to set
      */
@@ -202,22 +162,6 @@ public class Puzzle implements Serializable {
      */
     public int getHeight() {
         return height;
-    }
-
-    public void setMaskedHighChecksums(byte[] maskedHighChecksums) {
-        this.maskedHighChecksums = maskedHighChecksums;
-    }
-
-    public byte[] getMaskedHighChecksums() {
-        return maskedHighChecksums;
-    }
-
-    public void setMaskedLowChecksums(byte[] maskedLowChecksums) {
-        this.maskedLowChecksums = maskedLowChecksums;
-    }
-
-    public byte[] getMaskedLowChecksums() {
-        return maskedLowChecksums;
     }
 
     public void setNotes(String notes) {
@@ -282,22 +226,6 @@ public class Puzzle implements Serializable {
         return rawClues;
     }
 
-    public void setReserved1C(short reserved1C) {
-        this.reserved1C = reserved1C;
-    }
-
-    public short getReserved1C() {
-        return reserved1C;
-    }
-
-    public void setReserved20(byte[] reserved20) {
-        this.reserved20 = reserved20;
-    }
-
-    public byte[] getReserved20() {
-        return reserved20;
-    }
-
     public void setSource(String source) {
         this.source = source;
     }
@@ -330,30 +258,6 @@ public class Puzzle implements Serializable {
         return title;
     }
 
-    public void setUnknown(short unknown) {
-        this.unknown = unknown;
-    }
-
-    public short getUnknown() {
-        return unknown;
-    }
-
-    public void setUnknown30(short unknown30) {
-        this.unknown30 = unknown30;
-    }
-
-    public short getUnknown30() {
-        return unknown30;
-    }
-
-    public void setUnknown32(short unknown32) {
-        this.unknown32 = unknown32;
-    }
-
-    public short getUnknown32() {
-        return unknown32;
-    }
-
     public void setUpdatable(boolean updatable) {
         this.updatable = updatable;
     }
@@ -361,14 +265,14 @@ public class Puzzle implements Serializable {
     public boolean isUpdatable() {
         return updatable;
     }
-
-    public void setVersionString(String versionString) {
-        this.versionString = versionString;
+    
+    public void setVersion(String version) {
+    	this.version = version;
     }
 
-    public String getVersionString() {
-        return versionString;
-    }
+     public String getVersion() {
+    	 return version;
+     }
     
     public void setGEXT(boolean hasGEXT) {
     	this.hasGEXT = hasGEXT;
@@ -378,20 +282,20 @@ public class Puzzle implements Serializable {
     	return hasGEXT;
     }
     
-    public void setGextLength(short gextLength) {
-    	this.gextLength = gextLength;
+    public void setScrambled(boolean scrambled) {
+    	this.scrambled = scrambled;
     }
     
-    public short getGextLength() {
-    	return gextLength;
+    public boolean isScrambled() {
+    	return scrambled;
     }
     
-    public void setGextChecksum(short gextChecksum) {
-    	this.gextChecksum = gextChecksum;
+    public void setScrambledChecksum(short checksum) {
+    	this.scrambledChecksum = checksum;
     }
     
-    public short getGextChecksum() {
-    	return gextChecksum;
+    public short getScrambledChecksum() {
+    	return scrambledChecksum;
     }
 
     /**
@@ -481,12 +385,6 @@ public class Puzzle implements Serializable {
             return false;
         }
 
-        if (getCibChecksum() != other.getCibChecksum()) {
-            System.out.println("checksum");
-
-            return false;
-        }
-
         if (copyright == null) {
             if (other.copyright != null) {
                 System.out.println("copyright");
@@ -505,22 +403,6 @@ public class Puzzle implements Serializable {
 
         if (!Arrays.equals(downCluesLookup, other.downCluesLookup)) {
             System.out.println("downCluesLookup");
-
-            return false;
-        }
-
-        if (getFileChecksum() != other.getFileChecksum()) {
-            System.out.println("fileChecksum");
-
-            return false;
-        }
-
-        if (fileMagic == null) {
-            if (other.fileMagic != null) {
-                return false;
-            }
-        } else if (!fileMagic.equals(other.fileMagic)) {
-            System.out.println("fileMagic");
 
             return false;
         }
@@ -547,10 +429,6 @@ public class Puzzle implements Serializable {
             return false;
         }
 
-        if (reserved1C != other.reserved1C) {
-            return false;
-        }
-
         if (title == null) {
             if (other.title != null) {
                 return false;
@@ -561,28 +439,24 @@ public class Puzzle implements Serializable {
             return false;
         }
 
-        if (unknown != other.unknown) {
-            return false;
-        }
-
-        if (unknown30 != other.unknown30) {
-            return false;
-        }
-
-        if (unknown32 != other.unknown32) {
-            return false;
-        }
-
-        if (versionString == null) {
-            if (other.versionString != null) {
-                return false;
-            }
-        } else if (!versionString.equals(other.versionString)) {
-            return false;
-        }
-
         if (width != other.width) {
             return false;
+        }
+        
+        if (version == null) {
+	        if (other.version != null) {
+	            return false;
+	        }
+        } else if (!version.equals(other.version)) {
+            return false;
+        }
+        
+        if (scrambled != other.scrambled) {
+        	return false;
+        }
+        
+        if (scrambledChecksum != other.scrambledChecksum) {
+        	return false;
         }
 
         return true;
@@ -606,27 +480,15 @@ public class Puzzle implements Serializable {
         result = (prime * result) + Arrays.hashCode(acrossCluesLookup);
         result = (prime * result) + ((author == null) ? 0 : author.hashCode());
         result = (prime * result) + Arrays.hashCode(boxes);
-        result = (prime * result) + getCibChecksum();
         result = (prime * result) +
             ((copyright == null) ? 0 : copyright.hashCode());
         result = (prime * result) + Arrays.hashCode(downClues);
         result = (prime * result) + Arrays.hashCode(downCluesLookup);
-        result = (prime * result) + getFileChecksum();
-        result = (prime * result) +
-            ((fileMagic == null) ? 0 : fileMagic.hashCode());
         result = (prime * result) + height;
-        result = (prime * result) + Arrays.hashCode(getMaskedHighChecksums());
-        result = (prime * result) + Arrays.hashCode(getMaskedLowChecksums());
         result = (prime * result) + ((notes == null) ? 0 : notes.hashCode());
         result = (prime * result) + getNumberOfClues();
-        result = (prime * result) + reserved1C;
-        result = (prime * result) + Arrays.hashCode(getReserved20());
         result = (prime * result) + ((title == null) ? 0 : title.hashCode());
-        result = (prime * result) + unknown;
-        result = (prime * result) + unknown30;
-        result = (prime * result) + unknown32;
-        result = (prime * result) +
-            ((versionString == null) ? 0 : versionString.hashCode());
+        result = (prime * result) + ((version == null) ? 0 : version.hashCode());
         result = (prime * result) + width;
 
         return result;

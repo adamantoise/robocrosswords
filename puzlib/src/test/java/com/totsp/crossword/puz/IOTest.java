@@ -87,7 +87,8 @@ public class IOTest extends TestCase {
         
         System.out.println(m.title +"\n"+m.source+"\n"+m.percentComplete);
         
-        
+        File metaFile = new File(tmp.getParentFile(), tmp.getName().substring(0, tmp.getName().lastIndexOf(".")) + ".shortyz");
+        metaFile.delete();
     }
     
     public void testGext() throws Exception{
