@@ -183,27 +183,16 @@ public class Downloaders {
             downloaded = d.download(date);
 
             if (downloaded != null) {
-                try {
-                    Puzzle puz = IO.load(downloaded);
-                    puz.setDate(date);
-                    puz.setSource(d.getName());
-                    puz.setSourceUrl(d.sourceUrl(date));
-                    System.out.println(date.getTime() +" >= "+ now.getTimeInMillis());
-                    System.out.println(date +" :: "+ now.getTime() );
-                    if(d instanceof NYTDownloader && date.getTime() >= now.getTimeInMillis() ){
-                    	puz.setUpdatable(true);
-                    }
-                    
-                    IO.save(puz, downloaded);
+            	boolean updatable = false;
+            	if (d instanceof NYTDownloader && date.getTime() >= now.getTimeInMillis()) {
+                	updatable = true;
+                }
+                if (processDownloadedPuzzle(downloaded, date, d.getName(), d.sourceUrl(date), updatable)) {
                     if(!this.supressMessages){
                     	this.postDownloadedNotification(i, d.getName(), downloaded);
                     }
-                    newlyDownloaded.add(downloaded);
-                    somethingDownloaded = true;
-                } catch (Exception ioe) {
-                    LOG.log(Level.WARNING, "Exception reading " + downloaded,
-                        ioe);
-                    downloaded.delete();
+                	newlyDownloaded.add(downloaded);
+                	somethingDownloaded = true;
                 }
             }
 
@@ -256,6 +245,25 @@ public class Downloaders {
         	
         if( somethingDownloaded && this.supressMessages){
         	this.postDownloadedGeneral();
+        }
+    }
+    
+    public static boolean processDownloadedPuzzle(File downloaded, Date date, String source,
+    		String sourceUrl, boolean updatable) {
+    	try {
+            Puzzle puz = IO.load(downloaded);
+            puz.setDate(date);
+            puz.setSource(source);
+            puz.setSourceUrl(sourceUrl);
+            puz.setUpdatable(updatable);
+            
+            IO.save(puz, downloaded);
+            return true;
+        } catch (Exception ioe) {
+            LOG.log(Level.WARNING, "Exception reading " + downloaded,
+                ioe);
+            downloaded.delete();
+            return false;
         }
     }
 

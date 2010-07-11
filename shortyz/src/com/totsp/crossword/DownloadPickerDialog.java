@@ -5,14 +5,18 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -28,7 +32,7 @@ import com.totsp.crossword.shortyz.R;
  */
 public class DownloadPickerDialog {
 	private static DateFormat df = new SimpleDateFormat("EEEE,");
-	private Context mContext;
+	private Activity mActivity;
 	private int mYear;
 	private int mMonthOfYear;
 	private int mDayOfMonth;
@@ -53,9 +57,9 @@ public class DownloadPickerDialog {
 		}
 	};
 	
-	public DownloadPickerDialog(Context c, final OnDownloadSelectedListener downloadButtonListener,
+	public DownloadPickerDialog(Activity a, final OnDownloadSelectedListener downloadButtonListener,
 			int year, int monthOfYear, int dayOfMonth, Downloaders dls) {
-		mContext = c;
+		mActivity = a;
 		
 		mYear = year;
 		mMonthOfYear = monthOfYear;
@@ -63,8 +67,9 @@ public class DownloadPickerDialog {
 		
 		mDownloaders = dls;
 		
-		LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View layout = inflater.inflate(R.layout.download_dialog, null);
+		LayoutInflater inflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.download_dialog, 
+        		(ViewGroup) mActivity.findViewById(R.id.download_root));
         
         mDateLabel = (TextView) layout.findViewById(R.id.dateLabel);
         updateDateLabel();
@@ -82,7 +87,15 @@ public class DownloadPickerDialog {
 			}
         };
         
-        AlertDialog.Builder builder = (new AlertDialog.Builder(mContext))
+        ((Button) layout.findViewById(R.id.browse)).setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				Intent i = new Intent();
+				i.setClass(mActivity, WebBrowserActivity.class);
+				mActivity.startActivityForResult(i, 0);
+			}
+        });
+        
+        AlertDialog.Builder builder = (new AlertDialog.Builder(mActivity))
         	.setPositiveButton("Download", clickHandler)
         	.setNegativeButton("Cancel", null)
         	.setTitle("Download Puzzles");
@@ -98,7 +111,7 @@ public class DownloadPickerDialog {
 	private void updatePuzzleSelect() {
 		mAvailableDownloaders = mDownloaders.getDownloaders(getCurrentDate());
 		mAvailableDownloaders.add(0, new DummyDownloader());
-		ArrayAdapter<Downloader> adapter = new ArrayAdapter<Downloader>(mContext,
+		ArrayAdapter<Downloader> adapter = new ArrayAdapter<Downloader>(mActivity,
 				android.R.layout.simple_spinner_item, mAvailableDownloaders);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		mPuzzleSelect.setAdapter(adapter);

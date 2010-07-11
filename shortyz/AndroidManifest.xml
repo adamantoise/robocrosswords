@@ -36,6 +36,9 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
+		<activity android:name="com.totsp.crossword.WebBrowserActivity"
+			android:label="Browse for Puzzles" android:configChanges="keyboardHidden|orientation">
+		</activity>
 	</application>
 	<supports-screens android:largeScreens="true"
 		android:normalScreens="true" 

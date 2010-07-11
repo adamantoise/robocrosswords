@@ -64,6 +64,7 @@ public class BrowseActivity extends ListActivity {
     private View lastOpenedView = null;
     private boolean viewArchive;
     private Downloaders dls;
+    private Dialog mDownloadDialog;
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
@@ -269,10 +270,12 @@ public class BrowseActivity extends ListActivity {
 			
             Date d = new Date();
             
-            DownloadPickerDialog dialog = new DownloadPickerDialog(this, downloadButtonListener,
+            DownloadPickerDialog dpd = new DownloadPickerDialog(this, downloadButtonListener,
                     d.getYear() + 1900, d.getMonth(), d.getDate(), dls);
+            
+            mDownloadDialog = dpd.getInstance();
 
-            return dialog.getInstance();
+            return mDownloadDialog;
         }
 
         return null;
@@ -313,6 +316,14 @@ public class BrowseActivity extends ListActivity {
 
         this.checkDownload();
         super.onResume();
+    }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    	if (resultCode == RESULT_OK && mDownloadDialog != null && mDownloadDialog.isShowing()) {
+    		// If the user hit close in the browser download activity, we close the dialog.
+    		mDownloadDialog.dismiss();
+    	}
     }
 
     private SeparatedListAdapter buildList(final Dialog dialog, File directory,

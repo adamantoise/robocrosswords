@@ -28,6 +28,6 @@ public class DummyDownloader implements Downloader {
 	}
 
 	public String toString() {
-		return "All available puzzles";
+		return "All available";
 	}
 }
