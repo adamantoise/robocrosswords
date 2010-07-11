@@ -477,11 +477,8 @@ public class BrowseActivity extends ListActivity {
     private void download(final Date d, final List<Downloader> downloaders, final boolean scrape) {
         new Thread(new Runnable() {
                 public void run() {
-                	if (downloaders != null) {
-                		dls.download(d, downloaders);
-                	} else {
-                		dls.download(d);
-                	}
+                	dls.download(d, downloaders);
+                	
                 	if (scrape) {
 	                    Scrapers scrapes = new Scrapers(prefs, nm,
 	                            BrowseActivity.this);

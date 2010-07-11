@@ -102,6 +102,28 @@ public class Downloaders {
         	downloaders.add(new KFSDownloader("premier", "Premier Crosswords", 
         			"Frank Longo", Downloader.DATE_SUNDAY));
         }
+        
+        if (prefs.getBoolean("downloadNewsday", true)) {
+        	downloaders.add(new UclickDownloader("crnet", "Newsday",
+        			"Stanley Newman, distributed by Creators Syndicate, Inc.",
+        			Downloader.DATE_DAILY));
+        }
+        
+        if (prefs.getBoolean("downloadUSAToday", true)) {
+        	downloaders.add(new UclickDownloader("usaon", "USA Today",
+        			"USA Today", Downloader.DATE_NO_SUNDAY));
+        }
+        
+        if (prefs.getBoolean("downloadUniversal", true)) {
+        	downloaders.add(new UclickDownloader("fcx", "Universal Crossword",
+        			"uclick LLC", Downloader.DATE_DAILY));
+        }
+        
+        if (prefs.getBoolean("downloadLACal", true)) {
+        	downloaders.add(new UclickDownloader("lacal", "LAT Sunday Calendar",
+        			"Los Angeles Times",
+        			Downloader.DATE_SUNDAY));
+        }
 
         if (prefs.getBoolean("downloadNYT", false)) {
             downloaders.add(nyt = new NYTDownloader(prefs.getString("nytUsername", ""),
@@ -199,7 +221,6 @@ public class Downloaders {
             i++;
         }
 
-        
         
         // DO UPDATES
         ArrayList<File> checkUpdate = new ArrayList<File>();

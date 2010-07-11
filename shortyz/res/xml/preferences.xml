@@ -33,6 +33,10 @@
 			 	android:key="nytSubscribe"/>
 		</PreferenceScreen>
 		<CheckBoxPreference
+			android:title="Newsday"
+			android:defaultValue="true"
+			android:key="downloadNewsday" />
+		<CheckBoxPreference
 			android:title="Houston Chronicle"
 			android:defaultValue="true"
 			android:summary="Also known as CrosSynergy"
@@ -55,6 +59,15 @@
 			android:title="Thinks.com"
 			android:defaultValue="true"
 			android:key="downloadThinks" />
+		<CheckBoxPreference
+			android:title="Universal Crossword"
+			android:defaultValue="true"
+			android:key="downloadUniversal" />
+		<CheckBoxPreference
+			android:title="USA Today"
+			android:defaultValue="true"
+			android:summary="Updates Monday-Saturday"
+			android:key="downloadUSAToday" />
 	</PreferenceScreen>
 	<PreferenceScreen
 		android:title="Weekly Crosswords"
@@ -103,6 +116,11 @@
 				android:defaultValue="true"
 				android:summary="Updates Fridays (Currently Biweekly)"
 				android:key="downloadCHE" />
+			<CheckBoxPreference
+				android:title="LAT Sunday Calendar"
+				android:defaultValue="true"
+				android:summary="Updates Sundays"
+				android:key="downloadLACal" />
 			<CheckBoxPreference
 				android:title="Philadelphia Inquirer"
 				android:defaultValue="true"

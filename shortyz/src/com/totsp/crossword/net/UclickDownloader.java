@@ -11,26 +11,29 @@ import java.text.NumberFormat;
 import java.util.Date;
 import java.util.logging.Level;
 
-import com.totsp.crossword.io.KingFeaturesPlaintextIO;
+import com.totsp.crossword.io.UclickXMLIO;
 
 /**
- * King Features Syndicate Puzzles
- * URL: http://[puzzle].king-online.com/clues/YYYYMMDD.txt
- * premier = Sunday
- * joseph = Monday-Saturday
- * sheffer = Monday-Saturday
+ * Uclick XML Puzzles
+ * URL: http://picayune.uclick.com/comics/[puzzle]/data/[puzzle]YYMMDD-data.xml
+ * crnet (Newsday) = Daily
+ * usaon (USA Today) = Monday-Saturday (not holidays)
+ * fcx (Universal) = Daily
+ * lacal (LA Times Sunday Calendar) = Sunday
  */
-public class KFSDownloader extends AbstractDownloader {
+public class UclickDownloader extends AbstractDownloader {
+	private String shortName;
 	private String fullName;
-	private String author;
+	private String copyright;
 	private int[] days;
 	NumberFormat nf = NumberFormat.getInstance();
 	DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
 	
-	public KFSDownloader(String shortName, String fullName, String author, int[] days) {
-		super("http://" + shortName + ".king-online.com/clues/", DOWNLOAD_DIR, fullName);
+	public UclickDownloader(String shortName, String fullName, String copyright, int[] days) {
+		super("http://picayune.uclick.com/comics/" + shortName + "/data/", DOWNLOAD_DIR, fullName);
+		this.shortName = shortName;
 		this.fullName = fullName;
-		this.author = author;
+		this.copyright = copyright;
 		this.days = days;
         nf.setMinimumIntegerDigits(2);
         nf.setMaximumFractionDigits(0);
@@ -47,15 +50,15 @@ public class KFSDownloader extends AbstractDownloader {
 	private File downloadToTempFile(Date date) {
 		File downloaded = super.download(date, this.createUrlSuffix(date));
 		if(downloaded == null) {
-			LOG.log(Level.SEVERE, "Unable to download plain text KFS file.");
+			LOG.log(Level.SEVERE, "Unable to download uclick XML file.");
 			return null;
 		}
 		try {
-			File tmpFile = File.createTempFile("kfs-temp", "txt");
+			File tmpFile = File.createTempFile("uclick-temp", "xml");
 			downloaded.renameTo(tmpFile);
 			return tmpFile;
 		} catch (IOException e) {
-			LOG.log(Level.SEVERE, "Unable to move KFS file to temporary location.");
+			LOG.log(Level.SEVERE, "Unable to move uclick XML file to temporary location.");
 			return null;
 		}
 	}
@@ -72,22 +75,21 @@ public class KFSDownloader extends AbstractDownloader {
 		if (plainText == null) {
 			return null;
 		}
-		String copyright = "\u00a9 " + (date.getYear() + 1900) + " King Features Syndicate.";
 		try {
 			InputStream is = new FileInputStream(plainText);
 			DataOutputStream os = new DataOutputStream(new FileOutputStream(downloadTo));
-			boolean retVal = KingFeaturesPlaintextIO.convertKFPuzzle(is, os, 
-					fullName + ", " + df.format(date), author, copyright, date); 
+			boolean retVal = UclickXMLIO.convertUclickPuzzle(is, os,
+					"\u00a9 " + (date.getYear() + 1900) + " " + copyright, date); 
 			os.close();
 			is.close();
 			plainText.delete();
 			if(!retVal) {
-				LOG.log(Level.SEVERE, "Unable to convert KFS puzzle into Across Lite format.");
+				LOG.log(Level.SEVERE, "Unable to convert uclick XML puzzle into Across Lite format.");
 				downloadTo.delete();
 				downloadTo = null;
 			}
 		} catch (IOException ioe) {
-			LOG.log(Level.SEVERE, "Exception converting KFS puzzle into Across Lite format.", ioe);
+			LOG.log(Level.SEVERE, "Exception converting uclick XML puzzle into Across Lite format.", ioe);
 			downloadTo.delete();
 			downloadTo = null;
 		}
@@ -96,8 +98,8 @@ public class KFSDownloader extends AbstractDownloader {
 	
 	@Override
 	protected String createUrlSuffix(Date date) {
-		return (date.getYear() + 1900) +
+		return this.shortName + nf.format(date.getYear() - 100) +
 		nf.format(date.getMonth() + 1) + nf.format(date.getDate())
-		+ ".txt";
+		+ "-data.xml";
 	}
 }
