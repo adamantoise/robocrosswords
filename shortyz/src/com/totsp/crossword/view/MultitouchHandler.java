@@ -16,6 +16,7 @@ public class MultitouchHandler implements OnScaleGestureListener, AuxTouchHandle
     	this.scaleDetector = new ScaleGestureDetector(view.getContext(), this);
     }
 
+    
     public boolean onTouchEvent(MotionEvent ev) {
     	scaleDetector.onTouchEvent(ev);
         boolean result = scaleDetector.isInProgress();
@@ -29,7 +30,7 @@ public class MultitouchHandler implements OnScaleGestureListener, AuxTouchHandle
     }
 
 	public boolean onScale(ScaleGestureDetector detector) {
-		view.zoom(detector.getScaleFactor(), 0, 0);
+		view.zoom(detector.getScaleFactor(), (int) detector.getFocusX(), (int) detector.getFocusY());
 		return true;
 	}
 

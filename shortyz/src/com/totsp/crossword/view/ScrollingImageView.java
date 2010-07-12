@@ -1,16 +1,22 @@
 package com.totsp.crossword.view;
 
-import java.util.Timer;
-import java.util.logging.Logger;
-
 import android.content.Context;
+
 import android.graphics.Bitmap;
+
 import android.util.AttributeSet;
+
 import android.view.GestureDetector;
-import android.view.MotionEvent;
+
 import android.view.GestureDetector.OnGestureListener;
+
+import android.view.MotionEvent;
+
 import android.widget.AbsoluteLayout;
 import android.widget.ImageView;
+
+import java.util.Timer;
+import java.util.logging.Logger;
 
 
 public class ScrollingImageView extends AbsoluteLayout
@@ -21,10 +27,11 @@ public class ScrollingImageView extends AbsoluteLayout
     private GestureDetector gestureDetector;
     private ImageView imageView;
     private ScaleListener scaleListener = null;
+    private ScrollLocation scaleScrollLocation;
     private Timer longTouchTimer = new Timer();
     private boolean longTouched;
-    private double xScrollPercent;
-    private double yScrollPercent;
+    private float maxScale = 2.5f;
+    private float minScale = 0.25f;
     private float runningScale = 1.0f;
 
     public ScrollingImageView(Context context, AttributeSet as) {
@@ -53,20 +60,30 @@ public class ScrollingImageView extends AbsoluteLayout
     }
 
     public void setBitmap(Bitmap bitmap) {
-    	if(bitmap == null){
-    		return;
-    	}
-        if (imageView != null) {
-            this.removeView(imageView);
+        this.setBitmap(bitmap, true);
+    }
+
+    public void setBitmap(Bitmap bitmap, boolean rescale) {
+        if (bitmap == null) {
+            return;
         }
 
         LOG.finest("New Bitmap Size: " + bitmap.getWidth() + " x " +
             bitmap.getHeight());
-        imageView.setImageBitmap(bitmap);
 
-        AbsoluteLayout.LayoutParams params = new AbsoluteLayout.LayoutParams(bitmap.getWidth(),
-                bitmap.getHeight(), 0, 0);
-        this.addView(imageView, params);
+        if (rescale) {
+            if (imageView != null) {
+                this.removeView(imageView);
+            }
+
+            imageView.setImageBitmap(bitmap);
+
+            AbsoluteLayout.LayoutParams params = new AbsoluteLayout.LayoutParams(bitmap.getWidth(),
+                    bitmap.getHeight(), 0, 0);
+            this.addView(imageView, params);
+        } else {
+            imageView.setImageBitmap(bitmap);
+        }
     }
 
     public void setContextMenuListener(ClickListener l) {
@@ -77,8 +94,42 @@ public class ScrollingImageView extends AbsoluteLayout
         return this.imageView;
     }
 
+    public void setMaxScale(float maxScale) {
+        this.maxScale = maxScale;
+    }
+
+    public float getMaxScale() {
+        return maxScale;
+    }
+
+    public int getMaxScrollX() {
+        return imageView.getWidth() - this.getWidth();
+    }
+
+    public int getMaxScrollY() {
+        return imageView.getHeight() - this.getHeight();
+    }
+
+    public void setMinScale(float minScale) {
+        this.minScale = minScale;
+    }
+
+    public float getMinScale() {
+        return minScale;
+    }
+
     public void setScaleListener(ScaleListener scaleListener) {
         this.scaleListener = scaleListener;
+    }
+
+    public boolean isVisible(Point p) {
+        int currentMinX = this.getScrollX();
+        int currentMaxX = this.getWidth() + this.getScrollX();
+        int currentMinY = this.getScrollY();
+        int currentMaxY = this.getHeight() + this.getScrollY();
+
+        return (p.x >= currentMinX) && (p.x <= currentMaxX) &&
+        (p.y >= currentMinY) && (p.y <= currentMaxY);
     }
 
     @Override
@@ -91,21 +142,13 @@ public class ScrollingImageView extends AbsoluteLayout
 
         return true;
     }
-    
-    public boolean isVisible(Point p) {
-    	int currentMinX = this.getScrollX();
-        int currentMaxX = this.getWidth() + this.getScrollX();
-        int currentMinY = this.getScrollY();
-        int currentMaxY = this.getHeight() + this.getScrollY();
-        
-        return p.x >= currentMinX && p.x <= currentMaxX && 
-        	p.y >= currentMinY && p.y <= currentMaxY;
-    }
 
     public void ensureVisible(Point p) {
-        int maxScrollX = imageView.getWidth() - this.getWidth();
+        int maxScrollX = this.getMaxScrollX();
         int x = p.x;
-        int maxScrollY = imageView.getHeight() - this.getHeight();
+        int maxScrollY = this.getMaxScrollY();
+        ;
+
         int y = p.y;
 
         int currentMinX = this.getScrollX();
@@ -119,14 +162,12 @@ public class ScrollingImageView extends AbsoluteLayout
         LOG.finest("Desired Y:" + y);
 
         if ((x < currentMinX) || (x > currentMaxX)) {
-            this.scrollTo((x > maxScrollX) ? maxScrollX : (x),
-                this.getScrollY());
+            this.scrollTo((x > maxScrollX) ? maxScrollX : (x), this.getScrollY());
         }
 
         if ((y < currentMinY) || (y > currentMaxY)) {
             LOG.finest("Y adjust");
-            this.scrollTo(this.getScrollX(),
-                (y > maxScrollY) ? maxScrollY : (y));
+            this.scrollTo(this.getScrollX(), (y > maxScrollY) ? maxScrollY : (y));
         }
     }
 
@@ -145,9 +186,7 @@ public class ScrollingImageView extends AbsoluteLayout
             return;
         }
 
-        final Point p = new Point();
-        p.x = (int) (e.getX() + this.getScrollX());
-        p.y = (int) (e.getY() + this.getScrollY());
+        final Point p = this.resolveToImagePoint(e.getX(), e.getY());
 
         if (ScrollingImageView.this.ctxListener != null) {
             ScrollingImageView.this.ctxListener.onContextMenu(p);
@@ -208,10 +247,6 @@ public class ScrollingImageView extends AbsoluteLayout
                 }
             }
         }
-
-        this.xScrollPercent = (double) this.getScrollX() / (double) (this.getWidth());
-        this.yScrollPercent = (double) this.getScrollY() / (double) (this.getHeight());
-
         return true;
     }
 
@@ -219,9 +254,7 @@ public class ScrollingImageView extends AbsoluteLayout
     }
 
     public boolean onSingleTapUp(MotionEvent e) {
-        Point p = new Point();
-        p.x = (int) (e.getX() + this.getScrollX());
-        p.y = (int) (e.getY() + this.getScrollY());
+        Point p = this.resolveToImagePoint(e.getX(), e.getY());
         this.longTouchTimer.cancel();
 
         if (this.longTouched == true) {
@@ -233,6 +266,14 @@ public class ScrollingImageView extends AbsoluteLayout
         }
 
         return true;
+    }
+
+    public Point resolveToImagePoint(float x, float y) {
+        return this.resolveToImagePoint((int) x, (int) y);
+    }
+
+    public Point resolveToImagePoint(int x, int y) {
+        return new Point(x + this.getScrollX(), y + this.getScrollY());
     }
 
     public void scrollBy(int x, int y) {
@@ -271,23 +312,59 @@ public class ScrollingImageView extends AbsoluteLayout
         }
     }
 
+    public void scrollTo(int x, int y) {
+        super.scrollTo(x, y);
+
+        //    	if(x ==0 && y ==0 ){
+        //    		try{
+        //    			throw new RuntimeException();
+        //    		} catch(Exception e){
+        //    			e.printStackTrace();
+        //    		}
+        //    	}
+    }
+
     public void zoom(float scale, int x, int y) {
+        if (this.scaleScrollLocation == null) {
+            this.scaleScrollLocation = new ScrollLocation(this.resolveToImagePoint(
+                        x, y), this.imageView);
+        }
+        if(runningScale * scale < minScale){
+        	scale = 1.0F;
+        }
+        if(runningScale * scale > maxScale){
+        	scale = 1.0F;
+        }
         int h = imageView.getHeight();
         int w = imageView.getWidth();
         h *= scale;
         w *= scale;
         runningScale *= scale;
-        System.out.println("zoom!");
         this.removeView(imageView);
         this.addView(imageView, new AbsoluteLayout.LayoutParams(w, h, 0, 0));
-        this.scrollTo(0, 0);
+        this.scaleScrollLocation.fixScroll(w, h, false);
     }
 
     public void zoomEnd() {
         if (this.scaleListener != null) {
-            scaleListener.onScale(runningScale);
+            scaleListener.onScale(runningScale,
+                this.scaleScrollLocation.findNewPoint(imageView.getWidth(),
+                    imageView.getHeight()));
+            this.scaleScrollLocation.fixScroll(imageView.getWidth(),
+                imageView.getHeight(), true);
+
+            Point origin = this.resolveToImagePoint(0, 0);
+
+            if (origin.x < 0) {
+                this.scrollTo(0, this.getScrollY());
+            }
+
+            if (origin.y < 0) {
+                this.scrollBy(this.getScrollX(), 0);
+            }
         }
 
+        this.scaleScrollLocation = null;
         runningScale = 1.0f;
     }
 
@@ -306,7 +383,7 @@ public class ScrollingImageView extends AbsoluteLayout
     }
 
     public static interface ScaleListener {
-        void onScale(float scale);
+        void onScale(float scale, Point center);
     }
 
     public static class Point {
@@ -320,10 +397,61 @@ public class ScrollingImageView extends AbsoluteLayout
 
         public Point() {
         }
-        
-        public int distance(Point p){
-        	double d = Math.sqrt( ((double) this.x - (double) p.x) + ((double) this.y - (double) p.y));
-        	return (int) Math.round(d);
+
+        public int distance(Point p) {
+            double d = Math.sqrt(((double) this.x - (double) p.x) +
+                    ((double) this.y - (double) p.y));
+
+            return (int) Math.round(d);
+        }
+    }
+
+    private class ScrollLocation {
+        private final ImageView imageView;
+        private final double percentAcrossImage;
+        private final double percentDownImage;
+        private final int absoluteX;
+        private final int absoluteY;
+
+        public ScrollLocation(Point p, ImageView imageView) {
+            this.imageView = imageView;
+            System.out.println(p.x + " :: " + imageView.getWidth());
+            this.percentAcrossImage = (double) p.x / (double) imageView.getWidth();
+            System.out.println("PctAcross " + this.percentAcrossImage);
+            this.percentDownImage = (double) p.y / (double) imageView.getHeight();
+            this.absoluteX = p.x - ScrollingImageView.this.getScrollX();
+            this.absoluteY = p.y - ScrollingImageView.this.getScrollY();
+        }
+
+        public Point findNewPoint(int newWidth, int newHeight) {
+            int newX = (int) Math.round((double) newWidth * this.percentAcrossImage);
+            int newY = (int) Math.round((double) newHeight * this.percentDownImage);
+
+            return new Point(newX, newY);
+        }
+
+        public void fixScroll(int newWidth, int newHeight, boolean snap) {
+            Point newPoint = this.findNewPoint(newWidth, newHeight);
+            System.out.println(this.imageView.getWidth());
+            System.out.println(this.imageView.getHeight());
+
+            int newScrollX = newPoint.x - this.absoluteX;
+            int newScrollY = newPoint.y - this.absoluteY;
+
+            int maxX = ScrollingImageView.this.getMaxScrollX();
+            int maxY = ScrollingImageView.this.getMaxScrollY();
+
+            if (snap && (newScrollX > maxX)) {
+                newScrollX = maxX;
+            }
+
+            if (snap && (newScrollY > maxY)) {
+                newScrollY = maxY;
+            }
+
+            ScrollingImageView.this.scrollTo(newScrollX, newScrollY);
+            System.out.println("Fixed scroll to " + newScrollX + ", " +
+                newScrollY);
         }
     }
 }
