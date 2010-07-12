@@ -634,14 +634,16 @@ public class PlayActivity extends Activity {
 
 			float newScale = RENDERER.zoomIn();
 			this.prefs.edit().putFloat("scale", newScale).commit();
+			this.fitToScreen = false;
 			this.render();
 
 			return true;
 		} else if (item.getTitle().equals("Zoom Out")) {
 			this.boardView.scrollTo(0, 0);
-
+			
 			float newScale = RENDERER.zoomOut();
 			this.prefs.edit().putFloat("scale", newScale).commit();
+			this.fitToScreen = false;
 			this.render();
 
 			return true;

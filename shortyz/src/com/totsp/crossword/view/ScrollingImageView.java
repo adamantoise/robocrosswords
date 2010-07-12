@@ -1,22 +1,16 @@
 package com.totsp.crossword.view;
 
-import android.content.Context;
-
-import android.graphics.Bitmap;
-
-import android.util.AttributeSet;
-
-import android.view.GestureDetector;
-
-import android.view.GestureDetector.OnGestureListener;
-
-import android.view.MotionEvent;
-
-import android.widget.AbsoluteLayout;
-import android.widget.ImageView;
-
 import java.util.Timer;
 import java.util.logging.Logger;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.util.AttributeSet;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.GestureDetector.OnGestureListener;
+import android.widget.AbsoluteLayout;
+import android.widget.ImageView;
 
 
 public class ScrollingImageView extends AbsoluteLayout
