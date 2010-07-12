@@ -18,6 +18,9 @@
 				<data android:scheme="file"
 					android:host="*"
 					android:pathPattern=".*\\.puz" />
+				<data 
+					android:scheme="file"
+					android:mimeType="application/x-crossword" />
 			</intent-filter>
 		</activity>
 		<activity android:name="com.totsp.crossword.PreferencesActivity"
