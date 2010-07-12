@@ -1,0 +1,11 @@
+
+syntax: regexp
+^shortyz/bin$
+syntax: regexp
+^puzlib/target$
+syntax: regexp
+^puzlib/target$
+syntax: regexp
+^web/target$
+syntax: regexp
+^test/bin$
