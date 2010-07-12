@@ -94,7 +94,8 @@ public class PlayActivity extends Activity {
 	private boolean useNativeKeyboard = false;
 	private long lastKey;
 	private long resumedOn;
-	private float oldScale = -1;
+	long lastTap = 0;
+	boolean fitToScreen;
 
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
@@ -290,8 +291,7 @@ public class PlayActivity extends Activity {
 
 			this.registerForContextMenu(boardView);
 			boardView.setContextMenuListener(new ClickListener() {
-				long lastTap = 0;
-
+				
 				public void onContextMenu(final Point e) {
 					handler.post(new Runnable() {
 						public void run() {
@@ -310,10 +310,24 @@ public class PlayActivity extends Activity {
 
 				public void onTap(Point e) {
 					try {
-
-						Position p = PlayActivity.RENDERER.findBox(e);
-						Word old = PlayActivity.BOARD.setHighlightLetter(p);
-						PlayActivity.this.render(old);
+						if( prefs.getBoolean("doubleTap", false ) && System.currentTimeMillis() - lastTap < 300){
+							if(fitToScreen){
+								PlayActivity.RENDERER.setScale(prefs.getFloat("scale", 1F));
+								PlayActivity.BOARD.setHighlightLetter( RENDERER.findBox(e));
+								render();
+							} else {
+								int w = boardView.getWidth();
+								int h = boardView.getHeight();
+								PlayActivity.RENDERER.fitTo(w < h ? w : h);
+								render();
+								boardView.scrollTo(0, 0);
+							}
+							fitToScreen = !fitToScreen;
+						} else {
+							Position p = PlayActivity.RENDERER.findBox(e);
+							Word old = PlayActivity.BOARD.setHighlightLetter(p);
+							PlayActivity.this.render(old);
+						}
 						lastTap = System.currentTimeMillis();
 
 					} catch (Exception ex) {
@@ -365,12 +379,11 @@ public class PlayActivity extends Activity {
 				});
 
 		this.boardView.setScaleListener(new ScaleListener() {
-			float scale;
 			TimerTask t;
 			Timer renderTimer = new Timer();
 
 			public void onScale(float newScale, final Point center) {
-				this.scale = newScale;
+				fitToScreen = false;
 
 				if (t != null) {
 					t.cancel();

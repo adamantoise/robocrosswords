@@ -231,12 +231,12 @@
 	android:key="enterChangesDirection"
 	/>
 	
-	<!--  CheckBoxPreference
-	android:title="Use Native Keyboard"
+	<CheckBoxPreference
+	android:title="Double Tap Zoom"
 	android:defaultValue="false"
-	android:summary="Uses the Android soft keyboard for input. Unchecked, use the Shortyz condensed keyboard"
-	android:key="useNativeKeyboard"
-	/-->
+	android:summary="Double tap toggles between fit to screen, and your default zoom."
+	android:key="doubleTap"
+	/>
 	
 	<ListPreference
 		android:title="Keyboard Style"
