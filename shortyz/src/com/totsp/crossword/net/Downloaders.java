@@ -182,8 +182,9 @@ public class Downloaders {
         
         boolean update = false;
         
-        if (downloaders == null) {
+        if (downloaders == null || downloaders.size() == 0 || System.currentTimeMillis() - date.getTime() > 5 * 60 * 60 * 1000 ) {
         	// Download called from periodic updater - perform updates.
+        	// RC: added update on older downloads too.
         	update = true;
         	downloaders = getDownloaders(date);
         }
