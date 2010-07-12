@@ -371,7 +371,7 @@ public class PlayActivity extends Activity {
 			TimerTask t;
 			Timer renderTimer = new Timer();
 
-			public void onScale(float newScale) {
+			public void onScale(float newScale, final Point center) {
 				this.scale = newScale;
 
 				if (t != null) {
@@ -384,11 +384,14 @@ public class PlayActivity extends Activity {
 					public void run() {
 						handler.post(new Runnable() {
 							public void run() {
+								int w = boardView.getImageView().getWidth();
+								int h = boardView.getImageView().getHeight();
 								prefs.edit().putFloat("scale",
-										RENDERER.setLogicalScale(scale))
+										RENDERER.fitTo(w < h ? w : h))
 										.commit();
-								render();
-								boardView.scrollTo(0, 0);
+						 		BOARD.setHighlightLetter(RENDERER.findBox(center));
+								
+								render(false);
 							}
 						});
 					}
@@ -803,8 +806,15 @@ public class PlayActivity extends Activity {
 	private void render() {
 		render(null);
 	}
-
-	private void render(Word previous) {
+	
+	private void render(boolean rescale){
+		this.render(null, rescale);
+	}
+	
+	private void render(Word previous){
+		this.render(previous, true);
+	}
+	private void render(Word previous, boolean rescale) {
 		if ((this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
 				|| (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
 			if (this.useNativeKeyboard) {
@@ -826,13 +836,13 @@ public class PlayActivity extends Activity {
 			c = PlayActivity.BOARD.getClue();
 		}
 
-		this.boardView.setBitmap(RENDERER.draw(previous));
+		this.boardView.setBitmap(RENDERER.draw(previous), rescale);
 
 		/*
 		 *  If we jumped to a new word, ensure the first letter is visible.  Otherwise, insure that
 		 *  the current letter is visible.  Only necessary if the cursor is currently off screen.
 		 */
-		if (this.prefs.getBoolean("ensureVisible", true)) {
+		if (rescale && this.prefs.getBoolean("ensureVisible", true)) {
 			Point topLeft, bottomRight;
 			Point cursorTopLeft, cursorBottomRight;
 			cursorTopLeft = RENDERER.findPointTopLeft(PlayActivity.BOARD
