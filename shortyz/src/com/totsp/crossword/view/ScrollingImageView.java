@@ -407,17 +407,13 @@ public class ScrollingImageView extends AbsoluteLayout
     }
 
     private class ScrollLocation {
-        private final ImageView imageView;
         private final double percentAcrossImage;
         private final double percentDownImage;
         private final int absoluteX;
         private final int absoluteY;
 
         public ScrollLocation(Point p, ImageView imageView) {
-            this.imageView = imageView;
-            System.out.println(p.x + " :: " + imageView.getWidth());
             this.percentAcrossImage = (double) p.x / (double) imageView.getWidth();
-            System.out.println("PctAcross " + this.percentAcrossImage);
             this.percentDownImage = (double) p.y / (double) imageView.getHeight();
             this.absoluteX = p.x - ScrollingImageView.this.getScrollX();
             this.absoluteY = p.y - ScrollingImageView.this.getScrollY();
@@ -432,8 +428,6 @@ public class ScrollingImageView extends AbsoluteLayout
 
         public void fixScroll(int newWidth, int newHeight, boolean snap) {
             Point newPoint = this.findNewPoint(newWidth, newHeight);
-            System.out.println(this.imageView.getWidth());
-            System.out.println(this.imageView.getHeight());
 
             int newScrollX = newPoint.x - this.absoluteX;
             int newScrollY = newPoint.y - this.absoluteY;
@@ -450,8 +444,6 @@ public class ScrollingImageView extends AbsoluteLayout
             }
 
             ScrollingImageView.this.scrollTo(newScrollX, newScrollY);
-            System.out.println("Fixed scroll to " + newScrollX + ", " +
-                newScrollY);
         }
     }
 }

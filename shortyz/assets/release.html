@@ -16,7 +16,42 @@ body { background: black;}
 <input style="float: right;" type="image" src="donate.gif" border="0" name="submit" alt="Make payments with PayPal - it's fast, free and secure!">
 </form>
 <a style="font-size:10px; float:right; clear:right; width:60px; text-align: center" href="#donations">Huh?</a>
-<h2>Shortyz 2.2.9</h2>
+
+<h2>Shortyz 2.1.12</h2>
+
+<p>First of all, I would like to officially welcome Jeff Davidson to the "team." He has made a number of big
+contributions to this release:
+
+<ul>
+   <li>Improved movement semantics, especially when you have skip filled and show errors on.</li>
+   <li>New sources, included the first non-AcrossLite format puzzles: Sheffer, Joseph Crosswords, 
+   Universal Crossword, USA Today, WaPo Sunday (other days the same as the Houston Chronicle), Newsday,
+   Jonesin' Crosswords, Premier Crosswords and the LA Times Sunday Calendar.</li>
+   <li>Download dialog now supports selecting a single puzzle source if you want.</li>
+   <li>Puzzles with circled clues (that are properly encoded) will show the circles on the playboard.
+   Please note: puzzles you have previously downloaded won't work unless you delete and redownload. 
+   New puzzles going forward should work fine, though.</li>
+   <li>Settings for puzzle sources re-orged.</li>
+</ul> 
+</p>
+
+<p>Wow. I feel like a wuss now. Thanks so much. In other news...
+<ul>
+   <li>New rendering code. Mostly you shouldn't notice it, but the Clues display and the Board now share 
+   rendering code, so the strange positioning on the Clues display is gone and show errors works propery.</li>
+   <li>Pinch zoom for Froyo (Android 2.2) is full on. Will properly center around the pinch, not the 0,0 position. Also the 
+   snap from re-rending now more closely matches the sizing of the scaled image. Also limits the scale range
+   so you shouldn't be able to hose the app by zooming to large or too small.</li>
+   <li>Lots of small bug fixes</li>
+</ul></p>
+
+<p>We have also both made a pass at the "Ensure Visible" code. I think it is much improved now but there will be
+a few differences. If you nav off the lower edge of the screen, you will snap down the a full screen to the new
+cursor position. When you nav off screen into a new word, you will get visibility on the side of the word your
+cursor is closest to -- the beginning or end of the word.</p>
+
+
+<h3>Previously: 2.2.9</h3>
 
 <p>OK, everyone but me seems to hate the double tap scale. Moved Fit to Screen to the Zoom menu
 and works like a standard zoom setting now.</p>
