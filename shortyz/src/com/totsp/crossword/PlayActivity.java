@@ -326,17 +326,14 @@ public class PlayActivity extends Activity {
 			e.printStackTrace();
 
 			Toast t = Toast.makeText(this, "Unable to read file"
-					+ this.baseFile != null ? " \n" + this.baseFile.getName() : "", Toast.LENGTH_SHORT);
+					+ this.baseFile != null ? " \n" + this.baseFile.getName()
+					: "", Toast.LENGTH_SHORT);
 			t.show();
 			this.finish();
 
 			return;
 		}
-
-		dialog = new Dialog(this);
-		dialog.setTitle("Puzzle Info");
-		dialog.setContentView(R.layout.puzzle_info_dialog);
-
+		
 		completeDialog = new AlertDialog.Builder(this).create();
 		completeDialog.setTitle("Puzzle Complete!");
 		completeDialog.setMessage("");
@@ -347,6 +344,7 @@ public class PlayActivity extends Activity {
 				return;
 			}
 		});
+
 
 		revealPuzzleDialog = new AlertDialog.Builder(this).create();
 		revealPuzzleDialog.setTitle("Reveal Entire Puzzle");
@@ -387,10 +385,10 @@ public class PlayActivity extends Activity {
 								int w = boardView.getImageView().getWidth();
 								int h = boardView.getImageView().getHeight();
 								prefs.edit().putFloat("scale",
-										RENDERER.fitTo(w < h ? w : h))
-										.commit();
-						 		BOARD.setHighlightLetter(RENDERER.findBox(center));
-								
+										RENDERER.fitTo(w < h ? w : h)).commit();
+								BOARD.setHighlightLetter(RENDERER
+										.findBox(center));
+
 								render(false);
 							}
 						});
@@ -427,8 +425,7 @@ public class PlayActivity extends Activity {
 			menu.add("Zoom Out");
 			menu.add("Fit to Screen");
 			menu.add("Zoom Reset");
-			
-			
+
 		}
 	}
 
@@ -637,7 +634,9 @@ public class PlayActivity extends Activity {
 			return true;
 		} else if (item.getTitle().equals("Fit to Screen")) {
 			this.boardView.scrollTo(0, 0);
-			int v  = this.boardView.getWidth() < this.boardView.getHeight() ? this.boardView.getWidth() : this.boardView.getHeight();
+			int v = this.boardView.getWidth() < this.boardView.getHeight() ? this.boardView
+					.getWidth()
+					: this.boardView.getHeight();
 			float newScale = RENDERER.fitTo(v);
 			this.prefs.edit().putFloat("scale", newScale).commit();
 			this.render();
@@ -651,28 +650,6 @@ public class PlayActivity extends Activity {
 
 			return true;
 		} else if (item.getTitle().equals("Info")) {
-			TextView view = (TextView) dialog
-					.findViewById(R.id.puzzle_info_title);
-			view.setText(this.puz.getTitle());
-			view = (TextView) dialog.findViewById(R.id.puzzle_info_author);
-			view.setText(this.puz.getAuthor());
-			view = (TextView) dialog.findViewById(R.id.puzzle_info_copyright);
-			view.setText(this.puz.getCopyright());
-			view = (TextView) dialog.findViewById(R.id.puzzle_info_time);
-
-			if (timer != null) {
-				this.timer.stop();
-				view.setText("Elapsed Time: " + this.timer.time());
-				this.timer.start();
-			} else {
-				view.setText("Elapsed Time: "
-						+ new ImaginaryTimer(puz.getTime()).time());
-			}
-
-			ProgressBar progress = (ProgressBar) dialog
-					.findViewById(R.id.puzzle_info_progress);
-			progress.setProgress(this.puz.getPercentComplete());
-
 			this.showDialog(INFO_DIALOG);
 
 			return true;
@@ -702,10 +679,43 @@ public class PlayActivity extends Activity {
 		this.render();
 	}
 
+	private Dialog createInfoDialog() {
+		if (dialog == null) {
+			dialog = new Dialog(this);
+		}
+		dialog.setTitle("Puzzle Info");
+		dialog.setContentView(R.layout.puzzle_info_dialog);
+		TextView view = (TextView) dialog.findViewById(R.id.puzzle_info_title);
+		view.setText(this.puz.getTitle());
+		view = (TextView) dialog.findViewById(R.id.puzzle_info_author);
+		view.setText(this.puz.getAuthor());
+		view = (TextView) dialog.findViewById(R.id.puzzle_info_copyright);
+		view.setText(this.puz.getCopyright());
+		view = (TextView) dialog.findViewById(R.id.puzzle_info_time);
+
+		if (timer != null) {
+			this.timer.stop();
+			view.setText("Elapsed Time: " + this.timer.time());
+			this.timer.start();
+		} else {
+			view.setText("Elapsed Time: "
+					+ new ImaginaryTimer(puz.getTime()).time());
+		}
+
+		ProgressBar progress = (ProgressBar) dialog
+				.findViewById(R.id.puzzle_info_progress);
+		progress.setProgress(this.puz.getPercentComplete());
+
+		
+		return dialog;
+	}
+
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case INFO_DIALOG:
-			return dialog;
+			// This is weird. I don't know why a rotate resets the dialog.
+			// Whatevs.
+			return createInfoDialog();
 
 		case COMPLETE_DIALOG:
 			return completeDialog;
@@ -806,14 +816,15 @@ public class PlayActivity extends Activity {
 	private void render() {
 		render(null);
 	}
-	
-	private void render(boolean rescale){
+
+	private void render(boolean rescale) {
 		this.render(null, rescale);
 	}
-	
-	private void render(Word previous){
+
+	private void render(Word previous) {
 		this.render(previous, true);
 	}
+
 	private void render(Word previous, boolean rescale) {
 		if ((this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
 				|| (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
@@ -839,18 +850,21 @@ public class PlayActivity extends Activity {
 		this.boardView.setBitmap(RENDERER.draw(previous), rescale);
 
 		/*
-		 *  If we jumped to a new word, ensure the first letter is visible.  Otherwise, insure that
-		 *  the current letter is visible.  Only necessary if the cursor is currently off screen.
+		 * If we jumped to a new word, ensure the first letter is visible.
+		 * Otherwise, insure that the current letter is visible. Only necessary
+		 * if the cursor is currently off screen.
 		 */
 		if (rescale && this.prefs.getBoolean("ensureVisible", true)) {
 			Point topLeft, bottomRight;
 			Point cursorTopLeft, cursorBottomRight;
 			cursorTopLeft = RENDERER.findPointTopLeft(PlayActivity.BOARD
 					.getHighlightLetter());
-			cursorBottomRight = RENDERER.findPointBottomRight(PlayActivity.BOARD
-					.getHighlightLetter());
-					
-			if (previous != null && previous.equals(PlayActivity.BOARD.getCurrentWord())) {
+			cursorBottomRight = RENDERER
+					.findPointBottomRight(PlayActivity.BOARD
+							.getHighlightLetter());
+
+			if (previous != null
+					&& previous.equals(PlayActivity.BOARD.getCurrentWord())) {
 				topLeft = cursorTopLeft;
 				bottomRight = cursorBottomRight;
 			} else {
@@ -861,17 +875,18 @@ public class PlayActivity extends Activity {
 			}
 			int tlDistance = cursorTopLeft.distance(topLeft);
 			int brDistance = cursorBottomRight.distance(bottomRight);
-			
+
 			if (!this.boardView.isVisible(topLeft) && tlDistance < brDistance) {
 				this.boardView.ensureVisible(topLeft);
 			}
-			if(!this.boardView.isVisible(bottomRight) && brDistance < tlDistance){
+			if (!this.boardView.isVisible(bottomRight)
+					&& brDistance < tlDistance) {
 				this.boardView.ensureVisible(bottomRight);
 			}
-			
-			//ensure the cursor is always on the screen.
-			this.boardView.ensureVisible(cursorTopLeft);
+
+			// ensure the cursor is always on the screen.
 			this.boardView.ensureVisible(cursorBottomRight);
+			this.boardView.ensureVisible(cursorTopLeft);
 		}
 
 		this.clue.setText("("

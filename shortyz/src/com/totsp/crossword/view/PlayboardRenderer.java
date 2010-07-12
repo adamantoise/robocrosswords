@@ -311,7 +311,7 @@ public class PlayboardRenderer {
             ? this.currentLetterBox : this.blackLine;
 
         // Draw left
-        if (col != (highlight.across + 1)) {
+        if (col != (highlight.across + 1)  || row != highlight.down) {
             canvas.drawLine(x, y, x, y + boxSize, boxColor);
         }
 
@@ -321,7 +321,7 @@ public class PlayboardRenderer {
         }
 
         // Draw right
-        if (col != (highlight.across - 1)) {
+        if (col != (highlight.across - 1)  || row != highlight.down) {
             canvas.drawLine(x + boxSize, y, x + boxSize, y + boxSize, boxColor);
         }
 
