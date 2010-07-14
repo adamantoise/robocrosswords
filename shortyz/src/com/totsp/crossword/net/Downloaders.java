@@ -142,7 +142,7 @@ public class Downloaders {
     public List<Downloader> getDownloaders(Date date) {
         int dayOfWeek = date.getDay();
         List<Downloader> retVal = new LinkedList<Downloader>();
-
+        
         for (Downloader d : downloaders) {
             if (Arrays.binarySearch(d.getDownloadDates(), dayOfWeek) >= 0) {
                 retVal.add(d);

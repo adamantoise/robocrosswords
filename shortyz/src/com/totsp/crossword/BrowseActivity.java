@@ -249,16 +249,15 @@ public class BrowseActivity extends ListActivity {
             DownloadPickerDialog.OnDownloadSelectedListener downloadButtonListener = 
             		new DownloadPickerDialog.OnDownloadSelectedListener() {
 				public void onDownloadSelected(Date d, List<Downloader> downloaders, int selected) {
-					List<Downloader> toDownload;
+					List<Downloader> toDownload = new LinkedList<Downloader>();
 					boolean scrape;
 					if (selected == 0) {
 						// Download all available.
-						downloaders.remove(0);
-						toDownload = downloaders;
+						toDownload.addAll(downloaders);
+						toDownload.remove(0);
 						scrape = true;
 					} else {
 						// Only download selected.
-						toDownload = new LinkedList<Downloader>();
 						toDownload.add(downloaders.get(selected));
 						scrape = false;
 					}
