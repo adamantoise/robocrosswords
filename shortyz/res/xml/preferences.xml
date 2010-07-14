@@ -161,45 +161,45 @@
 <PreferenceCategory
 	android:title="Application Settings">
 	<CheckBoxPreference
-	android:title="Automatic Download"
-	android:defaultValue="true"
-	android:summary="Download today's puzzles when starting the application"
-	android:key="dlOnStartup"
+		android:title="Automatic Download"
+		android:defaultValue="true"
+		android:summary="Download today's puzzles when starting the application"
+		android:key="dlOnStartup"
 	/>
 	
 	<CheckBoxPreference
-	android:title="No Download Notifications"
-	android:defaultValue="false"
-	android:summary="Prevents a notification for each puzzle downloaded from appearing in the notifications list."
-	android:key="supressMessages"
+		android:title="No Download Notifications"
+		android:defaultValue="false"
+		android:summary="Prevents a notification for each puzzle downloaded from appearing in the notifications list."
+		android:key="supressMessages"
 	/>
 	
 	<CheckBoxPreference
-	android:title="Delete on Cleanup"
-	android:defaultValue="false"
-	android:summary="Delete rather than archive old puzzles"
-	android:key="deleteOnCleanup"
+		android:title="Delete on Cleanup"
+		android:defaultValue="false"
+		android:summary="Delete rather than archive old puzzles"
+		android:key="deleteOnCleanup"
 	/>
 	
 	<CheckBoxPreference
-	android:title="Snap to Current Word"
-	android:defaultValue="true"
-	android:summary="Toggles the auto-scrolling of the playboard to the current play position"
-	android:key="ensureVisible"
+		android:title="Snap to Current Word"
+		android:defaultValue="true"
+		android:summary="Toggles the auto-scrolling of the playboard to the current play position"
+		android:key="ensureVisible"
 	/>
 	
 	<CheckBoxPreference
-	android:title="Show Length"
-	android:defaultValue="false"
-	android:summary="Shows the number of letters in the answer on the clue line"
-	android:key="showCount"
+		android:title="Show Length"
+		android:defaultValue="false"
+		android:summary="Shows the number of letters in the answer on the clue line"
+		android:key="showCount"
 	/>
 	
 	<CheckBoxPreference
-	android:title="Scroll To Clue"
-	android:defaultValue="false"
-	android:summary="Toggles the auto-scrolling to the selected clue in the clues list mode. (Works like Shortyz 1)"
-	android:key="snapClue"
+		android:title="Scroll To Clue"
+		android:defaultValue="false"
+		android:summary="Toggles the auto-scrolling to the selected clue in the clues list mode. (Works like Shortyz 1)"
+		android:key="snapClue"
 	/>
 	
 	<ListPreference
@@ -211,31 +211,31 @@
 		android:entryValues="@array/movementStrategyValues" />
 	
 	<CheckBoxPreference
-	android:title="Skip Filled Boxes"
-	android:defaultValue="false"
-	android:summary="Toggles the skipping of filled boxes when you enter a new letter."
-	android:key="skipFilled"
+		android:title="Skip Filled Boxes"
+		android:defaultValue="false"
+		android:summary="Toggles the skipping of filled boxes when you enter a new letter."
+		android:key="skipFilled"
 	/>
 	
 	<CheckBoxPreference
-	android:title="Space Changes Direction"
-	android:defaultValue="true"
-	android:summary="Spacebar changed direction rather than blanking the box."
-	android:key="spaceChangesDirection"
+		android:title="Space Changes Direction"
+		android:defaultValue="true"
+		android:summary="Spacebar changed direction rather than blanking the box."
+		android:key="spaceChangesDirection"
 	/>
 	
 	<CheckBoxPreference
-	android:title="Enter Changes Direction"
-	android:defaultValue="true"
-	android:summary="Enter changes direction rather than moving to the next clue."
-	android:key="enterChangesDirection"
+		android:title="Enter Changes Direction"
+		android:defaultValue="true"
+		android:summary="Enter changes direction rather than moving to the next clue."
+		android:key="enterChangesDirection"
 	/>
 	
 	<CheckBoxPreference
-	android:title="Double Tap Zoom"
-	android:defaultValue="false"
-	android:summary="Double tap toggles between fit to screen, and your default zoom."
-	android:key="doubleTap"
+		android:title="Double Tap Zoom"
+		android:defaultValue="false"
+		android:summary="Double tap toggles between fit to screen, and your default zoom."
+		android:key="doubleTap"
 	/>
 	
 	<ListPreference
@@ -245,19 +245,26 @@
 		android:defaultValue="CONDENSED"
 		android:entries="@array/keyboardTypeLabels"
 		android:entryValues="@array/keyboardTypeValues" />
+		
+	<!--  CheckBoxPreference
+		android:title="Full Screen"
+		android:defaultValue="false"
+		android:summary="Play screens run full screen."
+		android:key="fullScreen"
+	/-->
 	
  </PreferenceCategory>
 	
 	<PreferenceCategory
-	android:title="About Shortyz">
+		android:title="About Shortyz">
 	
 	<Preference
- 	android:title="Release Notes" 
- 	android:key="releaseNotes"/>
+	 	android:title="Release Notes" 
+	 	android:key="releaseNotes"/>
 	
 	<Preference
- 	android:title="License" 
- 	android:key="license"/>
+	 	android:title="License" 
+	 	android:key="license"/>
  	
 	</PreferenceCategory>
 </PreferenceScreen>

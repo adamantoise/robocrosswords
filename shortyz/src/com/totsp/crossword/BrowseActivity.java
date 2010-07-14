@@ -63,7 +63,6 @@ public class BrowseActivity extends ListActivity {
     private NotificationManager nm;
     private View lastOpenedView = null;
     private boolean viewArchive;
-    private Downloaders dls;
     private Dialog mDownloadDialog;
 
     @Override
@@ -200,8 +199,7 @@ public class BrowseActivity extends ListActivity {
         this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
         upgradePreferences();
         this.nm = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        this.dls = new Downloaders(prefs, nm, this);
-
+        
         switch (prefs.getInt("sort", 0)) {
         case 2:
             this.accessor = Accessor.SOURCE;
@@ -271,7 +269,7 @@ public class BrowseActivity extends ListActivity {
             Date d = new Date();
             
             DownloadPickerDialog dpd = new DownloadPickerDialog(this, downloadButtonListener,
-                    d.getYear() + 1900, d.getMonth(), d.getDate(), dls);
+                    d.getYear() + 1900, d.getMonth(), d.getDate(), new Downloaders(prefs, nm, this));
             
             mDownloadDialog = dpd.getInstance();
 
@@ -475,8 +473,10 @@ public class BrowseActivity extends ListActivity {
     }
 
     private void download(final Date d, final List<Downloader> downloaders, final boolean scrape) {
-        new Thread(new Runnable() {
+        final Downloaders dls =  new Downloaders(prefs, nm, this);
+    	new Thread(new Runnable() {
                 public void run() {
+                	
                 	dls.download(d, downloaders);
                 	
                 	if (scrape) {

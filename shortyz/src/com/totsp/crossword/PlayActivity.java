@@ -338,9 +338,15 @@ public class PlayActivity extends Activity {
 		} catch (IOException e) {
 			System.err.println(this.getIntent().getData());
 			e.printStackTrace();
-
+			String filename = null;
+			try{
+				filename = this.baseFile.getName();
+			} catch(Exception ee){
+				e.printStackTrace();
+			}
+			
 			Toast t = Toast.makeText(this, "Unable to read file"
-					+ this.baseFile != null ? " \n" + this.baseFile.getName()
+					+ filename != null ? " \n" + filename
 					: "", Toast.LENGTH_SHORT);
 			t.show();
 			this.finish();

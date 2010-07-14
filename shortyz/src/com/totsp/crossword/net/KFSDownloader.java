@@ -86,7 +86,7 @@ public class KFSDownloader extends AbstractDownloader {
 				downloadTo.delete();
 				downloadTo = null;
 			}
-		} catch (IOException ioe) {
+		} catch (Exception ioe) {
 			LOG.log(Level.SEVERE, "Exception converting KFS puzzle into Across Lite format.", ioe);
 			downloadTo.delete();
 			downloadTo = null;
