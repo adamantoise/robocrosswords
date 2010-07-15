@@ -224,9 +224,9 @@ public class BrowseActivity extends ListActivity {
             this.startActivity(i);
 
             return;
-        } else if (prefs.getBoolean("release_2.2.12", true)) {
+        } else if (prefs.getBoolean("release_2.2.17", true)) {
             Editor e = prefs.edit();
-            e.putBoolean("release_2.2.12", false);
+            e.putBoolean("release_2.2.17", false);
             e.commit();
 
             Intent i = new Intent(Intent.ACTION_VIEW,

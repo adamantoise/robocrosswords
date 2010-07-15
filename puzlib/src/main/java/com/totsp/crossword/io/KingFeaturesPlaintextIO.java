@@ -3,6 +3,7 @@ package com.totsp.crossword.io;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,7 +30,20 @@ import com.totsp.crossword.puz.Puzzle;
  * src/test/resources/premiere-20100704.txt.
  */
 public class KingFeaturesPlaintextIO {
-	private static final String CHARSET_NAME = "MacRoman";
+	private static final String CHARSET_NAME;
+	static{
+		
+			Charset cs = null;
+			try{
+				cs = Charset.forName("MacRoman");
+			} catch(Exception e){
+			}
+			if( cs != null ){
+				CHARSET_NAME="MacRoman";
+			} else {
+				CHARSET_NAME="ISO8859_1";
+			}	
+	}
 	
 	/**
 	 * Take an InputStream containing a plaintext puzzle to a DataOutputStream containing

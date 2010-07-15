@@ -52,15 +52,12 @@ public class UclickXMLIOTest extends TestCase {
 		tmp.delete();
 	}
 	
-	public void testConvert() {
+	public void testConvert() throws IOException {
 		assertTrue(UclickXMLIO.convertUclickPuzzle(is, os, COPYRIGHT, DATE));
 		Puzzle puz = null;
-		try {
-			puz = IO.load(tmp);
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail("IO Error in IO.load - " + e.getMessage());
-		}
+		
+		puz = IO.load(tmp);
+		
         
 		assertEquals(TITLE, puz.getTitle());
 		assertEquals(AUTHOR, puz.getAuthor());

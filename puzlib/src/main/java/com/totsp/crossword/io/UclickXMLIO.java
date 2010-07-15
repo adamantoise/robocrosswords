@@ -12,7 +12,10 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.Attributes;
+import org.xml.sax.DTDHandler;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 import com.totsp.crossword.puz.Box;
@@ -42,7 +45,7 @@ import com.totsp.crossword.puz.Puzzle;
  * which the clue starts.  [Clue] text is HTML escaped.
  */
 public class UclickXMLIO {
-	private static String CHARSET_NAME = "UTF-8";
+	private static String CHARSET_NAME = "utf8";
 
 	private static class UclickXMLParser extends DefaultHandler {
 		private Puzzle puz;
@@ -59,6 +62,9 @@ public class UclickXMLIO {
 		@Override
 		public void startElement(String nsURI, String strippedName,
 				String tagName, Attributes attributes) throws SAXException {
+			strippedName = strippedName.trim();
+			String name = strippedName.length() == 0 ? tagName.trim() : strippedName;
+			//System.out.println("Start" + name);
 			if (inAcross) {
 				int clueNum = Integer.parseInt(attributes.getValue("cn"));
 				if (clueNum > maxClueNum) {
@@ -79,15 +85,16 @@ public class UclickXMLIO {
 				} catch (UnsupportedEncodingException e) {
 					downNumToClueMap.put(clueNum, attributes.getValue("c"));
 				}
-			} else if (tagName.equalsIgnoreCase("title")) {
+			} else if (name.equalsIgnoreCase("title")) {
 				puz.setTitle(attributes.getValue("v"));
-			} else if (tagName.equalsIgnoreCase("author")) {
+			} else if (name.equalsIgnoreCase("author")) {
 				puz.setAuthor(attributes.getValue("v"));
-			} else if (tagName.equalsIgnoreCase("width")) {
+			} else if (name.equalsIgnoreCase("width")) {
 				puz.setWidth(Integer.parseInt(attributes.getValue("v")));
-			} else if (tagName.equalsIgnoreCase("height")) {
+				System.out.println("Width "+attributes.getValue("v"));
+			} else if (name.equalsIgnoreCase("height")) {
 				puz.setHeight(Integer.parseInt(attributes.getValue("v")));
-			} else if (tagName.equalsIgnoreCase("allanswer")) {
+			} else if (name.equalsIgnoreCase("allanswer")) {
 				String rawGrid = attributes.getValue("v");
 				Box[] boxesList = new Box[puz.getHeight()*puz.getWidth()];
 				for (int i = 0; i < rawGrid.length(); i++) {
@@ -100,9 +107,9 @@ public class UclickXMLIO {
 				}
 				puz.setBoxesList(boxesList);
 				puz.setBoxes(puz.buildBoxes());
-			} else if (tagName.equalsIgnoreCase("across")) {
+			} else if (name.equalsIgnoreCase("across")) {
 				inAcross = true;
-			} else if (tagName.equalsIgnoreCase("down")) {
+			} else if (name.equalsIgnoreCase("down")) {
 				inDown = true;
 			}
 		}
@@ -110,11 +117,16 @@ public class UclickXMLIO {
 		@Override
 		public void endElement(String nsURI, String strippedName,
 				String tagName) throws SAXException {
-			if (tagName.equalsIgnoreCase("across")) {
+			//System.out.println("EndElement " +nsURI+" : "+tagName);
+			strippedName = strippedName.trim();
+			String name = strippedName.length() == 0 ? tagName.trim() : strippedName;
+			//System.out.println("End : "+name);
+			
+			if (name.equalsIgnoreCase("across")) {
 				inAcross = false;
-			} else if (tagName.equalsIgnoreCase("down")) {
+			} else if (name.equalsIgnoreCase("down")) {
 				inDown = false;
-			} else if (tagName.equalsIgnoreCase("crossword")) {
+			} else if (name.equalsIgnoreCase("crossword")) {
 				int numberOfClues = acrossNumToClueMap.size() + downNumToClueMap.size();
 				puz.setNumberOfClues(numberOfClues);
 				String[] rawClues = new String[numberOfClues];
@@ -142,7 +154,10 @@ public class UclickXMLIO {
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		try {
 			SAXParser parser = factory.newSAXParser();
-			parser.parse(is, new UclickXMLParser(puz));
+			//parser.setProperty("http://xml.org/sax/features/validation", false);
+			XMLReader xr = parser.getXMLReader();
+			xr.setContentHandler(new UclickXMLParser(puz));
+			xr.parse(new InputSource(is));
 
 	        puz.setVersion(IO.VERSION_STRING);
 	        puz.setNotes("");
@@ -150,6 +165,7 @@ public class UclickXMLIO {
 			IO.saveNative(puz, os);
 			return true;
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.err.println("Unable to parse XML file: " + e.getMessage());
 			return false;
 		}
