@@ -181,6 +181,14 @@
 		android:key="deleteOnCleanup"
 	/>
 	
+	<ListPreference
+		android:title="Cleanup Unfinished"
+		android:summary="Determines how old an unfinished puzzle must be before it is archvied/deleted."
+		android:key="cleanupAge"
+		android:defaultValue="2"
+		android:entries="@array/cleanupAgeLabels"
+		android:entryValues="@array/cleanupAgeValues" />
+	
 	<CheckBoxPreference
 		android:title="Snap to Current Word"
 		android:defaultValue="true"

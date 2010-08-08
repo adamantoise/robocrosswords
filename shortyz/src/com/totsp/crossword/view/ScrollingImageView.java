@@ -340,7 +340,7 @@ public class ScrollingImageView extends AbsoluteLayout
     }
 
     public void zoomEnd() {
-        if (this.scaleListener != null) {
+        if (this.scaleListener != null && this.scaleScrollLocation != null) {
             scaleListener.onScale(runningScale,
                 this.scaleScrollLocation.findNewPoint(imageView.getWidth(),
                     imageView.getHeight()));

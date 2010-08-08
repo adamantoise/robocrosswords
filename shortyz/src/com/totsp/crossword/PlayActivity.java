@@ -671,6 +671,21 @@ public class PlayActivity extends Activity {
 
 			return true;
 		} else if (item.getTitle().equals("Info")) {
+			if(dialog != null){
+				TextView view = (TextView) dialog.findViewById(R.id.puzzle_info_time);
+	
+				if (timer != null) {
+					this.timer.stop();
+					view.setText("Elapsed Time: " + this.timer.time());
+					this.timer.start();
+				} else {
+					view.setText("Elapsed Time: "
+							+ new ImaginaryTimer(puz.getTime()).time());
+				}
+			
+			}
+
+			
 			this.showDialog(INFO_DIALOG);
 
 			return true;
@@ -775,6 +790,22 @@ public class PlayActivity extends Activity {
 		super.onPause();
 	}
 
+	 @Override
+	protected void onStop() {
+		super.onStop();
+		if(this.timer != null){
+			this.timer.stop();
+		}
+	}
+	 
+	 @Override
+	protected void onRestart() {
+		super.onRestart();
+		if(this.timer != null){
+			this.timer.start();
+		}
+	}
+	
 	@Override
 	protected void onResume() {
 		super.onResume();

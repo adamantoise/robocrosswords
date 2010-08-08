@@ -9,6 +9,8 @@ package com.totsp.crossword.shortyz;
 
 public final class R {
     public static final class array {
+        public static final int cleanupAgeLabels=0x7f060004;
+        public static final int cleanupAgeValues=0x7f060005;
         public static final int keyboardTypeLabels=0x7f060002;
         public static final int keyboardTypeValues=0x7f060003;
         public static final int movementStrategyLabels=0x7f060000;

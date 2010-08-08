@@ -47,7 +47,8 @@ import com.totsp.crossword.view.VerticalProgressBar;
 
 
 public class BrowseActivity extends ListActivity {
-    private static final int DOWNLOAD_DIALOG_ID = 0;
+    private static final String MENU_ARCHIVES = "Archives";
+	private static final int DOWNLOAD_DIALOG_ID = 0;
     private static final long DAY = 24L * 60L * 60L * 1000L;
     SharedPreferences prefs;
 
@@ -90,11 +91,19 @@ public class BrowseActivity extends ListActivity {
             render();
 
             return true;
+        } else if( item.getTitle().equals("Un-archive")){
+        	this.contextFile.renameTo(new File(this.crosswordsFolder, this.contextFile.getName()));
+        	meta.renameTo(new File(this.crosswordsFolder, meta.getName()));
+        	render();
+        	
+        	return true;
         }
 
         return super.onContextItemSelected(item);
     }
 
+    private MenuItem archiveMenuItem;
+    
     @Override
     public void onCreateContextMenu(ContextMenu menu, View view,
         ContextMenuInfo menuInfo) {
@@ -112,7 +121,7 @@ public class BrowseActivity extends ListActivity {
         menu.setHeaderTitle(contextFile.getName());
 
         menu.add("Delete");
-        menu.add("Archive");
+        this.archiveMenuItem = menu.add( this.viewArchive ? "Un-archive" : "Archive");
     }
 
     @Override
@@ -130,7 +139,7 @@ public class BrowseActivity extends ListActivity {
         sortMenu.add("By Source").setIcon(android.R.drawable.ic_menu_upload);
 
         menu.add("Cleanup").setIcon(android.R.drawable.ic_menu_manage);
-        menu.add("Archive").setIcon(android.R.drawable.ic_menu_view);
+        menu.add(MENU_ARCHIVES).setIcon(android.R.drawable.ic_menu_view);
         menu.add("Help").setIcon(android.R.drawable.ic_menu_help);
         menu.add("Settings").setIcon(android.R.drawable.ic_menu_preferences);
 
@@ -149,9 +158,12 @@ public class BrowseActivity extends ListActivity {
 
             return true;
         } else if (item.getTitle().equals("Crosswords") ||
-                item.getTitle().equals("Archive")) {
+                item.getTitle().equals(MENU_ARCHIVES)) {
             this.viewArchive = !viewArchive;
-            item.setTitle(viewArchive ? "Crosswords" : "Archive");
+            item.setTitle(viewArchive ? "Crosswords" : MENU_ARCHIVES);
+            if(archiveMenuItem != null){
+            	archiveMenuItem.setTitle( viewArchive ? "Un-archive" : "Archive");
+            }
             render();
 
             return true;
@@ -236,21 +248,22 @@ public class BrowseActivity extends ListActivity {
 
             return;
         }
-
+        
+        render();
         this.checkDownload();
 
-        render();
     }
 
     @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {
         case DOWNLOAD_DIALOG_ID:      
-            DownloadPickerDialog.OnDownloadSelectedListener downloadButtonListener = 
-            		new DownloadPickerDialog.OnDownloadSelectedListener() {
+            DownloadPickerDialogBuilder.OnDownloadSelectedListener downloadButtonListener = 
+            		new DownloadPickerDialogBuilder.OnDownloadSelectedListener() {
 				public void onDownloadSelected(Date d, List<Downloader> downloaders, int selected) {
 					List<Downloader> toDownload = new LinkedList<Downloader>();
 					boolean scrape;
+					System.out.println(selected+" of "+downloaders.size());
 					if (selected == 0) {
 						// Download all available.
 						toDownload.addAll(downloaders);
@@ -267,7 +280,7 @@ public class BrowseActivity extends ListActivity {
 			
             Date d = new Date();
             
-            DownloadPickerDialog dpd = new DownloadPickerDialog(this, downloadButtonListener,
+            DownloadPickerDialogBuilder dpd = new DownloadPickerDialogBuilder(this, downloadButtonListener,
                     d.getYear() + 1900, d.getMonth(), d.getDate(), new Downloaders(prefs, nm, this));
             
             mDownloadDialog = dpd.getInstance();
@@ -436,21 +449,18 @@ public class BrowseActivity extends ListActivity {
         }
 
         puzFiles = files.toArray(new FileHandle[files.size()]);
-
+        
+        long cleanupValue = Long.parseLong(prefs.getString("cleanupAge", "2")) +1;
+        long maxAge = cleanupValue == -1L ? 0 : System.currentTimeMillis() - (cleanupValue  * 24 * 60 * 60 * 1000);
+        
         ArrayList<FileHandle> toCleanup = new ArrayList<FileHandle>();
         Arrays.sort(puzFiles);
         files.clear();
 
         for (FileHandle h : puzFiles) {
-            if (h.getProgress() == 100) {
+            if (h.getProgress() == 100 || h.getDate().getTime() < maxAge) {
                 toCleanup.add(h);
-            } else {
-                files.add(h);
             }
-        }
-
-        for (int i = 9; i < files.size(); i++) {
-            toCleanup.add(files.get(i));
         }
 
         for (FileHandle h : toCleanup) {
