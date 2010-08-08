@@ -236,7 +236,7 @@ public class BrowseActivity extends ListActivity {
             this.startActivity(i);
 
             return;
-        } else if (prefs.getBoolean("release_2.2.17", true)) {
+        } else if (prefs.getBoolean("release_2.3.0", true)) {
             Editor e = prefs.edit();
             e.putBoolean("release_2.2.17", false);
             e.commit();
