@@ -10,17 +10,18 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.content.DialogInterface.OnShowListener;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.DatePicker.OnDateChangedListener;
 
 import com.totsp.crossword.net.Downloader;
 import com.totsp.crossword.net.Downloaders;
@@ -30,8 +31,8 @@ import com.totsp.crossword.shortyz.R;
 /**
  * Custom dialog for choosing puzzles to download.
  */
-public class DownloadPickerDialog {
-	private static DateFormat df = new SimpleDateFormat("EEEE,");
+public class DownloadPickerDialogBuilder {
+	private static DateFormat df = new SimpleDateFormat("EEEE");
 	private Activity mActivity;
 	private int mYear;
 	private int mMonthOfYear;
@@ -57,7 +58,9 @@ public class DownloadPickerDialog {
 		}
 	};
 	
-	public DownloadPickerDialog(Activity a, final OnDownloadSelectedListener downloadButtonListener,
+	
+	
+	public DownloadPickerDialogBuilder(Activity a, final OnDownloadSelectedListener downloadButtonListener,
 			int year, int monthOfYear, int dayOfMonth, Downloaders dls) {
 		mActivity = a;
 		
@@ -102,6 +105,14 @@ public class DownloadPickerDialog {
         
         builder.setView(layout);
         mDialog = builder.create();
+        mDialog.setOnShowListener( new OnShowListener(){
+
+			public void onShow(DialogInterface arg0) {
+				updateDateLabel();
+				updatePuzzleSelect();
+			}
+        	
+        });
 	}
 	
 	private void updateDateLabel() {
