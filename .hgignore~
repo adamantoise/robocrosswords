@@ -9,4 +9,3 @@ syntax: regexp
 ^web/target$
 syntax: regexp
 ^test/bin$
-^.DS_Store
