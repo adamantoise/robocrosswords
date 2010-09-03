@@ -236,9 +236,9 @@ public class BrowseActivity extends ListActivity {
             this.startActivity(i);
 
             return;
-        } else if (prefs.getBoolean("release_2.3.2", true)) {
+        } else if (prefs.getBoolean("release_2.3.4", true)) {
             Editor e = prefs.edit();
-            e.putBoolean("release_2.3.2", false);
+            e.putBoolean("release_2.3.4", false);
             e.commit();
 
             Intent i = new Intent(Intent.ACTION_VIEW,
@@ -451,13 +451,14 @@ public class BrowseActivity extends ListActivity {
         puzFiles = files.toArray(new FileHandle[files.size()]);
         
         long cleanupValue = Long.parseLong(prefs.getString("cleanupAge", "2")) +1;
-        long maxAge = cleanupValue == -1L ? 0 : System.currentTimeMillis() - (cleanupValue  * 24 * 60 * 60 * 1000);
+        long maxAge = cleanupValue == 0 ? 0 : System.currentTimeMillis() - (cleanupValue  * 24 * 60 * 60 * 1000);
         
         ArrayList<FileHandle> toCleanup = new ArrayList<FileHandle>();
         Arrays.sort(puzFiles);
         files.clear();
 
         for (FileHandle h : puzFiles) {
+        	System.out.println(h.getDate().getTime() + " vs "+ maxAge);
             if (h.getProgress() == 100 || h.getDate().getTime() < maxAge) {
                 toCleanup.add(h);
             }
@@ -508,8 +509,10 @@ public class BrowseActivity extends ListActivity {
                 public void run() {
                     Downloaders dls = new Downloaders(prefs, nm,
                             BrowseActivity.this);
+                    dls.supressMessages(true);
                     Scrapers scrapes = new Scrapers(prefs, nm,
                             BrowseActivity.this);
+                    scrapes.supressMessages(true);
                     scrapes.scrape();
 
                     Date d = new Date();

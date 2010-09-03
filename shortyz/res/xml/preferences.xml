@@ -246,6 +246,20 @@
 		android:key="doubleTap"
 	/>
 	
+	<CheckBoxPreference
+		android:title="Show Timer"
+		android:defaultValue="false"
+		android:summary="Shows your puzzle time.\nYou must leave and re-enter a puzzle to apply."
+		android:key="showTimer"
+	/>
+	
+	<CheckBoxPreference
+		android:title="Full Screen"
+		android:defaultValue="false"
+		android:summary="Hides the notification bar.\nYou must leave and re-enter a puzzle to apply."
+		android:key="fullScreen"
+	/>
+	
 	<ListPreference
 		android:title="Keyboard Style"
 		android:summary="Select soft keyboard layout."

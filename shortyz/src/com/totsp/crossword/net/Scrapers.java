@@ -39,6 +39,10 @@ public class Scrapers {
         this.supressMessages = prefs.getBoolean("supressMessages", false);
     }
     
+    public void supressMessages(boolean b){
+    	this.supressMessages = b;
+    }
+    
     
     public void scrape(){
     	 int i = 1;

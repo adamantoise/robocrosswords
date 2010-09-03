@@ -378,4 +378,10 @@ public class Downloaders {
             this.notificationManager.notify(i, not);
         }
     }
+
+    
+	public void supressMessages(boolean b) {
+		this.supressMessages = b;
+		
+	}
 }

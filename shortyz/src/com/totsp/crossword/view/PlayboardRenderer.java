@@ -23,17 +23,17 @@ import java.util.logging.Logger;
 public class PlayboardRenderer {
     private static final int BOX_SIZE = 30;
     private static final Logger LOG = Logger.getLogger("com.totsp.crossword");
-    Paint blackBox = new Paint();
-    Paint blackCircle = new Paint();
-    Paint blackLine = new Paint();
-    Paint cheated = new Paint();
-    Paint currentLetterBox = new Paint();
-    Paint currentLetterHighlight = new Paint();
-    Paint currentWordHighlight = new Paint();
-    Paint letterText = new Paint();
-    Paint numberText = new Paint();
-    Paint red = new Paint();
-    Paint white = new Paint();
+    private final Paint blackBox = new Paint();
+    private final Paint blackCircle = new Paint();
+    private final Paint blackLine = new Paint();
+    private final Paint cheated = new Paint();
+    private final Paint currentLetterBox = new Paint();
+    private final Paint currentLetterHighlight = new Paint();
+    private final Paint currentWordHighlight = new Paint();
+    private final Paint letterText = new Paint();
+    private final Paint numberText = new Paint();
+    private final Paint red = new Paint();
+    private final Paint white = new Paint();
     private Bitmap bitmap;
     private Playboard board;
     private float logicalDensity;
@@ -184,6 +184,9 @@ public class PlayboardRenderer {
 
     public Position findBox(Point p) {
         int boxSize = (int) (BOX_SIZE * scale);
+        if(boxSize == 0){
+        	boxSize = (int)(BOX_SIZE * 0.25D);
+        }
         int col = p.x / boxSize;
         int row = p.y / boxSize;
 

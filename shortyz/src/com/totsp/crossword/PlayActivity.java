@@ -1,47 +1,40 @@
 package com.totsp.crossword;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-
 import android.content.res.Configuration;
-
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
-
 import android.inputmethodservice.KeyboardView.OnKeyboardActionListener;
-
 import android.net.Uri;
-
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-
 import android.preference.PreferenceManager;
-
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
-
 import android.view.ContextMenu;
-
 import android.view.ContextMenu.ContextMenuInfo;
-
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
 import android.view.View.OnClickListener;
-
 import android.view.Window;
-
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,14 +52,6 @@ import com.totsp.crossword.view.ScrollingImageView;
 import com.totsp.crossword.view.ScrollingImageView.ClickListener;
 import com.totsp.crossword.view.ScrollingImageView.Point;
 import com.totsp.crossword.view.ScrollingImageView.ScaleListener;
-
-import java.io.File;
-import java.io.IOException;
-
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class PlayActivity extends Activity {
 	private static final Logger LOG = Logger.getLogger("com.totsp.crossword");
@@ -94,8 +79,21 @@ public class PlayActivity extends Activity {
 	private boolean useNativeKeyboard = false;
 	private long lastKey;
 	private long resumedOn;
-	long lastTap = 0;
-	boolean fitToScreen;
+	private long lastTap = 0;
+	private boolean fitToScreen;
+	private boolean runTimer = false;
+	private Runnable updateTimeTask = new Runnable() {
+		   public void run() {
+		       if(timer != null){
+		    	   getWindow().setTitle(timer.time());
+		    	   getWindow().setFeatureInt(Window.FEATURE_PROGRESS, puz.getPercentComplete() * 100);
+		       }
+		       if(runTimer){
+		    	   handler.postDelayed(this, 1000);
+		       }
+		   }
+		};
+	
 
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
@@ -116,6 +114,11 @@ public class PlayActivity extends Activity {
 		} else {
 			this.keyboardView.setVisibility(View.GONE);
 		}
+		
+		this.runTimer = prefs.getBoolean("runTimer", false);
+		if(runTimer){
+			this.handler.post(this.updateTimeTask);
+		}
 	}
 
 	/** Called when the activity is first created. */
@@ -131,7 +134,7 @@ public class PlayActivity extends Activity {
 			return;
 		}
 
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		
 		this.configuration = getBaseContext().getResources().getConfiguration();
 		this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		this.showErrors = this.prefs.getBoolean("showErrors", false);
@@ -140,6 +143,17 @@ public class PlayActivity extends Activity {
 
 		DisplayMetrics metrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		if(!prefs.getBoolean("showTimer", false)){
+			requestWindowFeature(Window.FEATURE_NO_TITLE);
+			System.out.println("No Title");
+		} else {
+			requestWindowFeature(Window.FEATURE_PROGRESS);
+		}
+		
+		if(prefs.getBoolean("fullScreen", false)){
+			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,   
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		}
 
 		try {
 			Uri u = this.getIntent().getData();
@@ -178,6 +192,10 @@ public class PlayActivity extends Activity {
 			if (puz.getPercentComplete() != 100) {
 				this.timer = new ImaginaryTimer(puz.getTime());
 				this.timer.start();
+				this.runTimer = prefs.getBoolean("showTimer", false);
+				if(runTimer){
+					this.handler.post(this.updateTimeTask);
+				} 
 			}
 
 			setContentView(R.layout.play);
@@ -831,7 +849,10 @@ public class PlayActivity extends Activity {
 			timer = new ImaginaryTimer(this.puz.getTime());
 			timer.start();
 		}
-
+		this.runTimer = prefs.getBoolean("showTimer", false);
+		if(runTimer){
+			this.handler.post(this.updateTimeTask);
+		}
 		render();
 	}
 
