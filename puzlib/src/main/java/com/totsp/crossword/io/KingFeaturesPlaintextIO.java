@@ -3,7 +3,7 @@ package com.totsp.crossword.io;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+
+import com.totsp.crossword.io.charset.MacRoman;
 import com.totsp.crossword.puz.Box;
 import com.totsp.crossword.puz.Puzzle;
 
@@ -30,21 +32,6 @@ import com.totsp.crossword.puz.Puzzle;
  * src/test/resources/premiere-20100704.txt.
  */
 public class KingFeaturesPlaintextIO {
-	private static final String CHARSET_NAME;
-	static{
-		
-			Charset cs = null;
-			try{
-				cs = Charset.forName("MacRoman");
-			} catch(Exception e){
-			}
-			if( cs != null ){
-				CHARSET_NAME="MacRoman";
-			} else {
-				CHARSET_NAME="ISO8859_1";
-			}	
-	}
-	
 	/**
 	 * Take an InputStream containing a plaintext puzzle to a DataOutputStream containing
 	 * the generated .puz file.  Returns true if the process succeeded, or false if it fails
@@ -53,8 +40,8 @@ public class KingFeaturesPlaintextIO {
 	public static boolean convertKFPuzzle(InputStream is, DataOutputStream os,
 			String title, String author, String copyright, Date date) {
 		Puzzle puz = new Puzzle();
-		
-		Scanner scanner = new Scanner(is, CHARSET_NAME);
+
+		Scanner scanner = new Scanner(new InputStreamReader(is, new MacRoman()));
 		
 		if (!scanner.hasNextLine()) {
 			System.err.println("File empty.");

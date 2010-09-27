@@ -372,20 +372,18 @@ public class ClueListActivity extends Activity {
     	
     	
         super.onPause();
-        timer.stop();
-        
         try {
             if ((puz != null) && (baseFile != null)) {
-            	if(puz.getPercentComplete() != 100){
+            	if(timer != null && puz.getPercentComplete() != 100){
 	                this.timer.stop();
 	                puz.setTime(timer.getElapsed());
+	                this.timer = null;
             	}
                 IO.save(puz, baseFile);
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        PlayActivity.BOARD.getPuzzle().setTime(timer.getElapsed());
         if ((this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES) ||
                 (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);

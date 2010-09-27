@@ -95,9 +95,21 @@ public class IOTest extends TestCase {
     	System.out.println("GEXT Test --------------------------");
     	
     	Puzzle puz = IO.loadNative(new DataInputStream(IOTest.class.getResourceAsStream("/2010-7-4-LosAngelesTimes.puz")));
-    	
+        File tmp = File.createTempFile("test", ".puz");
+        tmp.deleteOnExit();
+        IO.saveNative(puz, new DataOutputStream(new FileOutputStream(tmp)));
+        puz = IO.load(tmp);
     	assertTrue(puz.getGEXT());
+    	assertTrue(puz.getBoxes()[2][2].isCircled());
     	
+    }
+    
+    /**
+     * Note: This is a sanity check, but any changes to unlock functionality should be tested more extensively.
+     */
+    public void testUnlockCode() throws Exception {
+    	Puzzle puz = IO.loadNative(new DataInputStream(IOTest.class.getResourceAsStream("/2010-7-19-NewYorkTimes.puz")));
+    	assertTrue(puz.tryUnscramble(2465, puz.initializeUnscrambleData()));
     }
 
     

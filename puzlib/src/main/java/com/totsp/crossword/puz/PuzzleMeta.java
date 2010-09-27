@@ -3,6 +3,8 @@ package com.totsp.crossword.puz;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.totsp.crossword.puz.Playboard.Position;
+
 
 public class PuzzleMeta implements Serializable {
 	
@@ -13,6 +15,8 @@ public class PuzzleMeta implements Serializable {
 	public int percentComplete;
 	public boolean updateable;
 	public String sourceUrl;
+	public Position position;
+	public boolean across;
 	
 	
 	public String toString(){
@@ -28,8 +32,12 @@ public class PuzzleMeta implements Serializable {
 		.append(date)
 		.append(" percentCompelete: ")
 		.append(percentComplete)
-		.append( "updateable: ")
+		.append(" updateable: ")
 		.append(updateable)
+		.append(" position: ")
+		.append(position)
+		.append(" across: ")
+		.append(across)
 		.toString();
 		
 	}

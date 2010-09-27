@@ -36,11 +36,11 @@
 			android:title="Newsday"
 			android:defaultValue="true"
 			android:key="downloadNewsday" />
-		<CheckBoxPreference
+		<!-- CheckBoxPreference
 			android:title="Houston Chronicle"
 			android:defaultValue="true"
 			android:summary="Also known as CrosSynergy"
-			android:key="downloadChron" />
+			android:key="downloadChron" /-->
 		<CheckBoxPreference
 			android:title="Joseph Crosswords"
 			android:defaultValue="true"

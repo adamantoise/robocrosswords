@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import com.totsp.crossword.io.versions.IOVersion;
 import com.totsp.crossword.io.versions.IOVersion1;
 import com.totsp.crossword.io.versions.IOVersion2;
+import com.totsp.crossword.io.versions.IOVersion3;
 import com.totsp.crossword.puz.Box;
 import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.puz.PuzzleMeta;
@@ -48,7 +49,7 @@ public class IO {
         puz.setVersion(new String(versionString));
         
         input.skipBytes(2);
-        puz.setScrambledChecksum(Short.reverseBytes(input.readShort()));
+        puz.setSolutionChecksum(Short.reverseBytes(input.readShort()));
         
         input.skipBytes(0xC);
 
@@ -139,6 +140,8 @@ public class IO {
 	        		case GEXT:
 	        			readGextSection(input, puz);
 	        			break;
+        			default:
+        				skipExtraSection(input);
         		}
         	} catch(EOFException e) {
         		eof = true;
@@ -160,6 +163,13 @@ public class IO {
     	return -1;
     }
     
+    public static void skipExtraSection(DataInputStream input) throws IOException {
+    	short numBytes = Short.reverseBytes(input.readShort());
+    	input.skipBytes(2); // checksum
+    	input.skipBytes(numBytes); // data
+    	input.skipBytes(1); // null terminator
+    }
+    
     public static void readGextSection(DataInputStream input, Puzzle puz) throws IOException {
     	puz.setGEXT(true);
     	input.skipBytes(4);
@@ -168,15 +178,18 @@ public class IO {
             for (int y = 0; y < boxes[x].length; y++) {
             	byte gextInfo = input.readByte();
             	if((gextInfo & GEXT_SQUARE_CIRCLED) != 0) {
-            		boxes[x][y].setCircled(true);
+            		if (boxes[x][y] != null) {
+            			boxes[x][y].setCircled(true);
+            		}
             	}
             }
         }
+        input.skipBytes(1);
     }
     
     public static void writeCustom(Puzzle puz, DataOutputStream os) throws IOException {
-    	os.write(2);
-    	IOVersion v = new IOVersion2();
+    	os.write(3);
+    	IOVersion v = new IOVersion3();
     	v.write(puz, os);
     }
     
@@ -192,10 +205,14 @@ public class IO {
         case 2:
         	v = new IOVersion2();
             break;
+            
+        case 3:
+        	v = new IOVersion3();
+            break;
 
 
         default:
-            throw new IOException("UnknownVersion");
+            throw new IOException("UnknownVersion "+version);
         }
 
         v.read(puz, is);
@@ -214,9 +231,12 @@ public class IO {
         case 2:
         	v = new IOVersion2();
             break;
+        case 3:
+        	v = new IOVersion3();
+            break;
 
         default:
-            throw new IOException("UnknownVersion");
+            throw new IOException("UnknownVersion  "+version);
         }
 
         PuzzleMeta m = v.readMeta(is);
@@ -261,7 +281,7 @@ public class IO {
         
         tmpDos.write(new byte[2]);
         
-        tmpDos.writeShort(Short.reverseBytes(puz.getScrambledChecksum()));
+        tmpDos.writeShort(Short.reverseBytes(puz.getSolutionChecksum()));
 
         tmpDos.write(new byte[0xC]);
         
@@ -277,8 +297,8 @@ public class IO {
         tmpDos.writeShort(Short.reverseBytes((short) numberOfClues));
         tmpDos.writeShort(Short.reverseBytes((short) 1));
         
-        int scrambled = puz.isScrambled() ? 4 : 0;
-        tmpDos.writeShort(scrambled);
+        short scrambled = puz.isScrambled() ? (short) 4 : (short) 0;
+        tmpDos.writeShort(Short.reverseBytes(scrambled));
         
         Box[][] boxes = puz.getBoxes();
         byte[] gextSection = null;
@@ -293,7 +313,7 @@ public class IO {
                 } else {
                 	byte val = (byte) boxes[x][y].getSolution();//Character.toString().getBytes("Cp1252")[0];
                 	if (puz.getGEXT() && boxes[x][y].isCircled()) {
-                		gextSection[height*x+y] = GEXT_SQUARE_CIRCLED;
+                		gextSection[width*x+y] = GEXT_SQUARE_CIRCLED;
                 	}
                     tmpDos.writeByte(val);
                 }
@@ -357,10 +377,6 @@ public class IO {
         bb.put((byte) (0x45 ^ ((c_grid & 0xFF00) >> 8)));
         bb.put((byte) (0x44 ^ ((c_part & 0xFF00) >> 8)));
         
-        if(puz.getGEXT()) {
-        	
-        }
-        
         // Dump byte array to output stream.
         dos.write(puzByteArray);
     }
@@ -418,7 +434,7 @@ public class IO {
     	return m;
     }
 
-    private static int cksum_region(byte[] data, int offset, int length, int cksum) {
+    public static int cksum_region(byte[] data, int offset, int length, int cksum) {
     	for(int i = offset; i < offset + length; i++) {
     		if ((cksum & 0x1) != 0) {
     			cksum = (cksum >> 1) + 0x8000;

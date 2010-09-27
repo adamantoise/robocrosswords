@@ -53,9 +53,9 @@ public class Downloaders {
             downloaders.add(new ThinksDownloader());
         }
 
-        if (prefs.getBoolean("downloadChron", true)) {
-            downloaders.add(new ChronDownloader());
-        }
+//        if (prefs.getBoolean("downloadChron", true)) {
+//            downloaders.add(new ChronDownloader());
+//        }
 
         if (prefs.getBoolean("downloadWsj", true)) {
             downloaders.add(new WSJDownloader());

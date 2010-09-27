@@ -60,6 +60,10 @@ public class Playboard implements Serializable {
         return across;
     }
 
+    public void toggleShowErrors(){
+    	this.showErrors = !this.showErrors;
+    }
+    
     public Clue[] getAcrossClues() {
         Clue[] clues = new Clue[puzzle.getAcrossClues().length];
 
@@ -216,8 +220,9 @@ public class Playboard implements Serializable {
         if (highlightLetter.equals(this.highlightLetter)) {
             this.toggleDirection();
         } else {
-            if ((this.boxes.length > highlightLetter.across) &&
+            if ((this.boxes.length > highlightLetter.across) && (highlightLetter.across >= 0) &&
                     (this.boxes[highlightLetter.across].length > highlightLetter.down) &&
+                    (highlightLetter.down >= 0) &&
                     (this.boxes[highlightLetter.across][highlightLetter.down] != null)) {
                 this.highlightLetter = highlightLetter;
             }
@@ -323,13 +328,15 @@ public class Playboard implements Serializable {
     
 
     public void jumpTo(int clueIndex, boolean across) {
-        this.across = across;
-
-        if (across) {
-            this.highlightLetter = (this.acrossWordStarts.get(this.puzzle.getAcrossCluesLookup()[clueIndex]));
-        } else {
-            this.highlightLetter = (this.downWordStarts.get(this.puzzle.getDownCluesLookup()[clueIndex]));
-        }
+    	try {
+	        if (across) {
+	            this.highlightLetter = (this.acrossWordStarts.get(this.puzzle.getAcrossCluesLookup()[clueIndex]));
+	        } else {
+	            this.highlightLetter = (this.downWordStarts.get(this.puzzle.getDownCluesLookup()[clueIndex]));
+	        }
+	        this.across = across;
+    	} catch (Exception e) {
+    	}
     }
 
     public Word moveDown() {
@@ -413,9 +420,29 @@ public class Playboard implements Serializable {
         
         Position newPos = new Position(newAcross, newDown);
         if (!newPos.equals(p)) {
-        	this.setHighlightLetter(new Position(newAcross, newDown));
+        	this.setHighlightLetter(newPos);
         }
         this.nextLetter();
+        return previous;
+    }
+    
+    public Word previousWord() {
+    	Word previous = this.getCurrentWord();
+
+        Position p = this.getHighlightLetter();
+
+        int newAcross = p.across;
+        int newDown = p.down;
+        if (previous.across) {
+            newAcross = previous.start.across - 1;
+        } else {
+            newDown = previous.start.down - 1;
+        }
+        
+        this.setHighlightLetter(new Position(newAcross, newDown));
+        this.previousLetter();
+        Word current = this.getCurrentWord();
+        this.setHighlightLetter(new Position(current.start.across, current.start.down));
         return previous;
     }
     
@@ -564,8 +591,8 @@ public class Playboard implements Serializable {
         return w;
     }
 
-    public void toggleShowErrors() {
-        this.showErrors = !showErrors;
+    public void setShowErrors(boolean showErrors) {
+        this.showErrors = showErrors;
     }
 
     public static class Clue {

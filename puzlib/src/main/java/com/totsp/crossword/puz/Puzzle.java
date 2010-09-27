@@ -3,6 +3,9 @@ package com.totsp.crossword.puz;
 import java.util.Arrays;
 import java.util.Date;
 
+import com.totsp.crossword.io.IO;
+import com.totsp.crossword.puz.Playboard.Position;
+
 
 public class Puzzle {
     private String author;
@@ -25,10 +28,16 @@ public class Puzzle {
     private int width;
     private long playedTime;
     private boolean scrambled;
-    private short scrambledChecksum;
+    private short solutionChecksum;
     private String version;
     private boolean hasGEXT;
+    private Position position;
+    private boolean across = true;
     
+    // Temporary fields used for unscrambling.
+    private int[] unscrambleKey;
+    private byte[] unscrambleTmp;
+    private byte[] unscrambleBuf;
 
     public void setAcrossClues(String[] acrossClues) {
         this.acrossClues = acrossClues;
@@ -117,6 +126,88 @@ public class Puzzle {
 
         return result;
     }
+    
+    /**
+     * Initialize the temporary unscramble buffers.  Returns the scrambled solution.
+     */
+    public byte[] initializeUnscrambleData() {
+    	unscrambleKey = new int[4];
+    	unscrambleTmp = new byte[9];
+    	
+    	byte[] solution = getSolutionDown();
+    	unscrambleBuf = new byte[solution.length];
+    	
+    	return solution;
+    }
+	
+    /**
+     * Attempts to unscramble the solution using the input key.  Modifications to the solution
+     * array occur in place.  If true, the unscrambled solution checksum is valid.
+     */
+	public boolean tryUnscramble(int key_int, byte[] solution) {
+		unscrambleKey[0] = (key_int / 1000) % 10;
+		unscrambleKey[1] = (key_int / 100) % 10;
+		unscrambleKey[2] = (key_int / 10) % 10;
+		unscrambleKey[3] = (key_int / 1) % 10;
+		
+		for (int i = 3; i >= 0; i--) {
+			unscrambleString(solution);
+			System.arraycopy(unscrambleBuf, 0, solution, 0, unscrambleBuf.length);
+			unshiftString(solution, unscrambleKey[i]);
+			for (int j = 0; j < solution.length; j++) {
+				int letter = (solution[j] & 0xFF) - unscrambleKey[j % 4];
+				if (letter < 65) {
+					letter += 26;
+				}
+				solution[j] = (byte) letter;
+			}
+		}
+
+		return solutionChecksum == (short) IO.cksum_region(solution, 0, solution.length, 0);
+	}
+
+	public void unshiftString(byte[] str, int keynum) {
+		System.arraycopy(str, str.length-keynum, unscrambleTmp, 0, keynum);
+		System.arraycopy(str, 0, str, keynum, str.length-keynum);
+		System.arraycopy(unscrambleTmp, 0, str, 0, keynum);
+	}
+	
+	public void unscrambleString(byte[] str) {
+		int oddIndex = 0;
+		int evenIndex = str.length / 2;
+		for (int i = 0; i < str.length; i++) {
+			if (i % 2 == 0) {
+				unscrambleBuf[evenIndex++] = str[i];
+			} else {
+				unscrambleBuf[oddIndex++] = str[i];
+			}
+		}
+	}
+	
+	private byte[] getSolutionDown() {
+		StringBuilder ans = new StringBuilder();
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+				if (boxes[y][x] != null) {
+					ans.append(boxes[y][x].getSolution());
+				}
+			}
+		}
+		return ans.toString().getBytes();
+	}
+	
+	public void setUnscrambledSolution(byte[] solution) {
+		int i = 0;
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+				if (boxes[y][x] != null) {
+					boxes[y][x].setSolution((char) solution[i++]);
+				}
+			}
+		}
+		setScrambled(false);
+		setUpdatable(false);
+	}
 
     public void setCopyright(String copyright) {
         this.copyright = copyright;
@@ -282,6 +373,22 @@ public class Puzzle {
     	return hasGEXT;
     }
     
+    public void setPosition(Position position) {
+    	this.position = position;
+    }
+    
+    public Position getPosition() {
+    	return position;
+    }
+    
+    public void setAcross(boolean across) {
+    	this.across = across;
+    }
+    
+    public boolean getAcross() {
+    	return across;
+    }
+    
     public void setScrambled(boolean scrambled) {
     	this.scrambled = scrambled;
     }
@@ -290,12 +397,12 @@ public class Puzzle {
     	return scrambled;
     }
     
-    public void setScrambledChecksum(short checksum) {
-    	this.scrambledChecksum = checksum;
+    public void setSolutionChecksum(short checksum) {
+    	this.solutionChecksum = checksum;
     }
     
-    public short getScrambledChecksum() {
-    	return scrambledChecksum;
+    public short getSolutionChecksum() {
+    	return solutionChecksum;
     }
 
     /**
@@ -455,7 +562,7 @@ public class Puzzle {
         	return false;
         }
         
-        if (scrambledChecksum != other.scrambledChecksum) {
+        if (solutionChecksum != other.solutionChecksum) {
         	return false;
         }
 

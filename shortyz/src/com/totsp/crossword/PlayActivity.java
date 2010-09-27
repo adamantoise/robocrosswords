@@ -787,8 +787,10 @@ public class PlayActivity extends Activity {
 		try {
 			if ((puz != null) && (baseFile != null)) {
 				if ((puz.getPercentComplete() != 100) && (this.timer != null)) {
+					
 					this.timer.stop();
 					puz.setTime(timer.getElapsed());
+					this.timer = null;
 				}
 
 				IO.save(puz, baseFile);
