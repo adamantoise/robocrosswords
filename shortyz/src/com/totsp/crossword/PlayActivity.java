@@ -99,7 +99,7 @@ public class PlayActivity extends Activity {
 	public void onConfigurationChanged(Configuration newConfig) {
 		this.configuration = newConfig;
 
-		if ((this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
+		if (this.prefs.getBoolean("forceKeyboard", false) ||  (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
 				|| (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
 			if (this.useNativeKeyboard) {
 				keyboardView.setVisibility(View.GONE);
@@ -901,7 +901,7 @@ public class PlayActivity extends Activity {
 	}
 
 	private void render(Word previous, boolean rescale) {
-		if ((this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
+		if (  this.prefs.getBoolean("forceKeyboard", false) ||  (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
 				|| (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
 			if (this.useNativeKeyboard) {
 				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);

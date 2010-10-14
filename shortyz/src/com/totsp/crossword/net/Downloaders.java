@@ -226,10 +226,10 @@ public class Downloaders {
                 if (downloaded != null) {
                     boolean updatable = false;
 
-                    if (d instanceof NYTDownloader &&
-                            (date.getTime() >= now.getTimeInMillis())) {
-                        updatable = true;
-                    }
+//                    if (d instanceof NYTDownloader &&
+//                            (date.getTime() >= now.getTimeInMillis())) {
+//                        updatable = true;
+//                    }
 
                     if (processDownloadedPuzzle(downloaded, date, d.getName(),
                                 d.sourceUrl(date), updatable)) {

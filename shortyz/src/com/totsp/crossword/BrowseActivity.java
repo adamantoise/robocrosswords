@@ -40,6 +40,7 @@ import com.totsp.crossword.io.IO;
 import com.totsp.crossword.net.Downloader;
 import com.totsp.crossword.net.Downloaders;
 import com.totsp.crossword.net.Scrapers;
+import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.puz.PuzzleMeta;
 import com.totsp.crossword.shortyz.R;
 import com.totsp.crossword.view.SeparatedListAdapter;
@@ -97,7 +98,18 @@ public class BrowseActivity extends ListActivity {
         	render();
         	
         	return true;
+        } else if( "Mark as Updated".equals(item.getTitle() ) ){
+        	try {
+				Puzzle p = IO.load(this.contextFile);
+				p.setUpdatable(false);
+				IO.save(p, this.contextFile);
+				render();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
+        
 
         return super.onContextItemSelected(item);
     }
@@ -118,10 +130,13 @@ public class BrowseActivity extends ListActivity {
         }
 
         contextFile = ((FileHandle) getListAdapter().getItem(info.position)).file;
+        PuzzleMeta meta = ((FileHandle) getListAdapter().getItem(info.position)).meta;
         menu.setHeaderTitle(contextFile.getName());
 
         menu.add("Delete");
         this.archiveMenuItem = menu.add( this.viewArchive ? "Un-archive" : "Archive");
+        if(meta.updateable)
+        	menu.add("Mark as Updated");
     }
 
     @Override
@@ -236,9 +251,9 @@ public class BrowseActivity extends ListActivity {
             this.startActivity(i);
 
             return;
-        } else if (prefs.getBoolean("release_2.3.8", true)) {
+        } else if (prefs.getBoolean("release_2.3.9", true)) {
             Editor e = prefs.edit();
-            e.putBoolean("release_2.3.8", false);
+            e.putBoolean("release_2.3.9", false);
             e.commit();
 
             Intent i = new Intent(Intent.ACTION_VIEW,

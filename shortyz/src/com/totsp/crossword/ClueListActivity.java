@@ -53,7 +53,7 @@ public class ClueListActivity extends Activity {
     public void onConfigurationChanged(Configuration newConfig) {
         this.configuration = newConfig;
 
-        if ((this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES) ||
+        if (this.prefs.getBoolean("forceKeyboard", false) ||  (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES) ||
                 (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -384,7 +384,7 @@ public class ClueListActivity extends Activity {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        if ((this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES) ||
+        if (this.prefs.getBoolean("forceKeyboard", false) ||  (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES) ||
                 (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(this.imageView.getWindowToken(), 0);
@@ -393,7 +393,7 @@ public class ClueListActivity extends Activity {
     }
 
     private void render() {
-    	if ((this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES) ||
+    	if (this.prefs.getBoolean("forceKeyboard", false) ||  (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES) ||
                 (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
         	
         	if(this.useNativeKeyboard){
