@@ -1,5 +1,6 @@
 package com.totsp.crossword.net;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,6 +25,10 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
+import android.content.Context;
+import android.os.Handler;
+import android.widget.Toast;
+
 import com.totsp.crossword.io.IO;
 import com.totsp.crossword.puz.Box;
 import com.totsp.crossword.puz.Puzzle;
@@ -33,15 +38,17 @@ import com.totsp.crossword.puz.Puzzle;
  * Date = Daily
  */
 public class NYTDownloader extends AbstractDownloader {
+	private Handler handler = new Handler();
 	private static final String[] MONTHS = new String[] { "Jan", "Feb", "Mar",
 			"Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 	public static final String NAME = "New York Times";
 	private static final String LOGIN_URL = "http://www.nytimes.com/auth/login";
 	NumberFormat nf = NumberFormat.getInstance();
 	private HashMap<String, String> params = new HashMap<String, String>();
-
-	protected NYTDownloader(String username, String password) {
+	private Context context;
+	protected NYTDownloader(Context context, String username, String password) {
 		super("http://select.nytimes.com/premium/xword/", DOWNLOAD_DIR, NAME);
+		this.context = context;
 		nf.setMinimumIntegerDigits(2);
 		nf.setMaximumFractionDigits(0);
 		params.put("is_continue", "true");
@@ -132,17 +139,31 @@ public class NYTDownloader extends AbstractDownloader {
 
 		for (Entry<String, String> e : this.params.entrySet()) {
 			nvps.add(new BasicNameValuePair(e.getKey(), e.getValue()));
+			System.out.println(e.getKey()+"="+e.getValue());
 		}
 
 		httpost.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
 
 		response = httpclient.execute(httpost);
 		entity = response.getEntity();
-
+		
 		System.out.println("Login form get: " + response.getStatusLine());
-
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		if (entity != null) {
-			entity.consumeContent();
+			entity.writeTo(baos);
+			String resp = new String(baos.toByteArray());
+			if(resp.indexOf("not find the combination") != -1){
+				System.out.println(resp);
+				this.handler.post(new Runnable(){
+
+					public void run() {
+						Toast.makeText(context, "New York Times login failure. Is your password correct?", Toast.LENGTH_LONG).show();
+					}
+					
+				});
+
+				return null;
+			}
 		}
 
 		System.out.println("Post logon cookies:");

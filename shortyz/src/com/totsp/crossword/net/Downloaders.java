@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 
 import android.os.Environment;
+import android.os.Handler;
 
 import com.totsp.crossword.BrowseActivity;
 import com.totsp.crossword.PlayActivity;
@@ -131,7 +132,7 @@ public class Downloaders {
         }
 
         if (prefs.getBoolean("downloadNYT", false)) {
-            downloaders.add(nyt = new NYTDownloader(prefs.getString(
+            downloaders.add(nyt = new NYTDownloader(context, prefs.getString(
                             "nytUsername", ""),
                         prefs.getString("nytPassword", "")));
         }

@@ -23,6 +23,7 @@ import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.totsp.crossword.BrowseActivity.Provider;
 import com.totsp.crossword.net.Downloader;
 import com.totsp.crossword.net.Downloaders;
 import com.totsp.crossword.net.DummyDownloader;
@@ -40,7 +41,7 @@ public class DownloadPickerDialogBuilder {
 	private TextView mDateLabel;
 	private Dialog mDialog;
 	private Spinner mPuzzleSelect;
-	private Downloaders mDownloaders;
+	private Provider<Downloaders> mDownloaders;
 	private List<Downloader> mAvailableDownloaders;
 	
 	public interface OnDownloadSelectedListener {
@@ -61,14 +62,14 @@ public class DownloadPickerDialogBuilder {
 	
 	
 	public DownloadPickerDialogBuilder(Activity a, final OnDownloadSelectedListener downloadButtonListener,
-			int year, int monthOfYear, int dayOfMonth, Downloaders dls) {
+			int year, int monthOfYear, int dayOfMonth, Provider<Downloaders> provider) {
 		mActivity = a;
 		
 		mYear = year;
 		mMonthOfYear = monthOfYear;
 		mDayOfMonth = dayOfMonth;
 		
-		mDownloaders = dls;
+		mDownloaders = provider;
 		
 		LayoutInflater inflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View layout = inflater.inflate(R.layout.download_dialog, 
@@ -120,7 +121,7 @@ public class DownloadPickerDialogBuilder {
 	}
 	
 	private void updatePuzzleSelect() {
-		mAvailableDownloaders = mDownloaders.getDownloaders(getCurrentDate());
+		mAvailableDownloaders = mDownloaders.get().getDownloaders(getCurrentDate());
 		mAvailableDownloaders.add(0, new DummyDownloader());
 		ArrayAdapter<Downloader> adapter = new ArrayAdapter<Downloader>(mActivity,
 				android.R.layout.simple_spinner_item, mAvailableDownloaders);

@@ -1,18 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--  -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="com.totsp.crossword.shortyz" 
-	android:installLocation="preferExternal" android:versionName="2.3.9" android:versionCode="20309">
+	package="com.totsp.crossword.shortyz"
+	android:installLocation="preferExternal"  
+	android:versionName="2.3.11" android:versionCode="20311">
 	<application android:icon="@drawable/icon" 
 		android:label="@string/app_name"
 		android:backupAgent="com.totsp.crossword.BackupAgent"
 		android:restoreAnyVersion="true">
+		<activity android:name="com.totsp.crossword.HttpDownloadActivity"
+			android:label="Download to Shortyz">
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+				<category android:name="android.intent.category.BROWSABLE" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data android:scheme="http"
+					android:host="*"
+					android:pathPattern=".*\\.puz" />
+			</intent-filter>
+		</activity>
 		<activity android:name="com.totsp.crossword.PlayActivity"
 			android:label="@string/app_name">
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
 				<action android:name="android.intent.action.EDIT" />
 				<category android:name="android.intent.category.DEFAULT" />
-				<category android:name="android.intent.category.BROWSABLE" />
 				<data android:scheme="file"
 					android:host="*"
 					android:pathPattern=".*\\.puz" />

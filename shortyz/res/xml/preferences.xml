@@ -74,11 +74,11 @@
 		android:summary="Puzzles which update weekly."
 		android:key="selectWeekly">
 		<PreferenceCategory android:title="Regular Sized">
-			<CheckBoxPreference
+			<!--CheckBoxPreference
 				android:title="Brendan Emmett Quigley"
 				android:defaultValue="true"
 				android:summary="Updates Mondays &amp; Thursdays - brendanemmettquigley.com"
-				android:key="scrapeBEQ" />
+				android:key="scrapeBEQ" /-->
 			<CheckBoxPreference
 				android:title="Ink Well"
 				android:defaultValue="true"

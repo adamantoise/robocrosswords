@@ -25,9 +25,9 @@ public class Scrapers {
         this.notificationManager = notificationManager;
         this.context = context;
         
-        if (prefs.getBoolean("scrapeBEQ", true)) {
-            scrapers.add(new BEQuigleyScraper());
-        }
+//        if (prefs.getBoolean("scrapeBEQ", true)) {
+//            scrapers.add(new BEQuigleyScraper());
+//        }
         System.out.println("scrapeCru"+prefs.getBoolean("scrapeCru", false));
         if(prefs.getBoolean("scrapeCru", false)){
         	scrapers.add(new CruScraper() );

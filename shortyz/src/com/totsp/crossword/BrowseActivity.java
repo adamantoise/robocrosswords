@@ -251,9 +251,9 @@ public class BrowseActivity extends ListActivity {
             this.startActivity(i);
 
             return;
-        } else if (prefs.getBoolean("release_2.3.9", true)) {
+        } else if (prefs.getBoolean("release_2.3.11", true)) {
             Editor e = prefs.edit();
-            e.putBoolean("release_2.3.9", false);
+            e.putBoolean("release_2.3.11", false);
             e.commit();
 
             Intent i = new Intent(Intent.ACTION_VIEW,
@@ -296,7 +296,13 @@ public class BrowseActivity extends ListActivity {
             Date d = new Date();
             
             DownloadPickerDialogBuilder dpd = new DownloadPickerDialogBuilder(this, downloadButtonListener,
-                    d.getYear() + 1900, d.getMonth(), d.getDate(), new Downloaders(prefs, nm, this));
+                    d.getYear() + 1900, d.getMonth(), d.getDate(), new Provider<Downloaders>(){
+
+						public Downloaders get() {
+							return new Downloaders(prefs, nm, BrowseActivity.this);
+						}
+            	
+            });
             
             mDownloadDialog = dpd.getInstance();
 
@@ -499,7 +505,7 @@ public class BrowseActivity extends ListActivity {
 
     private void download(final Date d, final List<Downloader> downloaders, final boolean scrape) {
         final Downloaders dls =  new Downloaders(prefs, nm, this);
-    	new Thread(new Runnable() {
+        new Thread(new Runnable() {
                 public void run() {
                 	
                 	dls.download(d, downloaders);
@@ -640,6 +646,11 @@ public class BrowseActivity extends ListActivity {
 
             return view;
         }
+    }
+    
+    
+    public static interface Provider<T>{
+    	T get();
     }
     
     
