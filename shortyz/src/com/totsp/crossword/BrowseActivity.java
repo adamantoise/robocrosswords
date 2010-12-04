@@ -251,9 +251,9 @@ public class BrowseActivity extends ListActivity {
             this.startActivity(i);
 
             return;
-        } else if (prefs.getBoolean("release_2.3.11", true)) {
+        } else if (prefs.getBoolean("release_2.3.12", true)) {
             Editor e = prefs.edit();
-            e.putBoolean("release_2.3.11", false);
+            e.putBoolean("release_2.3.12", false);
             e.commit();
 
             Intent i = new Intent(Intent.ACTION_VIEW,
@@ -538,7 +538,7 @@ public class BrowseActivity extends ListActivity {
 
                     Date d = new Date();
 
-                    for (int i = 0; i < 10; i++) {
+                    for (int i = 0; i < 5; i++) {
                         d = new Date(d.getTime() - DAY);
                         dls.download(d);
                         handler.post(new Runnable() {

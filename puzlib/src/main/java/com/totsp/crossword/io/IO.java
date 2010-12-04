@@ -83,8 +83,10 @@ public class IO {
                     continue;
                 } else if (answer == '-') {
                     boxes[x][y].setResponse(' ');
-                } else {
+                } else if(boxes[x][y] != null){
                     boxes[x][y].setResponse(answer);
+                } else {
+                	System.out.println("Unexpected answer: "+x+","+y+" "+answer);
                 }
             }
         }

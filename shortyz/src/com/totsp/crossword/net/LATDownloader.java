@@ -22,7 +22,7 @@ public class LATDownloader extends AbstractDownloader {
     NumberFormat nf = NumberFormat.getInstance();
 
     protected LATDownloader() {
-        super(" http://www.cruciverb.com/puzzles/lat/", DOWNLOAD_DIR, NAME);
+        super("http://www.cruciverb.com/puzzles/lat/", DOWNLOAD_DIR, NAME);
         nf.setMinimumIntegerDigits(2);
         nf.setMaximumFractionDigits(0);
     }
@@ -48,8 +48,9 @@ public class LATDownloader extends AbstractDownloader {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setDoOutput(true);
             connection.setRequestMethod("GET");
-            connection.setRequestProperty("Referer", this.baseUrl);
-
+            connection.setRequestProperty("Referer", "http://www.cruciverb.com/puzzles.php?op=showarch&pub=lat");
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/534.13 (KHTML, like Gecko) Chrome/9.0.597.0 Safari/534.13");
+            System.out.println("Response : "+connection.getResponseCode());
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 File f = new File(downloadDirectory, this.createFileName(date));
                 FileOutputStream fos = new FileOutputStream(f);

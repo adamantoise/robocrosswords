@@ -56,8 +56,11 @@ public class NYTDownloader extends AbstractDownloader {
 		params.put("URI", "http://www.nytimes.com");
 		params.put("OQ", "");
 		params.put("OP", "");
+		params.put("userid", username);
+		params.put("password", password);
 		params.put("USERID", username);
 		params.put("PASSWORD", password);
+		
 	}
 
 	public String getName() {
@@ -81,7 +84,7 @@ public class NYTDownloader extends AbstractDownloader {
 
 			HttpGet get = new HttpGet(url.toString());
 			HttpResponse response = client.execute(get);
-
+			
 			if (response.getStatusLine().getStatusCode() == 200) {
 				File f = new File(downloadDirectory, this.createFileName(date));
 				FileOutputStream fos = new FileOutputStream(f);
@@ -118,9 +121,23 @@ public class NYTDownloader extends AbstractDownloader {
 		System.out.println("Login form get: " + response.getStatusLine());
 
 		if (entity != null) {
-			entity.consumeContent();
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			entity.writeTo(baos);
+			String resp = new String(baos.toByteArray());
+			String tok = "name=\"token\" value=\"";
+			String expires = "name=\"expires\" value=\"";
+			int tokIndex = resp.indexOf(tok);
+			if(tokIndex != -1){
+				params.put("token", resp.substring(tokIndex + tok.length(), resp.indexOf("\"", tokIndex + tok.length())));
+				System.out.println("Got token: "+params.get("token"));
+			}
+			int expiresIndex = resp.indexOf(expires);
+			if(expiresIndex != -1){
+				params.put("expires", resp.substring(expiresIndex + expires.length(), resp.indexOf("\"", expiresIndex + expires.length())));
+				System.out.println("Got expires: "+params.get("expires"));
+			}
 		}
-
+		
 		System.out.println("Initial set of cookies:");
 
 		List<Cookie> cookies = httpclient.getCookieStore().getCookies();
@@ -152,8 +169,8 @@ public class NYTDownloader extends AbstractDownloader {
 		if (entity != null) {
 			entity.writeTo(baos);
 			String resp = new String(baos.toByteArray());
-			if(resp.indexOf("not find the combination") != -1){
-				System.out.println(resp);
+			if(resp.indexOf("Log in to manage") != -1){
+				System.out.println("=================== Password error\n"+resp);
 				this.handler.post(new Runnable(){
 
 					public void run() {

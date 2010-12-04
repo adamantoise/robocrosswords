@@ -307,7 +307,7 @@ public class Downloaders {
             this.notificationManager.cancel(0);
         }
 
-        if (somethingDownloaded && this.supressMessages) {
+        if (somethingDownloaded) {
             this.postDownloadedGeneral();
         }
     }
@@ -375,7 +375,7 @@ public class Downloaders {
         not.setLatestEventInfo(context, contentTitle, puzFile.getName(),
             contentIntent);
 
-        if (this.notificationManager != null) {
+        if (this.notificationManager != null && !supressMessages) {
             this.notificationManager.notify(i, not);
         }
     }
