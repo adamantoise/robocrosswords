@@ -286,17 +286,17 @@ public class Downloaders {
                 try {
                     PuzzleMeta meta = IO.meta(file);
 
-                    if ((meta != null) && meta.updateable && (nyt != null) &&
-                            nyt.getName().equals(meta.source)) {
-                        System.out.println("Trying update for " + file);
-
-                        File updated = nyt.update(file);
-
-                        if (updated != null) {
-                            this.postUpdatedNotification(i, nyt.getName(),
-                                updated);
-                        }
-                    }
+//                    if ((meta != null) && meta.updateable && (nyt != null) &&
+//                            nyt.getName().equals(meta.source)) {
+//                        System.out.println("Trying update for " + file);
+//
+//                        File updated = nyt.update(file);
+//
+//                        if (updated != null) {
+//                            this.postUpdatedNotification(i, nyt.getName(),
+//                                updated);
+//                        }
+//                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

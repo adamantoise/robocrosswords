@@ -142,7 +142,7 @@ public class BrowseActivity extends ListActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-
+        System.setProperty("http.keepAlive", "false");
         menu.add("Download").setIcon(android.R.drawable.ic_menu_rotate);
 
         Menu sortMenu = menu.addSubMenu("Sort")
