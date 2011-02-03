@@ -184,12 +184,13 @@ public class Downloaders {
                 "crosswords/");
         File archive = new File(Environment.getExternalStorageDirectory(),
                 "crosswords/archive/");
-
-        for (File isDel : crosswords.listFiles()) {
-            if (isDel.getName().endsWith(".tmp")) {
-                isDel.delete();
-            }
-        }
+        crosswords.mkdirs();
+        if(crosswords != null && crosswords.listFiles() != null)
+	        for (File isDel : crosswords.listFiles()) {
+	            if (isDel.getName().endsWith(".tmp")) {
+	                isDel.delete();
+	            }
+	        }
 
         
         if(downloaders == null || downloaders.size() == 0){

@@ -135,7 +135,7 @@ public class BrowseActivity extends ListActivity {
 
         menu.add("Delete");
         this.archiveMenuItem = menu.add( this.viewArchive ? "Un-archive" : "Archive");
-        if(meta.updateable)
+        if(meta != null && meta.updateable)
         	menu.add("Mark as Updated");
     }
 

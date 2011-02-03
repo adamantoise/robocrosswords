@@ -264,11 +264,29 @@ public class Playboard implements Serializable {
     public boolean isSkipCompletedLetters() {
         return skipCompletedLetters;
     }
+    
+    public Box[] getWordBoxes(int number, boolean isAcross){
+    	Position start = isAcross ? this.acrossWordStarts.get(number) : this.downWordStarts.get(number);
+    	int range = this.getWordRange(start, isAcross);
+    	int across = start.across;
+        int down = start.down;
+        Box[] result = new Box[range];
+        for (int i = 0; i < result.length; i++) {
+        	int newAcross = across;
+        	int newDown = down;
+            if (isAcross) {
+               newAcross += i;
+            } else {
+               newDown += i;
+            }
 
-    public int getWordRange() {
-        Position start = this.getCurrentWordStart();
-
-        if (this.isAcross()) {
+            result[i] = this.boxes[newAcross][newDown];
+        }
+        return result;
+    }
+    
+    public int getWordRange(Position start, boolean across){
+    	if (across) {
             int col = start.across;
             Box b = null;
 
@@ -303,6 +321,10 @@ public class Playboard implements Serializable {
 
             return row - start.down;
         }
+    }
+
+    public int getWordRange() {
+        return getWordRange(this.getCurrentWordStart(), this.isAcross());
     }
 
     /**
@@ -625,7 +647,7 @@ public class Playboard implements Serializable {
 
         @Override
         public int hashCode() {
-            return hint.hashCode();
+            return this.number;
         }
 
         @Override

@@ -35,9 +35,14 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 
 import com.totsp.crossword.io.IO;
 import com.totsp.crossword.puz.MovementStrategy;
@@ -93,8 +98,10 @@ public class PlayActivity extends Activity {
 		       }
 		   }
 		};
-	
-
+	private ListView across;
+	private ListView down;
+	private ClueListAdapter downAdapter;
+	private ClueListAdapter acrossAdapter;
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		this.configuration = newConfig;
@@ -144,7 +151,7 @@ public class PlayActivity extends Activity {
 		DisplayMetrics metrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		if(!prefs.getBoolean("showTimer", false)){
-			requestWindowFeature(Window.FEATURE_NO_TITLE);
+			//requestWindowFeature(Window.FEATURE_NO_TITLE);
 			System.out.println("No Title");
 		} else {
 			requestWindowFeature(Window.FEATURE_PROGRESS);
@@ -445,6 +452,79 @@ public class PlayActivity extends Activity {
 
 		this.showCount = prefs.getBoolean("showCount", false);
 		this.render();
+		
+		this.across = (ListView) this.findViewById(R.id.acrossList);
+        this.down = (ListView) this.findViewById(R.id.downList);
+        if(across != null && down != null){
+        	 across.setAdapter(this.acrossAdapter = new ClueListAdapter(this,
+                     PlayActivity.BOARD.getAcrossClues(),true));
+        	 across.setFocusableInTouchMode(true);
+             down.setAdapter(this.downAdapter = new ClueListAdapter(this,
+                     PlayActivity.BOARD.getDownClues(), false));
+             across.setOnItemClickListener(new OnItemClickListener() {
+                     public void onItemClick(AdapterView<?> arg0, View arg1,
+                         int arg2, long arg3) {
+                     	arg0.setSelected(true);
+                         PlayActivity.BOARD.jumpTo(arg2, true);
+                         render();
+                         if(prefs.getBoolean("snapClue", false)){
+                         	across.setSelectionFromTop(arg2, 5);
+                         	across.setSelection(arg2);
+                         }
+                     }
+                 });
+             across.setOnItemSelectedListener(new OnItemSelectedListener() {
+                     public void onItemSelected(AdapterView<?> arg0, View arg1,
+                         int arg2, long arg3) {
+                     	if(!PlayActivity.BOARD.isAcross() || PlayActivity.BOARD.getCurrentClueIndex() != arg2 ){
+                     
+     	                    PlayActivity.BOARD.jumpTo(arg2, true);
+     	                    render();
+     	                    if(prefs.getBoolean("snapClue", false)){
+     		                    across.setSelectionFromTop(arg2, 5);
+     		                    across.setSelection(arg2);
+     	                    }
+                     	}
+                     }
+
+                     public void onNothingSelected(AdapterView<?> arg0) {
+                        
+                     }
+                 }); 
+             down.setOnItemClickListener(new OnItemClickListener() {
+             	
+                     public void onItemClick(AdapterView<?> arg0, View arg1,
+                         final int arg2, long arg3) {
+                     	PlayActivity.BOARD.jumpTo(arg2, false);
+                         render();
+                         if(prefs.getBoolean("snapClue", false)){
+     	                    down.setSelectionFromTop(arg2, 5);
+     	                    down.setSelection(arg2);
+                         }
+                     }
+                 }); 
+             
+             down.setOnItemSelectedListener(new OnItemSelectedListener() {
+                     public void onItemSelected(AdapterView<?> arg0, View arg1,
+                         int arg2, long arg3) {
+                     	if(PlayActivity.BOARD.isAcross() || PlayActivity.BOARD.getCurrentClueIndex() != arg2 ){
+     	                    PlayActivity.BOARD.jumpTo(arg2, false);
+     	                    render();
+     	                    if(prefs.getBoolean("snapClue", false)){
+     		                    down.setSelectionFromTop(arg2, 5);
+     		                    down.setSelection(arg2);
+     	                    }
+                     	}
+                     }
+
+                     public void onNothingSelected(AdapterView<?> arg0) {
+                         
+                     }
+                 });
+        }
+        
+        setTitle("Shortyz - "+puz.getTitle()+" - "+puz.getAuthor()+" - "+puz.getCopyright());
+        
 	}
 
 	@Override
@@ -981,6 +1061,19 @@ public class PlayActivity extends Activity {
 			this.showDialog(COMPLETE_DIALOG);
 			this.timer = null;
 		}
+		if(this.downAdapter != null){
+			this.downAdapter.notifyDataSetChanged();
+			if(!BOARD.isAcross()){
+				this.down.setSelection( this.downAdapter.indexOf(c));
+			}
+		}
+		if(this.acrossAdapter != null){
+			this.acrossAdapter.notifyDataSetChanged();
+			if(BOARD.isAcross()){
+				this.across.setSelection(this.acrossAdapter.indexOf(c));
+			}
+		}
+		
 	}
 
 	private void showSDCardHelp() {
