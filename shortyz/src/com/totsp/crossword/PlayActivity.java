@@ -30,19 +30,19 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 
 import com.totsp.crossword.io.IO;
 import com.totsp.crossword.puz.MovementStrategy;
@@ -52,6 +52,7 @@ import com.totsp.crossword.puz.Playboard.Position;
 import com.totsp.crossword.puz.Playboard.Word;
 import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.shortyz.R;
+import com.totsp.crossword.versions.AndroidVersionUtils;
 import com.totsp.crossword.view.PlayboardRenderer;
 import com.totsp.crossword.view.ScrollingImageView;
 import com.totsp.crossword.view.ScrollingImageView.ClickListener;
@@ -88,25 +89,28 @@ public class PlayActivity extends Activity {
 	private boolean fitToScreen;
 	private boolean runTimer = false;
 	private Runnable updateTimeTask = new Runnable() {
-		   public void run() {
-		       if(timer != null){
-		    	   getWindow().setTitle(timer.time());
-		    	   getWindow().setFeatureInt(Window.FEATURE_PROGRESS, puz.getPercentComplete() * 100);
-		       }
-		       if(runTimer){
-		    	   handler.postDelayed(this, 1000);
-		       }
-		   }
-		};
+		public void run() {
+			if (timer != null) {
+				getWindow().setTitle(timer.time());
+				getWindow().setFeatureInt(Window.FEATURE_PROGRESS,
+						puz.getPercentComplete() * 100);
+			}
+			if (runTimer) {
+				handler.postDelayed(this, 1000);
+			}
+		}
+	};
 	private ListView across;
 	private ListView down;
 	private ClueListAdapter downAdapter;
 	private ClueListAdapter acrossAdapter;
+
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		this.configuration = newConfig;
 
-		if (this.prefs.getBoolean("forceKeyboard", false) ||  (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
+		if (this.prefs.getBoolean("forceKeyboard", false)
+				|| (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
 				|| (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
 			if (this.useNativeKeyboard) {
 				keyboardView.setVisibility(View.GONE);
@@ -121,9 +125,9 @@ public class PlayActivity extends Activity {
 		} else {
 			this.keyboardView.setVisibility(View.GONE);
 		}
-		
+
 		this.runTimer = prefs.getBoolean("runTimer", false);
-		if(runTimer){
+		if (runTimer) {
 			this.handler.post(this.updateTimeTask);
 		}
 	}
@@ -132,6 +136,8 @@ public class PlayActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		AndroidVersionUtils utils = AndroidVersionUtils.Factory.getInstance();
+		utils.holographic(this);
 
 		if (!Environment.MEDIA_MOUNTED.equals(Environment
 				.getExternalStorageState())) {
@@ -141,7 +147,6 @@ public class PlayActivity extends Activity {
 			return;
 		}
 
-		
 		this.configuration = getBaseContext().getResources().getConfiguration();
 		this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		this.showErrors = this.prefs.getBoolean("showErrors", false);
@@ -150,16 +155,16 @@ public class PlayActivity extends Activity {
 
 		DisplayMetrics metrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
-		if(!prefs.getBoolean("showTimer", false)){
-			//requestWindowFeature(Window.FEATURE_NO_TITLE);
+		if (!prefs.getBoolean("showTimer", false)) {
+			// requestWindowFeature(Window.FEATURE_NO_TITLE);
 			System.out.println("No Title");
 		} else {
 			requestWindowFeature(Window.FEATURE_PROGRESS);
 		}
-		
-		if(prefs.getBoolean("fullScreen", false)){
-			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,   
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+		if (prefs.getBoolean("fullScreen", false)) {
+			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+					WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		}
 
 		try {
@@ -200,9 +205,9 @@ public class PlayActivity extends Activity {
 				this.timer = new ImaginaryTimer(puz.getTime());
 				this.timer.start();
 				this.runTimer = prefs.getBoolean("showTimer", false);
-				if(runTimer){
+				if (runTimer) {
 					this.handler.post(this.updateTimeTask);
-				} 
+				}
 			}
 
 			setContentView(R.layout.play);
@@ -310,13 +315,12 @@ public class PlayActivity extends Activity {
 					PlayActivity.this.startActivityForResult(i, 0);
 				}
 			});
-			this.setClueSize(prefs.getInt("clueSize", 12));
-
+			
 			boardView = (ScrollingImageView) this.findViewById(R.id.board);
 
 			this.registerForContextMenu(boardView);
 			boardView.setContextMenuListener(new ClickListener() {
-				
+
 				public void onContextMenu(final Point e) {
 					handler.post(new Runnable() {
 						public void run() {
@@ -335,10 +339,13 @@ public class PlayActivity extends Activity {
 
 				public void onTap(Point e) {
 					try {
-						if( prefs.getBoolean("doubleTap", false ) && System.currentTimeMillis() - lastTap < 300){
-							if(fitToScreen){
-								PlayActivity.RENDERER.setScale(prefs.getFloat("scale", 1F));
-								PlayActivity.BOARD.setHighlightLetter( RENDERER.findBox(e));
+						if (prefs.getBoolean("doubleTap", false)
+								&& System.currentTimeMillis() - lastTap < 300) {
+							if (fitToScreen) {
+								PlayActivity.RENDERER.setScale(prefs.getFloat(
+										"scale", 1F));
+								PlayActivity.BOARD.setHighlightLetter(RENDERER
+										.findBox(e));
 								render();
 							} else {
 								int w = boardView.getWidth();
@@ -364,21 +371,21 @@ public class PlayActivity extends Activity {
 			System.err.println(this.getIntent().getData());
 			e.printStackTrace();
 			String filename = null;
-			try{
+			try {
 				filename = this.baseFile.getName();
-			} catch(Exception ee){
+			} catch (Exception ee) {
 				e.printStackTrace();
 			}
-			
-			Toast t = Toast.makeText(this, "Unable to read file"
-					+ filename != null ? " \n" + filename
-					: "", Toast.LENGTH_SHORT);
+
+			Toast t = Toast.makeText(this,
+					"Unable to read file" + filename != null ? " \n" + filename
+							: "", Toast.LENGTH_SHORT);
 			t.show();
 			this.finish();
 
 			return;
 		}
-		
+
 		completeDialog = new AlertDialog.Builder(this).create();
 		completeDialog.setTitle("Puzzle Complete!");
 		completeDialog.setMessage("");
@@ -389,7 +396,6 @@ public class PlayActivity extends Activity {
 				return;
 			}
 		});
-
 
 		revealPuzzleDialog = new AlertDialog.Builder(this).create();
 		revealPuzzleDialog.setTitle("Reveal Entire Puzzle");
@@ -428,8 +434,10 @@ public class PlayActivity extends Activity {
 							public void run() {
 								int w = boardView.getImageView().getWidth();
 								int h = boardView.getImageView().getHeight();
-								prefs.edit().putFloat("scale",
-										RENDERER.fitTo(w < h ? w : h)).commit();
+								prefs.edit()
+										.putFloat("scale",
+												RENDERER.fitTo(w < h ? w : h))
+										.commit();
 								BOARD.setHighlightLetter(RENDERER
 										.findBox(center));
 
@@ -452,79 +460,70 @@ public class PlayActivity extends Activity {
 
 		this.showCount = prefs.getBoolean("showCount", false);
 		this.render();
-		
+
 		this.across = (ListView) this.findViewById(R.id.acrossList);
-        this.down = (ListView) this.findViewById(R.id.downList);
-        if(across != null && down != null){
-        	 across.setAdapter(this.acrossAdapter = new ClueListAdapter(this,
-                     PlayActivity.BOARD.getAcrossClues(),true));
-        	 across.setFocusableInTouchMode(true);
-             down.setAdapter(this.downAdapter = new ClueListAdapter(this,
-                     PlayActivity.BOARD.getDownClues(), false));
-             across.setOnItemClickListener(new OnItemClickListener() {
-                     public void onItemClick(AdapterView<?> arg0, View arg1,
-                         int arg2, long arg3) {
-                     	arg0.setSelected(true);
-                         PlayActivity.BOARD.jumpTo(arg2, true);
-                         render();
-                         if(prefs.getBoolean("snapClue", false)){
-                         	across.setSelectionFromTop(arg2, 5);
-                         	across.setSelection(arg2);
-                         }
-                     }
-                 });
-             across.setOnItemSelectedListener(new OnItemSelectedListener() {
-                     public void onItemSelected(AdapterView<?> arg0, View arg1,
-                         int arg2, long arg3) {
-                     	if(!PlayActivity.BOARD.isAcross() || PlayActivity.BOARD.getCurrentClueIndex() != arg2 ){
-                     
-     	                    PlayActivity.BOARD.jumpTo(arg2, true);
-     	                    render();
-     	                    if(prefs.getBoolean("snapClue", false)){
-     		                    across.setSelectionFromTop(arg2, 5);
-     		                    across.setSelection(arg2);
-     	                    }
-                     	}
-                     }
+		this.down = (ListView) this.findViewById(R.id.downList);
+		if (across != null && down != null) {
+			across.setAdapter(this.acrossAdapter = new ClueListAdapter(this, 
+					PlayActivity.BOARD.getAcrossClues(), true));
+			across.setFocusableInTouchMode(true);
+			down.setAdapter(this.downAdapter = new ClueListAdapter(this,  
+					PlayActivity.BOARD.getDownClues(), false));
+			across.setOnItemClickListener(new OnItemClickListener() {
+				public void onItemClick(AdapterView<?> arg0, View arg1,
+						int arg2, long arg3) {
+					arg0.setSelected(true);
+					PlayActivity.BOARD.jumpTo(arg2, true);
+					render();
+				}
+			});
+			across.setOnItemSelectedListener(new OnItemSelectedListener() {
+				public void onItemSelected(AdapterView<?> arg0, View arg1,
+						int arg2, long arg3) {
+					if (!PlayActivity.BOARD.isAcross()
+							|| PlayActivity.BOARD.getCurrentClueIndex() != arg2) {
 
-                     public void onNothingSelected(AdapterView<?> arg0) {
-                        
-                     }
-                 }); 
-             down.setOnItemClickListener(new OnItemClickListener() {
-             	
-                     public void onItemClick(AdapterView<?> arg0, View arg1,
-                         final int arg2, long arg3) {
-                     	PlayActivity.BOARD.jumpTo(arg2, false);
-                         render();
-                         if(prefs.getBoolean("snapClue", false)){
-     	                    down.setSelectionFromTop(arg2, 5);
-     	                    down.setSelection(arg2);
-                         }
-                     }
-                 }); 
-             
-             down.setOnItemSelectedListener(new OnItemSelectedListener() {
-                     public void onItemSelected(AdapterView<?> arg0, View arg1,
-                         int arg2, long arg3) {
-                     	if(PlayActivity.BOARD.isAcross() || PlayActivity.BOARD.getCurrentClueIndex() != arg2 ){
-     	                    PlayActivity.BOARD.jumpTo(arg2, false);
-     	                    render();
-     	                    if(prefs.getBoolean("snapClue", false)){
-     		                    down.setSelectionFromTop(arg2, 5);
-     		                    down.setSelection(arg2);
-     	                    }
-                     	}
-                     }
+						PlayActivity.BOARD.jumpTo(arg2, true);
+						render();
+					}
+				}
 
-                     public void onNothingSelected(AdapterView<?> arg0) {
-                         
-                     }
-                 });
-        }
-        
-        setTitle("Shortyz - "+puz.getTitle()+" - "+puz.getAuthor()+" - "+puz.getCopyright());
-        
+				public void onNothingSelected(AdapterView<?> arg0) {
+
+				}
+			});
+			down.setOnItemClickListener(new OnItemClickListener() {
+
+				public void onItemClick(AdapterView<?> arg0, View arg1,
+						final int arg2, long arg3) {
+					PlayActivity.BOARD.jumpTo(arg2, false);
+					render();
+
+				}
+			});
+
+			down.setOnItemSelectedListener(new OnItemSelectedListener() {
+				public void onItemSelected(AdapterView<?> arg0, View arg1,
+						int arg2, long arg3) {
+					if (PlayActivity.BOARD.isAcross()
+							|| PlayActivity.BOARD.getCurrentClueIndex() != arg2) {
+						PlayActivity.BOARD.jumpTo(arg2, false);
+						render();
+
+					}
+				}
+
+				public void onNothingSelected(AdapterView<?> arg0) {
+
+				}
+			});
+			
+
+		}
+		this.setClueSize(prefs.getInt("clueSize", 12));
+		setTitle("Shortyz - " + puz.getTitle() + " - " + puz.getAuthor()
+				+ " - 	" + puz.getCopyright());
+		utils.finishOnHomeButton(this);
 	}
 
 	@Override
@@ -548,18 +547,23 @@ public class PlayActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		AndroidVersionUtils utils = AndroidVersionUtils.Factory.getInstance();
 		if (!puz.isUpdatable()) {
-			menu.add(this.showErrors ? "Hide Errors" : "Show Errors").setIcon(
-					android.R.drawable.ic_menu_view).setCheckable(true);
-
-			Menu reveal = menu.addSubMenu("Reveal").setIcon(
+			MenuItem showItem = menu
+					.add(this.showErrors ? "Hide Errors" : "Show Errors")
+					.setIcon(android.R.drawable.ic_menu_view)
+					.setCheckable(true);
+			utils.onActionBarWithText(showItem);
+			SubMenu reveal = menu.addSubMenu("Reveal").setIcon(
 					android.R.drawable.ic_menu_view);
 			reveal.add("Letter");
 			reveal.add("Word");
 			reveal.add("Puzzle");
+			utils.onActionBarWithText(reveal);
+
 		} else {
-			menu.add("Show Errors").setEnabled(false).setIcon(
-					android.R.drawable.ic_menu_view);
+			menu.add("Show Errors").setEnabled(false)
+					.setIcon(android.R.drawable.ic_menu_view);
 			menu.add("Reveal").setIcon(android.R.drawable.ic_menu_view)
 					.setEnabled(false);
 		}
@@ -687,8 +691,7 @@ public class PlayActivity extends Activity {
 
 		char c = Character
 				.toUpperCase(((this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) || this.useNativeKeyboard) ? event
-						.getDisplayLabel()
-						: ((char) keyCode));
+						.getDisplayLabel() : ((char) keyCode));
 
 		if (ALPHA.indexOf(c) != -1) {
 			previous = PlayActivity.BOARD.playLetter(c);
@@ -703,7 +706,6 @@ public class PlayActivity extends Activity {
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		System.out.println(item.getTitle());
-
 		if (item.getTitle().equals("Letter")) {
 			PlayActivity.BOARD.revealLetter();
 			this.render();
@@ -744,7 +746,7 @@ public class PlayActivity extends Activity {
 			return true;
 		} else if (item.getTitle().equals("Zoom Out")) {
 			this.boardView.scrollTo(0, 0);
-			
+
 			float newScale = RENDERER.zoomOut();
 			this.prefs.edit().putFloat("scale", newScale).commit();
 			this.fitToScreen = false;
@@ -754,8 +756,7 @@ public class PlayActivity extends Activity {
 		} else if (item.getTitle().equals("Fit to Screen")) {
 			this.boardView.scrollTo(0, 0);
 			int v = this.boardView.getWidth() < this.boardView.getHeight() ? this.boardView
-					.getWidth()
-					: this.boardView.getHeight();
+					.getWidth() : this.boardView.getHeight();
 			float newScale = RENDERER.fitTo(v);
 			this.prefs.edit().putFloat("scale", newScale).commit();
 			this.render();
@@ -769,9 +770,10 @@ public class PlayActivity extends Activity {
 
 			return true;
 		} else if (item.getTitle().equals("Info")) {
-			if(dialog != null){
-				TextView view = (TextView) dialog.findViewById(R.id.puzzle_info_time);
-	
+			if (dialog != null) {
+				TextView view = (TextView) dialog
+						.findViewById(R.id.puzzle_info_time);
+
 				if (timer != null) {
 					this.timer.stop();
 					view.setText("Elapsed Time: " + this.timer.time());
@@ -780,10 +782,9 @@ public class PlayActivity extends Activity {
 					view.setText("Elapsed Time: "
 							+ new ImaginaryTimer(puz.getTime()).time());
 				}
-			
+
 			}
 
-			
 			this.showDialog(INFO_DIALOG);
 
 			return true;
@@ -794,18 +795,19 @@ public class PlayActivity extends Activity {
 
 			return true;
 		} else if (item.getTitle().equals("Help")) {
-			Intent i = new Intent(Intent.ACTION_VIEW, Uri
-					.parse("file:///android_asset/playscreen.html"), this,
+			Intent i = new Intent(Intent.ACTION_VIEW,
+					Uri.parse("file:///android_asset/playscreen.html"), this,
 					HTMLActivity.class);
 			this.startActivity(i);
 		} else if (item.getTitle().equals("Small")) {
-			this.setClueSize(12);
+			this.setClueSize(14);
 		} else if (item.getTitle().equals("Medium")) {
-			this.setClueSize(16);
+			this.setClueSize(18);
 		} else if (item.getTitle().equals("Large")) {
 			this.setClueSize(20);
 		}
 
+		
 		return false;
 	}
 
@@ -840,7 +842,6 @@ public class PlayActivity extends Activity {
 				.findViewById(R.id.puzzle_info_progress);
 		progress.setProgress(this.puz.getPercentComplete());
 
-		
 		return dialog;
 	}
 
@@ -867,7 +868,7 @@ public class PlayActivity extends Activity {
 		try {
 			if ((puz != null) && (baseFile != null)) {
 				if ((puz.getPercentComplete() != 100) && (this.timer != null)) {
-					
+
 					this.timer.stop();
 					puz.setTime(timer.getElapsed());
 					this.timer = null;
@@ -890,22 +891,22 @@ public class PlayActivity extends Activity {
 		super.onPause();
 	}
 
-	 @Override
+	@Override
 	protected void onStop() {
 		super.onStop();
-		if(this.timer != null){
+		if (this.timer != null) {
 			this.timer.stop();
 		}
 	}
-	 
-	 @Override
+
+	@Override
 	protected void onRestart() {
 		super.onRestart();
-		if(this.timer != null){
+		if (this.timer != null) {
 			this.timer.start();
 		}
 	}
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -932,7 +933,7 @@ public class PlayActivity extends Activity {
 			timer.start();
 		}
 		this.runTimer = prefs.getBoolean("showTimer", false);
-		if(runTimer){
+		if (runTimer) {
 			this.handler.post(this.updateTimeTask);
 		}
 		render();
@@ -940,8 +941,13 @@ public class PlayActivity extends Activity {
 
 	private void setClueSize(int dps) {
 		this.clue.setTextSize(TypedValue.COMPLEX_UNIT_SP, dps);
-
-		if (prefs.getInt("clueSize", 12) != dps) {
+		if(acrossAdapter != null && downAdapter != null ){
+			acrossAdapter.textSize = dps;
+			acrossAdapter.notifyDataSetInvalidated();
+			downAdapter.textSize = dps;
+			downAdapter.notifyDataSetInvalidated();
+		}
+		if (prefs.getInt("clueSize", 14) != dps) {
 			this.prefs.edit().putInt("clueSize", dps).commit();
 		}
 	}
@@ -981,7 +987,8 @@ public class PlayActivity extends Activity {
 	}
 
 	private void render(Word previous, boolean rescale) {
-		if (  this.prefs.getBoolean("forceKeyboard", false) ||  (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
+		if (this.prefs.getBoolean("forceKeyboard", false)
+				|| (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
 				|| (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
 			if (this.useNativeKeyboard) {
 				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -1061,24 +1068,30 @@ public class PlayActivity extends Activity {
 			this.showDialog(COMPLETE_DIALOG);
 			this.timer = null;
 		}
-		if(this.downAdapter != null){
+		if (this.downAdapter != null) {
+			this.downAdapter.setHighlightClue(c);
+			this.downAdapter.setActiveDirection(!BOARD.isAcross());
 			this.downAdapter.notifyDataSetChanged();
-			if(!BOARD.isAcross()){
-				this.down.setSelection( this.downAdapter.indexOf(c));
+			if (!BOARD.isAcross() && !c.equals(this.down.getSelectedItem())) {
+				this.down.setSelectionFromTop(this.downAdapter.indexOf(c), 
+						down.getHeight() /2 - 50);
 			}
 		}
-		if(this.acrossAdapter != null){
+		if (this.acrossAdapter != null) {
+			this.acrossAdapter.setHighlightClue(c);
+			this.acrossAdapter.setActiveDirection(BOARD.isAcross());
 			this.acrossAdapter.notifyDataSetChanged();
-			if(BOARD.isAcross()){
-				this.across.setSelection(this.acrossAdapter.indexOf(c));
+			if (BOARD.isAcross() && !c.equals(this.across.getSelectedItem())) {
+				this.across.setSelectionFromTop(this.acrossAdapter.indexOf(c),
+						across.getHeight() /2 - 50);
 			}
 		}
-		
+
 	}
 
 	private void showSDCardHelp() {
-		Intent i = new Intent(Intent.ACTION_VIEW, Uri
-				.parse("file:///android_asset/sdcard.html"), this,
+		Intent i = new Intent(Intent.ACTION_VIEW,
+				Uri.parse("file:///android_asset/sdcard.html"), this,
 				HTMLActivity.class);
 		this.startActivity(i);
 	}

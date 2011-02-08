@@ -5,12 +5,14 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
+import android.app.Activity;
 import android.app.Dialog;
-import android.app.ListActivity;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -25,13 +27,15 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -43,11 +47,12 @@ import com.totsp.crossword.net.Scrapers;
 import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.puz.PuzzleMeta;
 import com.totsp.crossword.shortyz.R;
+import com.totsp.crossword.versions.AndroidVersionUtils;
 import com.totsp.crossword.view.SeparatedListAdapter;
 import com.totsp.crossword.view.VerticalProgressBar;
 
 
-public class BrowseActivity extends ListActivity {
+public class BrowseActivity extends Activity implements OnItemClickListener {
     private static final String MENU_ARCHIVES = "Archives";
 	private static final int DOWNLOAD_DIALOG_ID = 0;
     private static final long DAY = 24L * 60L * 60L * 1000L;
@@ -66,7 +71,9 @@ public class BrowseActivity extends ListActivity {
     private View lastOpenedView = null;
     private boolean viewArchive;
     private Dialog mDownloadDialog;
-
+    private ListView puzzleList;
+    private ListView sources;
+    private List<String> sourceList = new ArrayList<String>();
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         File meta = new File(this.contextFile.getParent(),
@@ -129,8 +136,8 @@ public class BrowseActivity extends ListActivity {
             return;
         }
 
-        contextFile = ((FileHandle) getListAdapter().getItem(info.position)).file;
-        PuzzleMeta meta = ((FileHandle) getListAdapter().getItem(info.position)).meta;
+        contextFile = ((FileHandle) this.puzzleList.getAdapter().getItem(info.position)).file;
+        PuzzleMeta meta = ((FileHandle) this.puzzleList.getAdapter().getItem(info.position)).meta;
         menu.setHeaderTitle(contextFile.getName());
 
         menu.add("Delete");
@@ -143,16 +150,21 @@ public class BrowseActivity extends ListActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         System.setProperty("http.keepAlive", "false");
-        menu.add("Download").setIcon(android.R.drawable.ic_menu_rotate);
+        AndroidVersionUtils utils = AndroidVersionUtils.Factory.getInstance();
+        
+        utils.onActionBarWithText(
+        		menu.add("Download")
+        			.setIcon(android.R.drawable.ic_menu_rotate));
 
-        Menu sortMenu = menu.addSubMenu("Sort")
+        SubMenu sortMenu = menu.addSubMenu("Sort")
                             .setIcon(android.R.drawable.ic_menu_sort_alphabetically);
         sortMenu.add("By Date (Descending)")
                 .setIcon(android.R.drawable.ic_menu_day);
         sortMenu.add("By Date (Ascending)")
                 .setIcon(android.R.drawable.ic_menu_day);
         sortMenu.add("By Source").setIcon(android.R.drawable.ic_menu_upload);
-
+        utils.onActionBarWithText(sortMenu);
+        
         menu.add("Cleanup").setIcon(android.R.drawable.ic_menu_manage);
         menu.add(MENU_ARCHIVES).setIcon(android.R.drawable.ic_menu_view);
         menu.add("Help").setIcon(android.R.drawable.ic_menu_help);
@@ -220,9 +232,13 @@ public class BrowseActivity extends ListActivity {
             return;
         }
 
-        this.setTitle("Select Puzzle:");
+        this.setTitle("Shortyz - Puzzles");
         setDefaultKeyMode(DEFAULT_KEYS_SHORTCUT);
-        getListView().setOnCreateContextMenuListener(this);
+        this.setContentView(R.layout.browse);
+        this.puzzleList = (ListView) this.findViewById(R.id.puzzleList);
+        this.puzzleList.setOnCreateContextMenuListener(this);
+        this.puzzleList.setOnItemClickListener(this);
+        this.sources = (ListView) this.findViewById(R.id.sourceList);
         this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
         upgradePreferences();
         this.nm = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -312,8 +328,8 @@ public class BrowseActivity extends ListActivity {
         return null;
     }
 
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
+
+    public void onItemClick(AdapterView<?> l, View v, int position, long id) {
         lastOpenedView = v;
         lastOpenedHandle = ((FileHandle) v.getTag());
 
@@ -370,7 +386,16 @@ public class BrowseActivity extends ListActivity {
 
             return new SeparatedListAdapter(this);
         }
-
+        
+        String sourceMatch = null;
+        if(this.sources != null){
+        	sourceMatch = ((SourceListAdapter) sources.getAdapter()).current;
+        	if(SourceListAdapter.ALL_SOURCES.equals(sourceMatch)){
+        		sourceMatch = null;
+        	}
+        }
+        
+        HashSet<String> sourcesTemp = new HashSet<String>();
         for (File f : directory.listFiles()) {
             // if this is taking a while and we are off the EDT, pop up the dialog.
             if ((dialog != null) &&
@@ -397,8 +422,11 @@ public class BrowseActivity extends ListActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-                files.add(new FileHandle(f, m));
+                FileHandle h = new FileHandle(f, m);
+                sourcesTemp.add(h.getSource());
+                if(sourceMatch == null || sourceMatch.equals(h.getSource())){
+                	files.add(h);
+                }
             }
         }
 
@@ -434,7 +462,12 @@ public class BrowseActivity extends ListActivity {
             adapter.addSection(lastHeader, fa);
             current = new ArrayList<FileHandle>();
         }
-
+        if(this.sources != null){
+        	this.sourceList.clear();
+        	this.sourceList.addAll(sourcesTemp);
+        	Collections.sort(this.sourceList);
+        	((SourceListAdapter) this.sources.getAdapter()).notifyDataSetInvalidated();
+        }
         return adapter;
     }
 
@@ -552,6 +585,21 @@ public class BrowseActivity extends ListActivity {
     }
 
     private void render() {
+    	if(this.sources != null && this.sources.getAdapter() == null){
+    		final SourceListAdapter adapter =  new SourceListAdapter(this, this.sourceList);
+    		this.sources.setAdapter(adapter);
+    		this.sources.setOnItemClickListener(new OnItemClickListener(){
+
+				public void onItemClick(AdapterView<?> list, View view,
+						int arg2, long arg3) {
+					String selected = (String) view.getTag();
+					adapter.current = selected;
+					adapter.notifyDataSetInvalidated();
+					render();
+				}
+    			
+    		});
+    	}
         final ProgressDialog dialog = new ProgressDialog(this);
         dialog.setMessage("Please Wait...");
         dialog.setCancelable(false);
@@ -571,7 +619,7 @@ public class BrowseActivity extends ListActivity {
                                 directory, BrowseActivity.this.accessor);
                         BrowseActivity.this.handler.post(new Runnable() {
                                 public void run() {
-                                    BrowseActivity.this.setListAdapter(currentAdapter);
+                                    BrowseActivity.this.puzzleList.setAdapter(currentAdapter);
 
                                     if (dialog.isShowing()) {
                                         dialog.hide();
@@ -583,7 +631,7 @@ public class BrowseActivity extends ListActivity {
 
             new Thread(r).start();
         } else {
-            this.setListAdapter(this.buildList(null, directory, accessor));
+            this.puzzleList.setAdapter(this.buildList(null, directory, accessor));
         }
     }
 

@@ -5,6 +5,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +24,10 @@ public class ClueListAdapter extends BaseAdapter{
 	private boolean across;
 	private Context context;
 	private HashMap<Integer, Box[]> cache = new HashMap<Integer, Box[]>();
+	private static final int transparent = Color.TRANSPARENT;
+	private static final int highlight = Color.argb(100, 200, 191, 231);
+	public int textSize = 14;
+	
 	
 	public ClueListAdapter(Context context, Clue[] clues, boolean across){
 		this.clues = clues;
@@ -48,7 +55,9 @@ public class ClueListAdapter extends BaseAdapter{
 		}
 		
 		TextView line = (TextView) view.findViewById(R.id.clueLine);
+		line.setTextSize(TypedValue.COMPLEX_UNIT_SP, this.textSize);
 		TextView word = (TextView) view.findViewById(R.id.clueWord);
+		word.setTextSize(TypedValue.COMPLEX_UNIT_SP, (int)(this.textSize - 1.75));
 		Clue c = this.clues[position];
 		line.setText( c.number+". "+c.hint);
 		Box[] boxes = this.cache.get(c.number);
@@ -65,6 +74,11 @@ public class ClueListAdapter extends BaseAdapter{
 		}
 		sb.append(" ["+boxes.length+"]");
 		word.setText(sb);
+		if(this.isActive && c.equals(this.highlightClue)){
+			view.setBackgroundColor(this.highlight);
+		} else {
+			view.setBackgroundColor(this.transparent);
+		}
 		return view;
 	}
 	
@@ -76,6 +90,16 @@ public class ClueListAdapter extends BaseAdapter{
 			}
 			
 		});
+	}
+	private Clue highlightClue;
+	private boolean isActive = false;
+	
+	public void setHighlightClue(Clue c){
+		this.highlightClue = c;
+	}
+	
+	public void setActiveDirection(boolean isActive){
+		this.isActive = isActive;
 	}
 
 }
