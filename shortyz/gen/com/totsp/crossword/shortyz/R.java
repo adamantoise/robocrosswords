@@ -15,6 +15,8 @@ public final class R {
         public static final int keyboardTypeValues=0x7f060003;
         public static final int movementStrategyLabels=0x7f060000;
         public static final int movementStrategyValues=0x7f060001;
+        public static final int orientationLockLabels=0x7f060006;
+        public static final int orientationLockValues=0x7f060007;
     }
     public static final class attr {
     }

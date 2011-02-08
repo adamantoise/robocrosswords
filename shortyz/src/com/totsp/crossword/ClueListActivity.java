@@ -3,7 +3,6 @@ package com.totsp.crossword;
 import java.io.File;
 import java.io.IOException;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -17,32 +16,31 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.TabHost.TabSpec;
 
 import com.totsp.crossword.io.IO;
 import com.totsp.crossword.puz.Box;
-import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.puz.Playboard.Clue;
 import com.totsp.crossword.puz.Playboard.Position;
 import com.totsp.crossword.puz.Playboard.Word;
+import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.shortyz.R;
 import com.totsp.crossword.view.ScrollingImageView;
 import com.totsp.crossword.view.ScrollingImageView.ClickListener;
 import com.totsp.crossword.view.ScrollingImageView.Point;
 
 
-public class ClueListActivity extends Activity {
+public class ClueListActivity extends ShortyzActivity {
     private ImaginaryTimer timer;
     private ListView across;
     private ListView down;
     private ScrollingImageView imageView;
     private TabHost tabHost;
-    private SharedPreferences prefs;
     private Configuration configuration;
     private KeyboardView keyboardView = null;
     private boolean useNativeKeyboard = false;
@@ -67,7 +65,6 @@ public class ClueListActivity extends Activity {
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         this.configuration = getBaseContext().getResources().getConfiguration();
-        this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
         this.timer = new ImaginaryTimer(PlayActivity.BOARD.getPuzzle().getTime());
         Uri u = this.getIntent().getData();
         

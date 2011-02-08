@@ -1,13 +1,12 @@
 package com.totsp.crossword;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnKeyListener;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -18,7 +17,7 @@ import android.widget.EditText;
 
 import com.totsp.crossword.shortyz.R;
 
-public class WebBrowserActivity extends Activity {
+public class WebBrowserActivity extends ShortyzActivity {
 	private EditText mURL;
 	private WebView mWebView;
 	private InputMethodManager mIMM;

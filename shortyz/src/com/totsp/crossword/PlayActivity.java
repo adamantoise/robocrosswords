@@ -13,16 +13,13 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.inputmethodservice.KeyboardView.OnKeyboardActionListener;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.ContextMenu;
@@ -52,14 +49,13 @@ import com.totsp.crossword.puz.Playboard.Position;
 import com.totsp.crossword.puz.Playboard.Word;
 import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.shortyz.R;
-import com.totsp.crossword.versions.AndroidVersionUtils;
 import com.totsp.crossword.view.PlayboardRenderer;
 import com.totsp.crossword.view.ScrollingImageView;
 import com.totsp.crossword.view.ScrollingImageView.ClickListener;
 import com.totsp.crossword.view.ScrollingImageView.Point;
 import com.totsp.crossword.view.ScrollingImageView.ScaleListener;
 
-public class PlayActivity extends Activity {
+public class PlayActivity extends ShortyzActivity {
 	private static final Logger LOG = Logger.getLogger("com.totsp.crossword");
 	private static final int INFO_DIALOG = 0;
 	private static final int COMPLETE_DIALOG = 1;
@@ -78,7 +74,6 @@ public class PlayActivity extends Activity {
 	private KeyboardView keyboardView = null;
 	private Puzzle puz;
 	private ScrollingImageView boardView;
-	private SharedPreferences prefs;
 	private TextView clue;
 	private boolean showCount = false;
 	private boolean showErrors = false;
@@ -136,28 +131,18 @@ public class PlayActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		AndroidVersionUtils utils = AndroidVersionUtils.Factory.getInstance();
 		utils.holographic(this);
-
-		if (!Environment.MEDIA_MOUNTED.equals(Environment
-				.getExternalStorageState())) {
-			showSDCardHelp();
-			finish();
-
-			return;
-		}
-
 		this.configuration = getBaseContext().getResources().getConfiguration();
-		this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		this.showErrors = this.prefs.getBoolean("showErrors", false);
-
+		setDefaultKeyMode(Activity.DEFAULT_KEYS_DISABLE);
 		MovementStrategy movement = this.getMovementStrategy();
 
 		DisplayMetrics metrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		if (!prefs.getBoolean("showTimer", false)) {
-			// requestWindowFeature(Window.FEATURE_NO_TITLE);
-			System.out.println("No Title");
+			if (android.os.Build.VERSION.SDK_INT < 10) {
+				requestWindowFeature(Window.FEATURE_NO_TITLE);
+			}
 		} else {
 			requestWindowFeature(Window.FEATURE_PROGRESS);
 		}
@@ -315,7 +300,7 @@ public class PlayActivity extends Activity {
 					PlayActivity.this.startActivityForResult(i, 0);
 				}
 			});
-			
+
 			boardView = (ScrollingImageView) this.findViewById(R.id.board);
 
 			this.registerForContextMenu(boardView);
@@ -464,10 +449,10 @@ public class PlayActivity extends Activity {
 		this.across = (ListView) this.findViewById(R.id.acrossList);
 		this.down = (ListView) this.findViewById(R.id.downList);
 		if (across != null && down != null) {
-			across.setAdapter(this.acrossAdapter = new ClueListAdapter(this, 
+			across.setAdapter(this.acrossAdapter = new ClueListAdapter(this,
 					PlayActivity.BOARD.getAcrossClues(), true));
 			across.setFocusableInTouchMode(true);
-			down.setAdapter(this.downAdapter = new ClueListAdapter(this,  
+			down.setAdapter(this.downAdapter = new ClueListAdapter(this,
 					PlayActivity.BOARD.getDownClues(), false));
 			across.setOnItemClickListener(new OnItemClickListener() {
 				public void onItemClick(AdapterView<?> arg0, View arg1,
@@ -517,7 +502,6 @@ public class PlayActivity extends Activity {
 
 				}
 			});
-			
 
 		}
 		this.setClueSize(prefs.getInt("clueSize", 12));
@@ -547,7 +531,6 @@ public class PlayActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		AndroidVersionUtils utils = AndroidVersionUtils.Factory.getInstance();
 		if (!puz.isUpdatable()) {
 			MenuItem showItem = menu
 					.add(this.showErrors ? "Hide Errors" : "Show Errors")
@@ -807,7 +790,6 @@ public class PlayActivity extends Activity {
 			this.setClueSize(20);
 		}
 
-		
 		return false;
 	}
 
@@ -941,7 +923,7 @@ public class PlayActivity extends Activity {
 
 	private void setClueSize(int dps) {
 		this.clue.setTextSize(TypedValue.COMPLEX_UNIT_SP, dps);
-		if(acrossAdapter != null && downAdapter != null ){
+		if (acrossAdapter != null && downAdapter != null) {
 			acrossAdapter.textSize = dps;
 			acrossAdapter.notifyDataSetInvalidated();
 			downAdapter.textSize = dps;
@@ -1073,8 +1055,8 @@ public class PlayActivity extends Activity {
 			this.downAdapter.setActiveDirection(!BOARD.isAcross());
 			this.downAdapter.notifyDataSetChanged();
 			if (!BOARD.isAcross() && !c.equals(this.down.getSelectedItem())) {
-				this.down.setSelectionFromTop(this.downAdapter.indexOf(c), 
-						down.getHeight() /2 - 50);
+				this.down.setSelectionFromTop(this.downAdapter.indexOf(c),
+						down.getHeight() / 2 - 50);
 			}
 		}
 		if (this.acrossAdapter != null) {
@@ -1083,16 +1065,9 @@ public class PlayActivity extends Activity {
 			this.acrossAdapter.notifyDataSetChanged();
 			if (BOARD.isAcross() && !c.equals(this.across.getSelectedItem())) {
 				this.across.setSelectionFromTop(this.acrossAdapter.indexOf(c),
-						across.getHeight() /2 - 50);
+						across.getHeight() / 2 - 50);
 			}
 		}
 
-	}
-
-	private void showSDCardHelp() {
-		Intent i = new Intent(Intent.ACTION_VIEW,
-				Uri.parse("file:///android_asset/sdcard.html"), this,
-				HTMLActivity.class);
-		this.startActivity(i);
 	}
 }

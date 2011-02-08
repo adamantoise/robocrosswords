@@ -273,7 +273,15 @@
 		android:defaultValue="false"
 		android:summary="Forces the keyboard to always be on screen. \n Good for some generic tablets"
 		android:key="forceKeyboard"
-	/>		
+	/>	
+	
+	<ListPreference
+		android:title="Orientation Lock"
+		android:summary="Locks the screen location"
+		android:key="orientationLock"
+		android:defaultValue="UNLOCKED"
+		android:entries="@array/orientationLockLabels"
+		android:entryValues="@array/orientationLockValues" />	
 	<!--  CheckBoxPreference
 		android:title="Full Screen"
 		android:defaultValue="false"

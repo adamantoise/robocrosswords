@@ -20,11 +20,12 @@
 		<ListView android:id="@+id/sourceList" android:layout_width="350dp"
 			android:layout_height="fill_parent" android:background="#313131"
 			android:layout_marginRight="5dp" 
+			android:paddingLeft="10dp"
 			android:cacheColorHint="#0000"/>
 
 
 		<ListView android:id="@+id/puzzleList" android:layout_width="fill_parent"
-			android:layout_height="fill_parent" />
+			android:layout_height="fill_parent"/>
 
 
 	</LinearLayout>

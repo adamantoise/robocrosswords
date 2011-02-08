@@ -47,17 +47,14 @@ import com.totsp.crossword.net.Scrapers;
 import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.puz.PuzzleMeta;
 import com.totsp.crossword.shortyz.R;
-import com.totsp.crossword.versions.AndroidVersionUtils;
 import com.totsp.crossword.view.SeparatedListAdapter;
 import com.totsp.crossword.view.VerticalProgressBar;
 
 
-public class BrowseActivity extends Activity implements OnItemClickListener {
+public class BrowseActivity extends ShortyzActivity implements OnItemClickListener {
     private static final String MENU_ARCHIVES = "Archives";
 	private static final int DOWNLOAD_DIALOG_ID = 0;
     private static final long DAY = 24L * 60L * 60L * 1000L;
-    SharedPreferences prefs;
-
     private Accessor accessor = Accessor.DATE_DESC;
     private BaseAdapter currentAdapter = null;
     private File archiveFolder = new File(Environment.getExternalStorageDirectory(),
@@ -74,6 +71,7 @@ public class BrowseActivity extends Activity implements OnItemClickListener {
     private ListView puzzleList;
     private ListView sources;
     private List<String> sourceList = new ArrayList<String>();
+    
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         File meta = new File(this.contextFile.getParent(),
@@ -112,7 +110,6 @@ public class BrowseActivity extends Activity implements OnItemClickListener {
 				IO.save(p, this.contextFile);
 				render();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
         }
@@ -150,8 +147,6 @@ public class BrowseActivity extends Activity implements OnItemClickListener {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         System.setProperty("http.keepAlive", "false");
-        AndroidVersionUtils utils = AndroidVersionUtils.Factory.getInstance();
-        
         utils.onActionBarWithText(
         		menu.add("Download")
         			.setIcon(android.R.drawable.ic_menu_rotate));
@@ -223,15 +218,6 @@ public class BrowseActivity extends Activity implements OnItemClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (!Environment.MEDIA_MOUNTED.equals(
-                    Environment.getExternalStorageState())) {
-            showSDCardHelp();
-            finish();
-
-            return;
-        }
-
         this.setTitle("Shortyz - Puzzles");
         setDefaultKeyMode(DEFAULT_KEYS_SHORTCUT);
         this.setContentView(R.layout.browse);
@@ -239,7 +225,6 @@ public class BrowseActivity extends Activity implements OnItemClickListener {
         this.puzzleList.setOnCreateContextMenuListener(this);
         this.puzzleList.setOnItemClickListener(this);
         this.sources = (ListView) this.findViewById(R.id.sourceList);
-        this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
         upgradePreferences();
         this.nm = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         
@@ -267,9 +252,9 @@ public class BrowseActivity extends Activity implements OnItemClickListener {
             this.startActivity(i);
 
             return;
-        } else if (prefs.getBoolean("release_2.3.12", true)) {
+        } else if (prefs.getBoolean("release_3.0.0", true)) {
             Editor e = prefs.edit();
-            e.putBoolean("release_2.3.12", false);
+            e.putBoolean("release_3.0.0", false);
             e.commit();
 
             Intent i = new Intent(Intent.ACTION_VIEW,
@@ -341,6 +326,7 @@ public class BrowseActivity extends Activity implements OnItemClickListener {
 
     @Override
     protected void onResume() {
+    	super.onResume();
         if (this.currentAdapter == null) {
             this.render();
         } else {
@@ -362,7 +348,7 @@ public class BrowseActivity extends Activity implements OnItemClickListener {
         }
 
         this.checkDownload();
-        super.onResume();
+        
     }
     
     @Override
@@ -635,14 +621,7 @@ public class BrowseActivity extends Activity implements OnItemClickListener {
         }
     }
 
-    private void showSDCardHelp() {
-        Intent i = new Intent(Intent.ACTION_VIEW,
-                Uri.parse("file:///android_asset/sdcard.html"), this,
-                HTMLActivity.class);
-        this.startActivity(i);
-    }
-
-    private class FileAdapter extends BaseAdapter {
+        private class FileAdapter extends BaseAdapter {
         SimpleDateFormat df = new SimpleDateFormat("EEEEEEEEE\n MMM dd, yyyy");
         FileHandle[] puzFiles;
 
