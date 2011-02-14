@@ -200,6 +200,7 @@ public class Downloaders {
         HashSet<File> newlyDownloaded = new HashSet<File>();
 
         for (Downloader d : downloaders) {
+        	d.setContext(context);
             try {
                 String contentText = "Downloading from " + d.getName();
                 Intent notificationIntent = new Intent(context, PlayActivity.class);
@@ -224,7 +225,9 @@ public class Downloaders {
                 }
 
                 downloaded = d.download(date);
-
+                if(downloaded == Downloader.DEFERRED_FILE){
+                	continue;
+                }
                 if (downloaded != null) {
                     boolean updatable = false;
 
@@ -232,9 +235,12 @@ public class Downloaders {
 //                            (date.getTime() >= now.getTimeInMillis())) {
 //                        updatable = true;
 //                    }
-
-                    if (processDownloadedPuzzle(downloaded, date, d.getName(),
-                                d.sourceUrl(date), updatable)) {
+                    PuzzleMeta meta = new PuzzleMeta();
+                    meta.date = date;
+                    meta.source = d.getName();
+                    meta.sourceUrl = d.sourceUrl(date);
+                    meta.updateable = updatable;
+                    if (processDownloadedPuzzle(downloaded, meta)) {
                         if (!this.supressMessages) {
                             this.postDownloadedNotification(i, d.getName(),
                                 downloaded);
@@ -313,14 +319,14 @@ public class Downloaders {
         }
     }
 
-    public static boolean processDownloadedPuzzle(File downloaded, Date date,
-        String source, String sourceUrl, boolean updatable) {
+    public static boolean processDownloadedPuzzle(File downloaded, PuzzleMeta meta) {
         try {
+        	System.out.println("==PROCESSING "+downloaded +" hasmeta: "+(meta != null));
             Puzzle puz = IO.load(downloaded);
-            puz.setDate(date);
-            puz.setSource(source);
-            puz.setSourceUrl(sourceUrl);
-            puz.setUpdatable(updatable);
+            puz.setDate(meta.date);
+            puz.setSource(meta.source);
+            puz.setSourceUrl(meta.sourceUrl);
+            puz.setUpdatable(meta.updateable);
 
             IO.save(puz, downloaded);
 

@@ -19,6 +19,8 @@ import android.webkit.URLUtil;
 import android.widget.Toast;
 
 import com.totsp.crossword.net.Downloaders;
+import com.totsp.crossword.puz.PuzzleMeta;
+import com.totsp.crossword.puz.PuzzleMeta;
 
 /**
  * Listener for WebBrowserActivity which handles downloading a puzzle and adding it to the puzzle
@@ -87,7 +89,9 @@ public class PuzzleDownloadListener implements DownloadListener {
             fout.flush();
             fout.close();
             in.close();
-            if (Downloaders.processDownloadedPuzzle(outputFile, new Date(), null, null, false)) {
+            PuzzleMeta meta = new PuzzleMeta();
+            meta.date = new Date();
+            if (Downloaders.processDownloadedPuzzle(outputFile, meta)) {
             	sendMessage("Puzzle " + fileName + " downloaded successfully.");
             } else {
             	sendMessage("Error parsing puzzle " + fileName);

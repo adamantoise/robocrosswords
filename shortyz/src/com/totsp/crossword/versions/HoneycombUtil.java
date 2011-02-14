@@ -13,8 +13,9 @@ import android.view.SubMenu;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-public class HoneycombUtil implements AndroidVersionUtils {
+public class HoneycombUtil extends GingerbreadUtil  {
 	
+	@Override
 	public void holographic(Activity a){
 		ActionBar bar = a.getActionBar();
 		Theme current = a.getTheme();
@@ -27,6 +28,7 @@ public class HoneycombUtil implements AndroidVersionUtils {
 		}
 	}
 	
+	@Override
 	public void finishOnHomeButton(final Activity a) {
 		
 		View home = a.findViewById(android.R.id.home);
@@ -39,20 +41,11 @@ public class HoneycombUtil implements AndroidVersionUtils {
 		});
 	}
 
+	@Override
 	public void onActionBarWithText(MenuItem a){
 		a.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT +MenuItem.SHOW_AS_ACTION_ALWAYS);
 	}
-
-	public void setContext(Context ctx) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public boolean downloadFile(URL url, File destination,
-			Map<String, String> headers, boolean notification, String title) {
-		return false;
-	}
-
+	
 	public void onActionBarWithText(SubMenu a) {
 		this.onActionBarWithText(a.getItem());
 		

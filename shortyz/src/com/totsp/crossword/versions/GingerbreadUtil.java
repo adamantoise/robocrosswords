@@ -3,41 +3,55 @@ package com.totsp.crossword.versions;
 import java.io.File;
 import java.net.URL;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import android.app.Activity;
+import android.app.DownloadManager;
+import android.app.DownloadManager.Request;
 import android.content.Context;
+import android.net.Uri;
 import android.view.MenuItem;
 import android.view.SubMenu;
 
 public class GingerbreadUtil implements AndroidVersionUtils {
 
+	protected Context ctx;
+	
 	public void finishOnHomeButton(Activity a) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	public void onActionBarWithText(MenuItem a){
-		// TODO Auto-generated method stub
 		
 	}
 
 	public void setContext(Context ctx) {
-		// TODO Auto-generated method stub
-		
+		this.ctx = ctx;
 	}
 
 	public boolean downloadFile(URL url, File destination,
 			Map<String, String> headers, boolean notification, String title) {
+		DownloadManager mgr = (DownloadManager) ctx.getSystemService(Context.DOWNLOAD_SERVICE);
+	
+		Request request = new Request(Uri.parse(url.toString()));
+		request.setDestinationUri(Uri.fromFile(destination));
+		System.out.println("====REQUESTING "+Uri.fromFile(destination));
+		for(Entry<String, String> entry : headers.entrySet()){
+			request.addRequestHeader(entry.getKey(), entry.getValue());
+		}
+		request.setMimeType("application/x-crossword");
+		request.setNotificationVisibility(notification ? Request.VISIBILITY_VISIBLE :Request.VISIBILITY_HIDDEN);
+		request.setTitle(title);
+		mgr.enqueue(request);
+		
 		return false;
 	}
 
 	public void onActionBarWithText(SubMenu reveal) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	public void holographic(Activity playActivity) {
-		// TODO Auto-generated method stub
 		
 	}
 	

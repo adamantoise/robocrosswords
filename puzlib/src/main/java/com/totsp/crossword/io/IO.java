@@ -27,6 +27,7 @@ import com.totsp.crossword.puz.PuzzleMeta;
 public class IO {
 	public static final String FILE_MAGIC = "ACROSS&DOWN";
 	public static final String VERSION_STRING = "1.2";
+	public static File TEMP_FOLDER = new File(System.getProperty("java.io.tmpdir"));
 	
 	private static final Charset CHARSET = Charset.forName("Cp1252");
 	
@@ -402,9 +403,17 @@ public class IO {
     public static void save(Puzzle puz, File baseFile) throws IOException {
     	long incept = System.currentTimeMillis();
     	File metaFile = new File(baseFile.getParentFile(), baseFile.getName().substring(0, baseFile.getName().lastIndexOf(".")) + ".shortyz");
-    	FileOutputStream puzzle= new FileOutputStream(baseFile);
-    	FileOutputStream meta = new FileOutputStream(metaFile);
+    	
+    	File puztemp = new File(TEMP_FOLDER , baseFile.getName());
+    	File metatemp = new File(TEMP_FOLDER, metaFile.getName());
+    	
+    	FileOutputStream puzzle= new FileOutputStream(puztemp);
+    	FileOutputStream meta = new FileOutputStream(metatemp);
+    	
     	IO.save(puz, new DataOutputStream(puzzle), new DataOutputStream(meta));
+
+    	puztemp.renameTo(baseFile);
+    	metatemp.renameTo(metaFile);
     	System.out.println("Save complete in "+(System.currentTimeMillis() - incept));
     }
 

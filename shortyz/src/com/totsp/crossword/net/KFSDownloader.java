@@ -6,12 +6,14 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.Date;
 import java.util.logging.Level;
 
 import com.totsp.crossword.io.KingFeaturesPlaintextIO;
+import com.totsp.crossword.versions.DefaultUtil;
 
 /**
  * King Features Syndicate Puzzles
@@ -41,15 +43,26 @@ public class KFSDownloader extends AbstractDownloader {
 	}
 	
 	public int[] getDownloadDates() {
-		return days;
+		return days; 
 	}
 	
 	private File downloadToTempFile(Date date) {
-		File downloaded = super.download(date, this.createUrlSuffix(date));
+		DefaultUtil util = new DefaultUtil();
+		File downloaded = new File(downloadDirectory, this.createFileName(date));
+		try{
+			URL url = new URL(this.baseUrl + this.createUrlSuffix(date));
+			util.downloadFile(url, downloaded, EMPTY_MAP , false, null);
+		} catch(Exception e){
+			e.printStackTrace();
+			downloaded.delete();
+			downloaded = null;
+		}
+		
 		if(downloaded == null) {
 			LOG.log(Level.SEVERE, "Unable to download plain text KFS file.");
 			return null;
 		}
+		System.out.println("DownloadedKFS: "+downloaded);
 		try {
 			File tmpFile = File.createTempFile("kfs-temp", "txt");
 			downloaded.renameTo(tmpFile);

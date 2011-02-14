@@ -1,17 +1,21 @@
 package com.totsp.crossword.net;
 
+import static com.totsp.crossword.net.AbstractDownloader.EMPTY_MAP;
+
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.Date;
 import java.util.logging.Level;
 
 import com.totsp.crossword.io.UclickXMLIO;
+import com.totsp.crossword.versions.DefaultUtil;
 
 /**
  * Uclick XML Puzzles
@@ -48,14 +52,22 @@ public class UclickDownloader extends AbstractDownloader {
 	}
 	
 	private File downloadToTempFile(Date date) {
-		File downloaded = super.download(date, this.createUrlSuffix(date));
-		if(downloaded == null) {
+		DefaultUtil util = new DefaultUtil();
+		File f = new File(downloadDirectory, this.createFileName(date));
+		try{
+			URL url = new URL(this.baseUrl + this.createUrlSuffix(date));
+			util.downloadFile(url, f, EMPTY_MAP , false, null);
+		} catch(Exception e){
+			e.printStackTrace();
+			f = null;
+		}
+		if(f == null) {
 			LOG.log(Level.SEVERE, "Unable to download uclick XML file.");
 			return null;
 		}
 		try {
 			File tmpFile = File.createTempFile("uclick-temp", "xml");
-			downloaded.renameTo(tmpFile);
+			f.renameTo(tmpFile);
 			return tmpFile;
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, "Unable to move uclick XML file to temporary location.");

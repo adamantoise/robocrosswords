@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -218,6 +219,8 @@ public class BrowseActivity extends ShortyzActivity implements OnItemClickListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        android.provider.Settings.System.putInt(this.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, 0);
+//        android.provider.Settings.System.putInt(this.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, 20);
         this.setTitle("Shortyz - Puzzles");
         setDefaultKeyMode(DEFAULT_KEYS_SHORTCUT);
         this.setContentView(R.layout.browse);
@@ -498,7 +501,7 @@ public class BrowseActivity extends ShortyzActivity implements OnItemClickListen
         files.clear();
 
         for (FileHandle h : puzFiles) {
-        	System.out.println(h.getDate().getTime() + " vs "+ maxAge);
+        	//System.out.println(h.getDate().getTime() + " vs "+ maxAge);
             if (h.getProgress() == 100 || h.getDate().getTime() < maxAge) {
                 toCleanup.add(h);
             }
