@@ -22,22 +22,20 @@ public class JonesinDownloader extends AbstractDownloader {
         nf.setMaximumFractionDigits(0);
     }
 
+    public int[] getDownloadDates() {
+        return DATE_THURSDAY;
+    }
+
     public String getName() {
         return NAME;
-    }
-    
-    public int[] getDownloadDates() {
-    	return DATE_THURSDAY;
     }
 
     public File download(Date date) {
         return super.download(date, this.createUrlSuffix(date));
     }
 
-	@Override
-	protected String createUrlSuffix(Date date) {
-		return "jz" + (date.getYear() - 100) +
-        nf.format(date.getMonth() + 1) + nf.format(date.getDate()) +
-        ".puz";
-	}
+    @Override
+    protected String createUrlSuffix(Date date) {
+        return "jz" + (date.getYear() - 100) + nf.format(date.getMonth() + 1) + nf.format(date.getDate()) + ".puz";
+    }
 }

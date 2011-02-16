@@ -6,6 +6,7 @@ import java.text.NumberFormat;
 
 import java.util.Date;
 
+
 /**
  * Boston Globe
  * URL: http://standalone.com/dl/puz/boston/boston_MMDDYY.puz
@@ -21,21 +22,21 @@ public class BostonGlobeDownloader extends AbstractDownloader {
         nf.setMaximumFractionDigits(0);
     }
 
+    public int[] getDownloadDates() {
+        return DATE_SUNDAY;
+    }
+
     public String getName() {
         return NAME;
-    }
-    
-    public int[] getDownloadDates() {
-    	return DATE_SUNDAY;
     }
 
     public File download(Date date) {
         return super.download(date, this.createUrlSuffix(date));
     }
 
-	@Override
-	protected String createUrlSuffix(Date date) {
-		return "boston_" + nf.format(date.getMonth() + 1) +
-        nf.format(date.getDate()) + (date.getYear() + 1900) + ".puz";
-	}
+    @Override
+    protected String createUrlSuffix(Date date) {
+        return "boston_" + nf.format(date.getMonth() + 1) + nf.format(date.getDate()) + (date.getYear() + 1900) +
+        ".puz";
+    }
 }

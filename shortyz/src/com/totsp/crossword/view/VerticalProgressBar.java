@@ -1,11 +1,15 @@
 package com.totsp.crossword.view;
 
 import android.content.Context;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+
 import android.graphics.Paint.Style;
+
 import android.util.AttributeSet;
+
 import android.view.View;
 
 
@@ -14,7 +18,6 @@ public class VerticalProgressBar extends View {
     private static final int ORANGE = Color.rgb(213, 165, 24);
     private static final int GREEN = Color.rgb(49, 145, 90);
     private static final int RED = Color.rgb(255, 74, 77);
-    
     private int height;
     private int percentComplete;
     private int width;
@@ -44,12 +47,13 @@ public class VerticalProgressBar extends View {
         Paint paint = new Paint();
         paint.setColor(GRAY);
         paint.setStyle(Style.FILL);
+
         //System.out.println("Draw "+this.width + " " +this.height);
-        if( this.percentComplete < 0 ){
-        	paint.setColor(RED);
-        	paint.setStyle(Style.FILL);
-        	canvas.drawRect(0, 0, this.width, this.height, paint);
-        }else if (this.percentComplete == 0) {
+        if (this.percentComplete < 0) {
+            paint.setColor(RED);
+            paint.setStyle(Style.FILL);
+            canvas.drawRect(0, 0, this.width, this.height, paint);
+        } else if (this.percentComplete == 0) {
             canvas.drawRect(0, 0, this.width, this.height, paint);
         } else if (this.percentComplete == 100) {
             paint.setColor(GREEN);
@@ -65,11 +69,11 @@ public class VerticalProgressBar extends View {
             paint.setStyle(Style.FILL);
             canvas.drawRect(0, grayHeight, this.width, this.height, paint);
         }
+
         paint.setColor(Color.BLACK);
         paint.setStyle(Style.FILL);
         canvas.drawLine(0, this.height, this.width, this.height, paint);
         canvas.drawLine(0, 0, this.width, 0, paint);
-        
     }
 
     @Override

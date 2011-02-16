@@ -127,8 +127,7 @@ public class PlayboardRenderer {
             if (bitmap == null) {
                 LOG.warning("New bitmap");
                 bitmap = Bitmap.createBitmap((int) (boxes.length * BOX_SIZE * scale),
-                        (int) (boxes[0].length * BOX_SIZE * scale),
-                        Bitmap.Config.RGB_565);
+                        (int) (boxes[0].length * BOX_SIZE * scale), Bitmap.Config.RGB_565);
                 bitmap.eraseColor(Color.BLACK);
                 renderAll = true;
             }
@@ -142,17 +141,14 @@ public class PlayboardRenderer {
             for (int col = 0; col < boxes.length; col++) {
                 for (int row = 0; row < boxes[col].length; row++) {
                     if (!renderAll) {
-                        if (!currentWord.checkInWord(col, row) &&
-                                (reset != null) &&
-                                !reset.checkInWord(col, row)) {
+                        if (!currentWord.checkInWord(col, row) && (reset != null) && !reset.checkInWord(col, row)) {
                             continue;
                         }
                     }
 
                     int x = col * boxSize;
                     int y = row * boxSize;
-                    this.drawBox(canvas, x, y, row, col, scale,
-                        boxes[col][row], currentWord);
+                    this.drawBox(canvas, x, y, row, col, scale, boxes[col][row], currentWord);
                 }
             }
 
@@ -166,8 +162,7 @@ public class PlayboardRenderer {
         Position[] word = this.board.getCurrentWordPositions();
         Box[] boxes = this.board.getCurrentWordBoxes();
         int boxSize = (int) (BOX_SIZE * this.logicalDensity);
-        Bitmap bitmap = Bitmap.createBitmap((int) (word.length * boxSize),
-                (int) (boxSize), Bitmap.Config.RGB_565);
+        Bitmap bitmap = Bitmap.createBitmap((int) (word.length * boxSize), (int) (boxSize), Bitmap.Config.RGB_565);
         bitmap.eraseColor(Color.BLACK);
 
         Canvas canvas = new Canvas(bitmap);
@@ -175,8 +170,7 @@ public class PlayboardRenderer {
         for (int i = 0; i < word.length; i++) {
             int x = (int) (i * boxSize);
             int y = 0;
-            this.drawBox(canvas, x, y, word[i].down, word[i].across,
-                this.logicalDensity, boxes[i], null);
+            this.drawBox(canvas, x, y, word[i].down, word[i].across, this.logicalDensity, boxes[i], null);
         }
 
         return bitmap;
@@ -184,9 +178,11 @@ public class PlayboardRenderer {
 
     public Position findBox(Point p) {
         int boxSize = (int) (BOX_SIZE * scale);
-        if(boxSize == 0){
-        	boxSize = (int)(BOX_SIZE * 0.25D);
+
+        if (boxSize == 0) {
+            boxSize = (int) (BOX_SIZE * 0.25D);
         }
+
         int col = p.x / boxSize;
         int row = p.y / boxSize;
 
@@ -245,8 +241,7 @@ public class PlayboardRenderer {
         return scale;
     }
 
-    private void drawBox(Canvas canvas, int x, int y, int row, int col,
-        float scale, Box box, Word currentWord) {
+    private void drawBox(Canvas canvas, int x, int y, int row, int col, float scale, Box box, Word currentWord) {
         int boxSize = (int) (BOX_SIZE * scale);
         int numberTextSize = (int) (scale * 8F);
         int letterTextSize = (int) (scale * 20);
@@ -257,8 +252,7 @@ public class PlayboardRenderer {
         red.setTextSize(scale * 20F);
         white.setTextSize(scale * 20F);
 
-        boolean inCurrentWord = (currentWord != null) &&
-            currentWord.checkInWord(col, row);
+        boolean inCurrentWord = (currentWord != null) && currentWord.checkInWord(col, row);
         Position highlight = this.board.getHighlightLetter();
 
         Paint thisLetter = null;
@@ -271,8 +265,7 @@ public class PlayboardRenderer {
             // Background colors
             if ((highlight.across == col) && (highlight.down == row)) {
                 canvas.drawRect(r, this.currentLetterHighlight);
-            } else if ((currentWord != null) &&
-                    currentWord.checkInWord(col, row)) {
+            } else if ((currentWord != null) && currentWord.checkInWord(col, row)) {
                 canvas.drawRect(r, this.currentWordHighlight);
             } else if (box.isCheated()) {
                 canvas.drawRect(r, this.cheated);
@@ -284,20 +277,17 @@ public class PlayboardRenderer {
             }
 
             if (box.isAcross() | box.isDown()) {
-                canvas.drawText(Integer.toString(box.getClueNumber()), x + 2,
-                    y + numberTextSize + 2, this.numberText);
+                canvas.drawText(Integer.toString(box.getClueNumber()), x + 2, y + numberTextSize + 2, this.numberText);
             }
 
             // Draw circle
             if (box.isCircled()) {
-                canvas.drawCircle(x + (boxSize / 2) + 0.5F,
-                    y + (boxSize / 2) + 0.5F, (boxSize / 2) - 1.5F, blackCircle);
+                canvas.drawCircle(x + (boxSize / 2) + 0.5F, y + (boxSize / 2) + 0.5F, (boxSize / 2) - 1.5F, blackCircle);
             }
 
             thisLetter = this.letterText;
 
-            if (board.isShowErrors() &&
-                    (box.getSolution() != box.getResponse())) {
+            if (board.isShowErrors() && (box.getSolution() != box.getResponse())) {
                 if ((highlight.across == col) && (highlight.down == row)) {
                     thisLetter = this.white;
                 } else if (inCurrentWord) {
@@ -305,16 +295,15 @@ public class PlayboardRenderer {
                 }
             }
 
-            canvas.drawText(Character.toString(box.getResponse()),
-                x + (boxSize / 2), y + (int) (letterTextSize * 1.25), thisLetter);
+            canvas.drawText(Character.toString(box.getResponse()), x + (boxSize / 2),
+                y + (int) (letterTextSize * 1.25), thisLetter);
         }
 
-        Paint boxColor = (((highlight.across == col) &&
-            (highlight.down == row)) && (currentWord != null))
+        Paint boxColor = (((highlight.across == col) && (highlight.down == row)) && (currentWord != null))
             ? this.currentLetterBox : this.blackLine;
 
         // Draw left
-        if (col != (highlight.across + 1)  || row != highlight.down) {
+        if ((col != (highlight.across + 1)) || (row != highlight.down)) {
             canvas.drawLine(x, y, x, y + boxSize, boxColor);
         }
 
@@ -324,7 +313,7 @@ public class PlayboardRenderer {
         }
 
         // Draw right
-        if (col != (highlight.across - 1)  || row != highlight.down) {
+        if ((col != (highlight.across - 1)) || (row != highlight.down)) {
             canvas.drawLine(x + boxSize, y, x + boxSize, y + boxSize, boxColor);
         }
 

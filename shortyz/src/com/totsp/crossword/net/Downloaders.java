@@ -41,8 +41,7 @@ public class Downloaders {
     private NotificationManager notificationManager;
     private boolean supressMessages;
 
-    public Downloaders(SharedPreferences prefs,
-        NotificationManager notificationManager, Context context) {
+    public Downloaders(SharedPreferences prefs, NotificationManager notificationManager, Context context) {
         this.notificationManager = notificationManager;
         this.context = context;
 
@@ -54,10 +53,9 @@ public class Downloaders {
             downloaders.add(new ThinksDownloader());
         }
 
-//        if (prefs.getBoolean("downloadChron", true)) {
-//            downloaders.add(new ChronDownloader());
-//        }
-
+        //        if (prefs.getBoolean("downloadChron", true)) {
+        //            downloaders.add(new ChronDownloader());
+        //        }
         if (prefs.getBoolean("downloadWsj", true)) {
             downloaders.add(new WSJDownloader());
         }
@@ -95,45 +93,38 @@ public class Downloaders {
         }
 
         if (prefs.getBoolean("downloadJoseph", true)) {
-            downloaders.add(new KFSDownloader("joseph", "Joseph Crosswords",
-                    "Thomas Joseph", Downloader.DATE_NO_SUNDAY));
+            downloaders.add(new KFSDownloader("joseph", "Joseph Crosswords", "Thomas Joseph", Downloader.DATE_NO_SUNDAY));
         }
 
         if (prefs.getBoolean("downloadSheffer", true)) {
-            downloaders.add(new KFSDownloader("sheffer", "Sheffer Crosswords",
-                    "Eugene Sheffer", Downloader.DATE_NO_SUNDAY));
+            downloaders.add(new KFSDownloader("sheffer", "Sheffer Crosswords", "Eugene Sheffer",
+                    Downloader.DATE_NO_SUNDAY));
         }
 
         if (prefs.getBoolean("downloadPremier", true)) {
-            downloaders.add(new KFSDownloader("premier", "Premier Crosswords",
-                    "Frank Longo", Downloader.DATE_SUNDAY));
+            downloaders.add(new KFSDownloader("premier", "Premier Crosswords", "Frank Longo", Downloader.DATE_SUNDAY));
         }
 
         if (prefs.getBoolean("downloadNewsday", true)) {
             downloaders.add(new UclickDownloader("crnet", "Newsday",
-                    "Stanley Newman, distributed by Creators Syndicate, Inc.",
-                    Downloader.DATE_DAILY));
+                    "Stanley Newman, distributed by Creators Syndicate, Inc.", Downloader.DATE_DAILY));
         }
 
         if (prefs.getBoolean("downloadUSAToday", true)) {
-            downloaders.add(new UclickDownloader("usaon", "USA Today",
-                    "USA Today", Downloader.DATE_NO_SUNDAY));
+            downloaders.add(new UclickDownloader("usaon", "USA Today", "USA Today", Downloader.DATE_NO_SUNDAY));
         }
 
         if (prefs.getBoolean("downloadUniversal", true)) {
-            downloaders.add(new UclickDownloader("fcx", "Universal Crossword",
-                    "uclick LLC", Downloader.DATE_DAILY));
+            downloaders.add(new UclickDownloader("fcx", "Universal Crossword", "uclick LLC", Downloader.DATE_DAILY));
         }
 
         if (prefs.getBoolean("downloadLACal", true)) {
-            downloaders.add(new UclickDownloader("lacal",
-                    "LAT Sunday Calendar", "Los Angeles Times",
+            downloaders.add(new UclickDownloader("lacal", "LAT Sunday Calendar", "Los Angeles Times",
                     Downloader.DATE_SUNDAY));
         }
 
         if (prefs.getBoolean("downloadNYT", false)) {
-            downloaders.add(nyt = new NYTDownloader(context, prefs.getString(
-                            "nytUsername", ""),
+            downloaders.add(nyt = new NYTDownloader(context, prefs.getString("nytUsername", ""),
                         prefs.getString("nytPassword", "")));
         }
 
@@ -143,7 +134,7 @@ public class Downloaders {
     public List<Downloader> getDownloaders(Date date) {
         int dayOfWeek = date.getDay();
         List<Downloader> retVal = new LinkedList<Downloader>();
-        
+
         for (Downloader d : downloaders) {
             if (Arrays.binarySearch(d.getDownloadDates(), dayOfWeek) >= 0) {
                 retVal.add(d);
@@ -177,37 +168,36 @@ public class Downloaders {
         int i = 1;
         String contentTitle = "Downloading Puzzles";
 
-        Notification not = new Notification(android.R.drawable.stat_sys_download,
-                contentTitle, System.currentTimeMillis());
+        Notification not = new Notification(android.R.drawable.stat_sys_download, contentTitle,
+                System.currentTimeMillis());
         boolean somethingDownloaded = false;
-        File crosswords = new File(Environment.getExternalStorageDirectory(),
-                "crosswords/");
-        File archive = new File(Environment.getExternalStorageDirectory(),
-                "crosswords/archive/");
+        File crosswords = new File(Environment.getExternalStorageDirectory(), "crosswords/");
+        File archive = new File(Environment.getExternalStorageDirectory(), "crosswords/archive/");
         crosswords.mkdirs();
-        if(crosswords != null && crosswords.listFiles() != null)
-	        for (File isDel : crosswords.listFiles()) {
-	            if (isDel.getName().endsWith(".tmp")) {
-	                isDel.delete();
-	            }
-	        }
 
-        
-        if(downloaders == null || downloaders.size() == 0){
-        	downloaders = getDownloaders(date);
+        if ((crosswords != null) && (crosswords.listFiles() != null)) {
+            for (File isDel : crosswords.listFiles()) {
+                if (isDel.getName()
+                             .endsWith(".tmp")) {
+                    isDel.delete();
+                }
+            }
+        }
+
+        if ((downloaders == null) || (downloaders.size() == 0)) {
+            downloaders = getDownloaders(date);
         }
 
         HashSet<File> newlyDownloaded = new HashSet<File>();
 
         for (Downloader d : downloaders) {
-        	d.setContext(context);
+            d.setContext(context);
+
             try {
                 String contentText = "Downloading from " + d.getName();
                 Intent notificationIntent = new Intent(context, PlayActivity.class);
-                PendingIntent contentIntent = PendingIntent.getActivity(context,
-                        0, notificationIntent, 0);
-                not.setLatestEventInfo(context, contentTitle, contentText,
-                    contentIntent);
+                PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+                not.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
 
                 if (this.notificationManager != null) {
                     this.notificationManager.notify(0, not);
@@ -216,34 +206,35 @@ public class Downloaders {
                 File downloaded = new File(crosswords, d.createFileName(date));
                 File archived = new File(archive, d.createFileName(date));
 
-                System.out.println(downloaded.getAbsolutePath() + " " +
-                    downloaded.exists() + " OR " + archived.getAbsolutePath() +
-                    " " + archived.exists());
+                System.out.println(downloaded.getAbsolutePath() + " " + downloaded.exists() + " OR " +
+                    archived.getAbsolutePath() + " " + archived.exists());
 
                 if (downloaded.exists() || archived.exists()) {
                     continue;
                 }
 
                 downloaded = d.download(date);
-                if(downloaded == Downloader.DEFERRED_FILE){
-                	continue;
+
+                if (downloaded == Downloader.DEFERRED_FILE) {
+                    continue;
                 }
+
                 if (downloaded != null) {
                     boolean updatable = false;
 
-//                    if (d instanceof NYTDownloader &&
-//                            (date.getTime() >= now.getTimeInMillis())) {
-//                        updatable = true;
-//                    }
+                    //                    if (d instanceof NYTDownloader &&
+                    //                            (date.getTime() >= now.getTimeInMillis())) {
+                    //                        updatable = true;
+                    //                    }
                     PuzzleMeta meta = new PuzzleMeta();
                     meta.date = date;
                     meta.source = d.getName();
                     meta.sourceUrl = d.sourceUrl(date);
                     meta.updateable = updatable;
+
                     if (processDownloadedPuzzle(downloaded, meta)) {
                         if (!this.supressMessages) {
-                            this.postDownloadedNotification(i, d.getName(),
-                                downloaded);
+                            this.postDownloadedNotification(i, d.getName(), downloaded);
                         }
 
                         newlyDownloaded.add(downloaded);
@@ -258,15 +249,15 @@ public class Downloaders {
         }
 
         { // DO UPDATES
+
             ArrayList<File> checkUpdate = new ArrayList<File>();
 
             try {
                 for (File file : crosswords.listFiles()) {
-                    if (file.getName().endsWith(".shortyz")) {
-                        File puz = new File(file.getAbsolutePath()
-                                                .substring(0,
-                                    file.getAbsolutePath().lastIndexOf('.') +
-                                    1) + "puz");
+                    if (file.getName()
+                                .endsWith(".shortyz")) {
+                        File puz = new File(file.getAbsolutePath().substring(0,
+                                    file.getAbsolutePath().lastIndexOf('.') + 1) + "puz");
                         System.out.println(puz.getAbsolutePath());
 
                         if (!newlyDownloaded.contains(puz)) {
@@ -278,11 +269,10 @@ public class Downloaders {
                 archive.mkdirs();
 
                 for (File file : archive.listFiles()) {
-                    if (file.getName().endsWith(".shortyz")) {
-                        checkUpdate.add(new File(file.getAbsolutePath()
-                                                     .substring(0,
-                                    file.getAbsolutePath().lastIndexOf('.') +
-                                    1) + "puz"));
+                    if (file.getName()
+                                .endsWith(".shortyz")) {
+                        checkUpdate.add(new File(file.getAbsolutePath().substring(0,
+                                    file.getAbsolutePath().lastIndexOf('.') + 1) + "puz"));
                     }
                 }
             } catch (Exception e) {
@@ -293,17 +283,17 @@ public class Downloaders {
                 try {
                     PuzzleMeta meta = IO.meta(file);
 
-//                    if ((meta != null) && meta.updateable && (nyt != null) &&
-//                            nyt.getName().equals(meta.source)) {
-//                        System.out.println("Trying update for " + file);
-//
-//                        File updated = nyt.update(file);
-//
-//                        if (updated != null) {
-//                            this.postUpdatedNotification(i, nyt.getName(),
-//                                updated);
-//                        }
-//                    }
+                    //                    if ((meta != null) && meta.updateable && (nyt != null) &&
+                    //                            nyt.getName().equals(meta.source)) {
+                    //                        System.out.println("Trying update for " + file);
+                    //
+                    //                        File updated = nyt.update(file);
+                    //
+                    //                        if (updated != null) {
+                    //                            this.postUpdatedNotification(i, nyt.getName(),
+                    //                                updated);
+                    //                        }
+                    //                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -321,7 +311,8 @@ public class Downloaders {
 
     public static boolean processDownloadedPuzzle(File downloaded, PuzzleMeta meta) {
         try {
-        	System.out.println("==PROCESSING "+downloaded +" hasmeta: "+(meta != null));
+            System.out.println("==PROCESSING " + downloaded + " hasmeta: " + (meta != null));
+
             Puzzle puz = IO.load(downloaded);
             puz.setDate(meta.date);
             puz.setSource(meta.source);
@@ -339,16 +330,17 @@ public class Downloaders {
         }
     }
 
+    public void supressMessages(boolean b) {
+        this.supressMessages = b;
+    }
+
     private void postDownloadedGeneral() {
         String contentTitle = "Downloaded new puzzles!";
-        Notification not = new Notification(android.R.drawable.stat_sys_download_done,
-                contentTitle, System.currentTimeMillis());
-        Intent notificationIntent = new Intent(Intent.ACTION_EDIT, null,
-                context, BrowseActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-                notificationIntent, 0);
-        not.setLatestEventInfo(context, contentTitle,
-            "New puzzles were downloaded.", contentIntent);
+        Notification not = new Notification(android.R.drawable.stat_sys_download_done, contentTitle,
+                System.currentTimeMillis());
+        Intent notificationIntent = new Intent(Intent.ACTION_EDIT, null, context, BrowseActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+        not.setLatestEventInfo(context, contentTitle, "New puzzles were downloaded.", contentIntent);
 
         if (this.notificationManager != null) {
             this.notificationManager.notify(0, not);
@@ -357,14 +349,11 @@ public class Downloaders {
 
     private void postDownloadedNotification(int i, String name, File puzFile) {
         String contentTitle = "Downloaded " + name;
-        Notification not = new Notification(android.R.drawable.stat_sys_download_done,
-                contentTitle, System.currentTimeMillis());
-        Intent notificationIntent = new Intent(Intent.ACTION_EDIT,
-                Uri.fromFile(puzFile), context, PlayActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-                notificationIntent, 0);
-        not.setLatestEventInfo(context, contentTitle, puzFile.getName(),
-            contentIntent);
+        Notification not = new Notification(android.R.drawable.stat_sys_download_done, contentTitle,
+                System.currentTimeMillis());
+        Intent notificationIntent = new Intent(Intent.ACTION_EDIT, Uri.fromFile(puzFile), context, PlayActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+        not.setLatestEventInfo(context, contentTitle, puzFile.getName(), contentIntent);
 
         if (this.notificationManager != null) {
             this.notificationManager.notify(i, not);
@@ -373,23 +362,14 @@ public class Downloaders {
 
     private void postUpdatedNotification(int i, String name, File puzFile) {
         String contentTitle = "Updated " + name;
-        Notification not = new Notification(android.R.drawable.stat_sys_download_done,
-                contentTitle, System.currentTimeMillis());
-        Intent notificationIntent = new Intent(Intent.ACTION_EDIT,
-                Uri.fromFile(puzFile), context, PlayActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-                notificationIntent, 0);
-        not.setLatestEventInfo(context, contentTitle, puzFile.getName(),
-            contentIntent);
+        Notification not = new Notification(android.R.drawable.stat_sys_download_done, contentTitle,
+                System.currentTimeMillis());
+        Intent notificationIntent = new Intent(Intent.ACTION_EDIT, Uri.fromFile(puzFile), context, PlayActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+        not.setLatestEventInfo(context, contentTitle, puzFile.getName(), contentIntent);
 
-        if (this.notificationManager != null && !supressMessages) {
+        if ((this.notificationManager != null) && !supressMessages) {
             this.notificationManager.notify(i, not);
         }
     }
-
-    
-	public void supressMessages(boolean b) {
-		this.supressMessages = b;
-		
-	}
 }

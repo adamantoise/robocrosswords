@@ -34,41 +34,44 @@ public final class R {
     public static final class id {
         public static final int acrossLabel=0x7f090017;
         public static final int acrossList=0x7f09000a;
+        public static final int acrossListGal=0x7f090019;
         public static final int board=0x7f090014;
         public static final int browse=0x7f09000f;
         public static final int buttons=0x7f090010;
-        public static final int close=0x7f090024;
+        public static final int close=0x7f090027;
         public static final int closeButton=0x7f090011;
         public static final int clueKeyboard=0x7f090007;
         public static final int clueLine=0x7f090004;
         public static final int clueNumber=0x7f090001;
         public static final int clueWord=0x7f090005;
         public static final int clues=0x7f090015;
+        public static final int cluesLinear=0x7f090018;
         public static final int dateLabel=0x7f09000c;
         public static final int datePicker=0x7f09000d;
         public static final int downLabel=0x7f090016;
         public static final int downList=0x7f090009;
+        public static final int downListGal=0x7f09001a;
         public static final int download_root=0x7f09000b;
         public static final int letter=0x7f090000;
-        public static final int list_header_title=0x7f09001d;
+        public static final int list_header_title=0x7f090020;
         public static final int miniboard=0x7f090008;
         public static final int playKeyboard=0x7f090013;
         public static final int puzzleList=0x7f090002;
         public static final int puzzleSelect=0x7f09000e;
-        public static final int puzzle_caption=0x7f090021;
-        public static final int puzzle_date=0x7f09001f;
-        public static final int puzzle_info_author=0x7f090019;
-        public static final int puzzle_info_copyright=0x7f09001a;
-        public static final int puzzle_info_progress=0x7f09001c;
-        public static final int puzzle_info_time=0x7f09001b;
-        public static final int puzzle_info_title=0x7f090018;
-        public static final int puzzle_name=0x7f090020;
-        public static final int puzzle_progress=0x7f09001e;
+        public static final int puzzle_caption=0x7f090024;
+        public static final int puzzle_date=0x7f090022;
+        public static final int puzzle_info_author=0x7f09001c;
+        public static final int puzzle_info_copyright=0x7f09001d;
+        public static final int puzzle_info_progress=0x7f09001f;
+        public static final int puzzle_info_time=0x7f09001e;
+        public static final int puzzle_info_title=0x7f09001b;
+        public static final int puzzle_name=0x7f090023;
+        public static final int puzzle_progress=0x7f090021;
         public static final int sourceList=0x7f090003;
         public static final int tabhost=0x7f090006;
-        public static final int url=0x7f090022;
+        public static final int url=0x7f090025;
         public static final int webkit=0x7f090012;
-        public static final int webview=0x7f090023;
+        public static final int webview=0x7f090026;
     }
     public static final class layout {
         public static final int box_layout=0x7f030000;
@@ -82,7 +85,8 @@ public final class R {
         public static final int puzzle_list_header=0x7f030008;
         public static final int puzzle_list_item=0x7f030009;
         public static final int source_item=0x7f03000a;
-        public static final int web_browser_view=0x7f03000b;
+        public static final int source_item_highlight=0x7f03000b;
+        public static final int web_browser_view=0x7f03000c;
     }
     public static final class raw {
         public static final int test=0x7f050000;

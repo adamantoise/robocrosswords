@@ -6,6 +6,7 @@ import java.text.NumberFormat;
 
 import java.util.Date;
 
+
 /**
  * Thinks.com
  * URL: http://thinks.com/daily-crossword/puzzles/YYYY-MM/dc1-YYYY-MM-DD.puz
@@ -21,23 +22,21 @@ public class ThinksDownloader extends AbstractDownloader {
         nf.setMaximumFractionDigits(0);
     }
 
+    public int[] getDownloadDates() {
+        return DATE_DAILY;
+    }
+
     public String getName() {
         return NAME;
-    }
-    
-    public int[] getDownloadDates() {
-    	return DATE_DAILY;
     }
 
     public File download(Date date) {
         return super.download(date, this.createUrlSuffix(date));
     }
 
-	@Override
-	protected String createUrlSuffix(Date date) {
-		return  (date.getYear() + 1900) + "-" +
-        nf.format(date.getMonth() + 1) + "/" + "dc1-" +
-        (date.getYear() + 1900) + "-" + nf.format(date.getMonth() + 1) +
-        "-" + nf.format(date.getDate()) + ".puz";
-	}
+    @Override
+    protected String createUrlSuffix(Date date) {
+        return (date.getYear() + 1900) + "-" + nf.format(date.getMonth() + 1) + "/" + "dc1-" + (date.getYear() + 1900) +
+        "-" + nf.format(date.getMonth() + 1) + "-" + nf.format(date.getDate()) + ".puz";
+    }
 }

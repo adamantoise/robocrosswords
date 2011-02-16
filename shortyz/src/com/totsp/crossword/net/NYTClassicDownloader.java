@@ -1,8 +1,10 @@
 package com.totsp.crossword.net;
 
 import java.io.File;
+
 import java.util.Calendar;
 import java.util.Date;
+
 
 /**
  * New York Times Classic
@@ -16,29 +18,30 @@ public class NYTClassicDownloader extends AbstractDownloader {
         super("http://www.nytimes.com/specials/puzzles/", DOWNLOAD_DIR, NAME);
     }
 
+    public int[] getDownloadDates() {
+        return DATE_MONDAY;
+    }
+
     public String getName() {
         return NAME;
     }
-    
-    public int[] getDownloadDates() {
-    	return DATE_MONDAY;
-    }
 
     public File download(Date date) {
-    	Calendar currentCal = Calendar.getInstance();
-    	Calendar downloadCal = Calendar.getInstance();
-    	downloadCal.setTime(date);
-    	// Only download if requested week is same as current week, because there is no archive.
-        if (currentCal.get(Calendar.YEAR) != downloadCal.get(Calendar.YEAR)
-        		|| currentCal.get(Calendar.WEEK_OF_YEAR) != downloadCal.get(Calendar.WEEK_OF_YEAR)) {
+        Calendar currentCal = Calendar.getInstance();
+        Calendar downloadCal = Calendar.getInstance();
+        downloadCal.setTime(date);
+
+        // Only download if requested week is same as current week, because there is no archive.
+        if ((currentCal.get(Calendar.YEAR) != downloadCal.get(Calendar.YEAR)) ||
+                (currentCal.get(Calendar.WEEK_OF_YEAR) != downloadCal.get(Calendar.WEEK_OF_YEAR))) {
             return null;
         }
 
         return super.download(date, this.createUrlSuffix(date));
     }
 
-	@Override
-	protected String createUrlSuffix(Date date) {
-		return "classic.puz";
-	}
+    @Override
+    protected String createUrlSuffix(Date date) {
+        return "classic.puz";
+    }
 }

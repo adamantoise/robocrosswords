@@ -6,6 +6,7 @@ import java.text.NumberFormat;
 
 import java.util.Date;
 
+
 /**
  * Wall Street Journal
  * URL: http://mazerlm.home.comcast.net/~mazerlm/wsjYYMMDD.puz
@@ -21,22 +22,21 @@ public class WSJDownloader extends AbstractDownloader {
         nf.setMaximumFractionDigits(0);
     }
 
+    public int[] getDownloadDates() {
+        return DATE_FRIDAY;
+    }
+
     public String getName() {
         return NAME;
-    }
-    
-    public int[] getDownloadDates() {
-    	return DATE_FRIDAY;
     }
 
     public File download(Date date) {
         return super.download(date, this.createUrlSuffix(date));
     }
 
-	@Override
-	protected String createUrlSuffix(Date date) {
-		return "wsj" + nf.format(date.getYear() - 100) +
-        nf.format(date.getMonth() + 1) + nf.format(date.getDate()) +
+    @Override
+    protected String createUrlSuffix(Date date) {
+        return "wsj" + nf.format(date.getYear() - 100) + nf.format(date.getMonth() + 1) + nf.format(date.getDate()) +
         ".puz";
-	}
+    }
 }
