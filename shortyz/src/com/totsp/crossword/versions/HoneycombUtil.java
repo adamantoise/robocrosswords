@@ -2,11 +2,15 @@ package com.totsp.crossword.versions;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.DownloadManager;
+import android.app.DownloadManager.Request;
 
 import android.content.Context;
+import android.content.Intent;
 
 import android.content.res.Resources.Theme;
 
+import android.net.Uri;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
@@ -15,9 +19,13 @@ import android.view.View.OnClickListener;
 
 import java.io.File;
 
+import java.net.URI;
 import java.net.URL;
 
 import java.util.Map;
+import java.util.Map.Entry;
+
+import com.totsp.crossword.net.Downloaders;
 
 
 public class HoneycombUtil extends GingerbreadUtil {
@@ -54,4 +62,27 @@ public class HoneycombUtil extends GingerbreadUtil {
     public void onActionBarWithText(SubMenu a) {
         this.onActionBarWithText(a.getItem());
     }
+    
+    @Override
+    public boolean downloadFile(URL url, File destination, Map<String, String> headers, boolean notification,
+            String title) {
+            DownloadManager mgr = (DownloadManager) ctx.getSystemService(Context.DOWNLOAD_SERVICE);
+
+            Request request = new Request(Uri.parse(url.toString()));
+            request.setDestinationUri(Uri.fromFile(destination));
+            System.out.println("====REQUESTING " + Uri.fromFile(destination));
+
+            for (Entry<String, String> entry : headers.entrySet()) {
+                request.addRequestHeader(entry.getKey(), entry.getValue());
+            }
+
+            request.setMimeType("application/x-crossword");
+            
+            request.setNotificationVisibility(notification ? Request.VISIBILITY_VISIBLE : Request.VISIBILITY_HIDDEN);
+            
+            request.setTitle(title);
+            mgr.enqueue(request);
+
+            return false;
+        }
 }

@@ -4,10 +4,12 @@ import android.app.Activity;
 
 import android.content.Context;
 
+import android.net.Uri;
 import android.view.MenuItem;
 import android.view.SubMenu;
 
 import com.totsp.crossword.net.AbstractDownloader;
+import com.totsp.crossword.puz.PuzzleMeta;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -67,4 +69,9 @@ public class DefaultUtil implements AndroidVersionUtils {
     public void onActionBarWithText(SubMenu reveal) {
         // TODO Auto-generated method stub
     }
+
+	public void storeMetas(Uri uri, PuzzleMeta meta) {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -105,7 +105,8 @@ public abstract class AbstractDownloader implements Downloader {
             meta.source = getName();
             meta.sourceUrl = url.toString();
             meta.updateable = false;
-            DownloadReceiver.metas.put(Uri.fromFile(f), meta);
+            
+            utils.storeMetas(Uri.fromFile(f), meta);
 
             if (utils.downloadFile(url, f, headers, true, this.getName())) {
                 DownloadReceiver.metas.remove(Uri.fromFile(f));

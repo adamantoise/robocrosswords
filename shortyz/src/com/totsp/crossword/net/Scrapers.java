@@ -58,7 +58,7 @@ public class Scrapers {
                 PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
                 not.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
 
-                if (this.notificationManager != null) {
+                if (!this.supressMessages && this.notificationManager != null) {
                     this.notificationManager.notify(0, not);
                 }
 

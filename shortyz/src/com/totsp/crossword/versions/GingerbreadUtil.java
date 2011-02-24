@@ -19,15 +19,18 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.totsp.crossword.net.DownloadReceiver;
+import com.totsp.crossword.puz.PuzzleMeta;
 
-public class GingerbreadUtil implements AndroidVersionUtils {
+
+public class GingerbreadUtil extends DefaultUtil {
     protected Context ctx;
 
     public void setContext(Context ctx) {
         this.ctx = ctx;
     }
 
-    public boolean downloadFile(URL url, File destination, Map<String, String> headers, boolean notification,
+    public boolean xdownloadFile(URL url, File destination, Map<String, String> headers, boolean notification,
         String title) {
         DownloadManager mgr = (DownloadManager) ctx.getSystemService(Context.DOWNLOAD_SERVICE);
 
@@ -40,7 +43,7 @@ public class GingerbreadUtil implements AndroidVersionUtils {
         }
 
         request.setMimeType("application/x-crossword");
-        request.setNotificationVisibility(notification ? Request.VISIBILITY_VISIBLE : Request.VISIBILITY_HIDDEN);
+        
         request.setTitle(title);
         mgr.enqueue(request);
 
@@ -58,4 +61,9 @@ public class GingerbreadUtil implements AndroidVersionUtils {
 
     public void onActionBarWithText(SubMenu reveal) {
     }
+
+	public void storeMetas(Uri uri, PuzzleMeta meta) {
+		DownloadReceiver.metas.put(uri, meta);
+		
+	}
 }

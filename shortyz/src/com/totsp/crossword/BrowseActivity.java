@@ -586,7 +586,7 @@ public class BrowseActivity extends ShortyzActivity implements OnItemClickListen
                 public void run() {
                     Downloaders dls = new Downloaders(prefs, nm, BrowseActivity.this);
                     dls.supressMessages(true);
-
+                    
                     Scrapers scrapes = new Scrapers(prefs, nm, BrowseActivity.this);
                     scrapes.supressMessages(true);
                     scrapes.scrape();

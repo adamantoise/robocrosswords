@@ -491,7 +491,7 @@ public class PlayActivity extends ShortyzActivity {
                         }
                     }
 
-                    public void onNothingSelected(AdapterView<?> arg0) {
+                    public void onNothingSelected(AdapterView<?> view) {
                     }
                 });
             down.setOnItemClickListener(new OnItemClickListener() {
@@ -1012,6 +1012,7 @@ public class PlayActivity extends ShortyzActivity {
 
     private void render(Word previous, boolean rescale) {
         if (this.prefs.getBoolean("forceKeyboard", false) ||
+        		android.os.Build.VERSION.SDK_INT >= 11 ||
                 (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES) ||
                 (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
             if (this.useNativeKeyboard) {
