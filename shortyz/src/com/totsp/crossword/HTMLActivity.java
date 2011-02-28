@@ -1,21 +1,17 @@
 package com.totsp.crossword;
 
+import android.app.Activity;
 import android.net.Uri;
-
 import android.os.Bundle;
-
 import android.view.View;
-
 import android.view.View.OnClickListener;
-
 import android.webkit.WebView;
-
 import android.widget.Button;
 
 import com.totsp.crossword.shortyz.R;
 
 
-public class HTMLActivity extends ShortyzActivity {
+public class HTMLActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -39,6 +39,12 @@ public class ShortyzActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            showSDCardHelp();
+            finish();
+
+            return;
+        }
         doOrientation();
     }
 

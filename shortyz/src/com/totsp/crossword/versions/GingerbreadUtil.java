@@ -1,23 +1,17 @@
 package com.totsp.crossword.versions;
 
-import android.app.Activity;
-import android.app.DownloadManager;
-
-import android.app.DownloadManager.Request;
-
-import android.content.Context;
-
-import android.net.Uri;
-
-import android.view.MenuItem;
-import android.view.SubMenu;
-
 import java.io.File;
-
 import java.net.URL;
-
 import java.util.Map;
 import java.util.Map.Entry;
+
+import android.app.Activity;
+import android.app.DownloadManager;
+import android.app.DownloadManager.Request;
+import android.content.Context;
+import android.net.Uri;
+import android.view.MenuItem;
+import android.view.SubMenu;
 
 import com.totsp.crossword.net.DownloadReceiver;
 import com.totsp.crossword.puz.PuzzleMeta;

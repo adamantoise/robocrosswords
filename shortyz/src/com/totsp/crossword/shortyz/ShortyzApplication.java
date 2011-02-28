@@ -1,4 +1,4 @@
-package com.totsp.crossword;
+package com.totsp.crossword.shortyz;
 
 import android.app.Application;
 
