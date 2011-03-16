@@ -15,6 +15,8 @@ import java.util.Date;
 import junit.framework.TestCase;
 
 import com.totsp.crossword.io.IO;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
 
 /**
  *
@@ -109,7 +111,11 @@ public class IOTest extends TestCase {
      */
     public void testUnlockCode() throws Exception {
     	Puzzle puz = IO.loadNative(new DataInputStream(IOTest.class.getResourceAsStream("/2010-7-19-NewYorkTimes.puz")));
-    	assertTrue(puz.tryUnscramble(2465, puz.initializeUnscrambleData()));
+    	assertTrue(IO.tryUnscramble(puz, 2465, puz.initializeUnscrambleData()));
+
+        ObjectOutputStream oos = new ObjectOutputStream(new ByteArrayOutputStream());
+        oos.writeObject(puz);
+        oos.close();
     }
 
     

@@ -4,8 +4,9 @@ import java.util.Arrays;
 
 import com.totsp.crossword.puz.Playboard.Position;
 import com.totsp.crossword.puz.Playboard.Word;
+import java.io.Serializable;
 
-public interface MovementStrategy {
+public interface MovementStrategy extends Serializable {
 
 	public static final MovementStrategy MOVE_NEXT_ON_AXIS = new MovementStrategy() {
 
