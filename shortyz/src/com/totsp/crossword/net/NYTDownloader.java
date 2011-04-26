@@ -1,14 +1,19 @@
 package com.totsp.crossword.net;
 
-import android.content.Context;
-
-import android.os.Handler;
-
-import android.widget.Toast;
-
-import com.totsp.crossword.io.IO;
-import com.totsp.crossword.puz.Box;
-import com.totsp.crossword.puz.Puzzle;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -22,21 +27,14 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import android.content.Context;
+import android.os.Handler;
+import android.widget.Toast;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import java.text.NumberFormat;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map.Entry;
+import com.totsp.crossword.io.IO;
+import com.totsp.crossword.puz.Box;
+import com.totsp.crossword.puz.Puzzle;
+import com.totsp.crossword.shortyz.ShortyzApplication;
 
 
 /**
@@ -48,7 +46,7 @@ public class NYTDownloader extends AbstractDownloader {
             "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
         };
     public static final String NAME = "New York Times";
-    private static final String LOGIN_URL = "https://myaccount.nytimes.com/auth/login";
+    private static final String LOGIN_URL = "https://myaccount.nytimes.com/auth/login?URI=http://select.nytimes.com/premium/xword/puzzles.html";
     NumberFormat nf = NumberFormat.getInstance();
     private Context context;
     private Handler handler = new Handler();
@@ -61,7 +59,7 @@ public class NYTDownloader extends AbstractDownloader {
         nf.setMaximumFractionDigits(0);
         params.put("is_continue", "true");
         params.put("SAVEOPTION", "YES");
-        params.put("URI", "http://www.nytimes.com");
+        params.put("URI", "http://select.nytimes.com/premium/xword/puzzles.html");
         params.put("OQ", "");
         params.put("OP", "");
         params.put("userid", username);
@@ -165,8 +163,13 @@ public class NYTDownloader extends AbstractDownloader {
         try {
             URL url = new URL(this.baseUrl + urlSuffix);
             HttpClient client = this.login();
-
+            if(ShortyzApplication.DEBUG){
+            	HttpGet fetchIndex = new HttpGet("http://select.nytimes.com/premium/xword/puzzles.html");
+            	HttpResponse indexResponse = client.execute(fetchIndex);
+            	AbstractDownloader.copyStream(indexResponse.getEntity().getContent(), new FileOutputStream(downloadDirectory.getAbsolutePath()+"/debug/xword-puzzles.html"));
+            }
             HttpGet get = new HttpGet(url.toString());
+            get.addHeader("Referer", "http://select.nytimes.com/premium/xword/puzzles.html");
             HttpResponse response = client.execute(get);
 
             if (response.getStatusLine()
@@ -175,6 +178,9 @@ public class NYTDownloader extends AbstractDownloader {
                 FileOutputStream fos = new FileOutputStream(f);
                 AbstractDownloader.copyStream(response.getEntity().getContent(), fos);
                 fos.close();
+                if(ShortyzApplication.DEBUG){
+                	AbstractDownloader.copyStream(new FileInputStream(f), new FileOutputStream(downloadDirectory.getAbsolutePath()+"/debug/debug.puz"));
+                }
 
                 return f;
             } else {
@@ -258,7 +264,10 @@ public class NYTDownloader extends AbstractDownloader {
 
         if (entity != null) {
             entity.writeTo(baos);
-
+            if(ShortyzApplication.DEBUG){
+            	new File(this.downloadDirectory, "debug/").mkdirs();
+            	copyStream(new ByteArrayInputStream(baos.toByteArray()), new FileOutputStream(this.downloadDirectory.getAbsolutePath()+"/debug/authresp.html"));
+            }
             String resp = new String(baos.toByteArray());
 
             if (resp.indexOf("Log in to manage") != -1) {

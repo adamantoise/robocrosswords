@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Environment;
 
 import com.totsp.crossword.puz.PuzzleMeta;
+import com.totsp.crossword.shortyz.ShortyzApplication;
 import com.totsp.crossword.versions.AndroidVersionUtils;
 
 import java.io.File;
@@ -25,7 +26,7 @@ import java.util.logging.Logger;
 
 public abstract class AbstractDownloader implements Downloader {
     protected static final Logger LOG = Logger.getLogger("com.totsp.crossword");
-    public static File DOWNLOAD_DIR = new File(Environment.getExternalStorageDirectory(), "crosswords");
+    public static File DOWNLOAD_DIR = ShortyzApplication.CROSSWORDS;
     public static final int DEFAULT_BUFFER_SIZE = 1024;
     protected static final Map<String, String> EMPTY_MAP = Collections.EMPTY_MAP;
     protected File downloadDirectory;

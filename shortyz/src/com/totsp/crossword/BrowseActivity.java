@@ -51,6 +51,7 @@ import com.totsp.crossword.net.Scrapers;
 import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.puz.PuzzleMeta;
 import com.totsp.crossword.shortyz.R;
+import com.totsp.crossword.shortyz.ShortyzApplication;
 import com.totsp.crossword.view.SeparatedListAdapter;
 import com.totsp.crossword.view.VerticalProgressBar;
 
@@ -184,7 +185,9 @@ public class BrowseActivity extends ShortyzActivity implements OnItemClickListen
             .setIcon(android.R.drawable.ic_menu_help);
         menu.add("Settings")
             .setIcon(android.R.drawable.ic_menu_preferences);
-
+        if(ShortyzApplication.DEBUG){
+        	menu.add("Send Debug Package");
+        }
         return true;
     }
 
@@ -254,6 +257,10 @@ public class BrowseActivity extends ShortyzActivity implements OnItemClickListen
                  .putInt("sort", 0)
                  .commit();
             this.render();
+        } else if("Send Debug Package".equals(item.getTitle())){
+        	Intent i = ShortyzApplication.sendDebug();
+        	if(i != null)
+        		this.startActivity(i);
         }
 
         return false;
@@ -489,7 +496,11 @@ public class BrowseActivity extends ShortyzActivity implements OnItemClickListen
             this.sourceList.clear();
             this.sourceList.addAll(sourcesTemp);
             Collections.sort(this.sourceList);
-            ((SourceListAdapter) this.sources.getAdapter()).notifyDataSetInvalidated();
+            this.handler.post(new Runnable(){
+            	public void run(){
+            		((SourceListAdapter) sources.getAdapter()).notifyDataSetInvalidated();
+            	}
+            });
         }
 
         return adapter;
@@ -628,7 +639,6 @@ public class BrowseActivity extends ShortyzActivity implements OnItemClickListen
         directory.mkdirs();
         //Only spawn a thread if there are a lot of puzzles.
         // Using SDK rev as a proxy to decide whether you have a slow processor or not.
-        System.out.println("SDK VERSION: " + android.os.Build.VERSION.SDK_INT);
 
         if (((android.os.Build.VERSION.SDK_INT >= 5) && directory.exists() && (directory.list().length > 500)) ||
                 ((android.os.Build.VERSION.SDK_INT < 5) && directory.exists() && (directory.list().length > 160))) {

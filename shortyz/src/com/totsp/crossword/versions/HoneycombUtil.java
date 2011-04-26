@@ -50,7 +50,7 @@ public class HoneycombUtil extends GingerbreadUtil {
         System.out.println("========== BAR " + (bar != null));
 
         if (bar != null) {
-            bar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP, ActionBar.DISPLAY_HOME_AS_UP);
+            bar.setDisplayHomeAsUpEnabled(true);
         }
     }
 
