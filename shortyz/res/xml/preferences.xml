@@ -33,6 +33,10 @@
 			 	android:key="nytSubscribe"/>
 		</PreferenceScreen>
 		<CheckBoxPreference
+			android:title="Washington Post"
+			android:defaultValue="true"
+			android:key="downloadWaPo" />
+		<CheckBoxPreference
 			android:title="Newsday"
 			android:defaultValue="true"
 			android:key="downloadNewsday" />

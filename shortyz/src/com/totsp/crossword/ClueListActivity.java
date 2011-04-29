@@ -29,6 +29,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
+import android.widget.Toast;
 
 import android.widget.TabHost.TabSpec;
 
@@ -61,22 +62,31 @@ public class ClueListActivity extends ShortyzActivity {
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		this.configuration = newConfig;
-
-		if (this.prefs.getBoolean("forceKeyboard", false)
-				|| (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
-				|| (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
-			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-			if (imm != null)
-				imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,
-						InputMethodManager.HIDE_NOT_ALWAYS);
-
+		try{
+			if (this.prefs.getBoolean("forceKeyboard", false)
+					|| (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
+					|| (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
+				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+				
+				if (imm != null)
+					imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,
+							InputMethodManager.HIDE_NOT_ALWAYS);
+	
+			}
+		} catch(Exception e){
+			e.printStackTrace();
 		}
 	}
 
 	@Override
 	public void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
-		this.configuration = getBaseContext().getResources().getConfiguration();
+		try{
+			this.configuration = getBaseContext().getResources().getConfiguration();
+		} catch(Exception e){
+			Toast.makeText(this, "Unable to read device configuration.", Toast.LENGTH_LONG).show();
+			finish();
+		}
 		this.timer = new ImaginaryTimer(PlayActivity.BOARD.getPuzzle()
 				.getTime());
 

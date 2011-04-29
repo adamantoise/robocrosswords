@@ -16,6 +16,7 @@ import com.totsp.crossword.web.shared.PuzzleService;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -89,10 +90,10 @@ public class PuzzleServlet extends RemoteServiceServlet implements PuzzleService
             PuzzleListing l = service.findListingById(PuzzleListing.class,
                     puzzleId);
 
-            p = IO.load(new ByteArrayInputStream(l.getPuzzleSerial().getBytes()),
-                    new ByteArrayInputStream(l.getMetaSerial().getBytes()));
+            p = IO.load(new DataInputStream(new ByteArrayInputStream(l.getPuzzleSerial().getBytes())),
+                    new DataInputStream(new ByteArrayInputStream(l.getMetaSerial().getBytes())));
             System.out.println("Returning " + p);
-            CACHE.put(key, p);
+            //CACHE.put(key, p);
 
             return p;
         } catch (Exception ex) {

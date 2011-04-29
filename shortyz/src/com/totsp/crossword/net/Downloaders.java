@@ -52,10 +52,10 @@ public class Downloaders {
 		if (prefs.getBoolean("downloadThinks", true)) {
 			downloaders.add(new ThinksDownloader());
 		}
-
-		// if (prefs.getBoolean("downloadChron", true)) {
-		// downloaders.add(new ChronDownloader());
-		// }
+		if (prefs.getBoolean("downloadWaPo", true)) {
+		 downloaders.add(new WaPoDownloader());
+		 }
+		
 		if (prefs.getBoolean("downloadWsj", true)) {
 			downloaders.add(new WSJDownloader());
 		}

@@ -12,15 +12,11 @@ import com.totsp.crossword.web.server.model.PuzzleListing;
 import com.totsp.crossword.web.server.net.Downloaders;
 
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
-import javax.cache.Cache;
-import javax.cache.CacheException;
-import javax.cache.CacheFactory;
-import javax.cache.CacheManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -72,7 +68,7 @@ public class RefreshPuzzleList extends HttpServlet {
 
                     ByteArrayOutputStream puzData = new ByteArrayOutputStream();
                     ByteArrayOutputStream meta = new ByteArrayOutputStream();
-                    IO.save(puz, puzData, meta);
+                    IO.save(puz, new DataOutputStream(puzData), new DataOutputStream(meta));
                     listing.setPuzzleSerial(new Blob(puzData.toByteArray()));
                     listing.setMetaSerial(new Blob(meta.toByteArray()));
                     data.store(listing);

@@ -12,7 +12,6 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.totsp.crossword.web.client.BoxView;
 import com.totsp.crossword.web.client.Game;
-import com.totsp.crossword.web.basic.Module.RootPanelProvider;
 import com.totsp.crossword.web.client.PuzzleDescriptorView;
 import com.totsp.crossword.web.client.PuzzleListView;
 import com.totsp.crossword.web.client.PuzzleServiceProxy;

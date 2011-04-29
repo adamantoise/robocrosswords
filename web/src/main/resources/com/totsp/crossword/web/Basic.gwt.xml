@@ -3,7 +3,7 @@
 
     <inherits name="com.totsp.crossword.web.Base" />
     <entry-point class="com.totsp.crossword.web.basic.BasicEntryPoint" />
-
+    <stylesheet src="basic.css" />
     <source path="basic" />
 
 

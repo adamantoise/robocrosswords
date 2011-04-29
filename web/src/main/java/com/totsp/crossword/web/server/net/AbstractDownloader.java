@@ -7,6 +7,7 @@ package com.totsp.crossword.web.server.net;
 
 import com.totsp.crossword.io.IO;
 import com.totsp.crossword.puz.Puzzle;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -34,7 +35,7 @@ public abstract class AbstractDownloader implements Downloader {
             return null;
         } else {
             try {
-                Puzzle p = IO.loadNative(is);
+                Puzzle p = IO.loadNative(new DataInputStream(is));
                 p.setSource(this.getName());
                 p.setDate(d);
                 return p;

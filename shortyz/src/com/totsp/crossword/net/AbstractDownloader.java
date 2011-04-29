@@ -1,27 +1,23 @@
 package com.totsp.crossword.net;
 
-import android.content.Context;
-
-import android.net.Uri;
-
-import android.os.Environment;
-
-import com.totsp.crossword.puz.PuzzleMeta;
-import com.totsp.crossword.shortyz.ShortyzApplication;
-import com.totsp.crossword.versions.AndroidVersionUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import android.content.Context;
+import android.net.Uri;
+
+import com.totsp.crossword.puz.PuzzleMeta;
+import com.totsp.crossword.shortyz.ShortyzApplication;
+import com.totsp.crossword.versions.AndroidVersionUtils;
+import com.totsp.crossword.versions.DefaultUtil;
 
 
 public abstract class AbstractDownloader implements Downloader {
@@ -92,7 +88,12 @@ public abstract class AbstractDownloader implements Downloader {
 
     protected abstract String createUrlSuffix(Date date);
 
-    protected File download(Date date, String urlSuffix, Map<String, String> headers) {
+    protected File download(Date date, String urlSuffix, Map<String, String> headers){
+    	System.out.println("DL From ASD");
+    	return download(date, urlSuffix, headers, true);
+    }
+    
+    protected File download(Date date, String urlSuffix, Map<String, String> headers, boolean canDefer) {
         LOG.info("Mkdirs: " + this.downloadDirectory.mkdirs());
         LOG.info("Exist: " + this.downloadDirectory.exists());
 
@@ -108,13 +109,17 @@ public abstract class AbstractDownloader implements Downloader {
             meta.updateable = false;
             
             utils.storeMetas(Uri.fromFile(f), meta);
-
-            if (utils.downloadFile(url, f, headers, true, this.getName())) {
-                DownloadReceiver.metas.remove(Uri.fromFile(f));
-
-                return f;
+            if( canDefer ){
+	            if (utils.downloadFile(url, f, headers, true, this.getName())) {
+	                DownloadReceiver.metas.remove(Uri.fromFile(f));
+	
+	                return f;
+	            } else {
+	                return Downloader.DEFERRED_FILE;
+	            }
             } else {
-                return Downloader.DEFERRED_FILE;
+            	new DefaultUtil().downloadFile(url, f, headers, true, this.getName());
+            	return f;
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -126,6 +131,6 @@ public abstract class AbstractDownloader implements Downloader {
     }
 
     protected File download(Date date, String urlSuffix) {
-        return this.download(date, urlSuffix, EMPTY_MAP);
+        return download(date, urlSuffix, EMPTY_MAP);
     }
 }

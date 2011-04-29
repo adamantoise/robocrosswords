@@ -19,7 +19,7 @@ public class Downloaders {
 
     private static List<Downloader> DOWNLOADERS = Arrays.asList(new Downloader[]{
         new AVClubDownloader(),
-        new ChronDownloader(),
+        //new ChronDownloader(),
         new InkwellDownloader(),
         new LATimesDownloader(),
         new PhillyDownloader(),
