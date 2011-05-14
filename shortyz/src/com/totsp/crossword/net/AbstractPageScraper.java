@@ -21,12 +21,13 @@ import java.util.regex.Pattern;
 
 
 public class AbstractPageScraper {
-    private static final String REGEX = "http://[^ ]*\\.puz";
+    private static final String REGEX = "http://[^ ^']*\\.puz";
     private static final String REL_REGEX = "href=\"(.*\\.puz)\"";
     private static final Pattern PAT = Pattern.compile(REGEX);
     private static final Pattern REL_PAT = Pattern.compile(REL_REGEX);
     private String sourceName;
     private String url;
+    protected boolean updateable = false;
 
     protected AbstractPageScraper(String url, String sourceName) {
         this.url = url;
@@ -91,10 +92,12 @@ public class AbstractPageScraper {
         return this.sourceName;
     }
 
-    public boolean processFile(File file) {
+    public boolean processFile(File file, String sourceUrl) {
         try {
             Puzzle puz = IO.load(file);
+            puz.setUpdatable(true);
             puz.setSource(this.sourceName);
+            puz.setSourceUrl(sourceUrl);
             puz.setDate(new Date());
             IO.save(puz, file);
 
@@ -136,7 +139,7 @@ public class AbstractPageScraper {
                     try {
                         File file = download(url, filename);
 
-                        if (this.processFile(file)) {
+                        if (this.processFile(file, url)) {
                             scrapedFiles.add(file);
                             System.out.println("SCRAPED.");
                         }

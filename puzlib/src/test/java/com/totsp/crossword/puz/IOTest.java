@@ -5,18 +5,19 @@
 
 package com.totsp.crossword.puz;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.Date;
 
 import junit.framework.TestCase;
 
 import com.totsp.crossword.io.IO;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
+import com.totsp.crossword.puz.Playboard.Clue;
 
 /**
  *
@@ -106,16 +107,57 @@ public class IOTest extends TestCase {
     	
     }
     
+    public void testCrack() throws Exception {
+    	System.out.println("testCrack");
+    	Puzzle p = IO.loadNative(new DataInputStream(IOTest.class.getResourceAsStream("/puz_110523margulies.puz")));
+    	{
+    		Playboard board = new Playboard(p);
+	    	for(Clue c : board.getAcrossClues()){
+	    		for(Box box : board.getWordBoxes(c.number, true)){
+	    			System.out.print(box.getSolution());
+	    		}
+	    		System.out.println();
+	    	}
+    	}
+    	System.out.println("========================");
+    	
+    	long incept = System.currentTimeMillis();
+    	boolean b = IO.crack(p);
+    	System.out.println(b + " "+(System.currentTimeMillis() - incept));
+    	Playboard board = new Playboard(p);
+    	for(Clue c : board.getAcrossClues()){
+    		for(Box box : board.getWordBoxes(c.number, true)){
+    			System.out.print(box.getSolution());
+    		}
+    		System.out.println();
+    	}
+    	System.out.println(b + " "+(System.currentTimeMillis() - incept));
+    	
+    }
+    
     /**
      * Note: This is a sanity check, but any changes to unlock functionality should be tested more extensively.
      */
     public void testUnlockCode() throws Exception {
     	Puzzle puz = IO.loadNative(new DataInputStream(IOTest.class.getResourceAsStream("/2010-7-19-NewYorkTimes.puz")));
+    	for(Box b :  puz.getBoxesList()){
+    		if(b != null)
+    		System.out.print(b.getSolution()+" ");
+    	}
+    	System.out.println();
+    	try{
     	assertTrue(IO.tryUnscramble(puz, 2465, puz.initializeUnscrambleData()));
-
+    	for(Box b :  puz.getBoxesList()){
+    		if(b != null)
+    		System.out.print(b.getSolution()+" ");
+    	}
+    	System.out.println();
         ObjectOutputStream oos = new ObjectOutputStream(new ByteArrayOutputStream());
         oos.writeObject(puz);
         oos.close();
+    	} catch(Exception e){
+    		e.printStackTrace();
+    	}
     }
 
     

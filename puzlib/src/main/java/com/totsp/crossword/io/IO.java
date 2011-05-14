@@ -486,6 +486,8 @@ public class IO {
         input.skipBytes(numBytes); // data
         input.skipBytes(1); // null terminator
     }
+    
+    
 
     /**
     * Attempts to unscramble the solution using the input key.  Modifications to the solution
@@ -512,8 +514,18 @@ public class IO {
                 solution[j] = (byte) letter;
             }
         }
-
-        return p.solutionChecksum == (short) IO.cksum_region(solution, 0, solution.length, 0);
+        
+        if( p.solutionChecksum == (short) IO.cksum_region(solution, 0, solution.length, 0)){
+        	int s = 0;
+        	for(int i =0; i < p.getBoxesList().length; i++){
+        		Box b = p.getBoxesList()[i];
+        		if(b != null){
+        			b.setSolution((char) solution[s++]);
+        		}
+        	}
+        	return true;
+        }
+        return false;
     }
 
     public static void writeCustom(Puzzle puz, DataOutputStream os)
@@ -522,6 +534,15 @@ public class IO {
 
         IOVersion v = new IOVersion3();
         v.write(puz, os);
+    }
+    
+    public static boolean crack(Puzzle puz){
+    	for(int a=0; a < 10000; a++){
+    		if(tryUnscramble(puz, a, puz.initializeUnscrambleData())){
+    			return true;
+    		}
+    	}
+    	return false;
     }
 
     public static void writeNullTerminatedString(OutputStream os, String value)

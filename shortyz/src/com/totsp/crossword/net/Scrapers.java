@@ -40,6 +40,10 @@ public class Scrapers {
         if (prefs.getBoolean("scrapeKegler", false)) {
             scrapers.add(new KeglerScraper());
         }
+        
+        if (prefs.getBoolean("scrapePeople", true)) {
+            scrapers.add(new PeopleScraper());
+        }
 
         this.supressMessages = prefs.getBoolean("supressMessages", false);
     }

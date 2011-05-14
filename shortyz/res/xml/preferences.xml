@@ -108,6 +108,16 @@
 				android:defaultValue="true"
 				android:summary="Updates Sundays"
 				android:key="downloadWaPoPuzzler" />
+		    <CheckBoxPreference
+				android:title="People Magazine"
+				android:defaultValue="true"
+				android:summary="Updates Thursdays"
+				android:key="scrapePeople" />
+			 <CheckBoxPreference
+				android:title="I Swear"
+				android:defaultValue="true"
+				android:summary="Updates Fridays"
+				android:key="downloadISwear" />
 		</PreferenceCategory>
 		<PreferenceCategory android:title="Large Sized">
 			<CheckBoxPreference

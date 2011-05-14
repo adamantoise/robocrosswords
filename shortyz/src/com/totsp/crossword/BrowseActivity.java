@@ -312,9 +312,9 @@ public class BrowseActivity extends ShortyzActivity implements OnItemClickListen
             this.startActivity(i);
 
             return;
-        } else if (prefs.getBoolean("release_3.0.0", true)) {
+        } else if (prefs.getBoolean("release_3.0.5", true)) {
             Editor e = prefs.edit();
-            e.putBoolean("release_3.0.0", false);
+            e.putBoolean("release_3.0.5", false);
             e.commit();
 
             Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/release.html"), this,

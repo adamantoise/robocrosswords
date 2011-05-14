@@ -129,6 +129,11 @@ public class Downloaders {
 					Downloader.DATE_SUNDAY));
 		}
 
+		if (prefs.getBoolean("downloadISwear", true)) {
+			downloaders.add(new ISwearDownloader());
+		}
+		
+		
 		if (prefs.getBoolean("downloadNYT", false)) {
 			downloaders.add(nyt = new NYTDownloader(context, prefs.getString(
 					"nytUsername", ""), prefs.getString("nytPassword", "")));
