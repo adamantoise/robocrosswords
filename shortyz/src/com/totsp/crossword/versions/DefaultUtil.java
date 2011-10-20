@@ -1,25 +1,22 @@
 package com.totsp.crossword.versions;
 
-import android.app.Activity;
-
-import android.content.Context;
-
-import android.net.Uri;
-import android.view.MenuItem;
-import android.view.SubMenu;
-
-import com.totsp.crossword.net.AbstractDownloader;
-import com.totsp.crossword.puz.PuzzleMeta;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
 import java.net.HttpURLConnection;
 import java.net.URL;
-
 import java.util.Map;
 import java.util.Map.Entry;
+
+import android.app.Activity;
+import android.content.Context;
+import android.net.Uri;
+import android.view.MenuItem;
+import android.view.SubMenu;
+import android.view.View;
+
+import com.totsp.crossword.net.AbstractDownloader;
+import com.totsp.crossword.puz.PuzzleMeta;
 
 
 public class DefaultUtil implements AndroidVersionUtils {
@@ -73,5 +70,9 @@ public class DefaultUtil implements AndroidVersionUtils {
 	public void storeMetas(Uri uri, PuzzleMeta meta) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public View onActionBarCustom(Activity a, int id) {
+		return null;
 	}
 }

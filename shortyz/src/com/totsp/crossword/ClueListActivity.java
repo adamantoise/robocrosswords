@@ -81,6 +81,8 @@ public class ClueListActivity extends ShortyzActivity {
 	@Override
 	public void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
+		utils.holographic(this);
+		utils.finishOnHomeButton(this);
 		try{
 			this.configuration = getBaseContext().getResources().getConfiguration();
 		} catch(Exception e){

@@ -77,16 +77,17 @@ public final class R {
         public static final int box_layout=0x7f030000;
         public static final int browse=0x7f030001;
         public static final int clue_detail_item=0x7f030002;
-        public static final int clue_list=0x7f030003;
-        public static final int download_dialog=0x7f030004;
-        public static final int html_view=0x7f030005;
-        public static final int play=0x7f030006;
-        public static final int puzzle_info_dialog=0x7f030007;
-        public static final int puzzle_list_header=0x7f030008;
-        public static final int puzzle_list_item=0x7f030009;
-        public static final int source_item=0x7f03000a;
-        public static final int source_item_highlight=0x7f03000b;
-        public static final int web_browser_view=0x7f03000c;
+        public static final int clue_line_only=0x7f030003;
+        public static final int clue_list=0x7f030004;
+        public static final int download_dialog=0x7f030005;
+        public static final int html_view=0x7f030006;
+        public static final int play=0x7f030007;
+        public static final int puzzle_info_dialog=0x7f030008;
+        public static final int puzzle_list_header=0x7f030009;
+        public static final int puzzle_list_item=0x7f03000a;
+        public static final int source_item=0x7f03000b;
+        public static final int source_item_highlight=0x7f03000c;
+        public static final int web_browser_view=0x7f03000d;
     }
     public static final class raw {
         public static final int test=0x7f050000;

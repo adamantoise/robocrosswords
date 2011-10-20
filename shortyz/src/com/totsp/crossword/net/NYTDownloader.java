@@ -1,19 +1,15 @@
 package com.totsp.crossword.net;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map.Entry;
+import android.content.Context;
+
+import android.os.Handler;
+
+import android.widget.Toast;
+
+import com.totsp.crossword.io.IO;
+import com.totsp.crossword.puz.Box;
+import com.totsp.crossword.puz.Puzzle;
+import com.totsp.crossword.shortyz.ShortyzApplication;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -27,14 +23,23 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
-import android.content.Context;
-import android.os.Handler;
-import android.widget.Toast;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
-import com.totsp.crossword.io.IO;
-import com.totsp.crossword.puz.Box;
-import com.totsp.crossword.puz.Puzzle;
-import com.totsp.crossword.shortyz.ShortyzApplication;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import java.text.NumberFormat;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
 
 
 /**
@@ -154,8 +159,9 @@ public class NYTDownloader extends AbstractDownloader {
 
     @Override
     protected String createUrlSuffix(Date date) {
-        return MONTHS[date.getMonth()] + this.nf.format(date.getDate()) + this.nf.format(date.getYear() - 100) +
-        ".puz";
+        return (date.getYear() + 1900) + "/" + this.nf.format(date.getMonth() + 1) + "/" +
+        this.nf.format(date.getDate()) + "/" + MONTHS[date.getMonth()] + this.nf.format(date.getDate()) +
+        this.nf.format(date.getYear() - 100) + ".puz";
     }
 
     @Override
@@ -163,13 +169,17 @@ public class NYTDownloader extends AbstractDownloader {
         try {
             URL url = new URL(this.baseUrl + urlSuffix);
             HttpClient client = this.login();
-            if(ShortyzApplication.DEBUG){
-            	HttpGet fetchIndex = new HttpGet("http://select.nytimes.com/premium/xword/puzzles.html");
-            	HttpResponse indexResponse = client.execute(fetchIndex);
-            	AbstractDownloader.copyStream(indexResponse.getEntity().getContent(), new FileOutputStream(downloadDirectory.getAbsolutePath()+"/debug/xword-puzzles.html"));
+
+            if (ShortyzApplication.DEBUG) {
+                HttpGet fetchIndex = new HttpGet("http://select.nytimes.com/premium/xword/puzzles.html");
+                HttpResponse indexResponse = client.execute(fetchIndex);
+                AbstractDownloader.copyStream(indexResponse.getEntity().getContent(),
+                    new FileOutputStream(downloadDirectory.getAbsolutePath() + "/debug/xword-puzzles.html"));
             }
+
             HttpGet get = new HttpGet(url.toString());
             get.addHeader("Referer", "http://select.nytimes.com/premium/xword/puzzles.html");
+
             HttpResponse response = client.execute(get);
 
             if (response.getStatusLine()
@@ -178,8 +188,10 @@ public class NYTDownloader extends AbstractDownloader {
                 FileOutputStream fos = new FileOutputStream(f);
                 AbstractDownloader.copyStream(response.getEntity().getContent(), fos);
                 fos.close();
-                if(ShortyzApplication.DEBUG){
-                	AbstractDownloader.copyStream(new FileInputStream(f), new FileOutputStream(downloadDirectory.getAbsolutePath()+"/debug/debug.puz"));
+
+                if (ShortyzApplication.DEBUG) {
+                    AbstractDownloader.copyStream(new FileInputStream(f),
+                        new FileOutputStream(downloadDirectory.getAbsolutePath() + "/debug/debug.puz"));
                 }
 
                 return f;
@@ -264,10 +276,13 @@ public class NYTDownloader extends AbstractDownloader {
 
         if (entity != null) {
             entity.writeTo(baos);
-            if(ShortyzApplication.DEBUG){
-            	new File(this.downloadDirectory, "debug/").mkdirs();
-            	copyStream(new ByteArrayInputStream(baos.toByteArray()), new FileOutputStream(this.downloadDirectory.getAbsolutePath()+"/debug/authresp.html"));
+
+            if (ShortyzApplication.DEBUG) {
+                new File(this.downloadDirectory, "debug/").mkdirs();
+                copyStream(new ByteArrayInputStream(baos.toByteArray()),
+                    new FileOutputStream(this.downloadDirectory.getAbsolutePath() + "/debug/authresp.html"));
             }
+
             String resp = new String(baos.toByteArray());
 
             if (resp.indexOf("Log in to manage") != -1) {

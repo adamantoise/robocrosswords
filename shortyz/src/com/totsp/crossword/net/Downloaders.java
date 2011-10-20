@@ -77,7 +77,7 @@ public class Downloaders {
 		}
 
 		if (prefs.getBoolean("downloadLat", true)) {
-			downloaders.add(new LATDownloader());
+			downloaders.add(new UclickDownloader("tmcal", "Los Angeles Times", "Rich Norris", Downloader.DATE_NO_SUNDAY));
 		}
 
 		if (prefs.getBoolean("downloadAvClub", true)) {

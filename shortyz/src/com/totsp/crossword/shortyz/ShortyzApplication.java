@@ -12,12 +12,13 @@ import android.app.Application;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
+import android.util.DisplayMetrics;
 
 import com.totsp.crossword.io.IO;
 
 public class ShortyzApplication extends Application {
 
-	public static final boolean DEBUG = false;
+	public static final boolean DEBUG = true;
 	public static File DEBUG_DIR;
 	public static File CROSSWORDS = new File(
 			Environment.getExternalStorageDirectory(), "crosswords");
@@ -106,11 +107,20 @@ public class ShortyzApplication extends Application {
 		}
 	}
 
-	public static boolean isTabletish() {
+	public static boolean isTabletish(DisplayMetrics metrics) {
 		switch (android.os.Build.VERSION.SDK_INT) {
 		case 12:
 		case 11:
+		case 13:
 			return true;
+		case 14:
+			int pixels = metrics.heightPixels > metrics.widthPixels ? metrics.heightPixels : metrics.widthPixels;
+			float dpi = metrics.xdpi > metrics.ydpi ? metrics.xdpi : metrics.ydpi;
+			if(pixels / dpi > 5){ // look for a 5" or larger screen.
+				return true;
+			} else {
+				return false;
+			}
 		default:
 			return false;
 		}

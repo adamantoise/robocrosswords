@@ -9,6 +9,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.view.MenuItem;
 import android.view.SubMenu;
+import android.view.View;
 
 import com.totsp.crossword.puz.PuzzleMeta;
 
@@ -38,6 +39,8 @@ public interface AndroidVersionUtils {
 				switch (android.os.Build.VERSION.SDK_INT) {
 				case 12:
 				case 11:
+				case 13:
+				case 14:
 					return (AndroidVersionUtils) Class.forName(
 							"com.totsp.crossword.versions.HoneycombUtil")
 							.newInstance();
@@ -56,6 +59,8 @@ public interface AndroidVersionUtils {
 			}
 		}
 	}
+
+	public View onActionBarCustom(Activity a, int id);
 
 	
 }

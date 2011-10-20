@@ -12,7 +12,6 @@
   	android:layout_height="wrap_content"
   	android:layout_alignParentBottom="true"
   	android:padding="5dp"
-  	android:background="#CCCCCC"
   	android:gravity="center_vertical|right"
   	>
   	
