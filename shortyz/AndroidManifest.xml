@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--  -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.totsp.crossword.shortyz"
 	android:installLocation="auto"
-	android:versionName="3.0.8" android:versionCode="30008">
+	android:versionName="3.1.0" android:versionCode="30100">
 	<application android:icon="@drawable/icon" 
 		android:label="@string/app_name"
 		android:backupAgent=".BackupAgent"
@@ -54,6 +53,11 @@
 		</activity>
 		<activity android:name="com.totsp.crossword.WebBrowserActivity"
 			android:label="Browse for Puzzles" android:configChanges="keyboardHidden|orientation">
+		</activity>
+		<activity android:name="com.totsp.crossword.PuzzleFinishedActivity"
+			android:label="Puzzle Completed!"
+			android:theme="@android:style/Theme.Dialog">
+					
 		</activity>
 		<receiver android:name="com.totsp.crossword.net.DownloadReceiver">
 			<intent-filter>

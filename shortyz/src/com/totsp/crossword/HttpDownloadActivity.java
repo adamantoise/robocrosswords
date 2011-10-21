@@ -1,30 +1,24 @@
 package com.totsp.crossword;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
-
-import android.content.Intent;
-
-import android.net.Uri;
-
-import android.os.Bundle;
-import android.os.Environment;
-
-import android.widget.Toast;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URI;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import java.net.URI;
-import java.net.URISyntaxException;
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.widget.Toast;
 
 
 public class HttpDownloadActivity extends Activity {

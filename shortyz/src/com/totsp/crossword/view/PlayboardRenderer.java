@@ -271,6 +271,7 @@ public class PlayboardRenderer {
                 canvas.drawRect(r, this.cheated);
             } else if (this.board.isShowErrors() && (box.getResponse() != ' ') &&
                     (box.getSolution() != box.getResponse())) {
+            	box.setCheated(true);
                 canvas.drawRect(r, this.red);
             } else {
                 canvas.drawRect(r, this.white);

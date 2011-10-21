@@ -15,10 +15,12 @@ import android.os.Environment;
 import android.util.DisplayMetrics;
 
 import com.totsp.crossword.io.IO;
+import com.totsp.crossword.puz.Playboard;
+import com.totsp.crossword.view.PlayboardRenderer;
 
 public class ShortyzApplication extends Application {
 
-	public static final boolean DEBUG = true;
+	public static final boolean DEBUG = false;
 	public static File DEBUG_DIR;
 	public static File CROSSWORDS = new File(
 			Environment.getExternalStorageDirectory(), "crosswords");
@@ -51,6 +53,10 @@ public class ShortyzApplication extends Application {
 
 		}
 	}
+	
+	
+	public static Playboard BOARD;
+    public static PlayboardRenderer RENDERER;
 
 	public static Intent sendDebug() {
 		File zip = new File(CROSSWORDS, "debug.stz");

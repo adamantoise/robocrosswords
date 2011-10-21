@@ -1,45 +1,38 @@
 package com.totsp.crossword;
 
-import android.app.Activity;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+
 import android.app.Dialog;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
-
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-
 import android.content.SharedPreferences.Editor;
-
 import android.content.res.Configuration;
-
 import android.net.Uri;
-
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-
-import android.preference.PreferenceManager;
-
-import android.provider.Settings;
-
 import android.util.Log;
-
 import android.view.ContextMenu;
-
 import android.view.ContextMenu.ContextMenuInfo;
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.AdapterView;
-
 import android.widget.AdapterView.OnItemClickListener;
-
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -54,19 +47,6 @@ import com.totsp.crossword.shortyz.R;
 import com.totsp.crossword.shortyz.ShortyzApplication;
 import com.totsp.crossword.view.SeparatedListAdapter;
 import com.totsp.crossword.view.VerticalProgressBar;
-
-import java.io.File;
-import java.io.IOException;
-
-import java.text.SimpleDateFormat;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 
 
 public class BrowseActivity extends ShortyzActivity implements OnItemClickListener {
@@ -277,8 +257,6 @@ public class BrowseActivity extends ShortyzActivity implements OnItemClickListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //        android.provider.Settings.System.putInt(this.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, 0);
-        //        android.provider.Settings.System.putInt(this.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, 20);
         this.setTitle("Shortyz - Puzzles");
         setDefaultKeyMode(DEFAULT_KEYS_SHORTCUT);
         this.setContentView(R.layout.browse);
@@ -312,9 +290,9 @@ public class BrowseActivity extends ShortyzActivity implements OnItemClickListen
             this.startActivity(i);
 
             return;
-        } else if (prefs.getBoolean("release_3.0.5", true)) {
+        } else if (prefs.getBoolean("release_3.1.0", true)) {
             Editor e = prefs.edit();
-            e.putBoolean("release_3.0.5", false);
+            e.putBoolean("release_3.1.0", false);
             e.commit();
 
             Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/release.html"), this,

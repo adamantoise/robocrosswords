@@ -1,51 +1,38 @@
 package com.totsp.crossword;
 
+import java.io.File;
+import java.io.IOException;
+
 import android.content.Context;
-import android.content.SharedPreferences;
-
+import android.content.Intent;
 import android.content.res.Configuration;
-
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
-
 import android.inputmethodservice.KeyboardView.OnKeyboardActionListener;
-
 import android.net.Uri;
-
 import android.os.Bundle;
-
-import android.preference.PreferenceManager;
-
 import android.view.KeyEvent;
 import android.view.View;
-
 import android.view.inputmethod.InputMethodManager;
-
 import android.widget.AdapterView;
-
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
-
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
+import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
 
-import android.widget.TabHost.TabSpec;
-
 import com.totsp.crossword.io.IO;
-import com.totsp.crossword.puz.Box;
 import com.totsp.crossword.puz.Playboard.Clue;
 import com.totsp.crossword.puz.Playboard.Position;
 import com.totsp.crossword.puz.Playboard.Word;
 import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.shortyz.R;
+import com.totsp.crossword.shortyz.ShortyzApplication;
 import com.totsp.crossword.view.ScrollingImageView;
 import com.totsp.crossword.view.ScrollingImageView.ClickListener;
 import com.totsp.crossword.view.ScrollingImageView.Point;
-
-import java.io.File;
-import java.io.IOException;
 
 public class ClueListActivity extends ShortyzActivity {
 	private Configuration configuration;
@@ -62,18 +49,18 @@ public class ClueListActivity extends ShortyzActivity {
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		this.configuration = newConfig;
-		try{
+		try {
 			if (this.prefs.getBoolean("forceKeyboard", false)
 					|| (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
 					|| (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
 				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-				
+
 				if (imm != null)
 					imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,
 							InputMethodManager.HIDE_NOT_ALWAYS);
-	
+
 			}
-		} catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -83,13 +70,15 @@ public class ClueListActivity extends ShortyzActivity {
 		super.onCreate(icicle);
 		utils.holographic(this);
 		utils.finishOnHomeButton(this);
-		try{
-			this.configuration = getBaseContext().getResources().getConfiguration();
-		} catch(Exception e){
-			Toast.makeText(this, "Unable to read device configuration.", Toast.LENGTH_LONG).show();
+		try {
+			this.configuration = getBaseContext().getResources()
+					.getConfiguration();
+		} catch (Exception e) {
+			Toast.makeText(this, "Unable to read device configuration.",
+					Toast.LENGTH_LONG).show();
 			finish();
 		}
-		this.timer = new ImaginaryTimer(PlayActivity.BOARD.getPuzzle()
+		this.timer = new ImaginaryTimer(ShortyzApplication.BOARD.getPuzzle()
 				.getTime());
 
 		Uri u = this.getIntent().getData();
@@ -100,7 +89,7 @@ public class ClueListActivity extends ShortyzActivity {
 			}
 		}
 
-		puz = PlayActivity.BOARD.getPuzzle();
+		puz = ShortyzApplication.BOARD.getPuzzle();
 		timer.start();
 		setContentView(R.layout.clue_list);
 
@@ -137,19 +126,13 @@ public class ClueListActivity extends ShortyzActivity {
 						ClueListActivity.this.onKeyDown(primaryCode, event);
 					}
 
-					public void onPress(int primaryCode) {
-					}
+					public void onPress(int primaryCode) {}
 
-					public void onRelease(int primaryCode) {
-					}
+					public void onRelease(int primaryCode){}
 
-					public void onText(CharSequence text) {
-						// TODO Auto-generated method stub
-					}
+					public void onText(CharSequence text) {}
 
-					public void swipeDown() {
-						// TODO Auto-generated method stub
-					}
+					public void swipeDown() {}
 
 					public void swipeLeft() {
 						long eventTime = System.currentTimeMillis();
@@ -190,10 +173,10 @@ public class ClueListActivity extends ShortyzActivity {
 			}
 
 			public void onTap(Point e) {
-				Word current = PlayActivity.BOARD.getCurrentWord();
+				Word current = ShortyzApplication.BOARD.getCurrentWord();
 				int newAcross = current.start.across;
 				int newDown = current.start.down;
-				int box = PlayActivity.RENDERER.findBoxNoScale(e);
+				int box = ShortyzApplication.RENDERER.findBoxNoScale(e);
 
 				if (box < current.length) {
 					if (tabHost.getCurrentTab() == 0) {
@@ -205,8 +188,9 @@ public class ClueListActivity extends ShortyzActivity {
 
 				Position newPos = new Position(newAcross, newDown);
 
-				if (!newPos.equals(PlayActivity.BOARD.getHighlightLetter())) {
-					PlayActivity.BOARD.setHighlightLetter(newPos);
+				if (!newPos.equals(ShortyzApplication.BOARD
+						.getHighlightLetter())) {
+					ShortyzApplication.BOARD.setHighlightLetter(newPos);
 					ClueListActivity.this.render();
 				}
 			}
@@ -232,23 +216,23 @@ public class ClueListActivity extends ShortyzActivity {
 		ts.setContent(R.id.downList);
 		this.tabHost.addTab(ts);
 
-		this.tabHost.setCurrentTab(PlayActivity.BOARD.isAcross() ? 0 : 1);
+		this.tabHost.setCurrentTab(ShortyzApplication.BOARD.isAcross() ? 0 : 1);
 
 		this.across = (ListView) this.findViewById(R.id.acrossList);
 		this.down = (ListView) this.findViewById(R.id.downList);
 
 		across.setAdapter(new ArrayAdapter<Clue>(this,
-				android.R.layout.simple_list_item_1, PlayActivity.BOARD
+				android.R.layout.simple_list_item_1, ShortyzApplication.BOARD
 						.getAcrossClues()));
 		across.setFocusableInTouchMode(true);
 		down.setAdapter(new ArrayAdapter<Clue>(this,
-				android.R.layout.simple_list_item_1, PlayActivity.BOARD
+				android.R.layout.simple_list_item_1, ShortyzApplication.BOARD
 						.getDownClues()));
 		across.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				arg0.setSelected(true);
-				PlayActivity.BOARD.jumpTo(arg2, true);
+				ShortyzApplication.BOARD.jumpTo(arg2, true);
 				imageView.scrollTo(0, 0);
 				render();
 
@@ -261,9 +245,9 @@ public class ClueListActivity extends ShortyzActivity {
 		across.setOnItemSelectedListener(new OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				if (!PlayActivity.BOARD.isAcross()
-						|| (PlayActivity.BOARD.getCurrentClueIndex() != arg2)) {
-					PlayActivity.BOARD.jumpTo(arg2, true);
+				if (!ShortyzApplication.BOARD.isAcross()
+						|| (ShortyzApplication.BOARD.getCurrentClueIndex() != arg2)) {
+					ShortyzApplication.BOARD.jumpTo(arg2, true);
 					imageView.scrollTo(0, 0);
 					render();
 
@@ -280,7 +264,7 @@ public class ClueListActivity extends ShortyzActivity {
 		down.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> arg0, View arg1,
 					final int arg2, long arg3) {
-				PlayActivity.BOARD.jumpTo(arg2, false);
+				ShortyzApplication.BOARD.jumpTo(arg2, false);
 				imageView.scrollTo(0, 0);
 				render();
 
@@ -294,9 +278,9 @@ public class ClueListActivity extends ShortyzActivity {
 		down.setOnItemSelectedListener(new OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				if (PlayActivity.BOARD.isAcross()
-						|| (PlayActivity.BOARD.getCurrentClueIndex() != arg2)) {
-					PlayActivity.BOARD.jumpTo(arg2, false);
+				if (ShortyzApplication.BOARD.isAcross()
+						|| (ShortyzApplication.BOARD.getCurrentClueIndex() != arg2)) {
+					ShortyzApplication.BOARD.jumpTo(arg2, false);
 					imageView.scrollTo(0, 0);
 					render();
 
@@ -315,7 +299,7 @@ public class ClueListActivity extends ShortyzActivity {
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		Word w = PlayActivity.BOARD.getCurrentWord();
+		Word w = ShortyzApplication.BOARD.getCurrentWord();
 		Position last = new Position(w.start.across
 				+ (w.across ? (w.length - 1) : 0), w.start.down
 				+ ((!w.across) ? (w.length - 1) : 0));
@@ -332,9 +316,9 @@ public class ClueListActivity extends ShortyzActivity {
 
 		case KeyEvent.KEYCODE_DPAD_LEFT:
 
-			if (!PlayActivity.BOARD.getHighlightLetter().equals(
-					PlayActivity.BOARD.getCurrentWord().start)) {
-				PlayActivity.BOARD.previousLetter();
+			if (!ShortyzApplication.BOARD.getHighlightLetter().equals(
+					ShortyzApplication.BOARD.getCurrentWord().start)) {
+				ShortyzApplication.BOARD.previousLetter();
 
 				this.render();
 			}
@@ -343,21 +327,21 @@ public class ClueListActivity extends ShortyzActivity {
 
 		case KeyEvent.KEYCODE_DPAD_RIGHT:
 
-			if (!PlayActivity.BOARD.getHighlightLetter().equals(last)) {
-				PlayActivity.BOARD.nextLetter();
+			if (!ShortyzApplication.BOARD.getHighlightLetter().equals(last)) {
+				ShortyzApplication.BOARD.nextLetter();
 				this.render();
 			}
 
 			return true;
 
 		case KeyEvent.KEYCODE_DEL:
-			w = PlayActivity.BOARD.getCurrentWord();
-			PlayActivity.BOARD.deleteLetter();
+			w = ShortyzApplication.BOARD.getCurrentWord();
+			ShortyzApplication.BOARD.deleteLetter();
 
-			Position p = PlayActivity.BOARD.getHighlightLetter();
+			Position p = ShortyzApplication.BOARD.getHighlightLetter();
 
 			if (!w.checkInWord(p.across, p.down)) {
-				PlayActivity.BOARD.setHighlightLetter(w.start);
+				ShortyzApplication.BOARD.setHighlightLetter(w.start);
 			}
 
 			this.render();
@@ -367,13 +351,13 @@ public class ClueListActivity extends ShortyzActivity {
 		case KeyEvent.KEYCODE_SPACE:
 
 			if (!prefs.getBoolean("spaceChangesDirection", true)) {
-				PlayActivity.BOARD.playLetter(' ');
+				ShortyzApplication.BOARD.playLetter(' ');
 
-				Position curr = PlayActivity.BOARD.getHighlightLetter();
+				Position curr = ShortyzApplication.BOARD.getHighlightLetter();
 
-				if (!PlayActivity.BOARD.getCurrentWord().equals(w)
-						|| (PlayActivity.BOARD.getBoxes()[curr.across][curr.down] == null)) {
-					PlayActivity.BOARD.setHighlightLetter(last);
+				if (!ShortyzApplication.BOARD.getCurrentWord().equals(w)
+						|| (ShortyzApplication.BOARD.getBoxes()[curr.across][curr.down] == null)) {
+					ShortyzApplication.BOARD.setHighlightLetter(last);
 				}
 
 				this.render();
@@ -387,21 +371,29 @@ public class ClueListActivity extends ShortyzActivity {
 						.getDisplayLabel() : ((char) keyCode));
 
 		if (PlayActivity.ALPHA.indexOf(c) != -1) {
-			PlayActivity.BOARD.playLetter(c);
+			ShortyzApplication.BOARD.playLetter(c);
 
-			Position p = PlayActivity.BOARD.getHighlightLetter();
+			Position p = ShortyzApplication.BOARD.getHighlightLetter();
 
-			if (!PlayActivity.BOARD.getCurrentWord().equals(w)
-					|| (PlayActivity.BOARD.getBoxes()[p.across][p.down] == null)) {
-				PlayActivity.BOARD.setHighlightLetter(last);
+			if (!ShortyzApplication.BOARD.getCurrentWord().equals(w)
+					|| (ShortyzApplication.BOARD.getBoxes()[p.across][p.down] == null)) {
+				ShortyzApplication.BOARD.setHighlightLetter(last);
 			}
 
 			this.render();
+			
+			if ((puz.getPercentComplete() == 100) && (timer != null)) {
+	            timer.stop();
+	            puz.setTime(timer.getElapsed());
+	            this.timer = null;
+	            Intent i = new Intent(ClueListActivity.this, PuzzleFinishedActivity.class);
+	            this.startActivity(i);
+	            
+	        }
 
 			return true;
 		}
 
-		// TODO Auto-generated method stub
 		return super.onKeyUp(keyCode, event);
 	}
 
@@ -409,7 +401,6 @@ public class ClueListActivity extends ShortyzActivity {
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_BACK:
-			System.out.println("BACK");
 			this.finish();
 
 			return true;
@@ -460,11 +451,6 @@ public class ClueListActivity extends ShortyzActivity {
 			this.keyboardView.setVisibility(View.GONE);
 		}
 
-		for (Box b : PlayActivity.BOARD.getCurrentWordBoxes()) {
-			System.out.print(b + " ");
-		}
-
-		System.out.println();
-		this.imageView.setBitmap(PlayActivity.RENDERER.drawWord());
+		this.imageView.setBitmap(ShortyzApplication.RENDERER.drawWord());
 	}
 }

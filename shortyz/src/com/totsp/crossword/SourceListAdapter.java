@@ -1,24 +1,18 @@
 package com.totsp.crossword;
 
+import java.util.List;
+
 import android.content.Context;
-
-import android.graphics.Color;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.totsp.crossword.shortyz.R;
 
-import java.util.List;
-
 
 public class SourceListAdapter extends BaseAdapter {
-    private static final int transparent = Color.TRANSPARENT;
-    private static final int highlight = Color.BLACK;
     static final String ALL_SOURCES = "All Sources";
     public String current = ALL_SOURCES;
     private final Context context;
@@ -30,7 +24,6 @@ public class SourceListAdapter extends BaseAdapter {
     }
 
     public int getCount() {
-        // TODO Auto-generated method stub
         return sources.size() + 1;
     }
 

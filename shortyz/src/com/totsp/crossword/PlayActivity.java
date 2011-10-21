@@ -59,6 +59,8 @@ import com.totsp.crossword.puz.Playboard.Word;
 import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.shortyz.R;
 import com.totsp.crossword.shortyz.ShortyzApplication;
+import static com.totsp.crossword.shortyz.ShortyzApplication.BOARD;
+import static com.totsp.crossword.shortyz.ShortyzApplication.RENDERER;
 import com.totsp.crossword.view.PlayboardRenderer;
 import com.totsp.crossword.view.ScrollingImageView;
 import com.totsp.crossword.view.ScrollingImageView.ClickListener;
@@ -77,14 +79,12 @@ import java.util.logging.Logger;
 public class PlayActivity extends ShortyzActivity {
     private static final Logger LOG = Logger.getLogger("com.totsp.crossword");
     private static final int INFO_DIALOG = 0;
-    private static final int COMPLETE_DIALOG = 1;
     private static final int REVEAL_PUZZLE_DIALOG = 2;
     static final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    static Playboard BOARD;
-    static PlayboardRenderer RENDERER;
-    private AdapterView across;
-    private AdapterView down;
-    private AlertDialog completeDialog;
+    @SuppressWarnings("rawtypes")
+	private AdapterView across;
+    @SuppressWarnings("rawtypes")
+	private AdapterView down;
     private AlertDialog revealPuzzleDialog;
     private ClueListAdapter acrossAdapter;
     private ClueListAdapter downAdapter;
@@ -151,7 +151,8 @@ public class PlayActivity extends ShortyzActivity {
 
     DisplayMetrics metrics;
     /** Called when the activity is first created. */
-    @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         metrics = new DisplayMetrics();
@@ -339,9 +340,9 @@ public class PlayActivity extends ShortyzActivity {
                         handler.post(new Runnable() {
                                 public void run() {
                                     try {
-                                        Position p = PlayActivity.RENDERER.findBox(e);
-                                        Word w = PlayActivity.BOARD.setHighlightLetter(p);
-                                        PlayActivity.RENDERER.draw(w);
+                                        Position p = RENDERER.findBox(e);
+                                        Word w = BOARD.setHighlightLetter(p);
+                                        RENDERER.draw(w);
                                         PlayActivity.this.openContextMenu(boardView);
                                     } catch (Exception ex) {
                                         ex.printStackTrace();
@@ -354,21 +355,21 @@ public class PlayActivity extends ShortyzActivity {
                         try {
                             if (prefs.getBoolean("doubleTap", false) && ((System.currentTimeMillis() - lastTap) < 300)) {
                                 if (fitToScreen) {
-                                    PlayActivity.RENDERER.setScale(prefs.getFloat("scale", 1F));
-                                    PlayActivity.BOARD.setHighlightLetter(RENDERER.findBox(e));
+                                    RENDERER.setScale(prefs.getFloat("scale", 1F));
+                                    BOARD.setHighlightLetter(RENDERER.findBox(e));
                                     render();
                                 } else {
                                     int w = boardView.getWidth();
                                     int h = boardView.getHeight();
-                                    PlayActivity.RENDERER.fitTo((w < h) ? w : h);
+                                    RENDERER.fitTo((w < h) ? w : h);
                                     render();
                                     boardView.scrollTo(0, 0);
                                 }
 
                                 fitToScreen = !fitToScreen;
                             } else {
-                                Position p = PlayActivity.RENDERER.findBox(e);
-                                Word old = PlayActivity.BOARD.setHighlightLetter(p);
+                                Position p = RENDERER.findBox(e);
+                                Word old = BOARD.setHighlightLetter(p);
                                 PlayActivity.this.render(old);
                             }
 
@@ -398,18 +399,7 @@ public class PlayActivity extends ShortyzActivity {
             return;
         }
 
-        completeDialog = new AlertDialog.Builder(this).create();
-        completeDialog.setTitle("Puzzle Complete!");
-        completeDialog.setMessage("");
-        completeDialog.setButton("OK",
-            new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-
-                    return;
-                }
-            });
-
+        
         revealPuzzleDialog = new AlertDialog.Builder(this).create();
         revealPuzzleDialog.setTitle("Reveal Entire Puzzle");
         revealPuzzleDialog.setMessage("Are you sure?");
@@ -417,7 +407,7 @@ public class PlayActivity extends ShortyzActivity {
         revealPuzzleDialog.setButton("OK",
             new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    PlayActivity.BOARD.revealPuzzle();
+                    BOARD.revealPuzzle();
                     render();
                 }
             });
@@ -483,20 +473,20 @@ public class PlayActivity extends ShortyzActivity {
         }
 
         if ((across != null) && (down != null)) {
-            across.setAdapter(this.acrossAdapter = new ClueListAdapter(this, PlayActivity.BOARD.getAcrossClues(), true));
+            across.setAdapter(this.acrossAdapter = new ClueListAdapter(this, BOARD.getAcrossClues(), true));
             across.setFocusableInTouchMode(true);
-            down.setAdapter(this.downAdapter = new ClueListAdapter(this, PlayActivity.BOARD.getDownClues(), false));
+            down.setAdapter(this.downAdapter = new ClueListAdapter(this, BOARD.getDownClues(), false));
             across.setOnItemClickListener(new OnItemClickListener() {
                     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                         arg0.setSelected(true);
-                        PlayActivity.BOARD.jumpTo(arg2, true);
+                        BOARD.jumpTo(arg2, true);
                         render();
                     }
                 });
             across.setOnItemSelectedListener(new OnItemSelectedListener() {
                     public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                        if (!PlayActivity.BOARD.isAcross() || (PlayActivity.BOARD.getCurrentClueIndex() != arg2)) {
-                            PlayActivity.BOARD.jumpTo(arg2, true);
+                        if (!BOARD.isAcross() || (BOARD.getCurrentClueIndex() != arg2)) {
+                            BOARD.jumpTo(arg2, true);
                             render();
                         }
                     }
@@ -506,15 +496,15 @@ public class PlayActivity extends ShortyzActivity {
                 });
             down.setOnItemClickListener(new OnItemClickListener() {
                     public void onItemClick(AdapterView<?> arg0, View arg1, final int arg2, long arg3) {
-                        PlayActivity.BOARD.jumpTo(arg2, false);
+                        BOARD.jumpTo(arg2, false);
                         render();
                     }
                 });
 
             down.setOnItemSelectedListener(new OnItemSelectedListener() {
                     public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                        if (PlayActivity.BOARD.isAcross() || (PlayActivity.BOARD.getCurrentClueIndex() != arg2)) {
-                            PlayActivity.BOARD.jumpTo(arg2, false);
+                        if (BOARD.isAcross() || (BOARD.getCurrentClueIndex() != arg2)) {
+                            BOARD.jumpTo(arg2, false);
                             render();
                         }
                     }
@@ -596,9 +586,9 @@ public class PlayActivity extends ShortyzActivity {
         switch (keyCode) {
         case KeyEvent.KEYCODE_SEARCH:
             System.out.println("Next clue.");
-            PlayActivity.BOARD.setMovementStrategy(MovementStrategy.MOVE_NEXT_CLUE);
-            previous = PlayActivity.BOARD.nextWord();
-            PlayActivity.BOARD.setMovementStrategy(this.getMovementStrategy());
+            BOARD.setMovementStrategy(MovementStrategy.MOVE_NEXT_CLUE);
+            previous = BOARD.nextWord();
+            BOARD.setMovementStrategy(this.getMovementStrategy());
             this.render(previous);
 
             return true;
@@ -614,7 +604,7 @@ public class PlayActivity extends ShortyzActivity {
         case KeyEvent.KEYCODE_DPAD_DOWN:
 
             if ((System.currentTimeMillis() - lastKey) > 50) {
-                previous = PlayActivity.BOARD.moveDown();
+                previous = BOARD.moveDown();
                 this.render(previous);
             }
 
@@ -625,7 +615,7 @@ public class PlayActivity extends ShortyzActivity {
         case KeyEvent.KEYCODE_DPAD_UP:
 
             if ((System.currentTimeMillis() - lastKey) > 50) {
-                previous = PlayActivity.BOARD.moveUp();
+                previous = BOARD.moveUp();
                 this.render(previous);
             }
 
@@ -636,7 +626,7 @@ public class PlayActivity extends ShortyzActivity {
         case KeyEvent.KEYCODE_DPAD_LEFT:
 
             if ((System.currentTimeMillis() - lastKey) > 50) {
-                previous = PlayActivity.BOARD.moveLeft();
+                previous = BOARD.moveLeft();
                 this.render(previous);
             }
 
@@ -647,7 +637,7 @@ public class PlayActivity extends ShortyzActivity {
         case KeyEvent.KEYCODE_DPAD_RIGHT:
 
             if ((System.currentTimeMillis() - lastKey) > 50) {
-                previous = PlayActivity.BOARD.moveRight();
+                previous = BOARD.moveRight();
                 this.render(previous);
             }
 
@@ -656,7 +646,7 @@ public class PlayActivity extends ShortyzActivity {
             return true;
 
         case KeyEvent.KEYCODE_DPAD_CENTER:
-            previous = PlayActivity.BOARD.toggleDirection();
+            previous = BOARD.toggleDirection();
             this.render(previous);
 
             return true;
@@ -665,10 +655,10 @@ public class PlayActivity extends ShortyzActivity {
 
             if ((System.currentTimeMillis() - lastKey) > 150) {
                 if (prefs.getBoolean("spaceChangesDirection", true)) {
-                    previous = PlayActivity.BOARD.toggleDirection();
+                    previous = BOARD.toggleDirection();
                     this.render(previous);
                 } else {
-                    previous = PlayActivity.BOARD.playLetter(' ');
+                    previous = BOARD.playLetter(' ');
                     this.render(previous);
                 }
             }
@@ -681,10 +671,10 @@ public class PlayActivity extends ShortyzActivity {
 
             if ((System.currentTimeMillis() - lastKey) > 150) {
                 if (prefs.getBoolean("enterChangesDirection", true)) {
-                    previous = PlayActivity.BOARD.toggleDirection();
+                    previous = BOARD.toggleDirection();
                     this.render(previous);
                 } else {
-                    previous = PlayActivity.BOARD.nextWord();
+                    previous = BOARD.nextWord();
                     this.render(previous);
                 }
 
@@ -696,7 +686,7 @@ public class PlayActivity extends ShortyzActivity {
         case KeyEvent.KEYCODE_DEL:
 
             if ((System.currentTimeMillis() - lastKey) > 150) {
-                previous = PlayActivity.BOARD.deleteLetter();
+                previous = BOARD.deleteLetter();
                 this.render(previous);
             }
 
@@ -709,7 +699,7 @@ public class PlayActivity extends ShortyzActivity {
                 this.useNativeKeyboard) ? event.getDisplayLabel() : ((char) keyCode));
 
         if (ALPHA.indexOf(c) != -1) {
-            previous = PlayActivity.BOARD.playLetter(c);
+            previous = BOARD.playLetter(c);
             this.render(previous);
 
             return true;
@@ -724,13 +714,13 @@ public class PlayActivity extends ShortyzActivity {
 
         if (item.getTitle()
                     .equals("Letter")) {
-            PlayActivity.BOARD.revealLetter();
+            BOARD.revealLetter();
             this.render();
 
             return true;
         } else if (item.getTitle()
                            .equals("Word")) {
-            PlayActivity.BOARD.revealWord();
+            BOARD.revealWord();
             this.render();
 
             return true;
@@ -742,8 +732,8 @@ public class PlayActivity extends ShortyzActivity {
         } else if (item.getTitle()
                            .equals("Show Errors") || item.getTitle()
                                                              .equals("Hide Errors")) {
-            PlayActivity.BOARD.toggleShowErrors();
-            item.setTitle(PlayActivity.BOARD.isShowErrors() ? "Hide Errors" : "Show Errors");
+            BOARD.toggleShowErrors();
+            item.setTitle(BOARD.isShowErrors() ? "Hide Errors" : "Show Errors");
             this.prefs.edit()
                       .putBoolean("showErrors", BOARD.isShowErrors())
                       .commit();
@@ -857,9 +847,6 @@ public class PlayActivity extends ShortyzActivity {
             // This is weird. I don't know why a rotate resets the dialog.
             // Whatevs.
             return createInfoDialog();
-
-        case COMPLETE_DIALOG:
-            return completeDialog;
 
         case REVEAL_PUZZLE_DIALOG:
             return revealPuzzleDialog;
@@ -1044,11 +1031,11 @@ public class PlayActivity extends ShortyzActivity {
             this.keyboardView.setVisibility(View.GONE);
         }
 
-        Clue c = PlayActivity.BOARD.getClue();
+        Clue c = BOARD.getClue();
 
         if (c.hint == null) {
-            PlayActivity.BOARD.toggleDirection();
-            c = PlayActivity.BOARD.getClue();
+            BOARD.toggleDirection();
+            c = BOARD.getClue();
         }
 
         this.boardView.setBitmap(RENDERER.draw(previous), rescale);
@@ -1063,15 +1050,15 @@ public class PlayActivity extends ShortyzActivity {
             Point bottomRight;
             Point cursorTopLeft;
             Point cursorBottomRight;
-            cursorTopLeft = RENDERER.findPointTopLeft(PlayActivity.BOARD.getHighlightLetter());
-            cursorBottomRight = RENDERER.findPointBottomRight(PlayActivity.BOARD.getHighlightLetter());
+            cursorTopLeft = RENDERER.findPointTopLeft(BOARD.getHighlightLetter());
+            cursorBottomRight = RENDERER.findPointBottomRight(BOARD.getHighlightLetter());
 
-            if ((previous != null) && previous.equals(PlayActivity.BOARD.getCurrentWord())) {
+            if ((previous != null) && previous.equals(BOARD.getCurrentWord())) {
                 topLeft = cursorTopLeft;
                 bottomRight = cursorBottomRight;
             } else {
-                topLeft = RENDERER.findPointTopLeft(PlayActivity.BOARD.getCurrentWordStart());
-                bottomRight = RENDERER.findPointBottomRight(PlayActivity.BOARD.getCurrentWordStart());
+                topLeft = RENDERER.findPointTopLeft(BOARD.getCurrentWordStart());
+                bottomRight = RENDERER.findPointBottomRight(BOARD.getCurrentWordStart());
             }
 
             int tlDistance = cursorTopLeft.distance(topLeft);
@@ -1090,17 +1077,10 @@ public class PlayActivity extends ShortyzActivity {
             this.boardView.ensureVisible(cursorTopLeft);
         }
 
-        this.clue.setText("(" + (PlayActivity.BOARD.isAcross() ? "across" : "down") + ") " + c.number + ". " + c.hint +
-            (this.showCount ? ("  [" + PlayActivity.BOARD.getCurrentWord().length + "]") : ""));
+        this.clue.setText("(" + (BOARD.isAcross() ? "across" : "down") + ") " + c.number + ". " + c.hint +
+            (this.showCount ? ("  [" + BOARD.getCurrentWord().length + "]") : ""));
 
-        if ((puz.getPercentComplete() == 100) && (timer != null)) {
-            timer.stop();
-            puz.setTime(timer.getElapsed());
-            this.completeDialog.setMessage("Completed in " + timer.time());
-            this.showDialog(COMPLETE_DIALOG);
-            this.timer = null;
-        }
-
+        
         if (this.downAdapter != null) {
             this.downAdapter.setHighlightClue(c);
             this.downAdapter.setActiveDirection(!BOARD.isAcross());
@@ -1132,5 +1112,15 @@ public class PlayActivity extends ShortyzActivity {
                 }
             }
         }
+        
+        if ((puz.getPercentComplete() == 100) && (timer != null)) {
+            timer.stop();
+            puz.setTime(timer.getElapsed());
+            this.timer = null;
+            Intent i = new Intent(PlayActivity.this, PuzzleFinishedActivity.class);
+            this.startActivity(i);
+            
+        }
+
     }
 }

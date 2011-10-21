@@ -1,31 +1,25 @@
 package com.totsp.crossword;
 
-import android.content.Context;
-
-import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
-
-import android.webkit.CookieManager;
-import android.webkit.DownloadListener;
-import android.webkit.URLUtil;
-
-import android.widget.Toast;
-
-import com.totsp.crossword.net.Downloaders;
-import com.totsp.crossword.puz.PuzzleMeta;
-import com.totsp.crossword.puz.PuzzleMeta;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.net.URL;
 import java.net.URLConnection;
-
 import java.util.Date;
+
+import android.content.Context;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.webkit.CookieManager;
+import android.webkit.DownloadListener;
+import android.webkit.URLUtil;
+import android.widget.Toast;
+
+import com.totsp.crossword.net.Downloaders;
+import com.totsp.crossword.puz.PuzzleMeta;
 
 
 /**
@@ -105,11 +99,9 @@ public class PuzzleDownloadListener implements DownloadListener {
             FileOutputStream fout = new FileOutputStream(outputFile);
             byte[] buffer = new byte[1024];
             int len = 0;
-            int totallen = 0;
-
+            
             while ((len = in.read(buffer)) != -1) {
                 fout.write(buffer, 0, len);
-                totallen += len;
             }
 
             fout.flush();

@@ -16,7 +16,8 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
+
+import com.totsp.crossword.PuzzleFinishedActivity;
 
 
 public class HoneycombUtil extends GingerbreadUtil {
@@ -38,8 +39,11 @@ public class HoneycombUtil extends GingerbreadUtil {
     public void holographic(Activity a) {
         ActionBar bar = a.getActionBar();
         Theme current = a.getTheme();
-        a.setTheme(android.R.style.Theme_Holo);
-
+        if(a instanceof PuzzleFinishedActivity){
+        	a.setTheme(android.R.style.Theme_Holo_Dialog);
+        } else {
+        	a.setTheme(android.R.style.Theme_Holo);
+        }
         Theme changed = a.getTheme();
                 if (bar != null) {
             bar.setDisplayHomeAsUpEnabled(true);

@@ -1,25 +1,22 @@
 package com.totsp.crossword;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+
 import android.content.Context;
-
 import android.graphics.Color;
-
 import android.util.TypedValue;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.totsp.crossword.puz.Box;
 import com.totsp.crossword.puz.Playboard.Clue;
 import com.totsp.crossword.shortyz.R;
-
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
+import com.totsp.crossword.shortyz.ShortyzApplication;
 
 
 public class ClueListAdapter extends BaseAdapter {
@@ -78,7 +75,7 @@ public class ClueListAdapter extends BaseAdapter {
         Box[] boxes = this.cache.get(c.number);
 
         if (boxes == null) {
-            boxes = PlayActivity.BOARD.getWordBoxes(c.number, across);
+            boxes = ShortyzApplication.BOARD.getWordBoxes(c.number, across);
             cache.put(c.number, boxes);
         }
 
@@ -97,9 +94,9 @@ public class ClueListAdapter extends BaseAdapter {
         word.setText(sb);
 
         if (this.isActive && c.equals(this.highlightClue)) {
-            view.setBackgroundColor(this.highlight);
+            view.setBackgroundColor(highlight);
         } else {
-            view.setBackgroundColor(this.transparent);
+            view.setBackgroundColor(transparent);
         }
 
         return view;
