@@ -20,7 +20,6 @@ import com.totsp.crossword.view.PlayboardRenderer;
 
 public class ShortyzApplication extends Application {
 
-	public static final boolean DEBUG = false;
 	public static File DEBUG_DIR;
 	public static File CROSSWORDS = new File(
 			Environment.getExternalStorageDirectory(), "crosswords");
@@ -32,11 +31,15 @@ public class ShortyzApplication extends Application {
 		if (Environment.MEDIA_MOUNTED.equals(Environment
 				.getExternalStorageState())) {
 			IO.TEMP_FOLDER = new File(CROSSWORDS, "temp");
-			IO.TEMP_FOLDER.mkdirs();
-		}
-		if (DEBUG) {
+			if(!IO.TEMP_FOLDER.mkdirs()){
+				System.out.println("temp folder failed.");
+				return;
+			}
 			DEBUG_DIR = new File(CROSSWORDS, "debug");
-			DEBUG_DIR.mkdirs();
+			if(!DEBUG_DIR.mkdirs()){
+				System.out.println("debug folder failed");
+				return;
+			}
 			File info = new File(DEBUG_DIR, "device");
 			try {
 				PrintWriter writer = new PrintWriter(new FileWriter(info));
@@ -46,17 +49,18 @@ public class ShortyzApplication extends Application {
 						+ android.os.Build.VERSION.SDK);
 				writer.println("VERSION RELEASE: "
 						+ android.os.Build.VERSION.RELEASE);
+				writer.println("MODEL: " + android.os.Build.DEVICE);
+				writer.println("DISPLAY: " + android.os.Build.DISPLAY);
+				writer.println("MANUFACTURER: " + android.os.Build.MANUFACTURER);
 				writer.close();
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
-
-		}
+		} 
 	}
-	
-	
+
 	public static Playboard BOARD;
-    public static PlayboardRenderer RENDERER;
+	public static PlayboardRenderer RENDERER;
 
 	public static Intent sendDebug() {
 		File zip = new File(CROSSWORDS, "debug.stz");
@@ -112,17 +116,46 @@ public class ShortyzApplication extends Application {
 			e.printStackTrace();
 		}
 	}
+	
+	public static boolean isLandscape(DisplayMetrics metrics){
+		return metrics.widthPixels > metrics.heightPixels;
+	}
 
 	public static boolean isTabletish(DisplayMetrics metrics) {
 		switch (android.os.Build.VERSION.SDK_INT) {
 		case 12:
 		case 11:
 		case 13:
-			return true;
 		case 14:
-			int pixels = metrics.heightPixels > metrics.widthPixels ? metrics.heightPixels : metrics.widthPixels;
-			float dpi = metrics.xdpi > metrics.ydpi ? metrics.xdpi : metrics.ydpi;
-			if(pixels / dpi > 5){ // look for a 5" or larger screen.
+		case 15:
+		case 16:
+			double x = Math.pow(metrics.widthPixels/metrics.xdpi,2);
+		    double y = Math.pow(metrics.heightPixels/metrics.ydpi,2);
+		    double screenInches = Math.sqrt(x+y);
+			System.out.println("SCREEN SIZE: "+(screenInches));
+			if (screenInches > 9) { // look for a 9" or larger screen.
+				return true;
+			} else {
+				return false;
+			}
+		default:
+			return false;
+		}
+	}
+	
+	public static boolean isMiniTabletish(DisplayMetrics metrics) {
+		switch (android.os.Build.VERSION.SDK_INT) {
+		case 12:
+		case 11:
+		case 13:
+		case 14:
+		case 15:
+		case 16:
+			double x = Math.pow(metrics.widthPixels/metrics.xdpi,2);
+		    double y = Math.pow(metrics.heightPixels/metrics.ydpi,2);
+		    double screenInches = Math.sqrt(x+y);
+			System.out.println("SCREEN SIZE: "+(screenInches));
+			if (screenInches > 5.5 && screenInches <= 9) {
 				return true;
 			} else {
 				return false;

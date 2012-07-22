@@ -1,21 +1,18 @@
 package com.totsp.crossword.net;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-
 import android.net.Uri;
 
 import com.totsp.crossword.PlayActivity;
-
-import java.io.File;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class Scrapers {

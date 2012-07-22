@@ -2,12 +2,12 @@ package com.totsp.crossword.net;
 
 import java.util.HashMap;
 
-import com.totsp.crossword.puz.PuzzleMeta;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+
+import com.totsp.crossword.puz.PuzzleMeta;
 
 public class DownloadReceiver extends BroadcastReceiver {
 	

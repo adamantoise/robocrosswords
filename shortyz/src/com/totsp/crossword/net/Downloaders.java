@@ -1,8 +1,6 @@
 package com.totsp.crossword.net;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,8 +11,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -30,13 +26,11 @@ import com.totsp.crossword.PlayActivity;
 import com.totsp.crossword.io.IO;
 import com.totsp.crossword.puz.Puzzle;
 import com.totsp.crossword.puz.PuzzleMeta;
-import com.totsp.crossword.shortyz.ShortyzApplication;
 
 public class Downloaders {
 	private static final Logger LOG = Logger.getLogger("com.totsp.crossword");
 	private Context context;
 	private List<Downloader> downloaders = new LinkedList<Downloader>();
-	private NYTDownloader nyt = null;
 	private NotificationManager notificationManager;
 	private boolean supressMessages;
 
@@ -77,7 +71,8 @@ public class Downloaders {
 		}
 
 		if (prefs.getBoolean("downloadLat", true)) {
-			downloaders.add(new UclickDownloader("tmcal", "Los Angeles Times", "Rich Norris", Downloader.DATE_NO_SUNDAY));
+//			downloaders.add(new UclickDownloader("tmcal", "Los Angeles Times", "Rich Norris", Downloader.DATE_NO_SUNDAY));
+			downloaders.add(new LATimesDownloader());
 		}
 
 		if (prefs.getBoolean("downloadAvClub", true)) {
@@ -135,7 +130,7 @@ public class Downloaders {
 		
 		
 		if (prefs.getBoolean("downloadNYT", false)) {
-			downloaders.add(nyt = new NYTDownloader(context, prefs.getString(
+			downloaders.add(new NYTDownloader(context, prefs.getString(
 					"nytUsername", ""), prefs.getString("nytPassword", "")));
 		}
 
@@ -182,7 +177,6 @@ public class Downloaders {
         Notification not = new Notification(android.R.drawable.stat_sys_download, contentTitle,
                 System.currentTimeMillis());
         boolean somethingDownloaded = false;
-        boolean somethingHappened = false;
         File crosswords = new File(Environment.getExternalStorageDirectory(), "crosswords/");
         File archive = new File(Environment.getExternalStorageDirectory(), "crosswords/archive/");
         crosswords.mkdirs();
@@ -232,8 +226,7 @@ public class Downloaders {
                 }
 
                 if (downloaded != null) {
-                	somethingHappened = true;
-                    boolean updatable = false;
+                	boolean updatable = false;
 
                     //                    if (d instanceof NYTDownloader &&
                     //                            (date.getTime() >= now.getTimeInMillis())) {
@@ -294,7 +287,7 @@ public class Downloaders {
 
             for (File file : checkUpdate) {
                 try {
-                    PuzzleMeta meta = IO.meta(file);
+                    IO.meta(file);
 
                     //                    if ((meta != null) && meta.updateable && (nyt != null) &&
                     //                            nyt.getName().equals(meta.source)) {
@@ -331,6 +324,9 @@ public class Downloaders {
 					+ (meta != null));
 
 			Puzzle puz = IO.load(downloaded);
+			if(puz == null){
+				return false;
+			}
 			puz.setDate(meta.date);
 			puz.setSource(meta.source);
 			puz.setSourceUrl(meta.sourceUrl);
@@ -385,22 +381,22 @@ public class Downloaders {
 		}
 	}
 
-	private void postUpdatedNotification(int i, String name, File puzFile) {
-		String contentTitle = "Updated " + name;
-		Notification not = new Notification(
-				android.R.drawable.stat_sys_download_done, contentTitle,
-				System.currentTimeMillis());
-		Intent notificationIntent = new Intent(Intent.ACTION_EDIT,
-				Uri.fromFile(puzFile), context, PlayActivity.class);
-		PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-				notificationIntent, 0);
-		not.setLatestEventInfo(context, contentTitle, puzFile.getName(),
-				contentIntent);
-
-		if ((this.notificationManager != null) && !supressMessages) {
-			this.notificationManager.notify(i, not);
-		}
-	}
+//	private void postUpdatedNotification(int i, String name, File puzFile) {
+//		String contentTitle = "Updated " + name;
+//		Notification not = new Notification(
+//				android.R.drawable.stat_sys_download_done, contentTitle,
+//				System.currentTimeMillis());
+//		Intent notificationIntent = new Intent(Intent.ACTION_EDIT,
+//				Uri.fromFile(puzFile), context, PlayActivity.class);
+//		PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
+//				notificationIntent, 0);
+//		not.setLatestEventInfo(context, contentTitle, puzFile.getName(),
+//				contentIntent);
+//
+//		if ((this.notificationManager != null) && !supressMessages) {
+//			this.notificationManager.notify(i, not);
+//		}
+//	}
 
 	
 }

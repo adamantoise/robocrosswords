@@ -1,18 +1,14 @@
 package com.totsp.crossword;
 
 import android.content.Intent;
-
 import android.net.Uri;
-
 import android.os.Bundle;
-
 import android.preference.Preference;
-
 import android.preference.Preference.OnPreferenceClickListener;
-
 import android.preference.PreferenceActivity;
 
 import com.totsp.crossword.shortyz.R;
+import com.totsp.crossword.shortyz.ShortyzApplication;
 
 
 public class PreferencesActivity extends PreferenceActivity {
@@ -62,5 +58,15 @@ public class PreferencesActivity extends PreferenceActivity {
                     return true;
                 }
             });
+        
+        Preference sendDebug = (Preference) findPreference("sendDebug");
+        sendDebug.setOnPreferenceClickListener(new OnPreferenceClickListener(){
+
+			public boolean onPreferenceClick(Preference preference) {
+				startActivity(ShortyzApplication.sendDebug());
+				return true;
+			}
+        	
+        });
     }
 }

@@ -1,9 +1,7 @@
 package com.totsp.crossword.net;
 
 import java.io.File;
-
 import java.text.NumberFormat;
-
 import java.util.Date;
 import java.util.HashMap;
 
@@ -13,11 +11,11 @@ import java.util.HashMap;
  * URL: http://www.cruciverb.com/puzzles/lat/latYYMMDD.puz
  * Date = Daily
  */
-public class LATDownloader extends AbstractDownloader {
+public class OldLATDownloader extends AbstractDownloader {
     public static final String NAME = "Los Angeles Times";
     NumberFormat nf = NumberFormat.getInstance();
 
-    protected LATDownloader() {
+    protected OldLATDownloader() {
         super("http://www.cruciverb.com/puzzles/lat/", DOWNLOAD_DIR, NAME);
         nf.setMinimumIntegerDigits(2);
         nf.setMaximumFractionDigits(0);
@@ -28,7 +26,7 @@ public class LATDownloader extends AbstractDownloader {
     }
 
     public String getName() {
-        return LATDownloader.NAME;
+        return OldLATDownloader.NAME;
     }
 
     public File download(Date date) {

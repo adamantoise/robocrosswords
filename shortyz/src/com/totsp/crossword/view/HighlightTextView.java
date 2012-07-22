@@ -1,20 +1,14 @@
 package com.totsp.crossword.view;
 
 import android.content.Context;
-
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-
 import android.graphics.Paint.Style;
-
 import android.graphics.Path;
-
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-
 import android.view.WindowManager;
-
 import android.widget.TextView;
 
 
@@ -48,7 +42,6 @@ public class HighlightTextView extends TextView {
         int center = height / 2;
         int topBreak = center - (int) (metrics.density * 10F);
         int bottomBreak = center + (int) (metrics.density * 10F);
-        float stroke = metrics.density * 3;
         Path p = new Path();
         p.moveTo(width, 0F);
         p.lineTo(width, topBreak);

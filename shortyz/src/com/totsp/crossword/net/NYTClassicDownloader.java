@@ -1,7 +1,6 @@
 package com.totsp.crossword.net;
 
 import java.io.File;
-
 import java.util.Calendar;
 import java.util.Date;
 

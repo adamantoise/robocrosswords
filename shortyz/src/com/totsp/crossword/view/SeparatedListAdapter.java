@@ -1,23 +1,21 @@
 package com.totsp.crossword.view;
 
-import android.content.Context;
+import java.util.ArrayList;
 
+import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 
 import com.totsp.crossword.shortyz.R;
 
-import java.util.ArrayList;
-
 
 public class SeparatedListAdapter extends BaseAdapter {
     private static final int TYPE_SECTION_HEADER = 0;
     private final ArrayAdapter<String> headers;
-    private final ArrayList<Adapter> sections = new ArrayList<Adapter>();
+    public final ArrayList<Adapter> sections = new ArrayList<Adapter>();
 
     public SeparatedListAdapter(Context context) {
         headers = new ArrayAdapter<String>(context, R.layout.puzzle_list_header);

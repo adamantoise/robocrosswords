@@ -1,27 +1,25 @@
 package com.totsp.crossword;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-
 import android.content.Context;
 import android.content.DialogInterface;
-
 import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface.OnShowListener;
-
 import android.content.Intent;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
-
 import android.widget.DatePicker.OnDateChangedListener;
-
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -30,12 +28,6 @@ import com.totsp.crossword.net.Downloader;
 import com.totsp.crossword.net.Downloaders;
 import com.totsp.crossword.net.DummyDownloader;
 import com.totsp.crossword.shortyz.R;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
-import java.util.Date;
-import java.util.List;
 
 
 /**

@@ -1,22 +1,19 @@
 package com.totsp.crossword.net;
 
-import com.totsp.crossword.io.KingFeaturesPlaintextIO;
-import com.totsp.crossword.versions.DefaultUtil;
-
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.net.URL;
-
 import java.text.DateFormat;
 import java.text.NumberFormat;
-
 import java.util.Date;
 import java.util.logging.Level;
+
+import com.totsp.crossword.io.KingFeaturesPlaintextIO;
+import com.totsp.crossword.versions.DefaultUtil;
 
 
 /**
@@ -99,6 +96,7 @@ public class KFSDownloader extends AbstractDownloader {
 
         try {
             URL url = new URL(this.baseUrl + this.createUrlSuffix(date));
+            LOG.log(Level.INFO, this.fullName +" "+url.toExternalForm());
             util.downloadFile(url, downloaded, EMPTY_MAP, false, null);
         } catch (Exception e) {
             e.printStackTrace();
@@ -115,11 +113,11 @@ public class KFSDownloader extends AbstractDownloader {
         System.out.println("DownloadedKFS: " + downloaded);
 
         try {
-            File tmpFile = File.createTempFile("kfs-temp", "txt");
+            File tmpFile =  new File(this.tempFolder, "kfs-temp"+System.currentTimeMillis()+".txt"); //File.createTempFile("kfs-temp", "txt");
             downloaded.renameTo(tmpFile);
 
             return tmpFile;
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOG.log(Level.SEVERE, "Unable to move KFS file to temporary location.");
 
             return null;

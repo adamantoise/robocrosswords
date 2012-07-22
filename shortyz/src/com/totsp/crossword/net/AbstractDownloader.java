@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Date;
@@ -24,16 +23,20 @@ public abstract class AbstractDownloader implements Downloader {
     protected static final Logger LOG = Logger.getLogger("com.totsp.crossword");
     public static File DOWNLOAD_DIR = ShortyzApplication.CROSSWORDS;
     public static final int DEFAULT_BUFFER_SIZE = 1024;
-    protected static final Map<String, String> EMPTY_MAP = Collections.EMPTY_MAP;
+    @SuppressWarnings("unchecked")
+	protected static final Map<String, String> EMPTY_MAP = Collections.EMPTY_MAP;
     protected File downloadDirectory;
     protected String baseUrl;
     protected final AndroidVersionUtils utils = AndroidVersionUtils.Factory.getInstance();
     private String downloaderName;
+    protected File tempFolder;
 
     protected AbstractDownloader(String baseUrl, File downloadDirectory, String downloaderName) {
         this.baseUrl = baseUrl;
         this.downloadDirectory = downloadDirectory;
         this.downloaderName = downloaderName;
+        this.tempFolder = new File(downloadDirectory, "temp");
+        this.tempFolder.mkdirs();
     }
 
     public void setContext(Context ctx) {
@@ -121,8 +124,6 @@ public abstract class AbstractDownloader implements Downloader {
             	new DefaultUtil().downloadFile(url, f, headers, true, this.getName());
             	return f;
             }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

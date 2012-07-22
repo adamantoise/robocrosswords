@@ -5,27 +5,37 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.app.DownloadManager.Request;
 import android.content.Context;
-import android.content.res.Resources.Theme;
 import android.net.Uri;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 
 import com.totsp.crossword.PuzzleFinishedActivity;
 
 
+@TargetApi(11)
 public class HoneycombUtil extends GingerbreadUtil {
+	
+	{
+		System.out.println("Honeycomb Utils.");
+	}
+	
 	@Override
     public void finishOnHomeButton(final Activity a) {
 		ActionBar bar = a.getActionBar();
+		if(bar == null){
+			return;
+		}
 		bar.setDisplayHomeAsUpEnabled(true);
-        View home = a.findViewById(android.R.id.home);
+		View home = a.findViewById(android.R.id.home);
         if(home != null){
 	        home.setOnClickListener(new OnClickListener() {
 	                public void onClick(View arg0) {
@@ -35,17 +45,16 @@ public class HoneycombUtil extends GingerbreadUtil {
         }
     }
 
-    @Override
+    @TargetApi(11)
+	@Override
     public void holographic(Activity a) {
-        ActionBar bar = a.getActionBar();
-        Theme current = a.getTheme();
         if(a instanceof PuzzleFinishedActivity){
         	a.setTheme(android.R.style.Theme_Holo_Dialog);
         } else {
         	a.setTheme(android.R.style.Theme_Holo);
         }
-        Theme changed = a.getTheme();
-                if (bar != null) {
+        ActionBar bar = a.getActionBar();
+        if (bar != null) {
             bar.setDisplayHomeAsUpEnabled(true);
         }
     }
@@ -85,12 +94,27 @@ public class HoneycombUtil extends GingerbreadUtil {
     public View onActionBarCustom(Activity a, int id) {
     	System.out.println("Setting custom ActionBar view");
     	ActionBar bar = a.getActionBar();
+    	if(bar == null){
+    		return null;
+    	}
     	bar.setDisplayShowCustomEnabled(true);
     	bar.setDisplayShowTitleEnabled(false);
     	bar.setDisplayShowHomeEnabled(true);
     	bar.setCustomView(id);
     	System.out.println(bar.getCustomView());
     	return bar.getCustomView();
+	}
+    
+    public void hideWindowTitle(Activity a) {
+    	// no op;
+    }
+
+	public void hideActionBar(Activity a) {
+		ActionBar ab = a.getActionBar();
+		if(ab == null){
+			return;
+		}
+		ab.hide();
 	}
     
 }

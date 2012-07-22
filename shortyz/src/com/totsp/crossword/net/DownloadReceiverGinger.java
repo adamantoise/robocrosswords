@@ -2,9 +2,6 @@ package com.totsp.crossword.net;
 
 import java.io.File;
 import java.net.URI;
-import java.util.HashMap;
-
-import com.totsp.crossword.puz.PuzzleMeta;
 
 import android.app.DownloadManager;
 import android.app.DownloadManager.Query;

@@ -1,10 +1,9 @@
 package com.totsp.crossword;
 
-import com.totsp.crossword.puz.PuzzleMeta;
-
 import java.io.File;
-
 import java.util.Date;
+
+import com.totsp.crossword.puz.PuzzleMeta;
 
 
 public class FileHandle implements Comparable<FileHandle> {

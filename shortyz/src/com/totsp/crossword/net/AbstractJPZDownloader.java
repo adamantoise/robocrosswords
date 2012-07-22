@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.Map;
@@ -26,18 +25,14 @@ public abstract class AbstractJPZDownloader extends AbstractDownloader {
 	
 	
 	protected File download(Date date, String urlSuffix, Map<String, String> headers) {
-		System.out.println("In JPZ Download");
 		File jpzFile = download(date, urlSuffix, headers, false);
 		File puzFile = new File(downloadDirectory, this.createFileName(date));
-		System.out.println("JPZ "+jpzFile);
-		System.out.println("Puz"+puzFile);
 		try {
 			FileInputStream is = new FileInputStream(jpzFile);
 	        DataOutputStream dos = new DataOutputStream(new FileOutputStream(puzFile));
 			JPZIO.convertJPZPuzzle(is, dos , date);
 			dos.close();
 			jpzFile.delete();
-			System.out.println("Downloaded "+jpzFile +" to "+puzFile);
 			return puzFile;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -80,8 +75,6 @@ public abstract class AbstractJPZDownloader extends AbstractDownloader {
             	new DefaultUtil().downloadFile(url, f, headers, true, this.getName());
             	return f;
             }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

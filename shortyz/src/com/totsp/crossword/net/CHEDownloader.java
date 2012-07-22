@@ -1,9 +1,7 @@
 package com.totsp.crossword.net;
 
 import java.io.File;
-
 import java.text.NumberFormat;
-
 import java.util.Date;
 
 

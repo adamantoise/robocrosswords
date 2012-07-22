@@ -165,9 +165,6 @@ public class BrowseActivity extends ShortyzActivity implements OnItemClickListen
             .setIcon(android.R.drawable.ic_menu_help);
         menu.add("Settings")
             .setIcon(android.R.drawable.ic_menu_preferences);
-        if(ShortyzApplication.DEBUG){
-        	menu.add("Send Debug Package");
-        }
         return true;
     }
 
@@ -290,9 +287,9 @@ public class BrowseActivity extends ShortyzActivity implements OnItemClickListen
             this.startActivity(i);
 
             return;
-        } else if (prefs.getBoolean("release_3.1.0", true)) {
+        } else if (prefs.getBoolean("release_3.2.1", true)) {
             Editor e = prefs.edit();
-            e.putBoolean("release_3.1.0", false);
+            e.putBoolean("release_3.2.1", false);
             e.commit();
 
             Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/release.html"), this,
@@ -389,6 +386,7 @@ public class BrowseActivity extends ShortyzActivity implements OnItemClickListen
 
             return new SeparatedListAdapter(this);
         }
+        
 
         String sourceMatch = null;
 

@@ -1,23 +1,19 @@
 package com.totsp.crossword.net;
 
-import com.totsp.crossword.io.UclickXMLIO;
-import static com.totsp.crossword.net.AbstractDownloader.EMPTY_MAP;
-import com.totsp.crossword.versions.DefaultUtil;
-
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.net.URL;
-
 import java.text.DateFormat;
 import java.text.NumberFormat;
-
 import java.util.Date;
 import java.util.logging.Level;
+
+import com.totsp.crossword.io.UclickXMLIO;
+import com.totsp.crossword.versions.DefaultUtil;
 
 
 /**
@@ -68,8 +64,9 @@ public class UclickDownloader extends AbstractDownloader {
         }
 
         try {
+        	LOG.log(Level.INFO, "TMP FILE "+plainText.getAbsolutePath());
             InputStream is = new FileInputStream(plainText);
-            DataOutputStream os = new DataOutputStream(new FileOutputStream(downloadTo));
+            DataOutputStream os = new DataOutputStream(new FileOutputStream(downloadTo));   
             boolean retVal = UclickXMLIO.convertUclickPuzzle(is, os,
                     "\u00a9 " + (date.getYear() + 1900) + " " + copyright, date);
             os.close();
@@ -102,6 +99,7 @@ public class UclickDownloader extends AbstractDownloader {
 
         try {
             URL url = new URL(this.baseUrl + this.createUrlSuffix(date));
+            LOG.log(Level.INFO, this.fullName+" "+url.toExternalForm());
             util.downloadFile(url, f, EMPTY_MAP, false, null);
         } catch (Exception e) {
             e.printStackTrace();
@@ -115,11 +113,12 @@ public class UclickDownloader extends AbstractDownloader {
         }
 
         try {
-            File tmpFile = File.createTempFile("uclick-temp", "xml");
+        	
+            File tmpFile = new File(this.tempFolder, "uclick-temp"+System.currentTimeMillis()+".xml");
             f.renameTo(tmpFile);
 
             return tmpFile;
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOG.log(Level.SEVERE, "Unable to move uclick XML file to temporary location.");
 
             return null;

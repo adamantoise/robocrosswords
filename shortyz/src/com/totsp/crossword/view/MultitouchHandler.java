@@ -2,7 +2,6 @@ package com.totsp.crossword.view;
 
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
-
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
 
 import com.totsp.crossword.view.ScrollingImageView.AuxTouchHandler;

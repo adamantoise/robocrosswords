@@ -12,6 +12,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.view.MenuItem;
 import android.view.SubMenu;
+import android.view.Window;
 
 import com.totsp.crossword.net.DownloadReceiver;
 import com.totsp.crossword.puz.PuzzleMeta;
@@ -59,5 +60,13 @@ public class GingerbreadUtil extends DefaultUtil {
 	public void storeMetas(Uri uri, PuzzleMeta meta) {
 		DownloadReceiver.metas.put(uri, meta);
 		
+	}
+	
+	public void hideWindowTitle(Activity a) {
+		a.requestWindowFeature(Window.FEATURE_NO_TITLE);
+	}
+
+	public void hideActionBar(Activity a) {
+		; //no op;
 	}
 }

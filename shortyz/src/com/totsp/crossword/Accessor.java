@@ -1,7 +1,6 @@
 package com.totsp.crossword;
 
 import java.text.SimpleDateFormat;
-
 import java.util.Comparator;
 
 

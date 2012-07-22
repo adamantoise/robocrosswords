@@ -189,6 +189,13 @@
 	/>
 	
 	<CheckBoxPreference
+		android:title="No Hint Highlighting"
+		android:defaultValue="false"
+		android:summary="Prevents the pink boxes indicating 'hints' in the form of reveals or show errors."
+		android:key="supressHints"
+	/>
+	
+	<CheckBoxPreference
 		android:title="Delete on Cleanup"
 		android:defaultValue="false"
 		android:summary="Delete rather than archive old puzzles"
@@ -315,6 +322,10 @@
 	<Preference
 	 	android:title="License" 
 	 	android:key="license"/>
+	 	
+	 <Preference
+	 	android:title="Send Debug Package" 
+	 	android:key="sendDebug"/>
  	
 	</PreferenceCategory>
 </PreferenceScreen>

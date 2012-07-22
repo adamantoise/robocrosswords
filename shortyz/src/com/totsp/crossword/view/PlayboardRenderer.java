@@ -1,13 +1,13 @@
 package com.totsp.crossword.view;
 
+import java.util.logging.Logger;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
-
 import android.graphics.Rect;
 import android.graphics.Typeface;
 
@@ -16,8 +16,6 @@ import com.totsp.crossword.puz.Playboard;
 import com.totsp.crossword.puz.Playboard.Position;
 import com.totsp.crossword.puz.Playboard.Word;
 import com.totsp.crossword.view.ScrollingImageView.Point;
-
-import java.util.logging.Logger;
 
 
 public class PlayboardRenderer {
@@ -38,11 +36,13 @@ public class PlayboardRenderer {
     private Playboard board;
     private float logicalDensity;
     private float scale = 1.0F;
+    private boolean hintHighlight;
 
-    public PlayboardRenderer(Playboard board, float logicalDensity) {
+    public PlayboardRenderer(Playboard board, float logicalDensity, boolean hintHighlight) {
         this.scale = scale * logicalDensity;
         this.logicalDensity = logicalDensity;
         this.board = board;
+        this.hintHighlight = hintHighlight;
         blackLine.setColor(Color.BLACK);
         blackLine.setStrokeWidth(2.0F);
 
@@ -121,8 +121,6 @@ public class PlayboardRenderer {
             } else if (scale == Float.NaN) {
                 scale = 1.0f * this.logicalDensity;
             }
-
-            System.out.println("----" + scale);
 
             if (bitmap == null) {
                 LOG.warning("New bitmap");
@@ -267,7 +265,7 @@ public class PlayboardRenderer {
                 canvas.drawRect(r, this.currentLetterHighlight);
             } else if ((currentWord != null) && currentWord.checkInWord(col, row)) {
                 canvas.drawRect(r, this.currentWordHighlight);
-            } else if (box.isCheated()) {
+            } else if (this.hintHighlight && box.isCheated() && !(board.isShowErrors() && box.getResponse() != box.getSolution())) {
                 canvas.drawRect(r, this.cheated);
             } else if (this.board.isShowErrors() && (box.getResponse() != ' ') &&
                     (box.getSolution() != box.getResponse())) {

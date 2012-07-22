@@ -67,10 +67,10 @@ public class PuzzleFinishedActivity extends ShortyzActivity{
         final String shareMessage;
         if(puz.getSource() != null && puz.getDate() != null){
         	shareMessage = "I finished the "+puz.getSource()+" crossword for "+ date.format(puz.getDate()) +" in "+
-        		elapsedString +(cheatedBoxes > 0 ? " but cheated "+cheatedBoxes+ " boxes" : "")+" in Shortyz!";
+        		elapsedString +(cheatedBoxes > 0 ? " but got "+cheatedBoxes+ " hints" : "")+" in #Shortyz!";
         } else {
         	shareMessage = "I finished "+puz.getSource()+" in "+
-            		elapsedString +(cheatedBoxes > 0 ? "but cheated "+cheatedBoxes : "")+" with Shortyz!";
+            		elapsedString +(cheatedBoxes > 0 ? "but got "+cheatedBoxes +" hints" : "")+" with #Shortyz!";
         }
         
         TextView elapsedTime = (TextView) this.findViewById(R.id.elapsed);
