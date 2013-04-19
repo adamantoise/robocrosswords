@@ -1,4 +1,4 @@
-package com.totsp.crossword;
+package com.adamrosenfield.wordswithcrosses;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.totsp.crossword.shortyz.R;
+import com.adamrosenfield.wordswithcrosses.shortyz.R;
 
 
 public class SourceListAdapter extends BaseAdapter {

@@ -1,4 +1,4 @@
-package com.totsp.crossword.net;
+package com.adamrosenfield.wordswithcrosses.net;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -14,8 +14,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.totsp.crossword.io.IO;
-import com.totsp.crossword.puz.Puzzle;
+import com.adamrosenfield.wordswithcrosses.io.IO;
+import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 
 public class AbstractPageScraper {
 	private static final String REGEX = "http://[^ ^']*\\.puz";

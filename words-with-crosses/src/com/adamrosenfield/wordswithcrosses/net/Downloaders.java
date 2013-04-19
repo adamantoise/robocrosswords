@@ -1,4 +1,4 @@
-package com.totsp.crossword.net;
+package com.adamrosenfield.wordswithcrosses.net;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,14 +21,14 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Environment;
 
-import com.totsp.crossword.BrowseActivity;
-import com.totsp.crossword.PlayActivity;
-import com.totsp.crossword.io.IO;
-import com.totsp.crossword.puz.Puzzle;
-import com.totsp.crossword.puz.PuzzleMeta;
+import com.adamrosenfield.wordswithcrosses.BrowseActivity;
+import com.adamrosenfield.wordswithcrosses.PlayActivity;
+import com.adamrosenfield.wordswithcrosses.io.IO;
+import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
+import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
 
 public class Downloaders {
-	private static final Logger LOG = Logger.getLogger("com.totsp.crossword");
+	private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
 	private Context context;
 	private List<Downloader> downloaders = new LinkedList<Downloader>();
 	private NotificationManager notificationManager;

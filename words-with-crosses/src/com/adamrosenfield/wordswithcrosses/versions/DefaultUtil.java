@@ -1,4 +1,4 @@
-package com.totsp.crossword.versions;
+package com.adamrosenfield.wordswithcrosses.versions;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -21,8 +21,8 @@ import android.view.SubMenu;
 import android.view.View;
 import android.view.Window;
 
-import com.totsp.crossword.net.AbstractDownloader;
-import com.totsp.crossword.puz.PuzzleMeta;
+import com.adamrosenfield.wordswithcrosses.net.AbstractDownloader;
+import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
 
 public class DefaultUtil implements AndroidVersionUtils {
 	public void setContext(Context ctx) {

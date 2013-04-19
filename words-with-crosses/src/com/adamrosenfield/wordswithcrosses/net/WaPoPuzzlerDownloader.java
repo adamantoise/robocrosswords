@@ -1,4 +1,4 @@
-package com.totsp.crossword.net;
+package com.adamrosenfield.wordswithcrosses.net;
 
 import java.io.File;
 import java.text.NumberFormat;

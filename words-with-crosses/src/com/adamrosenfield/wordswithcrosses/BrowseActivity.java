@@ -1,4 +1,4 @@
-package com.totsp.crossword;
+package com.adamrosenfield.wordswithcrosses;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,16 +37,16 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.totsp.crossword.io.IO;
-import com.totsp.crossword.net.Downloader;
-import com.totsp.crossword.net.Downloaders;
-import com.totsp.crossword.net.Scrapers;
-import com.totsp.crossword.puz.Puzzle;
-import com.totsp.crossword.puz.PuzzleMeta;
-import com.totsp.crossword.shortyz.R;
-import com.totsp.crossword.shortyz.ShortyzApplication;
-import com.totsp.crossword.view.SeparatedListAdapter;
-import com.totsp.crossword.view.VerticalProgressBar;
+import com.adamrosenfield.wordswithcrosses.io.IO;
+import com.adamrosenfield.wordswithcrosses.net.Downloader;
+import com.adamrosenfield.wordswithcrosses.net.Downloaders;
+import com.adamrosenfield.wordswithcrosses.net.Scrapers;
+import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
+import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
+import com.adamrosenfield.wordswithcrosses.shortyz.R;
+import com.adamrosenfield.wordswithcrosses.shortyz.ShortyzApplication;
+import com.adamrosenfield.wordswithcrosses.view.SeparatedListAdapter;
+import com.adamrosenfield.wordswithcrosses.view.VerticalProgressBar;
 
 
 public class BrowseActivity extends ShortyzActivity implements OnItemClickListener {
@@ -121,7 +121,7 @@ public class BrowseActivity extends ShortyzActivity implements OnItemClickListen
         try {
             info = (AdapterView.AdapterContextMenuInfo) menuInfo;
         } catch (ClassCastException e) {
-            Log.e("com.totsp.crossword", "bad menuInfo", e);
+            Log.e("com.adamrosenfield.wordswithcrosses", "bad menuInfo", e);
 
             return;
         }

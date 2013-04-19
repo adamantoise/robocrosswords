@@ -1,4 +1,4 @@
-package com.totsp.crossword.shortyz;
+package com.adamrosenfield.wordswithcrosses.shortyz;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,9 +14,9 @@ import android.net.Uri;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 
-import com.totsp.crossword.io.IO;
-import com.totsp.crossword.puz.Playboard;
-import com.totsp.crossword.view.PlayboardRenderer;
+import com.adamrosenfield.wordswithcrosses.io.IO;
+import com.adamrosenfield.wordswithcrosses.puz.Playboard;
+import com.adamrosenfield.wordswithcrosses.view.PlayboardRenderer;
 
 public class ShortyzApplication extends Application {
 

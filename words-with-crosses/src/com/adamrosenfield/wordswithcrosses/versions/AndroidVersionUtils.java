@@ -1,4 +1,4 @@
-package com.totsp.crossword.versions;
+package com.adamrosenfield.wordswithcrosses.versions;
 
 import java.io.File;
 import java.net.URL;
@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 
-import com.totsp.crossword.puz.PuzzleMeta;
+import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
 
 public interface AndroidVersionUtils {
 	
@@ -49,18 +49,18 @@ public interface AndroidVersionUtils {
 				case 15:
 				
 					return INSTANCE = (AndroidVersionUtils) Class.forName(
-							"com.totsp.crossword.versions.HoneycombUtil")
+							"com.adamrosenfield.wordswithcrosses.versions.HoneycombUtil")
 							.newInstance();
 				case 16:
 				case 17:
 					return INSTANCE = (AndroidVersionUtils) Class.forName(
-							"com.totsp.crossword.versions.JellyBeanUtil")
+							"com.adamrosenfield.wordswithcrosses.versions.JellyBeanUtil")
 							.newInstance();
 				case 10:
 				case 9:
 					System.out.println("Using Gingerbread.");
 					return INSTANCE = (AndroidVersionUtils) Class.forName(
-							"com.totsp.crossword.versions.GingerbreadUtil")
+							"com.adamrosenfield.wordswithcrosses.versions.GingerbreadUtil")
 							.newInstance();
 
 				default:

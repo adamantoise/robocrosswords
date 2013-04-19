@@ -1,9 +1,9 @@
-package com.totsp.crossword;
+package com.adamrosenfield.wordswithcrosses;
 
 import java.io.File;
 import java.util.Date;
 
-import com.totsp.crossword.puz.PuzzleMeta;
+import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
 
 
 public class FileHandle implements Comparable<FileHandle> {

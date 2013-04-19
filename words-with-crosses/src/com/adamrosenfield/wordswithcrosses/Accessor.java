@@ -1,4 +1,4 @@
-package com.totsp.crossword;
+package com.adamrosenfield.wordswithcrosses;
 
 import java.text.SimpleDateFormat;
 import java.util.Comparator;

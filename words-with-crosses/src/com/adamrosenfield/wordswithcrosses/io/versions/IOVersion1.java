@@ -1,14 +1,14 @@
-package com.totsp.crossword.io.versions;
+package com.adamrosenfield.wordswithcrosses.io.versions;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Date;
 
-import com.totsp.crossword.io.IO;
-import com.totsp.crossword.puz.Box;
-import com.totsp.crossword.puz.Puzzle;
-import com.totsp.crossword.puz.PuzzleMeta;
+import com.adamrosenfield.wordswithcrosses.io.IO;
+import com.adamrosenfield.wordswithcrosses.puz.Box;
+import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
+import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
 
 public class IOVersion1 implements IOVersion {
 

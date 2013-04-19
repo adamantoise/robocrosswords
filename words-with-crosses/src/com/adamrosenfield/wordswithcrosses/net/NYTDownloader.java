@@ -1,4 +1,4 @@
-package com.totsp.crossword.net;
+package com.adamrosenfield.wordswithcrosses.net;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -31,9 +31,9 @@ import android.content.Context;
 import android.os.Handler;
 import android.widget.Toast;
 
-import com.totsp.crossword.io.IO;
-import com.totsp.crossword.puz.Box;
-import com.totsp.crossword.puz.Puzzle;
+import com.adamrosenfield.wordswithcrosses.io.IO;
+import com.adamrosenfield.wordswithcrosses.puz.Box;
+import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 
 /**
  * New York Times URL: http://select.nytimes.com/premium/xword/[Mon]DDYY.puz

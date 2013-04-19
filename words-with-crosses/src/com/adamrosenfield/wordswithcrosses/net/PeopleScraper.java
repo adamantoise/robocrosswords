@@ -1,4 +1,4 @@
-package com.totsp.crossword.net;
+package com.adamrosenfield.wordswithcrosses.net;
 
 public class PeopleScraper extends AbstractPageScraper {
 

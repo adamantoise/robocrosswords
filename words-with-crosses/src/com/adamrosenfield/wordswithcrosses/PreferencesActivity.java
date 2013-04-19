@@ -1,4 +1,4 @@
-package com.totsp.crossword;
+package com.adamrosenfield.wordswithcrosses;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -7,8 +7,8 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 
-import com.totsp.crossword.shortyz.R;
-import com.totsp.crossword.shortyz.ShortyzApplication;
+import com.adamrosenfield.wordswithcrosses.shortyz.R;
+import com.adamrosenfield.wordswithcrosses.shortyz.ShortyzApplication;
 
 
 public class PreferencesActivity extends PreferenceActivity {

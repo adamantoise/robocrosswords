@@ -1,9 +1,9 @@
-package com.totsp.crossword.puz;
+package com.adamrosenfield.wordswithcrosses.puz;
 
 import java.util.Arrays;
 import java.util.Date;
 
-import com.totsp.crossword.puz.Playboard.Position;
+import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 import java.io.Serializable;
 
 

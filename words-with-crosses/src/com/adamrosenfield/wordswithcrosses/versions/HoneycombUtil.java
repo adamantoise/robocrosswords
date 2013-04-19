@@ -1,4 +1,4 @@
-package com.totsp.crossword.versions;
+package com.adamrosenfield.wordswithcrosses.versions;
 
 import java.io.File;
 import java.net.URL;
@@ -18,7 +18,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
 
-import com.totsp.crossword.PuzzleFinishedActivity;
+import com.adamrosenfield.wordswithcrosses.PuzzleFinishedActivity;
 
 
 @TargetApi(11)

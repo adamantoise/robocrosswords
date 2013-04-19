@@ -1,9 +1,9 @@
-package com.totsp.crossword.puz;
+package com.adamrosenfield.wordswithcrosses.puz;
 
 import java.io.Serializable;
 import java.util.Date;
 
-import com.totsp.crossword.puz.Playboard.Position;
+import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 
 
 public class PuzzleMeta implements Serializable {

@@ -1,4 +1,4 @@
-package com.totsp.crossword;
+package com.adamrosenfield.wordswithcrosses;
 
 import android.app.Activity;
 import android.net.Uri;
@@ -8,8 +8,8 @@ import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.Button;
 
-import com.totsp.crossword.shortyz.R;
-import com.totsp.crossword.versions.AndroidVersionUtils;
+import com.adamrosenfield.wordswithcrosses.shortyz.R;
+import com.adamrosenfield.wordswithcrosses.versions.AndroidVersionUtils;
 
 
 public class HTMLActivity extends Activity {

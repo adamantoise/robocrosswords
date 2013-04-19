@@ -1,4 +1,4 @@
-package com.totsp.crossword.view;
+package com.adamrosenfield.wordswithcrosses.view;
 
 import java.util.logging.Logger;
 
@@ -11,16 +11,16 @@ import android.graphics.Paint.Style;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 
-import com.totsp.crossword.puz.Box;
-import com.totsp.crossword.puz.Playboard;
-import com.totsp.crossword.puz.Playboard.Position;
-import com.totsp.crossword.puz.Playboard.Word;
-import com.totsp.crossword.view.ScrollingImageView.Point;
+import com.adamrosenfield.wordswithcrosses.puz.Box;
+import com.adamrosenfield.wordswithcrosses.puz.Playboard;
+import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
+import com.adamrosenfield.wordswithcrosses.puz.Playboard.Word;
+import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.Point;
 
 
 public class PlayboardRenderer {
     private static final int BOX_SIZE = 30;
-    private static final Logger LOG = Logger.getLogger("com.totsp.crossword");
+    private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
     private final Paint blackBox = new Paint();
     private final Paint blackCircle = new Paint();
     private final Paint blackLine = new Paint();

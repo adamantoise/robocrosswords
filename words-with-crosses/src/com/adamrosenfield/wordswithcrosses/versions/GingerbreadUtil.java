@@ -1,4 +1,4 @@
-package com.totsp.crossword.versions;
+package com.adamrosenfield.wordswithcrosses.versions;
 
 import java.io.File;
 import java.net.URL;
@@ -14,8 +14,8 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.Window;
 
-import com.totsp.crossword.net.DownloadReceiver;
-import com.totsp.crossword.puz.PuzzleMeta;
+import com.adamrosenfield.wordswithcrosses.net.DownloadReceiver;
+import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
 
 
 public class GingerbreadUtil extends DefaultUtil {

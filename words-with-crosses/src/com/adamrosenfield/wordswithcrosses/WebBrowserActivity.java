@@ -1,4 +1,4 @@
-package com.totsp.crossword;
+package com.adamrosenfield.wordswithcrosses;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -15,7 +15,7 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.totsp.crossword.shortyz.R;
+import com.adamrosenfield.wordswithcrosses.shortyz.R;
 
 
 public class WebBrowserActivity extends ShortyzActivity {

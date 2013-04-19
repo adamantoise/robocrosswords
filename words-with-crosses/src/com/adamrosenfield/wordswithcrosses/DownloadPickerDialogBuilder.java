@@ -1,4 +1,4 @@
-package com.totsp.crossword;
+package com.adamrosenfield.wordswithcrosses;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -23,11 +23,11 @@ import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.totsp.crossword.BrowseActivity.Provider;
-import com.totsp.crossword.net.Downloader;
-import com.totsp.crossword.net.Downloaders;
-import com.totsp.crossword.net.DummyDownloader;
-import com.totsp.crossword.shortyz.R;
+import com.adamrosenfield.wordswithcrosses.BrowseActivity.Provider;
+import com.adamrosenfield.wordswithcrosses.net.Downloader;
+import com.adamrosenfield.wordswithcrosses.net.Downloaders;
+import com.adamrosenfield.wordswithcrosses.net.DummyDownloader;
+import com.adamrosenfield.wordswithcrosses.shortyz.R;
 
 
 /**

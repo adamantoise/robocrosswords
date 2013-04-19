@@ -1,11 +1,11 @@
-package com.totsp.crossword.io.versions;
+package com.adamrosenfield.wordswithcrosses.io.versions;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import com.totsp.crossword.puz.Puzzle;
-import com.totsp.crossword.puz.PuzzleMeta;
+import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
+import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
 
 public interface IOVersion {
 	public void write(Puzzle puz, DataOutputStream os) throws IOException;

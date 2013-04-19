@@ -1,4 +1,4 @@
-package com.totsp.crossword.view;
+package com.adamrosenfield.wordswithcrosses.view;
 
 import java.util.Timer;
 import java.util.logging.Logger;
@@ -15,7 +15,7 @@ import android.widget.ImageView;
 
 @SuppressWarnings("deprecation")
 public class ScrollingImageView extends AbsoluteLayout implements OnGestureListener {
-    private static final Logger LOG = Logger.getLogger("com.totsp.crossword");
+    private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
     private AuxTouchHandler aux = null;
     private ClickListener ctxListener;
     private GestureDetector gestureDetector;
@@ -36,7 +36,7 @@ public class ScrollingImageView extends AbsoluteLayout implements OnGestureListe
 
         if (android.os.Build.VERSION.SDK_INT >= 8) {
             try {
-                aux = (AuxTouchHandler) Class.forName("com.totsp.crossword.view.MultitouchHandler")
+                aux = (AuxTouchHandler) Class.forName("com.adamrosenfield.wordswithcrosses.view.MultitouchHandler")
                                              .newInstance();
                 aux.init(this);
             } catch (IllegalAccessException e) {

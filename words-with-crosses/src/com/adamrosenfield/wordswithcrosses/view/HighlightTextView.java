@@ -1,4 +1,4 @@
-package com.totsp.crossword.view;
+package com.adamrosenfield.wordswithcrosses.view;
 
 import android.content.Context;
 import android.graphics.Canvas;

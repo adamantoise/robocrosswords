@@ -1,10 +1,10 @@
-package com.totsp.crossword.view;
+package com.adamrosenfield.wordswithcrosses.view;
 
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
 
-import com.totsp.crossword.view.ScrollingImageView.AuxTouchHandler;
+import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.AuxTouchHandler;
 
 
 public class MultitouchHandler implements OnScaleGestureListener, AuxTouchHandler {

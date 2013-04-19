@@ -1,4 +1,4 @@
-package com.totsp.crossword;
+package com.adamrosenfield.wordswithcrosses;
 
 import java.text.DateFormat;
 import java.text.NumberFormat;
@@ -11,10 +11,10 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.totsp.crossword.puz.Box;
-import com.totsp.crossword.puz.Puzzle;
-import com.totsp.crossword.shortyz.R;
-import com.totsp.crossword.shortyz.ShortyzApplication;
+import com.adamrosenfield.wordswithcrosses.puz.Box;
+import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
+import com.adamrosenfield.wordswithcrosses.shortyz.R;
+import com.adamrosenfield.wordswithcrosses.shortyz.ShortyzApplication;
 
 public class PuzzleFinishedActivity extends ShortyzActivity{
 	private static final long SECONDS = 1000;

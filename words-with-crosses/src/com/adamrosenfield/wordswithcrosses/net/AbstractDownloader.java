@@ -1,4 +1,4 @@
-package com.totsp.crossword.net;
+package com.adamrosenfield.wordswithcrosses.net;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,14 +13,14 @@ import java.util.logging.Logger;
 import android.content.Context;
 import android.net.Uri;
 
-import com.totsp.crossword.puz.PuzzleMeta;
-import com.totsp.crossword.shortyz.ShortyzApplication;
-import com.totsp.crossword.versions.AndroidVersionUtils;
-import com.totsp.crossword.versions.DefaultUtil;
+import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
+import com.adamrosenfield.wordswithcrosses.shortyz.ShortyzApplication;
+import com.adamrosenfield.wordswithcrosses.versions.AndroidVersionUtils;
+import com.adamrosenfield.wordswithcrosses.versions.DefaultUtil;
 
 
 public abstract class AbstractDownloader implements Downloader {
-    protected static final Logger LOG = Logger.getLogger("com.totsp.crossword");
+    protected static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
     public static File DOWNLOAD_DIR = ShortyzApplication.CROSSWORDS;
     public static final int DEFAULT_BUFFER_SIZE = 1024;
     @SuppressWarnings("unchecked")

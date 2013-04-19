@@ -1,4 +1,4 @@
-package com.totsp.crossword.view;
+package com.adamrosenfield.wordswithcrosses.view;
 
 import java.util.ArrayList;
 
@@ -9,7 +9,7 @@ import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 
-import com.totsp.crossword.shortyz.R;
+import com.adamrosenfield.wordswithcrosses.shortyz.R;
 
 
 public class SeparatedListAdapter extends BaseAdapter {

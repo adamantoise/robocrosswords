@@ -1,4 +1,4 @@
-package com.totsp.crossword.io;
+package com.adamrosenfield.wordswithcrosses.io;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -12,9 +12,9 @@ import java.util.Map;
 import java.util.Scanner;
 
 
-import com.totsp.crossword.io.charset.MacRoman;
-import com.totsp.crossword.puz.Box;
-import com.totsp.crossword.puz.Puzzle;
+import com.adamrosenfield.wordswithcrosses.io.charset.MacRoman;
+import com.adamrosenfield.wordswithcrosses.puz.Box;
+import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 
 /**
  * Converts a puzzle from the plaintext format used by King Features Syndicate

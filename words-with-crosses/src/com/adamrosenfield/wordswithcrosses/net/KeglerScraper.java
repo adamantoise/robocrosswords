@@ -1,4 +1,4 @@
-package com.totsp.crossword.net;
+package com.adamrosenfield.wordswithcrosses.net;
 
 
 //http://www.lafn.org/~keglerron/Block_style/index.html

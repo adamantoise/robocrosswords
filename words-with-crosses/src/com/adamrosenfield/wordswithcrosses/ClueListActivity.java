@@ -1,4 +1,4 @@
-package com.totsp.crossword;
+package com.adamrosenfield.wordswithcrosses;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,16 +23,16 @@ import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
 
-import com.totsp.crossword.io.IO;
-import com.totsp.crossword.puz.Playboard.Clue;
-import com.totsp.crossword.puz.Playboard.Position;
-import com.totsp.crossword.puz.Playboard.Word;
-import com.totsp.crossword.puz.Puzzle;
-import com.totsp.crossword.shortyz.R;
-import com.totsp.crossword.shortyz.ShortyzApplication;
-import com.totsp.crossword.view.ScrollingImageView;
-import com.totsp.crossword.view.ScrollingImageView.ClickListener;
-import com.totsp.crossword.view.ScrollingImageView.Point;
+import com.adamrosenfield.wordswithcrosses.io.IO;
+import com.adamrosenfield.wordswithcrosses.puz.Playboard.Clue;
+import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
+import com.adamrosenfield.wordswithcrosses.puz.Playboard.Word;
+import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
+import com.adamrosenfield.wordswithcrosses.shortyz.R;
+import com.adamrosenfield.wordswithcrosses.shortyz.ShortyzApplication;
+import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView;
+import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.ClickListener;
+import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.Point;
 
 public class ClueListActivity extends ShortyzActivity {
 	private Configuration configuration;

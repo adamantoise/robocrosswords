@@ -1,7 +1,7 @@
-package com.totsp.crossword;
+package com.adamrosenfield.wordswithcrosses;
 
-import static com.totsp.crossword.shortyz.ShortyzApplication.BOARD;
-import static com.totsp.crossword.shortyz.ShortyzApplication.RENDERER;
+import static com.adamrosenfield.wordswithcrosses.shortyz.ShortyzApplication.BOARD;
+import static com.adamrosenfield.wordswithcrosses.shortyz.ShortyzApplication.RENDERER;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,24 +44,24 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.totsp.crossword.io.IO;
-import com.totsp.crossword.puz.MovementStrategy;
-import com.totsp.crossword.puz.Playboard;
-import com.totsp.crossword.puz.Playboard.Clue;
-import com.totsp.crossword.puz.Playboard.Position;
-import com.totsp.crossword.puz.Playboard.Word;
-import com.totsp.crossword.puz.Puzzle;
-import com.totsp.crossword.shortyz.R;
-import com.totsp.crossword.shortyz.ShortyzApplication;
-import com.totsp.crossword.view.PlayboardRenderer;
-import com.totsp.crossword.view.ScrollingImageView;
-import com.totsp.crossword.view.ScrollingImageView.ClickListener;
-import com.totsp.crossword.view.ScrollingImageView.Point;
-import com.totsp.crossword.view.ScrollingImageView.ScaleListener;
-import com.totsp.crossword.view.SeparatedListAdapter;
+import com.adamrosenfield.wordswithcrosses.io.IO;
+import com.adamrosenfield.wordswithcrosses.puz.MovementStrategy;
+import com.adamrosenfield.wordswithcrosses.puz.Playboard;
+import com.adamrosenfield.wordswithcrosses.puz.Playboard.Clue;
+import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
+import com.adamrosenfield.wordswithcrosses.puz.Playboard.Word;
+import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
+import com.adamrosenfield.wordswithcrosses.shortyz.R;
+import com.adamrosenfield.wordswithcrosses.shortyz.ShortyzApplication;
+import com.adamrosenfield.wordswithcrosses.view.PlayboardRenderer;
+import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView;
+import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.ClickListener;
+import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.Point;
+import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.ScaleListener;
+import com.adamrosenfield.wordswithcrosses.view.SeparatedListAdapter;
 
 public class PlayActivity extends ShortyzActivity {
-	private static final Logger LOG = Logger.getLogger("com.totsp.crossword");
+	private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
 	private static final int INFO_DIALOG = 0;
 	private static final int REVEAL_PUZZLE_DIALOG = 2;
 	static final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";

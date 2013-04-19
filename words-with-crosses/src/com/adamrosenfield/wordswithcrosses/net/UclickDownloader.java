@@ -1,4 +1,4 @@
-package com.totsp.crossword.net;
+package com.adamrosenfield.wordswithcrosses.net;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -12,8 +12,8 @@ import java.text.NumberFormat;
 import java.util.Date;
 import java.util.logging.Level;
 
-import com.totsp.crossword.io.UclickXMLIO;
-import com.totsp.crossword.versions.DefaultUtil;
+import com.adamrosenfield.wordswithcrosses.io.UclickXMLIO;
+import com.adamrosenfield.wordswithcrosses.versions.DefaultUtil;
 
 
 /**

@@ -1,4 +1,4 @@
-package com.totsp.crossword.net;
+package com.adamrosenfield.wordswithcrosses.net;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -12,9 +12,9 @@ import java.util.Map;
 
 import android.net.Uri;
 
-import com.totsp.crossword.io.JPZIO;
-import com.totsp.crossword.puz.PuzzleMeta;
-import com.totsp.crossword.versions.DefaultUtil;
+import com.adamrosenfield.wordswithcrosses.io.JPZIO;
+import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
+import com.adamrosenfield.wordswithcrosses.versions.DefaultUtil;
 
 public abstract class AbstractJPZDownloader extends AbstractDownloader {
 

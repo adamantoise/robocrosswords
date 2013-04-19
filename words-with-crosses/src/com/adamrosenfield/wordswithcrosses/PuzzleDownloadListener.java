@@ -1,4 +1,4 @@
-package com.totsp.crossword;
+package com.adamrosenfield.wordswithcrosses;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,8 +18,8 @@ import android.webkit.DownloadListener;
 import android.webkit.URLUtil;
 import android.widget.Toast;
 
-import com.totsp.crossword.net.Downloaders;
-import com.totsp.crossword.puz.PuzzleMeta;
+import com.adamrosenfield.wordswithcrosses.net.Downloaders;
+import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
 
 
 /**

@@ -1,4 +1,4 @@
-package com.totsp.crossword.io;
+package com.adamrosenfield.wordswithcrosses.io;
 
 import java.io.DataOutputStream;
 import java.io.InputStream;
@@ -17,8 +17,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.totsp.crossword.puz.Box;
-import com.totsp.crossword.puz.Puzzle;
+import com.adamrosenfield.wordswithcrosses.puz.Box;
+import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 
 /**
  * Converts a puzzle from the XML format used by uclick syndicated puzzles

@@ -1,12 +1,12 @@
-package com.totsp.crossword.io;
+package com.adamrosenfield.wordswithcrosses.io;
 
-import com.totsp.crossword.io.versions.IOVersion;
-import com.totsp.crossword.io.versions.IOVersion1;
-import com.totsp.crossword.io.versions.IOVersion2;
-import com.totsp.crossword.io.versions.IOVersion3;
-import com.totsp.crossword.puz.Box;
-import com.totsp.crossword.puz.Puzzle;
-import com.totsp.crossword.puz.PuzzleMeta;
+import com.adamrosenfield.wordswithcrosses.io.versions.IOVersion;
+import com.adamrosenfield.wordswithcrosses.io.versions.IOVersion1;
+import com.adamrosenfield.wordswithcrosses.io.versions.IOVersion2;
+import com.adamrosenfield.wordswithcrosses.io.versions.IOVersion3;
+import com.adamrosenfield.wordswithcrosses.puz.Box;
+import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
+import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;

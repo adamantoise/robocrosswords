@@ -1,4 +1,4 @@
-package com.totsp.crossword;
+package com.adamrosenfield.wordswithcrosses;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,7 +10,7 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.preference.PreferenceManager;
 
-import com.totsp.crossword.versions.AndroidVersionUtils;
+import com.adamrosenfield.wordswithcrosses.versions.AndroidVersionUtils;
 
 public class ShortyzActivity extends Activity {
 	protected AndroidVersionUtils utils = AndroidVersionUtils.Factory
