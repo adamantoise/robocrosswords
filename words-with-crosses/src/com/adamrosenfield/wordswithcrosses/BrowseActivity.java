@@ -44,7 +44,7 @@ import com.adamrosenfield.wordswithcrosses.net.Scrapers;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
 import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
-import com.adamrosenfield.wordswithcrosses.wordswithcrosses.ShortyzApplication;
+import com.adamrosenfield.wordswithcrosses.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.view.SeparatedListAdapter;
 import com.adamrosenfield.wordswithcrosses.view.VerticalProgressBar;
 
@@ -235,7 +235,7 @@ public class BrowseActivity extends ShortyzActivity implements OnItemClickListen
                  .commit();
             this.render();
         } else if("Send Debug Package".equals(item.getTitle())){
-        	Intent i = ShortyzApplication.sendDebug();
+        	Intent i = WordsWithCrossesApplication.sendDebug();
         	if(i != null)
         		this.startActivity(i);
         }

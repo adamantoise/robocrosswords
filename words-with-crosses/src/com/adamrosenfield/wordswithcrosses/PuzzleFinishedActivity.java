@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.adamrosenfield.wordswithcrosses.puz.Box;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
-import com.adamrosenfield.wordswithcrosses.wordswithcrosses.ShortyzApplication;
+import com.adamrosenfield.wordswithcrosses.wordswithcrosses.WordsWithCrossesApplication;
 
 public class PuzzleFinishedActivity extends ShortyzActivity{
 	private static final long SECONDS = 1000;
@@ -30,7 +30,7 @@ public class PuzzleFinishedActivity extends ShortyzActivity{
         setContentView(R.layout.completed);
         this.getWindow().setLayout(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         
-        Puzzle puz = ShortyzApplication.BOARD.getPuzzle();
+        Puzzle puz = WordsWithCrossesApplication.BOARD.getPuzzle();
         
         two_int.setMinimumIntegerDigits(2);
         

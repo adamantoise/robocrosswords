@@ -29,7 +29,7 @@ import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Word;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
-import com.adamrosenfield.wordswithcrosses.wordswithcrosses.ShortyzApplication;
+import com.adamrosenfield.wordswithcrosses.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView;
 import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.ClickListener;
 import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.Point;
@@ -78,7 +78,7 @@ public class ClueListActivity extends ShortyzActivity {
 					Toast.LENGTH_LONG).show();
 			finish();
 		}
-		this.timer = new ImaginaryTimer(ShortyzApplication.BOARD.getPuzzle()
+		this.timer = new ImaginaryTimer(WordsWithCrossesApplication.BOARD.getPuzzle()
 				.getTime());
 
 		Uri u = this.getIntent().getData();
@@ -89,7 +89,7 @@ public class ClueListActivity extends ShortyzActivity {
 			}
 		}
 
-		puz = ShortyzApplication.BOARD.getPuzzle();
+		puz = WordsWithCrossesApplication.BOARD.getPuzzle();
 		timer.start();
 		setContentView(R.layout.clue_list);
 
@@ -173,10 +173,10 @@ public class ClueListActivity extends ShortyzActivity {
 			}
 
 			public void onTap(Point e) {
-				Word current = ShortyzApplication.BOARD.getCurrentWord();
+				Word current = WordsWithCrossesApplication.BOARD.getCurrentWord();
 				int newAcross = current.start.across;
 				int newDown = current.start.down;
-				int box = ShortyzApplication.RENDERER.findBoxNoScale(e);
+				int box = WordsWithCrossesApplication.RENDERER.findBoxNoScale(e);
 
 				if (box < current.length) {
 					if (tabHost.getCurrentTab() == 0) {
@@ -188,9 +188,9 @@ public class ClueListActivity extends ShortyzActivity {
 
 				Position newPos = new Position(newAcross, newDown);
 
-				if (!newPos.equals(ShortyzApplication.BOARD
+				if (!newPos.equals(WordsWithCrossesApplication.BOARD
 						.getHighlightLetter())) {
-					ShortyzApplication.BOARD.setHighlightLetter(newPos);
+					WordsWithCrossesApplication.BOARD.setHighlightLetter(newPos);
 					ClueListActivity.this.render();
 				}
 			}
@@ -216,23 +216,23 @@ public class ClueListActivity extends ShortyzActivity {
 		ts.setContent(R.id.downList);
 		this.tabHost.addTab(ts);
 
-		this.tabHost.setCurrentTab(ShortyzApplication.BOARD.isAcross() ? 0 : 1);
+		this.tabHost.setCurrentTab(WordsWithCrossesApplication.BOARD.isAcross() ? 0 : 1);
 
 		this.across = (ListView) this.findViewById(R.id.acrossList);
 		this.down = (ListView) this.findViewById(R.id.downList);
 
 		across.setAdapter(new ArrayAdapter<Clue>(this,
-				android.R.layout.simple_list_item_1, ShortyzApplication.BOARD
+				android.R.layout.simple_list_item_1, WordsWithCrossesApplication.BOARD
 						.getAcrossClues()));
 		across.setFocusableInTouchMode(true);
 		down.setAdapter(new ArrayAdapter<Clue>(this,
-				android.R.layout.simple_list_item_1, ShortyzApplication.BOARD
+				android.R.layout.simple_list_item_1, WordsWithCrossesApplication.BOARD
 						.getDownClues()));
 		across.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				arg0.setSelected(true);
-				ShortyzApplication.BOARD.jumpTo(arg2, true);
+				WordsWithCrossesApplication.BOARD.jumpTo(arg2, true);
 				imageView.scrollTo(0, 0);
 				render();
 
@@ -245,9 +245,9 @@ public class ClueListActivity extends ShortyzActivity {
 		across.setOnItemSelectedListener(new OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				if (!ShortyzApplication.BOARD.isAcross()
-						|| (ShortyzApplication.BOARD.getCurrentClueIndex() != arg2)) {
-					ShortyzApplication.BOARD.jumpTo(arg2, true);
+				if (!WordsWithCrossesApplication.BOARD.isAcross()
+						|| (WordsWithCrossesApplication.BOARD.getCurrentClueIndex() != arg2)) {
+					WordsWithCrossesApplication.BOARD.jumpTo(arg2, true);
 					imageView.scrollTo(0, 0);
 					render();
 
@@ -264,7 +264,7 @@ public class ClueListActivity extends ShortyzActivity {
 		down.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> arg0, View arg1,
 					final int arg2, long arg3) {
-				ShortyzApplication.BOARD.jumpTo(arg2, false);
+				WordsWithCrossesApplication.BOARD.jumpTo(arg2, false);
 				imageView.scrollTo(0, 0);
 				render();
 
@@ -278,9 +278,9 @@ public class ClueListActivity extends ShortyzActivity {
 		down.setOnItemSelectedListener(new OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				if (ShortyzApplication.BOARD.isAcross()
-						|| (ShortyzApplication.BOARD.getCurrentClueIndex() != arg2)) {
-					ShortyzApplication.BOARD.jumpTo(arg2, false);
+				if (WordsWithCrossesApplication.BOARD.isAcross()
+						|| (WordsWithCrossesApplication.BOARD.getCurrentClueIndex() != arg2)) {
+					WordsWithCrossesApplication.BOARD.jumpTo(arg2, false);
 					imageView.scrollTo(0, 0);
 					render();
 
@@ -299,7 +299,7 @@ public class ClueListActivity extends ShortyzActivity {
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		Word w = ShortyzApplication.BOARD.getCurrentWord();
+		Word w = WordsWithCrossesApplication.BOARD.getCurrentWord();
 		Position last = new Position(w.start.across
 				+ (w.across ? (w.length - 1) : 0), w.start.down
 				+ ((!w.across) ? (w.length - 1) : 0));
@@ -316,9 +316,9 @@ public class ClueListActivity extends ShortyzActivity {
 
 		case KeyEvent.KEYCODE_DPAD_LEFT:
 
-			if (!ShortyzApplication.BOARD.getHighlightLetter().equals(
-					ShortyzApplication.BOARD.getCurrentWord().start)) {
-				ShortyzApplication.BOARD.previousLetter();
+			if (!WordsWithCrossesApplication.BOARD.getHighlightLetter().equals(
+					WordsWithCrossesApplication.BOARD.getCurrentWord().start)) {
+				WordsWithCrossesApplication.BOARD.previousLetter();
 
 				this.render();
 			}
@@ -327,21 +327,21 @@ public class ClueListActivity extends ShortyzActivity {
 
 		case KeyEvent.KEYCODE_DPAD_RIGHT:
 
-			if (!ShortyzApplication.BOARD.getHighlightLetter().equals(last)) {
-				ShortyzApplication.BOARD.nextLetter();
+			if (!WordsWithCrossesApplication.BOARD.getHighlightLetter().equals(last)) {
+				WordsWithCrossesApplication.BOARD.nextLetter();
 				this.render();
 			}
 
 			return true;
 
 		case KeyEvent.KEYCODE_DEL:
-			w = ShortyzApplication.BOARD.getCurrentWord();
-			ShortyzApplication.BOARD.deleteLetter();
+			w = WordsWithCrossesApplication.BOARD.getCurrentWord();
+			WordsWithCrossesApplication.BOARD.deleteLetter();
 
-			Position p = ShortyzApplication.BOARD.getHighlightLetter();
+			Position p = WordsWithCrossesApplication.BOARD.getHighlightLetter();
 
 			if (!w.checkInWord(p.across, p.down)) {
-				ShortyzApplication.BOARD.setHighlightLetter(w.start);
+				WordsWithCrossesApplication.BOARD.setHighlightLetter(w.start);
 			}
 
 			this.render();
@@ -351,13 +351,13 @@ public class ClueListActivity extends ShortyzActivity {
 		case KeyEvent.KEYCODE_SPACE:
 
 			if (!prefs.getBoolean("spaceChangesDirection", true)) {
-				ShortyzApplication.BOARD.playLetter(' ');
+				WordsWithCrossesApplication.BOARD.playLetter(' ');
 
-				Position curr = ShortyzApplication.BOARD.getHighlightLetter();
+				Position curr = WordsWithCrossesApplication.BOARD.getHighlightLetter();
 
-				if (!ShortyzApplication.BOARD.getCurrentWord().equals(w)
-						|| (ShortyzApplication.BOARD.getBoxes()[curr.across][curr.down] == null)) {
-					ShortyzApplication.BOARD.setHighlightLetter(last);
+				if (!WordsWithCrossesApplication.BOARD.getCurrentWord().equals(w)
+						|| (WordsWithCrossesApplication.BOARD.getBoxes()[curr.across][curr.down] == null)) {
+					WordsWithCrossesApplication.BOARD.setHighlightLetter(last);
 				}
 
 				this.render();
@@ -371,13 +371,13 @@ public class ClueListActivity extends ShortyzActivity {
 						.getDisplayLabel() : ((char) keyCode));
 
 		if (PlayActivity.ALPHA.indexOf(c) != -1) {
-			ShortyzApplication.BOARD.playLetter(c);
+			WordsWithCrossesApplication.BOARD.playLetter(c);
 
-			Position p = ShortyzApplication.BOARD.getHighlightLetter();
+			Position p = WordsWithCrossesApplication.BOARD.getHighlightLetter();
 
-			if (!ShortyzApplication.BOARD.getCurrentWord().equals(w)
-					|| (ShortyzApplication.BOARD.getBoxes()[p.across][p.down] == null)) {
-				ShortyzApplication.BOARD.setHighlightLetter(last);
+			if (!WordsWithCrossesApplication.BOARD.getCurrentWord().equals(w)
+					|| (WordsWithCrossesApplication.BOARD.getBoxes()[p.across][p.down] == null)) {
+				WordsWithCrossesApplication.BOARD.setHighlightLetter(last);
 			}
 
 			this.render();
@@ -451,6 +451,6 @@ public class ClueListActivity extends ShortyzActivity {
 			this.keyboardView.setVisibility(View.GONE);
 		}
 
-		this.imageView.setBitmap(ShortyzApplication.RENDERER.drawWord());
+		this.imageView.setBitmap(WordsWithCrossesApplication.RENDERER.drawWord());
 	}
 }

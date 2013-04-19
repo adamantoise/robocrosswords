@@ -18,7 +18,7 @@ import com.adamrosenfield.wordswithcrosses.io.IO;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard;
 import com.adamrosenfield.wordswithcrosses.view.PlayboardRenderer;
 
-public class ShortyzApplication extends Application {
+public class WordsWithCrossesApplication extends Application {
 
 	public static File DEBUG_DIR;
 	public static File CROSSWORDS = new File(

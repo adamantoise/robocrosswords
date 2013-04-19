@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.adamrosenfield.wordswithcrosses.puz.Box;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Clue;
 import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
-import com.adamrosenfield.wordswithcrosses.wordswithcrosses.ShortyzApplication;
+import com.adamrosenfield.wordswithcrosses.wordswithcrosses.WordsWithCrossesApplication;
 
 
 public class ClueListAdapter extends BaseAdapter {
@@ -75,7 +75,7 @@ public class ClueListAdapter extends BaseAdapter {
         Box[] boxes = this.cache.get(c.number);
 
         if (boxes == null) {
-            boxes = ShortyzApplication.BOARD.getWordBoxes(c.number, across);
+            boxes = WordsWithCrossesApplication.BOARD.getWordBoxes(c.number, across);
             cache.put(c.number, boxes);
         }
 

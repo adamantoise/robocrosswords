@@ -1,7 +1,7 @@
 package com.adamrosenfield.wordswithcrosses;
 
-import static com.adamrosenfield.wordswithcrosses.wordswithcrosses.ShortyzApplication.BOARD;
-import static com.adamrosenfield.wordswithcrosses.wordswithcrosses.ShortyzApplication.RENDERER;
+import static com.adamrosenfield.wordswithcrosses.wordswithcrosses.WordsWithCrossesApplication.BOARD;
+import static com.adamrosenfield.wordswithcrosses.wordswithcrosses.WordsWithCrossesApplication.RENDERER;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,7 +52,7 @@ import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Word;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
-import com.adamrosenfield.wordswithcrosses.wordswithcrosses.ShortyzApplication;
+import com.adamrosenfield.wordswithcrosses.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.view.PlayboardRenderer;
 import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView;
 import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.ClickListener;
@@ -149,9 +149,9 @@ public class PlayActivity extends ShortyzActivity {
 		
 		try {
 			if (!prefs.getBoolean("showTimer", false)) {
-				System.out.println("tabletish "+ShortyzApplication.isTabletish(metrics) );
-				if (ShortyzApplication.isLandscape(metrics))  {
-					if(ShortyzApplication.isMiniTabletish(metrics)){
+				System.out.println("tabletish "+WordsWithCrossesApplication.isTabletish(metrics) );
+				if (WordsWithCrossesApplication.isLandscape(metrics))  {
+					if(WordsWithCrossesApplication.isMiniTabletish(metrics)){
 						utils.hideWindowTitle(this);
 					}
 					
@@ -165,9 +165,9 @@ public class PlayActivity extends ShortyzActivity {
 		utils.holographic(this);
 		utils.finishOnHomeButton(this);
 		if (!prefs.getBoolean("showTimer", false)) {
-			System.out.println("tabletish "+ShortyzApplication.isTabletish(metrics) );
-			if (ShortyzApplication.isLandscape(metrics))  {
-				if(ShortyzApplication.isMiniTabletish(metrics)){
+			System.out.println("tabletish "+WordsWithCrossesApplication.isTabletish(metrics) );
+			if (WordsWithCrossesApplication.isLandscape(metrics))  {
+				if(WordsWithCrossesApplication.isMiniTabletish(metrics)){
 					utils.hideActionBar(this);
 				}
 				
@@ -589,7 +589,7 @@ public class PlayActivity extends ShortyzActivity {
 		setTitle("Shortyz - " + puz.getTitle() + " - " + puz.getAuthor()
 				+ " - 	" + puz.getCopyright());
 		this.showCount = prefs.getBoolean("showCount", false);
-		if(android.os.Build.VERSION.SDK_INT > 11 && !ShortyzApplication.isTabletish(metrics)){
+		if(android.os.Build.VERSION.SDK_INT > 11 && !WordsWithCrossesApplication.isTabletish(metrics)){
 			this.handler.postDelayed(new Runnable(){
 
 				public void run() {
@@ -636,7 +636,7 @@ public class PlayActivity extends ShortyzActivity {
 			MenuItem showItem = menu.add(
 					this.showErrors ? "Hide Errors" : "Show Errors").setIcon(
 					android.R.drawable.ic_menu_view);
-			if (ShortyzApplication.isTabletish(metrics)) {
+			if (WordsWithCrossesApplication.isTabletish(metrics)) {
 				utils.onActionBarWithText(showItem);
 			}
 
@@ -645,7 +645,7 @@ public class PlayActivity extends ShortyzActivity {
 			reveal.add("Letter");
 			reveal.add("Word");
 			reveal.add("Puzzle");
-			if (ShortyzApplication.isTabletish(metrics)) {
+			if (WordsWithCrossesApplication.isTabletish(metrics)) {
 				utils.onActionBarWithText(reveal);
 			}
 		} else {

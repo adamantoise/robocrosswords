@@ -8,7 +8,7 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 
 import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
-import com.adamrosenfield.wordswithcrosses.wordswithcrosses.ShortyzApplication;
+import com.adamrosenfield.wordswithcrosses.wordswithcrosses.WordsWithCrossesApplication;
 
 
 public class PreferencesActivity extends PreferenceActivity {
@@ -63,7 +63,7 @@ public class PreferencesActivity extends PreferenceActivity {
         sendDebug.setOnPreferenceClickListener(new OnPreferenceClickListener(){
 
 			public boolean onPreferenceClick(Preference preference) {
-				startActivity(ShortyzApplication.sendDebug());
+				startActivity(WordsWithCrossesApplication.sendDebug());
 				return true;
 			}
         	
