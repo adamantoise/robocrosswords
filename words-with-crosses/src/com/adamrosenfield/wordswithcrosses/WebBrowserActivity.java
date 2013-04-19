@@ -18,7 +18,7 @@ import android.widget.EditText;
 import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
 
 
-public class WebBrowserActivity extends ShortyzActivity {
+public class WebBrowserActivity extends WordsWithCrossesActivity {
     private EditText mURL;
     private InputMethodManager mIMM;
     private PuzzleDownloadListener mPDL;

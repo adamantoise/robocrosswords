@@ -16,7 +16,7 @@ import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
 import com.adamrosenfield.wordswithcrosses.wordswithcrosses.WordsWithCrossesApplication;
 
-public class PuzzleFinishedActivity extends ShortyzActivity{
+public class PuzzleFinishedActivity extends WordsWithCrossesActivity{
 	private static final long SECONDS = 1000;
     private static final long MINUTES = SECONDS * 60;
     private static final long HOURS = MINUTES * 60;

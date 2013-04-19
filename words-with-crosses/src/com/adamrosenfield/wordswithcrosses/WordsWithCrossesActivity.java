@@ -12,7 +12,7 @@ import android.preference.PreferenceManager;
 
 import com.adamrosenfield.wordswithcrosses.versions.AndroidVersionUtils;
 
-public class ShortyzActivity extends Activity {
+public class WordsWithCrossesActivity extends Activity {
 	protected AndroidVersionUtils utils = AndroidVersionUtils.Factory
 			.getInstance();
 	protected SharedPreferences prefs;

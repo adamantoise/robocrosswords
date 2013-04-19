@@ -34,7 +34,7 @@ import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView;
 import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.ClickListener;
 import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.Point;
 
-public class ClueListActivity extends ShortyzActivity {
+public class ClueListActivity extends WordsWithCrossesActivity {
 	private Configuration configuration;
 	private File baseFile;
 	private ImaginaryTimer timer;

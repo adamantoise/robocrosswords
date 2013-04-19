@@ -49,7 +49,7 @@ import com.adamrosenfield.wordswithcrosses.view.SeparatedListAdapter;
 import com.adamrosenfield.wordswithcrosses.view.VerticalProgressBar;
 
 
-public class BrowseActivity extends ShortyzActivity implements OnItemClickListener {
+public class BrowseActivity extends WordsWithCrossesActivity implements OnItemClickListener {
     private static final String MENU_ARCHIVES = "Archives";
     private static final int DOWNLOAD_DIALOG_ID = 0;
     private static final long DAY = 24L * 60L * 60L * 1000L;

@@ -60,7 +60,7 @@ import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.Point;
 import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.ScaleListener;
 import com.adamrosenfield.wordswithcrosses.view.SeparatedListAdapter;
 
-public class PlayActivity extends ShortyzActivity {
+public class PlayActivity extends WordsWithCrossesActivity {
 	private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
 	private static final int INFO_DIALOG = 0;
 	private static final int REVEAL_PUZZLE_DIALOG = 2;
