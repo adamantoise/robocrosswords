@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     android:installLocation="auto"
-    package="com.totsp.crossword.shortyz"
-    android:versionCode="30201"
-    android:versionName="3.2.1" >
+    package="com.adamrosenfield.wordswithcrosses.wordswithcrosses"
+    android:versionCode="10000"
+    android:versionName="1.0.0" >
 
     <application
         android:backupAgent=".BackupAgent"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:name="com.totsp.crossword.shortyz.ShortyzApplication"
+        android:name="com.adamrosenfield.wordswithcrosses.wordswithcrosses.WordsWithCrossesApplication"
         android:restoreAnyVersion="true" >
         <meta-data
             android:name="com.google.android.backup.api_key"
             android:value="AEdPqrEAAAAIpupOi468PpFd3hXnN3o4Omx0Fgu9FyojG9lvzw" />
 
         <activity
-            android:label="Download to Shortyz"
-            android:name="com.totsp.crossword.HttpDownloadActivity" >
+            android:label="Download to Words With Crosses"
+            android:name="com.adamrosenfield.wordswithcrosses.HttpDownloadActivity" >
             <intent-filter >
                 <action android:name="android.intent.action.VIEW" />
 
@@ -32,7 +32,7 @@
         </activity>
         <activity
             android:label="@string/app_name"
-            android:name="com.totsp.crossword.PlayActivity" >
+            android:name="com.adamrosenfield.wordswithcrosses.PlayActivity" >
             <intent-filter >
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.EDIT" />
@@ -50,19 +50,19 @@
         </activity>
         <activity
             android:label="Settings"
-            android:name="com.totsp.crossword.PreferencesActivity" >
+            android:name="com.adamrosenfield.wordswithcrosses.PreferencesActivity" >
         </activity>
         <activity
             android:label="Clues"
-            android:name="com.totsp.crossword.ClueListActivity" >
+            android:name="com.adamrosenfield.wordswithcrosses.ClueListActivity" >
         </activity>
         <activity
-            android:label="Shortyz"
-            android:name="com.totsp.crossword.HTMLActivity" >
+            android:label="Words With Crosses"
+            android:name="com.adamrosenfield.wordswithcrosses.HTMLActivity" >
         </activity>
         <activity
             android:label="@string/app_name"
-            android:name="com.totsp.crossword.BrowseActivity" >
+            android:name="com.adamrosenfield.wordswithcrosses.BrowseActivity" >
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
 
@@ -72,15 +72,15 @@
         <activity
             android:configChanges="keyboardHidden|orientation"
             android:label="Browse for Puzzles"
-            android:name="com.totsp.crossword.WebBrowserActivity" >
+            android:name="com.adamrosenfield.wordswithcrosses.WebBrowserActivity" >
         </activity>
         <activity
             android:label="Puzzle Completed!"
-            android:name="com.totsp.crossword.PuzzleFinishedActivity"
+            android:name="com.adamrosenfield.wordswithcrosses.PuzzleFinishedActivity"
             android:theme="@android:style/Theme.Dialog" >
         </activity>
 
-        <receiver android:name="com.totsp.crossword.net.DownloadReceiver" >
+        <receiver android:name="com.adamrosenfield.wordswithcrosses.net.DownloadReceiver" >
             <intent-filter >
                 <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
             </intent-filter>
