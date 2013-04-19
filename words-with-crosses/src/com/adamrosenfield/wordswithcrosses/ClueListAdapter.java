@@ -15,8 +15,8 @@ import android.widget.TextView;
 
 import com.adamrosenfield.wordswithcrosses.puz.Box;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Clue;
-import com.adamrosenfield.wordswithcrosses.shortyz.R;
-import com.adamrosenfield.wordswithcrosses.shortyz.ShortyzApplication;
+import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
+import com.adamrosenfield.wordswithcrosses.wordswithcrosses.ShortyzApplication;
 
 
 public class ClueListAdapter extends BaseAdapter {

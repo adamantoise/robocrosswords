@@ -43,8 +43,8 @@ import com.adamrosenfield.wordswithcrosses.net.Downloaders;
 import com.adamrosenfield.wordswithcrosses.net.Scrapers;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
-import com.adamrosenfield.wordswithcrosses.shortyz.R;
-import com.adamrosenfield.wordswithcrosses.shortyz.ShortyzApplication;
+import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
+import com.adamrosenfield.wordswithcrosses.wordswithcrosses.ShortyzApplication;
 import com.adamrosenfield.wordswithcrosses.view.SeparatedListAdapter;
 import com.adamrosenfield.wordswithcrosses.view.VerticalProgressBar;
 

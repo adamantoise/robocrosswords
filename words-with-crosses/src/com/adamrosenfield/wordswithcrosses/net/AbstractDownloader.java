@@ -14,7 +14,7 @@ import android.content.Context;
 import android.net.Uri;
 
 import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
-import com.adamrosenfield.wordswithcrosses.shortyz.ShortyzApplication;
+import com.adamrosenfield.wordswithcrosses.wordswithcrosses.ShortyzApplication;
 import com.adamrosenfield.wordswithcrosses.versions.AndroidVersionUtils;
 import com.adamrosenfield.wordswithcrosses.versions.DefaultUtil;
 

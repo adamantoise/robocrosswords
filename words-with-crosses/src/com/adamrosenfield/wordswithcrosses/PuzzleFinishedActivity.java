@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import com.adamrosenfield.wordswithcrosses.puz.Box;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
-import com.adamrosenfield.wordswithcrosses.shortyz.R;
-import com.adamrosenfield.wordswithcrosses.shortyz.ShortyzApplication;
+import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
+import com.adamrosenfield.wordswithcrosses.wordswithcrosses.ShortyzApplication;
 
 public class PuzzleFinishedActivity extends ShortyzActivity{
 	private static final long SECONDS = 1000;

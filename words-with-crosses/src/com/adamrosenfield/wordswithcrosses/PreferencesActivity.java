@@ -7,8 +7,8 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 
-import com.adamrosenfield.wordswithcrosses.shortyz.R;
-import com.adamrosenfield.wordswithcrosses.shortyz.ShortyzApplication;
+import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
+import com.adamrosenfield.wordswithcrosses.wordswithcrosses.ShortyzApplication;
 
 
 public class PreferencesActivity extends PreferenceActivity {

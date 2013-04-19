@@ -15,7 +15,7 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.adamrosenfield.wordswithcrosses.shortyz.R;
+import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
 
 
 public class WebBrowserActivity extends ShortyzActivity {

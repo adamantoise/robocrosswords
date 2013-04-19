@@ -8,7 +8,7 @@ import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.Button;
 
-import com.adamrosenfield.wordswithcrosses.shortyz.R;
+import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
 import com.adamrosenfield.wordswithcrosses.versions.AndroidVersionUtils;
 
 

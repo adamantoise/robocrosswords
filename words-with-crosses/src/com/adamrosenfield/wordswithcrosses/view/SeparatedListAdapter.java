@@ -9,7 +9,7 @@ import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 
-import com.adamrosenfield.wordswithcrosses.shortyz.R;
+import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
 
 
 public class SeparatedListAdapter extends BaseAdapter {

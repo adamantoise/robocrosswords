@@ -1,7 +1,7 @@
 package com.adamrosenfield.wordswithcrosses;
 
-import static com.adamrosenfield.wordswithcrosses.shortyz.ShortyzApplication.BOARD;
-import static com.adamrosenfield.wordswithcrosses.shortyz.ShortyzApplication.RENDERER;
+import static com.adamrosenfield.wordswithcrosses.wordswithcrosses.ShortyzApplication.BOARD;
+import static com.adamrosenfield.wordswithcrosses.wordswithcrosses.ShortyzApplication.RENDERER;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,8 +51,8 @@ import com.adamrosenfield.wordswithcrosses.puz.Playboard.Clue;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Word;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
-import com.adamrosenfield.wordswithcrosses.shortyz.R;
-import com.adamrosenfield.wordswithcrosses.shortyz.ShortyzApplication;
+import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
+import com.adamrosenfield.wordswithcrosses.wordswithcrosses.ShortyzApplication;
 import com.adamrosenfield.wordswithcrosses.view.PlayboardRenderer;
 import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView;
 import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.ClickListener;

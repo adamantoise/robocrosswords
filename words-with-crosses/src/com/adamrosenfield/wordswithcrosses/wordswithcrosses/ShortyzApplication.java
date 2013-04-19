@@ -1,4 +1,4 @@
-package com.adamrosenfield.wordswithcrosses.shortyz;
+package com.adamrosenfield.wordswithcrosses.wordswithcrosses;
 
 import java.io.File;
 import java.io.FileInputStream;
