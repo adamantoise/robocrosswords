@@ -3,7 +3,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
   android:layout_height="72dp">
-  <com.totsp.crossword.view.VerticalProgressBar 
+  <com.adamrosenfield.wordswithcrosses.view.VerticalProgressBar 
   	android:layout_height="72dp"
   	android:layout_width="8dp"
   	android:layout_alignParentLeft="true"

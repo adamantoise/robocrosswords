@@ -39,7 +39,7 @@
 
 	</LinearLayout>
 
-	<com.totsp.crossword.view.ScrollingImageView
+	<com.adamrosenfield.wordswithcrosses.view.ScrollingImageView
 		android:id="@+id/board" android:layout_alignParentTop="true"
 		android:layout_alignParentRight="true"
 		android:layout_alignParentLeft="true" android:layout_above="@id/cluesLinear"

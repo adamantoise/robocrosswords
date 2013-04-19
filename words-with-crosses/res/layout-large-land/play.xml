@@ -43,7 +43,7 @@
      
 	
 	
-	<com.totsp.crossword.view.ScrollingImageView
+	<com.adamrosenfield.wordswithcrosses.view.ScrollingImageView
 	    android:id="@+id/board"
 	    android:layout_width="wrap_content"
 	    android:layout_height="fill_parent"
