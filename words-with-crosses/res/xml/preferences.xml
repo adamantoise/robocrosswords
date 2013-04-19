@@ -313,7 +313,7 @@
  </PreferenceCategory>
 	
 	<PreferenceCategory
-		android:title="About Shortyz">
+		android:title="About Words With Crosses">
 	
 	<Preference
 	 	android:title="Release Notes" 
