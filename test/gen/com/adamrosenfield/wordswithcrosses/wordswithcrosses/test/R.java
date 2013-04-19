@@ -5,7 +5,7 @@
  * should not be modified by hand.
  */
 
-package com.totsp.crossword.shortyz.test;
+package com.adamrosenfield.wordswithcrosses.wordswithcrosses.test;
 
 public final class R {
     public static final class attr {
