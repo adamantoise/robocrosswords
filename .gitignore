@@ -1,5 +1,6 @@
-/shortyz/bin/
+/words-with-crosses/bin/
 /puzlib/target/
 /web/target/
 /test/bin/
 .DS_Store
+.metadata
