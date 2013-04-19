@@ -5,7 +5,7 @@
  * should not be modified by hand.
  */
 
-package com.totsp.crossword.shortyz;
+package com.adamrosenfield.wordswithcrosses.wordswithcrosses;
 
 public final class R {
     public static final class array {
@@ -105,7 +105,7 @@ public final class R {
         public static final int puzzle_select=0x7f060002;
     }
     public static final class style {
-        public static final int ShortyzTheme=0x7f070000;
+        public static final int WordsWithCrossesTheme=0x7f070000;
     }
     public static final class xml {
         public static final int keyboard=0x7f040000;
