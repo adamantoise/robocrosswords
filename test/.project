@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>shortyz-test</name>
+	<name>words-with-crosses-test</name>
 	<comment></comment>
 	<projects>
-		<project>shortyz</project>
+		<project>words-with-crosses</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
