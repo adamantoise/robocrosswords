@@ -1,4 +1,4 @@
-package com.totsp.crossword;
+package com.adamrosenfield.wordswithcrosses;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

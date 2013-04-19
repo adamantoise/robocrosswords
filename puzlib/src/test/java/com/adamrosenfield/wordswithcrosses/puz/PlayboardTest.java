@@ -3,14 +3,14 @@
  * and open the template in the editor.
  */
 
-package com.totsp.crossword.puz;
+package com.adamrosenfield.wordswithcrosses.puz;
 
 import java.io.DataInputStream;
 
 import junit.framework.TestCase;
 
-import com.totsp.crossword.io.IO;
-import com.totsp.crossword.puz.Playboard.Position;
+import com.adamrosenfield.wordswithcrosses.io.IO;
+import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 
 /**
  *

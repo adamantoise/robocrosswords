@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package com.totsp.crossword.puz;
+package com.adamrosenfield.wordswithcrosses.puz;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -16,8 +16,8 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 
-import com.totsp.crossword.io.IO;
-import com.totsp.crossword.puz.Playboard.Clue;
+import com.adamrosenfield.wordswithcrosses.io.IO;
+import com.adamrosenfield.wordswithcrosses.puz.Playboard.Clue;
 
 /**
  *
