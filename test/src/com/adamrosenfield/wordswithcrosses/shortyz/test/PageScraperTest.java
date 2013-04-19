@@ -1,8 +1,8 @@
-package com.totsp.crossword.shortyz.test;
+package com.adamrosenfield.wordswithcrosses.wordswithcrosses.test;
 
 import android.test.AndroidTestCase;
 
-import com.totsp.crossword.net.AbstractPageScraper;
+import com.adamrosenfield.wordswithcrosses.net.AbstractPageScraper;
 
 public class PageScraperTest extends AndroidTestCase{
 
