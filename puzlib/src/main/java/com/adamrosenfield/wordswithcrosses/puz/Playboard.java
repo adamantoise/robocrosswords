@@ -1,4 +1,4 @@
-package com.totsp.crossword.puz;
+package com.adamrosenfield.wordswithcrosses.puz;
 
 import java.io.Serializable;
 

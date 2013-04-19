@@ -24,7 +24,7 @@
  * have any questions.
  */
 
-package com.totsp.crossword.io.charset;
+package com.adamrosenfield.wordswithcrosses.io.charset;
 
 
 import java.nio.charset.Charset;

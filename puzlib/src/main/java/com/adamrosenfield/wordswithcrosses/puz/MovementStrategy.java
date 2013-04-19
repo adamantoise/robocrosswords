@@ -1,9 +1,9 @@
-package com.totsp.crossword.puz;
+package com.adamrosenfield.wordswithcrosses.puz;
 
 import java.util.Arrays;
 
-import com.totsp.crossword.puz.Playboard.Position;
-import com.totsp.crossword.puz.Playboard.Word;
+import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
+import com.adamrosenfield.wordswithcrosses.puz.Playboard.Word;
 import java.io.Serializable;
 
 public interface MovementStrategy extends Serializable {
