@@ -261,7 +261,7 @@ public class Downloaders {
             try {
                 for (File file : crosswords.listFiles()) {
                     if (file.getName()
-                                .endsWith(".shortyz")) {
+                                .endsWith(".wordswithcrosses")) {
                         File puz = new File(file.getAbsolutePath().substring(0,
                                     file.getAbsolutePath().lastIndexOf('.') + 1) + "puz");
                         System.out.println(puz.getAbsolutePath());
@@ -276,7 +276,7 @@ public class Downloaders {
 
                 for (File file : archive.listFiles()) {
                     if (file.getName()
-                                .endsWith(".shortyz")) {
+                                .endsWith(".wordswithcrosses")) {
                         checkUpdate.add(new File(file.getAbsolutePath().substring(0,
                                     file.getAbsolutePath().lastIndexOf('.') + 1) + "puz"));
                     }

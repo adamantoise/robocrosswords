@@ -72,7 +72,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         File meta = new File(this.contextFile.getParent(),
-                contextFile.getName().substring(0, contextFile.getName().lastIndexOf(".")) + ".shortyz");
+                contextFile.getName().substring(0, contextFile.getName().lastIndexOf(".")) + ".wordswithcrosses");
 
         if (item.getTitle()
                     .equals("Delete")) {
@@ -534,7 +534,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
         for (FileHandle h : toCleanup) {
             File meta = new File(directory,
-                    h.file.getName().substring(0, h.file.getName().lastIndexOf(".")) + ".shortyz");
+                    h.file.getName().substring(0, h.file.getName().lastIndexOf(".")) + ".wordswithcrosses");
 
             if (prefs.getBoolean("deleteOnCleanup", false)) {
                 h.file.delete();

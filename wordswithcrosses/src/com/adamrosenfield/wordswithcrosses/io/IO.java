@@ -72,7 +72,7 @@ public class IO {
 
 	public static Puzzle load(File baseFile) throws IOException {
 		File metaFile = new File(baseFile.getParentFile(), baseFile.getName()
-				.substring(0, baseFile.getName().lastIndexOf(".")) + ".shortyz");
+				.substring(0, baseFile.getName().lastIndexOf(".")) + ".wordswithcrosses");
 		FileInputStream fis = new FileInputStream(baseFile);
 		Puzzle puz = IO.loadNative(new DataInputStream(fis));
 		fis.close();
@@ -217,7 +217,7 @@ public class IO {
 
 	public static PuzzleMeta meta(File baseFile) throws IOException {
 		File metaFile = new File(baseFile.getParentFile(), baseFile.getName()
-				.substring(0, baseFile.getName().lastIndexOf(".")) + ".shortyz");
+				.substring(0, baseFile.getName().lastIndexOf(".")) + ".wordswithcrosses");
 		FileInputStream fis = new FileInputStream(metaFile);
 		PuzzleMeta m = IO.readMeta(new DataInputStream(fis));
 		fis.close();
@@ -351,7 +351,7 @@ public class IO {
 	public static void save(Puzzle puz, File baseFile) throws IOException {
 		long incept = System.currentTimeMillis();
 		File metaFile = new File(baseFile.getParentFile(), baseFile.getName()
-				.substring(0, baseFile.getName().lastIndexOf(".")) + ".shortyz");
+				.substring(0, baseFile.getName().lastIndexOf(".")) + ".wordswithcrosses");
 
 		File puztemp = new File(TEMP_FOLDER, baseFile.getName());
 		File metatemp = new File(TEMP_FOLDER, metaFile.getName());
