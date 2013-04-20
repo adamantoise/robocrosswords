@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/finished"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:gravity="center"
     android:orientation="vertical" >
-	<TableLayout
+
+    <TableLayout
         android:id="@+id/tableLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
@@ -17,98 +19,97 @@
 
             <TextView
                 android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:text="@string/completed_in"
-		        android:textColor="#fff"
-		        android:textSize="16dp"
-		        android:padding="7dp"
-                />
-            
+                android:layout_height="wrap_content"
+                android:padding="7dp"
+                android:text="@string/completed_in"
+                android:textColor="#fff"
+                android:textSize="16dp" />
+
             <TextView
                 android:id="@+id/elapsed"
                 android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:text="XX:XX:XX"
-		        android:textColor="#fff"
-		        android:textSize="16dp"
-		        android:padding="7dp"
-                />
+                android:layout_height="wrap_content"
+                android:padding="7dp"
+                android:text="XX:XX:XX"
+                android:textColor="#fff"
+                android:textSize="16dp"
+                tools:ignore="HardcodedText" />
         </TableRow>
 
         <TableRow
-            android:gravity="center"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:gravity="center" >
+
             <TextView
                 android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:text="@string/total_clues"
-		        android:textColor="#fff"
-		        android:textSize="16dp"
-		        android:padding="7dp"
-                />
-            
+                android:layout_height="wrap_content"
+                android:padding="7dp"
+                android:text="@string/total_clues"
+                android:textColor="#fff"
+                android:textSize="16dp" />
+
             <TextView
                 android:id="@+id/totalClues"
                 android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:text="XX"
-		        android:textColor="#fff"
-		        android:textSize="16dp"
-		        android:padding="7dp"
-                />
+                android:layout_height="wrap_content"
+                android:padding="7dp"
+                android:text="XX"
+                android:textColor="#fff"
+                android:textSize="16dp"
+                tools:ignore="HardcodedText" />
+
         </TableRow>
-        
+
         <TableRow
-            android:gravity="center"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:gravity="center" >
+
             <TextView
                 android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:text="@string/total_boxes"
-		        android:textColor="#fff"
-		        android:textSize="16dp"
-		        android:padding="7dp"
-                />
-            
+                android:layout_height="wrap_content"
+                android:padding="7dp"
+                android:text="@string/total_boxes"
+                android:textColor="#fff"
+                android:textSize="16dp" />
+
             <TextView
                 android:id="@+id/totalBoxes"
                 android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:text="XX"
-		        android:textColor="#fff"
-		        android:textSize="16dp"
-		        android:padding="7dp"
-                />
+                android:layout_height="wrap_content"
+                android:padding="7dp"
+                android:text="XX"
+                android:textColor="#fff"
+                android:textSize="16dp"
+                tools:ignore="HardcodedText" />
+
         </TableRow>
-            
 
         <TableRow
-            android:gravity="center"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:gravity="center" >
+
             <TextView
                 android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:text="@string/hinted_boxes"
-		        android:textColor="#fff"
-		        android:textSize="16dp"
-		        android:padding="7dp"
-                />
-            
+                android:layout_height="wrap_content"
+                android:padding="7dp"
+                android:text="@string/hinted_boxes"
+                android:textColor="#fff"
+                android:textSize="16dp" />
+
             <TextView
                 android:id="@+id/cheatedBoxes"
                 android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:text="XX (XX%)"
-		        android:textColor="#fff"
-		        android:textSize="16dp"
-		        android:padding="7dp"
-                />
-        </TableRow>
+                android:layout_height="wrap_content"
+                android:padding="7dp"
+                android:text="XX (XX%)"
+                android:textColor="#fff"
+                android:textSize="16dp"
+                tools:ignore="HardcodedText" />
 
-      
+        </TableRow>
     </TableLayout>
 
     <LinearLayout
@@ -123,14 +124,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/share" />
-        
-         <Button
+
+        <Button
             android:id="@+id/done"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/done" />
-
     </LinearLayout>
-    
+
 </LinearLayout>
