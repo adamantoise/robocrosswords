@@ -3,7 +3,6 @@ package com.adamrosenfield.wordswithcrosses;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import android.app.Activity;
@@ -12,7 +11,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.content.DialogInterface.OnShowListener;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +28,6 @@ import com.adamrosenfield.wordswithcrosses.net.Downloaders;
 import com.adamrosenfield.wordswithcrosses.net.DummyDownloader;
 import com.adamrosenfield.wordswithcrosses.view.DownloadPickerView;
 import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
-
 
 /**
  * Custom dialog for choosing puzzles to download.
@@ -108,14 +105,14 @@ public class DownloadPickerDialogBuilder {
         return mDialog;
     }
 
-    private Date getCurrentDate() {
+    private Calendar getCurrentDate() {
         Calendar calendar = Calendar.getInstance();
-        calendar.set(mYear - 1900, mMonthOfYear, mDayOfMonth);
-        return calendar.getTime();
+        calendar.set(mYear, mMonthOfYear, mDayOfMonth);
+        return calendar;
     }
 
     private void updateDateLabel() {
-        mDateLabel.setText(df.format(getCurrentDate()));
+        mDateLabel.setText(df.format(getCurrentDate().getTime()));
     }
 
     private void updatePuzzleSelect() {
@@ -135,6 +132,6 @@ public class DownloadPickerDialogBuilder {
     }
 
     public interface OnDownloadSelectedListener {
-        void onDownloadSelected(Date date, List<Downloader> availableDownloaders, int selected);
+        void onDownloadSelected(Calendar date, List<Downloader> availableDownloaders, int selected);
     }
 }

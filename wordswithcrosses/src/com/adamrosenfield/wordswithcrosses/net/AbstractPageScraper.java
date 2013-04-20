@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,7 +99,7 @@ public class AbstractPageScraper {
 			puz.setUpdatable(true);
 			puz.setSource(this.sourceName);
 			puz.setSourceUrl(sourceUrl);
-			puz.setDate(new Date());
+			puz.setDate(Calendar.getInstance());
 			IO.save(puz, file);
 
 			return true;

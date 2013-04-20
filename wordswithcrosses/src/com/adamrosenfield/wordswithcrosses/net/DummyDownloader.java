@@ -1,10 +1,9 @@
 package com.adamrosenfield.wordswithcrosses.net;
 
 import java.io.File;
-import java.util.Date;
+import java.util.Calendar;
 
 import android.content.Context;
-
 
 /**
  * Does not actually download any puzzles; just adds an "All Available" option to the dropdown.
@@ -22,15 +21,15 @@ public class DummyDownloader implements Downloader {
         return null;
     }
 
-    public String createFileName(Date date) {
+    public String createFileName(Calendar date) {
         return null;
     }
 
-    public File download(Date date) {
+    public File download(Calendar date) {
         return null;
     }
 
-    public String sourceUrl(Date date) {
+    public String sourceUrl(Calendar date) {
         return null;
     }
 

@@ -2,8 +2,7 @@ package com.adamrosenfield.wordswithcrosses.net;
 
 import java.io.File;
 import java.text.NumberFormat;
-import java.util.Date;
-
+import java.util.Calendar;
 
 /**
  * Jonesin' Crosswords Downloader
@@ -28,12 +27,16 @@ public class JonesinDownloader extends AbstractDownloader {
         return NAME;
     }
 
-    public File download(Date date) {
+    public File download(Calendar date) {
         return super.download(date, this.createUrlSuffix(date));
     }
 
     @Override
-    protected String createUrlSuffix(Date date) {
-        return "jz" + (date.getYear() - 100) + nf.format(date.getMonth() + 1) + nf.format(date.getDate()) + ".puz";
+    protected String createUrlSuffix(Calendar date) {
+        return ("jz" +
+                (date.get(Calendar.YEAR) % 100) +
+                nf.format(date.get(Calendar.MONTH) + 1) +
+                nf.format(date.get(Calendar.DAY_OF_MONTH)) +
+                ".puz");
     }
 }

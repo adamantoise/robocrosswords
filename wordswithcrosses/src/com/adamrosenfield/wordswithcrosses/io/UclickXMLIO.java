@@ -4,7 +4,7 @@ import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -146,9 +146,9 @@ public class UclickXMLIO {
 	}
 	
 	public static boolean convertUclickPuzzle(InputStream is, DataOutputStream os,
-			String copyright, Date d) {
+			String copyright, Calendar date) {
 		Puzzle puz = new Puzzle();
-		puz.setDate(d);
+		puz.setDate(date);
 		puz.setCopyright(copyright);
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		try {

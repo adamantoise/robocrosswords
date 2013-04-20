@@ -9,7 +9,7 @@ public interface Accessor extends Comparator<FileHandle> {
             public String getLabel(FileHandle o) {
                 SimpleDateFormat df = new SimpleDateFormat("EEEEEEEEE MMM dd, yyyy");
 
-                return df.format(o.getDate());
+                return df.format(o.getDate().getTime());
             }
 
             public int compare(FileHandle object1, FileHandle object2) {
@@ -22,7 +22,7 @@ public interface Accessor extends Comparator<FileHandle> {
             public String getLabel(FileHandle o) {
                 SimpleDateFormat df = new SimpleDateFormat("EEEEEEEEE MMM dd, yyyy");
 
-                return df.format(o.getDate());
+                return df.format(o.getDate().getTime());
             }
 
             public int compare(FileHandle object1, FileHandle object2) {

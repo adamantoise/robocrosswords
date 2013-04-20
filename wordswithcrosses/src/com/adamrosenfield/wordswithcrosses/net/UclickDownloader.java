@@ -7,14 +7,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.text.DateFormat;
 import java.text.NumberFormat;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.logging.Level;
 
 import com.adamrosenfield.wordswithcrosses.io.UclickXMLIO;
 import com.adamrosenfield.wordswithcrosses.versions.DefaultUtil;
-
 
 /**
  * Uclick XML Puzzles
@@ -25,7 +23,6 @@ import com.adamrosenfield.wordswithcrosses.versions.DefaultUtil;
  * lacal (LA Times Sunday Calendar) = Sunday
  */
 public class UclickDownloader extends AbstractDownloader {
-    DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
     NumberFormat nf = NumberFormat.getInstance();
     private String copyright;
     private String fullName;
@@ -50,7 +47,7 @@ public class UclickDownloader extends AbstractDownloader {
         return fullName;
     }
 
-    public File download(Date date) {
+    public File download(Calendar date) {
         File downloadTo = new File(this.downloadDirectory, this.createFileName(date));
 
         if (downloadTo.exists()) {
@@ -68,7 +65,7 @@ public class UclickDownloader extends AbstractDownloader {
             InputStream is = new FileInputStream(plainText);
             DataOutputStream os = new DataOutputStream(new FileOutputStream(downloadTo));   
             boolean retVal = UclickXMLIO.convertUclickPuzzle(is, os,
-                    "\u00a9 " + (date.getYear() + 1900) + " " + copyright, date);
+                    "\u00a9 " + date.get(Calendar.YEAR) + " " + copyright, date);
             os.close();
             is.close();
             plainText.delete();
@@ -88,12 +85,15 @@ public class UclickDownloader extends AbstractDownloader {
     }
 
     @Override
-    protected String createUrlSuffix(Date date) {
-        return this.shortName + nf.format(date.getYear() - 100) + nf.format(date.getMonth() + 1) +
-        nf.format(date.getDate()) + "-data.xml";
+    protected String createUrlSuffix(Calendar date) {
+        return (this.shortName +
+                nf.format(date.get(Calendar.YEAR) % 100) +
+                nf.format(date.get(Calendar.MONTH) + 1) +
+                nf.format(date.get(Calendar.DAY_OF_MONTH)) +
+                "-data.xml");
     }
 
-    private File downloadToTempFile(Date date) {
+    private File downloadToTempFile(Calendar date) {
         DefaultUtil util = new DefaultUtil();
         File f = new File(downloadDirectory, this.createFileName(date));
 

@@ -7,8 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.NumberFormat;
-import java.util.Date;
-
+import java.util.Calendar;
 
 /**
  * The Onion AV Club
@@ -33,18 +32,21 @@ public class AVClubDownloader extends AbstractDownloader {
         return NAME;
     }
 
-    public File download(Date date) {
+    public File download(Calendar date) {
         return this.download(date, this.createUrlSuffix(date));
     }
 
     @Override
-    protected String createUrlSuffix(Date date) {
-        return "av" + this.nf.format(date.getYear() - 100) + this.nf.format(date.getMonth() + 1) +
-        this.nf.format(date.getDate()) + ".puz";
+    protected String createUrlSuffix(Calendar date) {
+        return ("av" +
+                this.nf.format(date.get(Calendar.YEAR) % 100) +
+                this.nf.format(date.get(Calendar.MONTH) + 1) +
+                this.nf.format(date.get(Calendar.DAY_OF_MONTH)) +
+                ".puz");
     }
 
     @Override
-    protected File download(Date date, String urlSuffix) {
+    protected File download(Calendar date, String urlSuffix) {
         try {
             URL url = new URL(this.baseUrl + urlSuffix);
             System.out.println(url);

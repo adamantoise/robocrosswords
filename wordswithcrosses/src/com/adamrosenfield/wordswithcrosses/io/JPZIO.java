@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -46,8 +46,6 @@ import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
  * </crossword-compiler-applet>
  */
 public class JPZIO {
-	private static String CHARSET_NAME = "utf8";
-
 	public static int copyStream(InputStream sourceStream,
 			OutputStream destinationStream) throws IOException {
 		int bytesRead = 0;
@@ -130,11 +128,11 @@ public class JPZIO {
 	}
 
 	public static boolean convertJPZPuzzle(InputStream is, DataOutputStream os,
-			Date d) {
+			Calendar date) {
 
 		try {
 			Puzzle puz = readPuzzle(is);
-			puz.setDate(d);
+			puz.setDate(date);
 			puz.setVersion(IO.VERSION_STRING);
 
 			IO.saveNative(puz, os);

@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Date;
+import java.util.Calendar;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -20,7 +20,6 @@ import android.widget.Toast;
 
 import com.adamrosenfield.wordswithcrosses.net.Downloaders;
 import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
-
 
 /**
  * Listener for WebBrowserActivity which handles downloading a puzzle and adding it to the puzzle
@@ -109,7 +108,7 @@ public class PuzzleDownloadListener implements DownloadListener {
             in.close();
 
             PuzzleMeta meta = new PuzzleMeta();
-            meta.date = new Date();
+            meta.date = Calendar.getInstance();
 
             if (Downloaders.processDownloadedPuzzle(outputFile, meta)) {
                 sendMessage("Puzzle " + fileName + " downloaded successfully.");

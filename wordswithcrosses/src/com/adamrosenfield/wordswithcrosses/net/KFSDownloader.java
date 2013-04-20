@@ -8,12 +8,11 @@ import java.io.InputStream;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.NumberFormat;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.logging.Level;
 
 import com.adamrosenfield.wordswithcrosses.io.KingFeaturesPlaintextIO;
 import com.adamrosenfield.wordswithcrosses.versions.DefaultUtil;
-
 
 /**
  * King Features Syndicate Puzzles
@@ -46,7 +45,7 @@ public class KFSDownloader extends AbstractDownloader {
         return fullName;
     }
 
-    public File download(Date date) {
+    public File download(Calendar date) {
         File downloadTo = new File(this.downloadDirectory, this.createFileName(date));
 
         if (downloadTo.exists()) {
@@ -59,12 +58,12 @@ public class KFSDownloader extends AbstractDownloader {
             return null;
         }
 
-        String copyright = "\u00a9 " + (date.getYear() + 1900) + " King Features Syndicate.";
+        String copyright = "\u00a9 " + date.get(Calendar.YEAR) + " King Features Syndicate.";
 
         try {
             InputStream is = new FileInputStream(plainText);
             DataOutputStream os = new DataOutputStream(new FileOutputStream(downloadTo));
-            boolean retVal = KingFeaturesPlaintextIO.convertKFPuzzle(is, os, fullName + ", " + df.format(date), author,
+            boolean retVal = KingFeaturesPlaintextIO.convertKFPuzzle(is, os, fullName + ", " + df.format(date.getTime()), author,
                     copyright, date);
             os.close();
             is.close();
@@ -85,11 +84,14 @@ public class KFSDownloader extends AbstractDownloader {
     }
 
     @Override
-    protected String createUrlSuffix(Date date) {
-        return (date.getYear() + 1900) + nf.format(date.getMonth() + 1) + nf.format(date.getDate()) + ".txt";
+    protected String createUrlSuffix(Calendar date) {
+        return (date.get(Calendar.YEAR) +
+                nf.format(date.get(Calendar.MONTH) + 1) +
+                nf.format(date.get(Calendar.DAY_OF_MONTH)) +
+                ".txt");
     }
 
-    private File downloadToTempFile(Date date) {
+    private File downloadToTempFile(Calendar date) {
         DefaultUtil util = new DefaultUtil();
         File downloaded = new File(downloadDirectory, this.createFileName(date));
 

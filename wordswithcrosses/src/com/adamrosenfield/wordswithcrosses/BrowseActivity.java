@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,7 +52,6 @@ import com.adamrosenfield.wordswithcrosses.view.VerticalProgressBar;
 public class BrowseActivity extends WordsWithCrossesActivity implements OnItemClickListener {
     private static final String MENU_ARCHIVES = "Archives";
     private static final int DOWNLOAD_DIALOG_ID = 0;
-    private static final long DAY = 24L * 60L * 60L * 1000L;
     private Accessor accessor = Accessor.DATE_DESC;
     private BaseAdapter currentAdapter = null;
     private Dialog mDownloadDialog;
@@ -309,7 +308,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         case DOWNLOAD_DIALOG_ID:
 
             DownloadPickerDialogBuilder.OnDownloadSelectedListener downloadButtonListener = new DownloadPickerDialogBuilder.OnDownloadSelectedListener() {
-                    public void onDownloadSelected(Date d, List<Downloader> downloaders, int selected) {
+                    public void onDownloadSelected(Calendar date, List<Downloader> downloaders, int selected) {
                         List<Downloader> toDownload = new LinkedList<Downloader>();
                         boolean scrape;
                         System.out.println(selected + " of " + downloaders.size());
@@ -325,14 +324,16 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
                             scrape = false;
                         }
 
-                        download(d, toDownload, scrape);
+                        download(date, toDownload, scrape);
                     }
                 };
 
-            Date d = new Date();
+            Calendar now = Calendar.getInstance();
 
             DownloadPickerDialogBuilder dpd = new DownloadPickerDialogBuilder(this, downloadButtonListener,
-                    d.getYear() + 1900, d.getMonth(), d.getDate(),
+                    now.get(Calendar.YEAR),
+                    now.get(Calendar.MONTH),
+                    now.get(Calendar.DAY_OF_MONTH),
                     new Provider<Downloaders>() {
                         public Downloaders get() {
                             return new Downloaders(prefs, nm, BrowseActivity.this);
@@ -487,7 +488,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
         if (prefs.getBoolean("dlOnStartup", true) &&
                 ((System.currentTimeMillis() - (long) (12 * 60 * 60 * 1000)) > lastDL)) {
-            this.download(new Date(), null, true);
+            this.download(Calendar.getInstance(), null, true);
             prefs.edit()
                  .putLong("dlLast", System.currentTimeMillis())
                  .commit();
@@ -507,7 +508,6 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
                 try {
                     m = IO.meta(f);
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
 
@@ -526,8 +526,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
         for (FileHandle h : puzFiles) {
             //System.out.println(h.getDate().getTime() + " vs "+ maxAge);
-            if ((h.getProgress() == 100) || (h.getDate()
-                                                  .getTime() < maxAge)) {
+            if ((h.getProgress() == 100) || (h.getDate().getTimeInMillis() < maxAge)) {
                 toCleanup.add(h);
             }
         }
@@ -548,11 +547,11 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         render();
     }
 
-    private void download(final Date d, final List<Downloader> downloaders, final boolean scrape) {
+    private void download(final Calendar date, final List<Downloader> downloaders, final boolean scrape) {
         final Downloaders dls = new Downloaders(prefs, nm, this);
         new Thread(new Runnable() {
                 public void run() {
-                    dls.download(d, downloaders);
+                    dls.download(date, downloaders);
 
                     if (scrape) {
                         Scrapers scrapes = new Scrapers(prefs, nm, BrowseActivity.this);
@@ -578,11 +577,12 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
                     scrapes.supressMessages(true);
                     scrapes.scrape();
 
-                    Date d = new Date();
+                    Calendar now = Calendar.getInstance();
 
                     for (int i = 0; i < 5; i++) {
-                        d = new Date(d.getTime() - DAY);
-                        dls.download(d);
+                        Calendar date = (Calendar)now.clone();
+                        date.add(Calendar.DAY_OF_MONTH, -(i + 1));
+                        dls.download(date);
                         handler.post(new Runnable() {
                                 public void run() {
                                     BrowseActivity.this.render();
@@ -698,7 +698,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
             TextView date = (TextView) view.findViewById(R.id.puzzle_date);
 
-            date.setText(df.format(puzFiles[i].getDate()));
+            date.setText(df.format(puzFiles[i].getDate().getTime()));
 
             if (accessor == Accessor.SOURCE) {
                 date.setVisibility(View.VISIBLE);

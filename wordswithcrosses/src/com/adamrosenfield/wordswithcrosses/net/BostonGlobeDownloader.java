@@ -2,8 +2,7 @@ package com.adamrosenfield.wordswithcrosses.net;
 
 import java.io.File;
 import java.text.NumberFormat;
-import java.util.Date;
-
+import java.util.Calendar;
 
 /**
  * Boston Globe
@@ -28,13 +27,16 @@ public class BostonGlobeDownloader extends AbstractDownloader {
         return NAME;
     }
 
-    public File download(Date date) {
+    public File download(Calendar date) {
         return super.download(date, this.createUrlSuffix(date));
     }
 
     @Override
-    protected String createUrlSuffix(Date date) {
-        return "boston_" + nf.format(date.getMonth() + 1) + nf.format(date.getDate()) + (date.getYear() + 1900) +
-        ".puz";
+    protected String createUrlSuffix(Calendar date) {
+        return ("boston_" +
+                nf.format(date.get(Calendar.MONTH) + 1) +
+                nf.format(date.get(Calendar.DAY_OF_MONTH)) +
+                date.get(Calendar.YEAR) +
+                ".puz");
     }
 }

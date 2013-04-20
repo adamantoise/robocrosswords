@@ -10,7 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -74,7 +74,7 @@ public class NYTDownloader extends AbstractDownloader {
 		return NYTDownloader.NAME;
 	}
 
-	public File download(Date date) {
+	public File download(Calendar date) {
 		// Feb2310.puz
 		return this.download(date, this.createUrlSuffix(date));
 	}
@@ -152,17 +152,21 @@ public class NYTDownloader extends AbstractDownloader {
 		return null;
 	}
 
-	@Override
-	protected String createUrlSuffix(Date date) {
-		return (date.getYear() + 1900) + "/"
-				+ this.nf.format(date.getMonth() + 1) + "/"
-				+ this.nf.format(date.getDate()) + "/"
-				+ MONTHS[date.getMonth()] + this.nf.format(date.getDate())
-				+ this.nf.format(date.getYear() - 100) + ".puz";
-	}
+    @Override
+    protected String createUrlSuffix(Calendar date) {
+        return (date.get(Calendar.YEAR) + "/" +
+                this.nf.format(date.get(Calendar.MONTH) + 1) +
+                "/" +
+                this.nf.format(date.get(Calendar.DAY_OF_MONTH)) +
+                "/" +
+                MONTHS[date.get(Calendar.MONTH)] +
+                this.nf.format(date.get(Calendar.DAY_OF_MONTH)) +
+                this.nf.format(date.get(Calendar.YEAR) % 100) +
+                ".puz");
+    }
 
 	@Override
-	protected File download(Date date, String urlSuffix) {
+	protected File download(Calendar date, String urlSuffix) {
 		try {
 			URL url = new URL(this.baseUrl + urlSuffix);
 			HttpClient client = this.login();

@@ -24,6 +24,7 @@ import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class IO {
 	public static final String FILE_MAGIC = "ACROSS&DOWN";
@@ -340,6 +341,13 @@ public class IO {
 				CHARSET.name());
 	}
 
+	public static Calendar readDate(DataInputStream dis)
+	    throws IOException {
+	    Calendar date = Calendar.getInstance();
+	    date.setTimeInMillis(dis.readLong());
+	    return date;
+	}
+
 	public static void save(Puzzle puz, DataOutputStream puzzleOutputStream,
 			DataOutputStream metaOutputStream) throws IOException {
 		IO.saveNative(puz, puzzleOutputStream);
@@ -570,6 +578,11 @@ public class IO {
 		byte[] encoded = CHARSET.encode(value).array();
 		os.write(encoded);
 		os.write(0);
+	}
+
+	public static void writeDate(DataOutputStream dos, Calendar date)
+	    throws IOException {
+	    dos.writeLong(date != null ? date.getTimeInMillis() : 0);
 	}
 
 	public static void unscrambleString(Puzzle p, byte[] str) {

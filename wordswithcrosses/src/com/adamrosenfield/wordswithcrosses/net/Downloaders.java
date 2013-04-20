@@ -3,9 +3,7 @@ package com.adamrosenfield.wordswithcrosses.net;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -137,12 +135,12 @@ public class Downloaders {
 		this.supressMessages = prefs.getBoolean("supressMessages", false);
 	}
 
-	public List<Downloader> getDownloaders(Date date) {
-		int dayOfWeek = date.getDay();
+	public List<Downloader> getDownloaders(Calendar date) {
+		int dayOfWeek = date.get(Calendar.DAY_OF_WEEK);
 		List<Downloader> retVal = new LinkedList<Downloader>();
 
 		for (Downloader d : downloaders) {
-			if (Arrays.binarySearch(d.getDownloadDates(), dayOfWeek) >= 0) {
+			if (arrayContains(d.getDownloadDates(), dayOfWeek)) {
 				retVal.add(d);
 			}
 		}
@@ -150,26 +148,34 @@ public class Downloaders {
 		return retVal;
 	}
 
-	public void download(Date date) {
+	private static boolean arrayContains(int[] a, int key) {
+	    for (int x : a) {
+	        if (x == key) {
+	            return true;
+	        }
+	    }
+
+	    return false;
+	}
+
+	public void download(Calendar date) {
 		download(date, getDownloaders(date));
 	}
 
-	public void download(Date date, List<Downloader> downloaders) {
-        Calendar cal = Calendar.getInstance();
-        Calendar now = Calendar.getInstance();
-        cal.setTime(date);
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
+    public void download(Calendar date, List<Downloader> downloaders) {
+        date = (Calendar)date.clone();
+        date.set(Calendar.HOUR_OF_DAY, 0);
+        date.set(Calendar.MINUTE, 0);
+        date.set(Calendar.SECOND, 0);
+        date.set(Calendar.MILLISECOND, 0);
 
-        date = cal.getTime();
-        now.setTimeInMillis(System.currentTimeMillis());
+        //Calendar now = Calendar.getInstance();
+        //now.setTimeInMillis(System.currentTimeMillis());
 
-        now.set(Calendar.MINUTE, 0);
-        now.set(Calendar.SECOND, 0);
-        now.set(Calendar.MILLISECOND, 0);
-        now.set(Calendar.HOUR_OF_DAY, 0);
+        //now.set(Calendar.MINUTE, 0);
+        //now.set(Calendar.SECOND, 0);
+        //now.set(Calendar.MILLISECOND, 0);
+        //now.set(Calendar.HOUR_OF_DAY, 0);
 
         int i = 1;
         String contentTitle = "Downloading Puzzles";

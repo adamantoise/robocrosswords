@@ -1,22 +1,38 @@
 package com.adamrosenfield.wordswithcrosses.net;
 
 import java.io.File;
-import java.util.Date;
+import java.util.Calendar;
 
 import android.content.Context;
 
 
 public interface Downloader {
     // These lists must be sorted for binary search.
-    public static final int[] DATE_SUNDAY = new int[] { 0 };
-    public static final int[] DATE_MONDAY = new int[] { 1 };
-    public static final int[] DATE_TUESDAY = new int[] { 2 };
-    public static final int[] DATE_WEDNESDAY = new int[] { 3 };
-    public static final int[] DATE_THURSDAY = new int[] { 4 };
-    public static final int[] DATE_FRIDAY = new int[] { 5 };
-    public static final int[] DATE_SATURDAY = new int[] { 6 };
-    public static final int[] DATE_DAILY = new int[] { 0, 1, 2, 3, 4, 5, 6 };
-    public static final int[] DATE_NO_SUNDAY = new int[] { 1, 2, 3, 4, 5, 6 };
+    public static final int[] DATE_SUNDAY = new int[] { Calendar.SUNDAY };
+    public static final int[] DATE_MONDAY = new int[] { Calendar.MONDAY };
+    public static final int[] DATE_TUESDAY = new int[] { Calendar.TUESDAY };
+    public static final int[] DATE_WEDNESDAY = new int[] { Calendar.WEDNESDAY };
+    public static final int[] DATE_THURSDAY = new int[] { Calendar.THURSDAY };
+    public static final int[] DATE_FRIDAY = new int[] { Calendar.FRIDAY };
+    public static final int[] DATE_SATURDAY = new int[] { Calendar.SATURDAY };
+    public static final int[] DATE_DAILY = new int[] {
+        Calendar.SUNDAY,
+        Calendar.MONDAY,
+        Calendar.TUESDAY,
+        Calendar.WEDNESDAY,
+        Calendar.THURSDAY,
+        Calendar.FRIDAY,
+        Calendar.SATURDAY
+    };
+    public static final int[] DATE_NO_SUNDAY = new int[] {
+        Calendar.MONDAY,
+        Calendar.TUESDAY,
+        Calendar.WEDNESDAY,
+        Calendar.THURSDAY,
+        Calendar.FRIDAY,
+        Calendar.SATURDAY
+    };
+
     public static final File DEFERRED_FILE = new File(".");
 
     public void setContext(Context context);
@@ -25,9 +41,9 @@ public interface Downloader {
 
     public String getName();
 
-    public String createFileName(Date date);
+    public String createFileName(Calendar date);
 
-    public File download(Date date);
+    public File download(Calendar date);
 
-    public String sourceUrl(Date date);
+    public String sourceUrl(Calendar date);
 }

@@ -1,7 +1,7 @@
 package com.adamrosenfield.wordswithcrosses.puz;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.util.Calendar;
 
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 
@@ -11,7 +11,7 @@ public class PuzzleMeta implements Serializable {
 	public String author;
 	public String title;
 	public String source;
-	public Date date;
+	public Calendar date;
 	public int percentComplete;
 	public boolean updateable;
 	public String sourceUrl;

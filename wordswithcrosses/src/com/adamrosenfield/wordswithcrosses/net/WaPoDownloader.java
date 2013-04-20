@@ -2,12 +2,11 @@ package com.adamrosenfield.wordswithcrosses.net;
 
 import java.io.File;
 import java.text.NumberFormat;
-import java.util.Date;
-
+import java.util.Calendar;
 
 /**
  * Washington Post downloader
- * URL: http://www.washingtonpost.com/r/WashingtonPost/Content/Puzzles/Daily/
+ * URL: http://www.washingtonpost.com/r/WashingtonPost/Content/Puzzles/Daily/csYYMMDD.jpz
  * Date = Daily
  */
 public class WaPoDownloader extends AbstractJPZDownloader {
@@ -28,12 +27,16 @@ public class WaPoDownloader extends AbstractJPZDownloader {
         return NAME;
     }
 
-    public File download(Date date) {
+    public File download(Calendar date) {
         return download(date, this.createUrlSuffix(date), EMPTY_MAP);
     }
 
     @Override
-    protected String createUrlSuffix(Date date) {
-        return "cs" + (date.getYear() - 100) + nf.format(date.getMonth() + 1) + nf.format(date.getDate()) + ".jpz";
+    protected String createUrlSuffix(Calendar date) {
+        return ("cs" +
+                (date.get(Calendar.YEAR) % 100) +
+                nf.format(date.get(Calendar.MONTH) + 1) +
+                nf.format(date.get(Calendar.DAY_OF_MONTH)) +
+                ".jpz");
     }
 }

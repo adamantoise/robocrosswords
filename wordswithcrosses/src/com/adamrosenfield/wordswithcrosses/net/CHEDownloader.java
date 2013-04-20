@@ -2,8 +2,7 @@ package com.adamrosenfield.wordswithcrosses.net;
 
 import java.io.File;
 import java.text.NumberFormat;
-import java.util.Date;
-
+import java.util.Calendar;
 
 /**
  * Chronicle of Higher Education
@@ -28,12 +27,15 @@ public class CHEDownloader extends AbstractDownloader {
         return NAME;
     }
 
-    public File download(Date date) {
+    public File download(Calendar date) {
         return super.download(date, this.createUrlSuffix(date));
     }
 
     @Override
-    protected String createUrlSuffix(Date date) {
-        return (date.getYear() + 1900) + nf.format(date.getMonth() + 1) + nf.format(date.getDate()) + ".puz";
+    protected String createUrlSuffix(Calendar date) {
+        return (date.get(Calendar.YEAR) +
+                nf.format(date.get(Calendar.MONTH) + 1) +
+                nf.format(date.get(Calendar.DAY_OF_MONTH)) +
+                ".puz");
     }
 }

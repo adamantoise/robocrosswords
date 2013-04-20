@@ -3,8 +3,6 @@ package com.adamrosenfield.wordswithcrosses.io.versions;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Date;
-
 import com.adamrosenfield.wordswithcrosses.io.IO;
 import com.adamrosenfield.wordswithcrosses.puz.Box;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
@@ -46,7 +44,7 @@ public class IOVersion1 implements IOVersion {
 		meta.author = IO.readNullTerminatedString(dis);
 		meta.source = IO.readNullTerminatedString(dis);
 		meta.title = IO.readNullTerminatedString(dis);
-		meta.date = new Date( dis.readLong() );
+		meta.date = IO.readDate(dis);
 		meta.percentComplete = dis.readInt();
 		return meta;
 		
@@ -56,7 +54,7 @@ public class IOVersion1 implements IOVersion {
 		IO.writeNullTerminatedString(dos, puz.getAuthor());
 		IO.writeNullTerminatedString(dos, puz.getSource());
 		IO.writeNullTerminatedString(dos, puz.getTitle());
-		dos.writeLong(puz.getDate() == null ? 0 : puz.getDate().getTime());
+		IO.writeDate(dos, puz.getDate());
 		dos.writeInt(puz.getPercentComplete());
 		//System.out.println("Meta written.");
 		Box[][] boxes = puz.getBoxes();

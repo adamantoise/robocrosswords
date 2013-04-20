@@ -21,7 +21,7 @@ public class PuzzleFinishedActivity extends WordsWithCrossesActivity{
     private static final long MINUTES = SECONDS * 60;
     private static final long HOURS = MINUTES * 60;
     private final NumberFormat two_int = NumberFormat.getIntegerInstance();
-	private final DateFormat date = DateFormat.getDateInstance(DateFormat.SHORT);
+	private final DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,11 +66,11 @@ public class PuzzleFinishedActivity extends WordsWithCrossesActivity{
         
         final String shareMessage;
         if(puz.getSource() != null && puz.getDate() != null){
-        	shareMessage = "I finished the "+puz.getSource()+" crossword for "+ date.format(puz.getDate()) +" in "+
-        		elapsedString +(cheatedBoxes > 0 ? " but got "+cheatedBoxes+ " hints" : "")+" in #WordsWithCrosses!";
+            shareMessage = "I finished the "+puz.getSource()+" crossword for "+ df.format(puz.getDate().getTime()) +" in "+
+                elapsedString +(cheatedBoxes > 0 ? " but got "+cheatedBoxes+ " hints" : "")+" in #WordsWithCrosses!";
         } else {
-        	shareMessage = "I finished "+puz.getSource()+" in "+
-            		elapsedString +(cheatedBoxes > 0 ? "but got "+cheatedBoxes +" hints" : "")+" with #WordsWithCrosses!";
+            shareMessage = "I finished "+puz.getSource()+" in "+
+                elapsedString +(cheatedBoxes > 0 ? "but got "+cheatedBoxes +" hints" : "")+" with #WordsWithCrosses!";
         }
         
         TextView elapsedTime = (TextView) this.findViewById(R.id.elapsed);

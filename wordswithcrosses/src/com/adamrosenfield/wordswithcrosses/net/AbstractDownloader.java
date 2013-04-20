@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -76,12 +76,14 @@ public abstract class AbstractDownloader implements Downloader {
         return totalBytes;
     }
 
-    public String createFileName(Date date) {
-        return (date.getYear() + 1900) + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "-" +
-        this.downloaderName.replaceAll(" ", "") + ".puz";
+    public String createFileName(Calendar date) {
+        return (date.get(Calendar.YEAR) + "-" +
+                (date.get(Calendar.MONTH) + 1) + "-" +
+                date.get(Calendar.DAY_OF_MONTH) + "-" +
+                this.downloaderName.replaceAll(" ", "") + ".puz");
     }
 
-    public String sourceUrl(Date date) {
+    public String sourceUrl(Calendar date) {
         return this.baseUrl + this.createUrlSuffix(date);
     }
 
@@ -89,14 +91,14 @@ public abstract class AbstractDownloader implements Downloader {
         return getName();
     }
 
-    protected abstract String createUrlSuffix(Date date);
+    protected abstract String createUrlSuffix(Calendar date);
 
-    protected File download(Date date, String urlSuffix, Map<String, String> headers){
+    protected File download(Calendar date, String urlSuffix, Map<String, String> headers){
     	System.out.println("DL From ASD");
     	return download(date, urlSuffix, headers, true);
     }
     
-    protected File download(Date date, String urlSuffix, Map<String, String> headers, boolean canDefer) {
+    protected File download(Calendar date, String urlSuffix, Map<String, String> headers, boolean canDefer) {
         LOG.info("Mkdirs: " + this.downloadDirectory.mkdirs());
         LOG.info("Exist: " + this.downloadDirectory.exists());
 
@@ -131,7 +133,7 @@ public abstract class AbstractDownloader implements Downloader {
         return null;
     }
 
-    protected File download(Date date, String urlSuffix) {
+    protected File download(Calendar date, String urlSuffix) {
         return download(date, urlSuffix, EMPTY_MAP);
     }
 }

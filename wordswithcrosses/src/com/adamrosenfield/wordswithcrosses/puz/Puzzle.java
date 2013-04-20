@@ -1,7 +1,7 @@
 package com.adamrosenfield.wordswithcrosses.puz;
 
 import java.util.Arrays;
-import java.util.Date;
+import java.util.Calendar;
 
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 import java.io.Serializable;
@@ -17,7 +17,7 @@ public class Puzzle implements Serializable{
     private String[] downClues;
     private Integer[] downCluesLookup;
     private int numberOfClues;
-    private Date pubdate = new Date();
+    private Calendar pubdate = Calendar.getInstance();
     private String source;
     private String sourceUrl = "";
     private Box[][] boxes;
@@ -175,11 +175,11 @@ public class Puzzle implements Serializable{
         return copyright;
     }
 
-    public void setDate(Date date) {
+    public void setDate(Calendar date) {
         this.pubdate = date;
     }
 
-    public Date getDate() {
+    public Calendar getDate() {
         return pubdate;
     }
 

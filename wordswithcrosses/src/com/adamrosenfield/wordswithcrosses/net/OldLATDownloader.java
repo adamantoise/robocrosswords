@@ -2,9 +2,8 @@ package com.adamrosenfield.wordswithcrosses.net;
 
 import java.io.File;
 import java.text.NumberFormat;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.HashMap;
-
 
 /**
  * Los Angeles Times
@@ -29,18 +28,21 @@ public class OldLATDownloader extends AbstractDownloader {
         return OldLATDownloader.NAME;
     }
 
-    public File download(Date date) {
+    public File download(Calendar date) {
         return this.download(date, this.createUrlSuffix(date));
     }
 
     @Override
-    protected String createUrlSuffix(Date date) {
-        return "lat" + this.nf.format(date.getYear() - 100) + this.nf.format(date.getMonth() + 1) +
-        this.nf.format(date.getDate()) + ".puz";
+    protected String createUrlSuffix(Calendar date) {
+        return ("lat" +
+                this.nf.format(date.get(Calendar.YEAR) % 100) +
+                this.nf.format(date.get(Calendar.MONTH) + 1) +
+                this.nf.format(date.get(Calendar.DAY_OF_MONTH)) +
+                ".puz");
     }
 
     @Override
-    protected File download(Date date, String urlSuffix) {
+    protected File download(Calendar date, String urlSuffix) {
         HashMap<String, String> headers = new HashMap<String, String>();
         headers.put("Referer", "http://www.cruciverb.com/puzzles.php?op=showarch&pub=lat");
         headers.put("User-Agent",

@@ -2,8 +2,6 @@ package com.adamrosenfield.wordswithcrosses.net;
 
 import java.io.File;
 import java.util.Calendar;
-import java.util.Date;
-
 
 /**
  * New York Times Classic
@@ -25,14 +23,12 @@ public class NYTClassicDownloader extends AbstractDownloader {
         return NAME;
     }
 
-    public File download(Date date) {
-        Calendar currentCal = Calendar.getInstance();
-        Calendar downloadCal = Calendar.getInstance();
-        downloadCal.setTime(date);
+    public File download(Calendar date) {
+        Calendar now = Calendar.getInstance();
 
         // Only download if requested week is same as current week, because there is no archive.
-        if ((currentCal.get(Calendar.YEAR) != downloadCal.get(Calendar.YEAR)) ||
-                (currentCal.get(Calendar.WEEK_OF_YEAR) != downloadCal.get(Calendar.WEEK_OF_YEAR))) {
+        if ((now.get(Calendar.YEAR) != date.get(Calendar.YEAR)) ||
+            (now.get(Calendar.WEEK_OF_YEAR) != date.get(Calendar.WEEK_OF_YEAR))) {
             return null;
         }
 
@@ -40,7 +36,7 @@ public class NYTClassicDownloader extends AbstractDownloader {
     }
 
     @Override
-    protected String createUrlSuffix(Date date) {
+    protected String createUrlSuffix(Calendar date) {
         return "classic.puz";
     }
 }

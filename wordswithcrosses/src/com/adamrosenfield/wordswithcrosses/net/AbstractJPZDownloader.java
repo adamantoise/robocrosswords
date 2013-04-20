@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.Map;
 
 import android.net.Uri;
@@ -24,7 +24,7 @@ public abstract class AbstractJPZDownloader extends AbstractDownloader {
 	
 	
 	
-	protected File download(Date date, String urlSuffix, Map<String, String> headers) {
+	protected File download(Calendar date, String urlSuffix, Map<String, String> headers) {
 		File jpzFile = download(date, urlSuffix, headers, false);
 		File puzFile = new File(downloadDirectory, this.createFileName(date));
 		try {
@@ -42,12 +42,18 @@ public abstract class AbstractJPZDownloader extends AbstractDownloader {
 		return null;
 	}
 	
-	public String createFileName(Date date) {
-        return (date.getYear() + 1900) + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "-" +
-        this.getName().replaceAll(" ", "") + ".puz";
+	public String createFileName(Calendar date) {
+        return (date.get(Calendar.YEAR) +
+                "-" +
+                (date.get(Calendar.MONTH) + 1) +
+                "-" +
+                date.get(Calendar.DAY_OF_MONTH) +
+                "-" +
+                this.getName().replaceAll(" ", "") +
+                ".puz");
     }
 	
-	protected File download(Date date, String urlSuffix, Map<String, String> headers, boolean canDefer) {
+	protected File download(Calendar date, String urlSuffix, Map<String, String> headers, boolean canDefer) {
         LOG.info("Mkdirs: " + this.downloadDirectory.mkdirs());
         LOG.info("Exist: " + this.downloadDirectory.exists());
 

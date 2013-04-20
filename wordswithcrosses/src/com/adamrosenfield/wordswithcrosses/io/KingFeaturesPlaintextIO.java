@@ -5,12 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-
 
 import com.adamrosenfield.wordswithcrosses.io.charset.MacRoman;
 import com.adamrosenfield.wordswithcrosses.puz.Box;
@@ -38,7 +37,7 @@ public class KingFeaturesPlaintextIO {
 	 * (for example, if the plaintext file is not in a valid format).
 	 */
 	public static boolean convertKFPuzzle(InputStream is, DataOutputStream os,
-			String title, String author, String copyright, Date date) {
+			String title, String author, String copyright, Calendar date) {
 		Puzzle puz = new Puzzle();
 
 		Scanner scanner = new Scanner(new InputStreamReader(is, new MacRoman()));

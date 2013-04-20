@@ -1,10 +1,9 @@
 package com.adamrosenfield.wordswithcrosses;
 
 import java.io.File;
-import java.util.Date;
+import java.util.Calendar;
 
 import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
-
 
 public class FileHandle implements Comparable<FileHandle> {
     File file;
@@ -30,8 +29,14 @@ public class FileHandle implements Comparable<FileHandle> {
         return (meta == null) ? "" : meta.title;
     }
 
-    Date getDate() {
-        return (meta == null) ? new Date(file.lastModified()) : meta.date;
+    Calendar getDate() {
+        if (meta != null) {
+            return meta.date;
+        } else {
+            Calendar date = Calendar.getInstance();
+            date.setTimeInMillis(file.lastModified());
+            return date;
+        }
     }
 
     int getProgress() {
