@@ -7,8 +7,7 @@
     <com.adamrosenfield.wordswithcrosses.view.VerticalProgressBar
         android:id="@+id/puzzle_progress"
         android:layout_width="8dp"
-        android:layout_height="72dp"
-        android:layout_alignParentLeft="true" />
+        android:layout_height="72dp" />
 
     <TextView
         android:id="@+id/puzzle_date"
@@ -25,8 +24,6 @@ Jan 2, 2001"
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@id/puzzle_date"
         android:gravity="center_vertical"
         android:orientation="vertical" >
 
@@ -34,8 +31,6 @@ Jan 2, 2001"
             android:id="@+id/puzzle_name"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@id/puzzle_date"
             android:ellipsize="start"
             android:gravity="center_vertical"
             android:lines="1"
