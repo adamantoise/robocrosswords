@@ -254,7 +254,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.setTitle("Shortyz - Puzzles");
+        this.setTitle("Puzzles - Words With Crosses");
         setDefaultKeyMode(DEFAULT_KEYS_SHORTCUT);
         this.setContentView(R.layout.browse);
         this.puzzleList = (ListView) this.findViewById(R.id.puzzleList);

@@ -590,7 +590,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 		}
 
 		this.setClueSize(prefs.getInt("clueSize", 12));
-		setTitle("Shortyz - " + puz.getTitle() + " - " + puz.getAuthor()
+		setTitle("Words With Crosses - " + puz.getTitle() + " - " + puz.getAuthor()
 				+ " - 	" + puz.getCopyright());
 		this.showCount = prefs.getBoolean("showCount", false);
 		if(android.os.Build.VERSION.SDK_INT > 11 && !WordsWithCrossesApplication.isTabletish(metrics)){

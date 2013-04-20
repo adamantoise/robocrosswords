@@ -75,9 +75,9 @@ public class WordsWithCrossesApplication extends Application {
 				zos.close();
 				Intent sendIntent = new Intent(Intent.ACTION_SEND);
 				sendIntent.putExtra(android.content.Intent.EXTRA_EMAIL,
-						new String[] { "kebernet@gmail.com" });
+						new String[] { "adam@adamrosenfield.com" });
 				sendIntent.putExtra(Intent.EXTRA_SUBJECT,
-						"Shortyz Debug Package");
+						"Words With Crosses Debug Package");
 				sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(zip));
 				sendIntent.setType("application/octet-stream");
 				return sendIntent;

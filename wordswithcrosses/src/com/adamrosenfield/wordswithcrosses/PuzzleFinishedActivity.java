@@ -67,10 +67,10 @@ public class PuzzleFinishedActivity extends WordsWithCrossesActivity{
         final String shareMessage;
         if(puz.getSource() != null && puz.getDate() != null){
         	shareMessage = "I finished the "+puz.getSource()+" crossword for "+ date.format(puz.getDate()) +" in "+
-        		elapsedString +(cheatedBoxes > 0 ? " but got "+cheatedBoxes+ " hints" : "")+" in #Shortyz!";
+        		elapsedString +(cheatedBoxes > 0 ? " but got "+cheatedBoxes+ " hints" : "")+" in #WordsWithCrosses!";
         } else {
         	shareMessage = "I finished "+puz.getSource()+" in "+
-            		elapsedString +(cheatedBoxes > 0 ? "but got "+cheatedBoxes +" hints" : "")+" with #Shortyz!";
+            		elapsedString +(cheatedBoxes > 0 ? "but got "+cheatedBoxes +" hints" : "")+" with #WordsWithCrosses!";
         }
         
         TextView elapsedTime = (TextView) this.findViewById(R.id.elapsed);
@@ -91,7 +91,7 @@ public class PuzzleFinishedActivity extends WordsWithCrossesActivity{
 			public void onClick(View v) {
 				Intent sendIntent = new Intent(Intent.ACTION_SEND);
 //				sendIntent.putExtra(Intent.EXTRA_SUBJECT,
-//						"I finished a puzzle in Shortyz Crosswords!");
+//						"I finished a puzzle in Words With Crosses!");
 				sendIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
 				sendIntent.setType("text/plain");
 				startActivity(Intent.createChooser(sendIntent, "Share your time"));
