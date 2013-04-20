@@ -28,6 +28,7 @@ import com.adamrosenfield.wordswithcrosses.BrowseActivity.Provider;
 import com.adamrosenfield.wordswithcrosses.net.Downloader;
 import com.adamrosenfield.wordswithcrosses.net.Downloaders;
 import com.adamrosenfield.wordswithcrosses.net.DummyDownloader;
+import com.adamrosenfield.wordswithcrosses.view.DownloadPickerView;
 import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
 
 
@@ -67,7 +68,7 @@ public class DownloadPickerDialogBuilder {
         mDownloaders = provider;
 
         LayoutInflater inflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View layout = inflater.inflate(R.layout.download_dialog, (ViewGroup) mActivity.findViewById(R.id.download_root));
+        DownloadPickerView layout = (DownloadPickerView) inflater.inflate(R.layout.download_dialog, (ViewGroup) mActivity.findViewById(R.id.download_root));
 
         mDateLabel = (TextView) layout.findViewById(R.id.dateLabel);
         updateDateLabel();
@@ -92,6 +93,8 @@ public class DownloadPickerDialogBuilder {
                     mActivity.startActivityForResult(i, 0);
                 }
             });
+        
+        layout.setDownloadPickerDialogBuilder(this);
 
         AlertDialog.Builder builder = (new AlertDialog.Builder(mActivity)).setPositiveButton("Download", clickHandler)
                                        .setNegativeButton("Cancel", null)
@@ -99,12 +102,6 @@ public class DownloadPickerDialogBuilder {
 
         builder.setView(layout);
         mDialog = builder.create();
-        mDialog.setOnShowListener(new OnShowListener() {
-                public void onShow(DialogInterface arg0) {
-                    updateDateLabel();
-                    updatePuzzleSelect();
-                }
-            });
     }
 
     public Dialog getInstance() {
@@ -130,6 +127,11 @@ public class DownloadPickerDialogBuilder {
                 android.R.layout.simple_spinner_item, mAvailableDownloaders);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mPuzzleSelect.setAdapter(adapter);
+    }
+    
+    public void onViewLayout() {
+        updateDateLabel();
+        updatePuzzleSelect();
     }
 
     public interface OnDownloadSelectedListener {
