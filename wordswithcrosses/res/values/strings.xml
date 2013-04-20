@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, Play!</string>
     <string name="app_name">Words With Crosses</string>
+
+    <string name="hello">Hello World, Play!</string>
+
+    <string name="completed_in">Completed In</string>
+    <string name="total_clues">Total Clues</string>
+    <string name="total_boxes">Total Boxes</string>
+    <string name="hinted_boxes">Hinted Boxes</string>
+    <string name="share">Share</string>
+    <string name="done">Done</string>
+
     <string name="puzzle_select">Select a puzzle:</string>
+    <string name="online">Online</string>
+
+    <string name="close_browser">Close Browser</string>
+
 </resources>
