@@ -2,6 +2,7 @@ package com.adamrosenfield.wordswithcrosses;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -111,7 +112,9 @@ public class DownloadPickerDialogBuilder {
     }
 
     private Date getCurrentDate() {
-        return new Date(mYear - 1900, mMonthOfYear, mDayOfMonth);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(mYear - 1900, mMonthOfYear, mDayOfMonth);
+        return calendar.getTime();
     }
 
     private void updateDateLabel() {

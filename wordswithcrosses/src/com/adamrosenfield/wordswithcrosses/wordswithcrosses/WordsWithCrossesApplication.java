@@ -45,8 +45,6 @@ public class WordsWithCrossesApplication extends Application {
 				PrintWriter writer = new PrintWriter(new FileWriter(info));
 				writer.println("VERSION INT: "
 						+ android.os.Build.VERSION.SDK_INT);
-				writer.println("VERSION STRING: "
-						+ android.os.Build.VERSION.SDK);
 				writer.println("VERSION RELEASE: "
 						+ android.os.Build.VERSION.RELEASE);
 				writer.println("MODEL: " + android.os.Build.DEVICE);

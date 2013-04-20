@@ -418,14 +418,18 @@ public class PlayActivity extends WordsWithCrossesActivity {
 		revealPuzzleDialog.setTitle("Reveal Entire Puzzle");
 		revealPuzzleDialog.setMessage("Are you sure?");
 
-		revealPuzzleDialog.setButton("OK",
+		revealPuzzleDialog.setButton(
+				DialogInterface.BUTTON_POSITIVE,
+				"OK",
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						BOARD.revealPuzzle();
 						render();
 					}
 				});
-		revealPuzzleDialog.setButton2("Cancel",
+		revealPuzzleDialog.setButton(
+				DialogInterface.BUTTON_NEGATIVE,
+				"Cancel",
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						dialog.dismiss();

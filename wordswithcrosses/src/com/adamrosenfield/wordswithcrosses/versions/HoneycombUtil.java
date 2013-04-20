@@ -15,7 +15,6 @@ import android.net.Uri;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
 
 import com.adamrosenfield.wordswithcrosses.PuzzleFinishedActivity;
