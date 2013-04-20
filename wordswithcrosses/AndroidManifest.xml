@@ -1,9 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:installLocation="auto"
     package="com.adamrosenfield.wordswithcrosses.wordswithcrosses"
     android:versionCode="10000"
-    android:versionName="1.0.0" >
+    android:versionName="1.0.0">
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:resizeable="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true" />
+
+    <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="4"/>
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
 
     <application
         android:backupAgent=".BackupAgent"
@@ -17,7 +36,8 @@
 
         <activity
             android:label="Download to Words With Crosses"
-            android:name="com.adamrosenfield.wordswithcrosses.HttpDownloadActivity" >
+            android:name="com.adamrosenfield.wordswithcrosses.HttpDownloadActivity"
+            tools:ignore="ExportedActivity">
             <intent-filter >
                 <action android:name="android.intent.action.VIEW" />
 
@@ -32,7 +52,8 @@
         </activity>
         <activity
             android:label="@string/app_name"
-            android:name="com.adamrosenfield.wordswithcrosses.PlayActivity" >
+            android:name="com.adamrosenfield.wordswithcrosses.PlayActivity"
+            tools:ignore="ExportedActivity">
             <intent-filter >
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.EDIT" />
@@ -86,22 +107,5 @@
             </intent-filter>
         </receiver>
     </application>
-
-    <supports-screens
-        android:anyDensity="true"
-        android:largeScreens="true"
-        android:normalScreens="true"
-        android:resizeable="true"
-        android:smallScreens="true"
-        android:xlargeScreens="true" />
-
-    <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="11"/>
-
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-
-    <uses-feature
-        android:name="android.hardware.touchscreen"
-        android:required="false" />
 
 </manifest>
