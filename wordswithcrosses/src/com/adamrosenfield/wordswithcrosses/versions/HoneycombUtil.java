@@ -22,35 +22,35 @@ import com.adamrosenfield.wordswithcrosses.PuzzleFinishedActivity;
 
 @TargetApi(11)
 public class HoneycombUtil extends GingerbreadUtil {
-	
-	{
-		System.out.println("Honeycomb Utils.");
-	}
-	
-	@Override
+
+    {
+        System.out.println("Honeycomb Utils.");
+    }
+
+    @Override
     public void finishOnHomeButton(final Activity a) {
-		ActionBar bar = a.getActionBar();
-		if(bar == null){
-			return;
-		}
-		bar.setDisplayHomeAsUpEnabled(true);
-		View home = a.findViewById(android.R.id.home);
-        if(home != null){
-	        home.setOnClickListener(new OnClickListener() {
-	                public void onClick(View arg0) {
-	                    a.finish();
-	                }
-	            });
+        ActionBar bar = a.getActionBar();
+        if (bar == null) {
+            return;
+        }
+        bar.setDisplayHomeAsUpEnabled(true);
+        View home = a.findViewById(android.R.id.home);
+        if (home != null) {
+            home.setOnClickListener(new OnClickListener() {
+                    public void onClick(View arg0) {
+                        a.finish();
+                    }
+                });
         }
     }
 
     @TargetApi(11)
-	@Override
+    @Override
     public void holographic(Activity a) {
-        if(a instanceof PuzzleFinishedActivity){
-        	a.setTheme(android.R.style.Theme_Holo_Dialog);
+        if (a instanceof PuzzleFinishedActivity) {
+            a.setTheme(android.R.style.Theme_Holo_Dialog);
         } else {
-        	a.setTheme(android.R.style.Theme_Holo);
+            a.setTheme(android.R.style.Theme_Holo);
         }
         ActionBar bar = a.getActionBar();
         if (bar != null) {
@@ -66,7 +66,7 @@ public class HoneycombUtil extends GingerbreadUtil {
     public void onActionBarWithText(SubMenu a) {
         this.onActionBarWithText(a.getItem());
     }
-    
+
     @Override
     public boolean downloadFile(URL url, File destination, Map<String, String> headers, boolean notification,
             String title) {
@@ -74,46 +74,44 @@ public class HoneycombUtil extends GingerbreadUtil {
 
             Request request = new Request(Uri.parse(url.toString()));
             request.setDestinationUri(Uri.fromFile(destination));
-            
 
             for (Entry<String, String> entry : headers.entrySet()) {
                 request.addRequestHeader(entry.getKey(), entry.getValue());
             }
 
             request.setMimeType("application/x-crossword");
-            
+
             request.setNotificationVisibility(notification ? Request.VISIBILITY_VISIBLE : Request.VISIBILITY_HIDDEN);
-            
+
             request.setTitle(title);
             mgr.enqueue(request);
 
             return false;
         }
-    
+
     public View onActionBarCustom(Activity a, int id) {
-    	System.out.println("Setting custom ActionBar view");
-    	ActionBar bar = a.getActionBar();
-    	if(bar == null){
-    		return null;
-    	}
-    	bar.setDisplayShowCustomEnabled(true);
-    	bar.setDisplayShowTitleEnabled(false);
-    	bar.setDisplayShowHomeEnabled(true);
-    	bar.setCustomView(id);
-    	System.out.println(bar.getCustomView());
-    	return bar.getCustomView();
-	}
-    
-    public void hideWindowTitle(Activity a) {
-    	// no op;
+        System.out.println("Setting custom ActionBar view");
+        ActionBar bar = a.getActionBar();
+        if (bar == null) {
+            return null;
+        }
+        bar.setDisplayShowCustomEnabled(true);
+        bar.setDisplayShowTitleEnabled(false);
+        bar.setDisplayShowHomeEnabled(true);
+        bar.setCustomView(id);
+        System.out.println(bar.getCustomView());
+        return bar.getCustomView();
     }
 
-	public void hideActionBar(Activity a) {
-		ActionBar ab = a.getActionBar();
-		if(ab == null){
-			return;
-		}
-		ab.hide();
-	}
-    
+    public void hideWindowTitle(Activity a) {
+        // no op;
+    }
+
+    public void hideActionBar(Activity a) {
+        ActionBar ab = a.getActionBar();
+        if (ab == null) {
+            return;
+        }
+        ab.hide();
+    }
 }

@@ -48,7 +48,7 @@ public class DefaultUtil implements AndroidVersionUtils {
 			HttpEntity entity = response.getEntity();
 			FileOutputStream fos = new FileOutputStream(destination);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			
+
 			AbstractDownloader.copyStream(entity.getContent(), baos);
 			if(url.toExternalForm().indexOf("crnet") != -1){
 				System.out.println(new String(baos.toByteArray()));
@@ -61,7 +61,6 @@ public class DefaultUtil implements AndroidVersionUtils {
 			e.printStackTrace();
 			return false;
 		}
-		
 	}
 
 	public void finishOnHomeButton(Activity a) {

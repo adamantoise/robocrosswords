@@ -16,8 +16,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import com.adamrosenfield.wordswithcrosses.net.AbstractDownloader;
 
 public class JellyBeanUtil extends HoneycombUtil {
-	
-	
+
 	@Override
 	public boolean downloadFile(URL url, File destination,
 			Map<String, String> headers, boolean notification, String title) {
@@ -38,7 +37,7 @@ public class JellyBeanUtil extends HoneycombUtil {
 			HttpEntity entity = response.getEntity();
 			FileOutputStream fos = new FileOutputStream(destination);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			
+
 			AbstractDownloader.copyStream(entity.getContent(), baos);
 			if(url.toExternalForm().indexOf("crnet") != -1){
 				System.out.println(new String(baos.toByteArray()));
@@ -81,5 +80,4 @@ public class JellyBeanUtil extends HoneycombUtil {
 		// throw new RuntimeException(ioe);
 		// }
 	}
-
 }

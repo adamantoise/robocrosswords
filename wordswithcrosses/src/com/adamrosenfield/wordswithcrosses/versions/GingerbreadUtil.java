@@ -17,7 +17,6 @@ import android.view.Window;
 import com.adamrosenfield.wordswithcrosses.net.DownloadReceiver;
 import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
 
-
 public class GingerbreadUtil extends DefaultUtil {
     protected Context ctx;
 
@@ -38,7 +37,7 @@ public class GingerbreadUtil extends DefaultUtil {
         }
 
         request.setMimeType("application/x-crossword");
-        
+
         request.setTitle(title);
         mgr.enqueue(request);
 
@@ -59,9 +58,8 @@ public class GingerbreadUtil extends DefaultUtil {
 
 	public void storeMetas(Uri uri, PuzzleMeta meta) {
 		DownloadReceiver.metas.put(uri, meta);
-		
 	}
-	
+
 	public void hideWindowTitle(Activity a) {
 		a.requestWindowFeature(Window.FEATURE_NO_TITLE);
 	}
