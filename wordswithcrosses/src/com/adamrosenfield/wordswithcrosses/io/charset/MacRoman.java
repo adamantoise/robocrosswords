@@ -26,17 +26,14 @@
 
 package com.adamrosenfield.wordswithcrosses.io.charset;
 
-
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
-
 
 public class MacRoman
     extends Charset
     implements HistoricallyNamedCharset
 {
-
     public MacRoman() {
         super("x-MacRoman", new String[] { "MacRoman" });
     }
@@ -45,18 +42,20 @@ public class MacRoman
         return "MacRoman";
     }
 
+    @Override
     public boolean contains(Charset cs) {
         return (cs instanceof MacRoman);
     }
 
+    @Override
     public CharsetDecoder newDecoder() {
         return new Decoder(this);
     }
 
+    @Override
     public CharsetEncoder newEncoder() {
         return new Encoder(this);
     }
-
 
     /**
      * These accessors are temporarily supplied while sun.io
@@ -65,7 +64,6 @@ public class MacRoman
      * two co-existing implementations. When sun.io converters
      * are made extinct these will be unncessary and should be removed
      */
-
     public String getDecoderSingleByteMappings() {
         return Decoder.byteToCharTable;
 
@@ -119,7 +117,6 @@ public class MacRoman
             "\u0068\u0069\u006A\u006B\u006C\u006D\u006E\u006F" +     // 0x68 - 0x6F
             "\u0070\u0071\u0072\u0073\u0074\u0075\u0076\u0077" +     // 0x70 - 0x77
             "\u0078\u0079\u007A\u007B\u007C\u007D\u007E\u007F";     // 0x78 - 0x7F
-
     }
 
     private static class Encoder extends SingleByteEncoder {
@@ -128,8 +125,6 @@ public class MacRoman
         }
 
         private final static String index2 =
-
-
             "\u0000\u0001\u0002\u0003\u0004\u0005\u0006\u0007" +
             "\b\t\n\u000B\f\r\u000E\u000F" +
             "\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017" +

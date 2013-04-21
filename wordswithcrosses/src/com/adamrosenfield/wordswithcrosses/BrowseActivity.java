@@ -17,6 +17,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -46,7 +48,6 @@ import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
 import com.adamrosenfield.wordswithcrosses.view.SeparatedListAdapter;
 import com.adamrosenfield.wordswithcrosses.view.VerticalProgressBar;
 import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
-
 
 public class BrowseActivity extends WordsWithCrossesActivity implements OnItemClickListener {
     private static final String MENU_ARCHIVES = "Archives";
@@ -175,20 +176,17 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getTitle()
-                    .equals("Download")) {
+        if (item.getTitle().equals("Download")) {
             showDialog(DOWNLOAD_DIALOG_ID);
 
             return true;
-        } else if (item.getTitle()
-                           .equals("Settings")) {
+        } else if (item.getTitle().equals("Settings")) {
             Intent i = new Intent(this, PreferencesActivity.class);
             this.startActivity(i);
 
             return true;
-        } else if (item.getTitle()
-                           .equals("Crosswords") || item.getTitle()
-                                                            .equals(MENU_ARCHIVES)) {
+        } else if (item.getTitle().equals("Crosswords") ||
+                   item.getTitle().equals(MENU_ARCHIVES)) {
             this.viewArchive = !viewArchive;
             item.setTitle(viewArchive ? "Crosswords" : MENU_ARCHIVES);
 
@@ -199,32 +197,27 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
             render();
 
             return true;
-        } else if (item.getTitle()
-                           .equals("Cleanup")) {
+        } else if (item.getTitle().equals("Cleanup")) {
             this.cleanup();
 
             return true;
-        } else if (item.getTitle()
-                           .equals("Help")) {
+        } else if (item.getTitle().equals("Help")) {
             Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/filescreen.html"), this,
                     HTMLActivity.class);
             this.startActivity(i);
-        } else if (item.getTitle()
-                           .equals("By Source")) {
+        } else if (item.getTitle().equals("By Source")) {
             this.accessor = Accessor.SOURCE;
             prefs.edit()
                  .putInt("sort", 2)
                  .commit();
             this.render();
-        } else if (item.getTitle()
-                           .equals("By Date (Ascending)")) {
+        } else if (item.getTitle().equals("By Date (Ascending)")) {
             this.accessor = Accessor.DATE_ASC;
             prefs.edit()
                  .putInt("sort", 1)
                  .commit();
             this.render();
-        } else if (item.getTitle()
-                           .equals("By Date (Descending)")) {
+        } else if (item.getTitle().equals("By Date (Descending)")) {
             this.accessor = Accessor.DATE_DESC;
             prefs.edit()
                  .putInt("sort", 0)
@@ -275,17 +268,26 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
             this.accessor = Accessor.DATE_DESC;
         }
 
+        String thisReleasePref = null;
+        try {
+            PackageInfo pkgInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            thisReleasePref = "release_" + pkgInfo.versionName;
+        } catch(PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
         if (!WordsWithCrossesApplication.CROSSWORDS_DIR.exists()) {
-            this.downloadTen();
+            // TEMP
+            //this.downloadTen();
 
             Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/welcome.html"), this,
                     HTMLActivity.class);
             this.startActivity(i);
 
             return;
-        } else if (prefs.getBoolean("release_3.2.1", true)) {
+        } else if (thisReleasePref != null && prefs.getBoolean(thisReleasePref, true)) {
             Editor e = prefs.edit();
-            e.putBoolean("release_3.2.1", false);
+            e.putBoolean(thisReleasePref, false);
             e.commit();
 
             Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/release.html"), this,
@@ -477,6 +479,8 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
     }
 
     private void checkDownload() {
+        // TEMP
+        /*
         long lastDL = prefs.getLong("dlLast", 0);
 
         if (prefs.getBoolean("dlOnStartup", true) &&
@@ -486,6 +490,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
                  .putLong("dlLast", System.currentTimeMillis())
                  .commit();
         }
+        */
     }
 
     private void cleanup() {

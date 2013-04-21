@@ -13,8 +13,7 @@ import android.preference.PreferenceManager;
 import com.adamrosenfield.wordswithcrosses.versions.AndroidVersionUtils;
 
 public class WordsWithCrossesActivity extends Activity {
-	protected AndroidVersionUtils utils = AndroidVersionUtils.Factory
-			.getInstance();
+	protected AndroidVersionUtils utils = AndroidVersionUtils.Factory.getInstance();
 	protected SharedPreferences prefs;
 
 	@Override
@@ -22,15 +21,13 @@ public class WordsWithCrossesActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-		if (!Environment.MEDIA_MOUNTED.equals(Environment
-				.getExternalStorageState())) {
+		if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
 			showSDCardHelp();
 			finish();
 
 			return;
 		}
-		StatFs stats = new StatFs(Environment.getExternalStorageDirectory()
-				.getAbsolutePath());
+		StatFs stats = new StatFs(Environment.getExternalStorageDirectory().getAbsolutePath());
 		System.out.println("Avail blocks: " + stats.getAvailableBlocks());
 		System.out.println("Block size: " + stats.getBlockSize());
 		System.out.println("Bytes free: " + (long) stats.getAvailableBlocks()

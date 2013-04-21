@@ -25,7 +25,6 @@
 
 package com.adamrosenfield.wordswithcrosses.io.charset;
 
-
 public interface HistoricallyNamedCharset {
 
     public String historicalName();
