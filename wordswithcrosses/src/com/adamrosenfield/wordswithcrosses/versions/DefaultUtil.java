@@ -25,74 +25,73 @@ import com.adamrosenfield.wordswithcrosses.net.AbstractDownloader;
 import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
 
 public class DefaultUtil implements AndroidVersionUtils {
-	public void setContext(Context ctx) {
-		// TODO Auto-generated method stub
-	}
+    public void setContext(Context ctx) {
+        // TODO Auto-generated method stub
+    }
 
-	public boolean downloadFile(URL url, File destination,
-			Map<String, String> headers, boolean notification, String title) {
+    public boolean downloadFile(URL url, File destination,
+            Map<String, String> headers, boolean notification, String title) {
 
-		DefaultHttpClient httpclient = new DefaultHttpClient();
-		httpclient
-				.getParams()
-				.setParameter(
-						"User-Agent",
-						"Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6");
+        DefaultHttpClient httpclient = new DefaultHttpClient();
+        httpclient
+                .getParams()
+                .setParameter(
+                        "User-Agent",
+                        "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6");
 
-		HttpGet httpget = new HttpGet(url.toString());
-		for(Entry<String, String> e : headers.entrySet()){
-			httpget.setHeader(e.getKey(), e.getValue());
-		}
-		try {
-			HttpResponse response = httpclient.execute(httpget);
-			HttpEntity entity = response.getEntity();
-			FileOutputStream fos = new FileOutputStream(destination);
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        HttpGet httpget = new HttpGet(url.toString());
+        for(Entry<String, String> e : headers.entrySet()){
+            httpget.setHeader(e.getKey(), e.getValue());
+        }
+        try {
+            HttpResponse response = httpclient.execute(httpget);
+            HttpEntity entity = response.getEntity();
+            FileOutputStream fos = new FileOutputStream(destination);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-			AbstractDownloader.copyStream(entity.getContent(), baos);
-			if(url.toExternalForm().indexOf("crnet") != -1){
-				System.out.println(new String(baos.toByteArray()));
-			}
-			AbstractDownloader.copyStream(new ByteArrayInputStream(baos.toByteArray()), fos);
-			fos.close();
-			return true;
+            AbstractDownloader.copyStream(entity.getContent(), baos);
+            if(url.toExternalForm().indexOf("crnet") != -1){
+                System.out.println(new String(baos.toByteArray()));
+            }
+            AbstractDownloader.copyStream(new ByteArrayInputStream(baos.toByteArray()), fos);
+            fos.close();
+            return true;
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-	public void finishOnHomeButton(Activity a) {
-		// TODO Auto-generated method stub
-	}
+    public void finishOnHomeButton(Activity a) {
+        // TODO Auto-generated method stub
+    }
 
-	public void holographic(Activity playActivity) {
-		// TODO Auto-generated method stub
-	}
+    public void holographic(Activity playActivity) {
+        // TODO Auto-generated method stub
+    }
 
-	public void onActionBarWithText(MenuItem a) {
-		// TODO Auto-generated method stub
-	}
+    public void onActionBarWithText(MenuItem a) {
+        // TODO Auto-generated method stub
+    }
 
-	public void onActionBarWithText(SubMenu reveal) {
-		// TODO Auto-generated method stub
-	}
+    public void onActionBarWithText(SubMenu reveal) {
+        // TODO Auto-generated method stub
+    }
 
-	public void storeMetas(Uri uri, PuzzleMeta meta) {
-		// TODO Auto-generated method stub
+    public void storeMetas(Uri uri, PuzzleMeta meta) {
+        // TODO Auto-generated method stub
+    }
 
-	}
+    public View onActionBarCustom(Activity a, int id) {
+        return null;
+    }
 
-	public View onActionBarCustom(Activity a, int id) {
-		return null;
-	}
+    public void hideWindowTitle(Activity a) {
+        a.requestWindowFeature(Window.FEATURE_NO_TITLE);
+    }
 
-	public void hideWindowTitle(Activity a) {
-		a.requestWindowFeature(Window.FEATURE_NO_TITLE);
-	}
-
-	public void hideActionBar(Activity a) {
-		; //no op;
-	}
+    public void hideActionBar(Activity a) {
+        ; //no op;
+    }
 }

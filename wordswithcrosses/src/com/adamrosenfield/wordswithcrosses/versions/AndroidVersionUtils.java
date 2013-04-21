@@ -15,65 +15,65 @@ import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
 
 public interface AndroidVersionUtils {
 
-	public void storeMetas(Uri uri, PuzzleMeta meta);
+    public void storeMetas(Uri uri, PuzzleMeta meta);
 
-	public void setContext(Context ctx);
+    public void setContext(Context ctx);
 
-	public boolean downloadFile(URL url, File destination,
-			Map<String, String> headers, boolean notification, String title);
+    public boolean downloadFile(URL url, File destination,
+            Map<String, String> headers, boolean notification, String title);
 
-	public void finishOnHomeButton(Activity a);
+    public void finishOnHomeButton(Activity a);
 
-	public void holographic(Activity playActivity);
+    public void holographic(Activity playActivity);
 
-	public void onActionBarWithText(MenuItem a);
+    public void onActionBarWithText(MenuItem a);
 
-	public void onActionBarWithText(SubMenu reveal);
+    public void onActionBarWithText(SubMenu reveal);
 
-	public static class Factory {
-		private static AndroidVersionUtils INSTANCE;
+    public static class Factory {
+        private static AndroidVersionUtils INSTANCE;
 
-		public static AndroidVersionUtils getInstance() {
-			if(INSTANCE != null){
-				return INSTANCE;
-			}
-			System.out.println("Creating utils for version: "
-					+ android.os.Build.VERSION.SDK_INT);
+        public static AndroidVersionUtils getInstance() {
+            if(INSTANCE != null){
+                return INSTANCE;
+            }
+            System.out.println("Creating utils for version: "
+                    + android.os.Build.VERSION.SDK_INT);
 
-			try {
-				switch (android.os.Build.VERSION.SDK_INT) {
-				case 11:
-				case 12:
-				case 13:
-				case 14:
-				case 15:
-					return INSTANCE = (AndroidVersionUtils) Class.forName(
-							"com.adamrosenfield.wordswithcrosses.versions.HoneycombUtil")
-							.newInstance();
-				case 16:
-				case 17:
-					return INSTANCE = (AndroidVersionUtils) Class.forName(
-							"com.adamrosenfield.wordswithcrosses.versions.JellyBeanUtil")
-							.newInstance();
-				case 10:
-				case 9:
-					System.out.println("Using Gingerbread.");
-					return INSTANCE = (AndroidVersionUtils) Class.forName(
-							"com.adamrosenfield.wordswithcrosses.versions.GingerbreadUtil")
-							.newInstance();
+            try {
+                switch (android.os.Build.VERSION.SDK_INT) {
+                case 11:
+                case 12:
+                case 13:
+                case 14:
+                case 15:
+                    return INSTANCE = (AndroidVersionUtils) Class.forName(
+                            "com.adamrosenfield.wordswithcrosses.versions.HoneycombUtil")
+                            .newInstance();
+                case 16:
+                case 17:
+                    return INSTANCE = (AndroidVersionUtils) Class.forName(
+                            "com.adamrosenfield.wordswithcrosses.versions.JellyBeanUtil")
+                            .newInstance();
+                case 10:
+                case 9:
+                    System.out.println("Using Gingerbread.");
+                    return INSTANCE = (AndroidVersionUtils) Class.forName(
+                            "com.adamrosenfield.wordswithcrosses.versions.GingerbreadUtil")
+                            .newInstance();
 
-				default:
-					return INSTANCE = new DefaultUtil();
-				}
-			} catch (Exception e) {
-				return INSTANCE = new DefaultUtil();
-			}
-		}
-	}
+                default:
+                    return INSTANCE = new DefaultUtil();
+                }
+            } catch (Exception e) {
+                return INSTANCE = new DefaultUtil();
+            }
+        }
+    }
 
-	public View onActionBarCustom(Activity a, int id);
+    public View onActionBarCustom(Activity a, int id);
 
-	public void hideWindowTitle(Activity a);
+    public void hideWindowTitle(Activity a);
 
-	public void hideActionBar(Activity a);
+    public void hideActionBar(Activity a);
 }

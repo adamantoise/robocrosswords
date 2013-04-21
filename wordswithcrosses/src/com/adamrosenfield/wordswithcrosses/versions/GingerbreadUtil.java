@@ -56,15 +56,15 @@ public class GingerbreadUtil extends DefaultUtil {
     public void onActionBarWithText(SubMenu reveal) {
     }
 
-	public void storeMetas(Uri uri, PuzzleMeta meta) {
-		DownloadReceiver.metas.put(uri, meta);
-	}
+    public void storeMetas(Uri uri, PuzzleMeta meta) {
+        DownloadReceiver.metas.put(uri, meta);
+    }
 
-	public void hideWindowTitle(Activity a) {
-		a.requestWindowFeature(Window.FEATURE_NO_TITLE);
-	}
+    public void hideWindowTitle(Activity a) {
+        a.requestWindowFeature(Window.FEATURE_NO_TITLE);
+    }
 
-	public void hideActionBar(Activity a) {
-		; //no op;
-	}
+    public void hideActionBar(Activity a) {
+        ; //no op;
+    }
 }
