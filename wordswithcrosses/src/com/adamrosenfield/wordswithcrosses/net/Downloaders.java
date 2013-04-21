@@ -352,7 +352,7 @@ public class Downloaders {
 	}
 
 	private void postDownloadedGeneral() {
-		String contentTitle = "Downloaded new puzzles!";
+		String contentTitle = context.getResources().getString(R.string.downloaded_new_puzzles);
 		Notification not = new Notification(
 				android.R.drawable.stat_sys_download_done, contentTitle,
 				System.currentTimeMillis());

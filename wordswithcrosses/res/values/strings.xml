@@ -18,5 +18,6 @@
 
     <string name="downloading_puzzles">Downloading Puzzles</string>
     <string name="downloading_from">Downloading from ${SOURCE}</string>
+    <string name="downloaded_new_puzzles">Downloaded new puzzles!</string>
 
 </resources>
