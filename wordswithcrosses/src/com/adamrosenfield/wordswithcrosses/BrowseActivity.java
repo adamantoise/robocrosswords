@@ -569,7 +569,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         new Thread(new Runnable() {
                 public void run() {
                     Downloaders dls = new Downloaders(prefs, nm, BrowseActivity.this);
-                    dls.supressMessages(true);
+                    dls.suppressMessages(true);
 
                     Scrapers scrapes = new Scrapers(prefs, nm, BrowseActivity.this);
                     scrapes.supressMessages(true);

@@ -31,7 +31,7 @@ public class Downloaders {
 	private Context context;
 	private List<Downloader> downloaders = new LinkedList<Downloader>();
 	private NotificationManager notificationManager;
-	private boolean supressMessages;
+	private boolean suppressMessages;
 
 	public Downloaders(SharedPreferences prefs,
 			NotificationManager notificationManager, Context context) {
@@ -132,7 +132,7 @@ public class Downloaders {
 					"nytUsername", ""), prefs.getString("nytPassword", "")));
 		}
 
-		this.supressMessages = prefs.getBoolean("supressMessages", false);
+		this.suppressMessages = prefs.getBoolean("suppressMessages", false);
 	}
 
 	public List<Downloader> getDownloaders(Calendar date) {
@@ -211,7 +211,7 @@ public class Downloaders {
                 PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
                 not.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
 
-                if (!this.supressMessages && this.notificationManager != null) {
+                if (!this.suppressMessages && this.notificationManager != null) {
                     this.notificationManager.notify(0, not);
                 }
 
@@ -245,7 +245,7 @@ public class Downloaders {
                     meta.updateable = updatable;
 
                     if (processDownloadedPuzzle(downloaded, meta)) {
-                        if (!this.supressMessages) {
+                        if (!this.suppressMessages) {
                             this.postDownloadedNotification(i, d.getName(), downloaded);
                         }
 
@@ -347,8 +347,8 @@ public class Downloaders {
 		}
 	}
 
-	public void supressMessages(boolean b) {
-		this.supressMessages = b;
+	public void suppressMessages(boolean b) {
+		this.suppressMessages = b;
 	}
 
 	private void postDownloadedGeneral() {

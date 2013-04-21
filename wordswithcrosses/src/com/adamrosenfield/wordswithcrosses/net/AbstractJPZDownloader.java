@@ -68,7 +68,7 @@ public abstract class AbstractJPZDownloader extends AbstractDownloader {
             meta.updateable = false;
 
             utils.storeMetas(Uri.fromFile(f), meta);
-            if( canDefer ){
+            if (canDefer) {
 	            if (utils.downloadFile(url, f, headers, true, this.getName())) {
 	                DownloadReceiver.metas.remove(Uri.fromFile(f));
 
