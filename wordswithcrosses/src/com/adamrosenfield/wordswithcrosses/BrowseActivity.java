@@ -387,7 +387,6 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
             return new SeparatedListAdapter(this);
         }
-        
 
         String sourceMatch = null;
 
@@ -415,8 +414,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
                     });
             }
 
-            if (f.getName()
-                     .endsWith(".puz")) {
+            if (f.getName().endsWith(".puz")) {
                 PuzzleMeta m = null;
 
                 try {
@@ -572,7 +570,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
                 public void run() {
                     Downloaders dls = new Downloaders(prefs, nm, BrowseActivity.this);
                     dls.supressMessages(true);
-                    
+
                     Scrapers scrapes = new Scrapers(prefs, nm, BrowseActivity.this);
                     scrapes.supressMessages(true);
                     scrapes.scrape();

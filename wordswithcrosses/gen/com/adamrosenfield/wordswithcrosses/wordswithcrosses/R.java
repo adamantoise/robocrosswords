@@ -101,6 +101,8 @@ public final class R {
         public static final int close_browser=0x7f06000a;
         public static final int completed_in=0x7f060002;
         public static final int done=0x7f060007;
+        public static final int downloading_from=0x7f06000c;
+        public static final int downloading_puzzles=0x7f06000b;
         public static final int hello=0x7f060001;
         public static final int hinted_boxes=0x7f060005;
         public static final int online=0x7f060009;

@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.Map;
 
 import android.net.Uri;
+import android.os.Environment;
 
 import com.adamrosenfield.wordswithcrosses.io.JPZIO;
 import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
@@ -21,9 +22,7 @@ public abstract class AbstractJPZDownloader extends AbstractDownloader {
 	protected AbstractJPZDownloader(String baseUrl, File downloadDirectory, String downloaderName) {
 		super(baseUrl, downloadDirectory, downloaderName);
 	}
-	
-	
-	
+
 	protected File download(Calendar date, String urlSuffix, Map<String, String> headers) {
 		File jpzFile = download(date, urlSuffix, headers, false);
 		File puzFile = new File(downloadDirectory, this.createFileName(date));
@@ -41,7 +40,7 @@ public abstract class AbstractJPZDownloader extends AbstractDownloader {
 		}
 		return null;
 	}
-	
+
 	public String createFileName(Calendar date) {
         return (date.get(Calendar.YEAR) +
                 "-" +
@@ -52,7 +51,7 @@ public abstract class AbstractJPZDownloader extends AbstractDownloader {
                 this.getName().replaceAll(" ", "") +
                 ".puz");
     }
-	
+
 	protected File download(Calendar date, String urlSuffix, Map<String, String> headers, boolean canDefer) {
         LOG.info("Mkdirs: " + this.downloadDirectory.mkdirs());
         LOG.info("Exist: " + this.downloadDirectory.exists());
@@ -67,12 +66,12 @@ public abstract class AbstractJPZDownloader extends AbstractDownloader {
             meta.source = getName();
             meta.sourceUrl = url.toString();
             meta.updateable = false;
-            
+
             utils.storeMetas(Uri.fromFile(f), meta);
             if( canDefer ){
 	            if (utils.downloadFile(url, f, headers, true, this.getName())) {
 	                DownloadReceiver.metas.remove(Uri.fromFile(f));
-	
+
 	                return f;
 	            } else {
 	                return Downloader.DEFERRED_FILE;

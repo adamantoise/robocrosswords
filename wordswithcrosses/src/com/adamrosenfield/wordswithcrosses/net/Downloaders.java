@@ -24,6 +24,7 @@ import com.adamrosenfield.wordswithcrosses.PlayActivity;
 import com.adamrosenfield.wordswithcrosses.io.IO;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
+import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
 
 public class Downloaders {
 	private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
@@ -47,7 +48,7 @@ public class Downloaders {
 		if (prefs.getBoolean("downloadWaPo", true)) {
 		 downloaders.add(new WaPoDownloader());
 		 }
-		
+
 		if (prefs.getBoolean("downloadWsj", true)) {
 			downloaders.add(new WSJDownloader());
 		}
@@ -125,8 +126,7 @@ public class Downloaders {
 		if (prefs.getBoolean("downloadISwear", true)) {
 			downloaders.add(new ISwearDownloader());
 		}
-		
-		
+
 		if (prefs.getBoolean("downloadNYT", false)) {
 			downloaders.add(new NYTDownloader(context, prefs.getString(
 					"nytUsername", ""), prefs.getString("nytPassword", "")));
@@ -148,8 +148,8 @@ public class Downloaders {
 		return retVal;
 	}
 
-	private static boolean arrayContains(int[] a, int key) {
-	    for (int x : a) {
+	private static boolean arrayContains(int[] array, int key) {
+	    for (int x : array) {
 	        if (x == key) {
 	            return true;
 	        }
@@ -178,7 +178,7 @@ public class Downloaders {
         //now.set(Calendar.HOUR_OF_DAY, 0);
 
         int i = 1;
-        String contentTitle = "Downloading Puzzles";
+        String contentTitle = context.getResources().getString(R.string.downloading_puzzles);
 
         Notification not = new Notification(android.R.drawable.stat_sys_download, contentTitle,
                 System.currentTimeMillis());
@@ -189,8 +189,7 @@ public class Downloaders {
 
         if ((crosswords != null) && (crosswords.listFiles() != null)) {
             for (File isDel : crosswords.listFiles()) {
-                if (isDel.getName()
-                             .endsWith(".tmp")) {
+                if (isDel.getName().endsWith(".tmp")) {
                     isDel.delete();
                 }
             }
@@ -206,7 +205,8 @@ public class Downloaders {
             d.setContext(context);
 
             try {
-                String contentText = "Downloading from " + d.getName();
+                String contentText = context.getResources().getString(R.string.downloading_from);
+                contentText = contentText.replace("${SOURCE}", d.getName());
                 Intent notificationIntent = new Intent(context, PlayActivity.class);
                 PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
                 not.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
@@ -319,8 +319,6 @@ public class Downloaders {
         if (somethingDownloaded) {
             this.postDownloadedGeneral();
         }
-        
-        
     }
 
 	public static boolean processDownloadedPuzzle(File downloaded,
@@ -404,5 +402,4 @@ public class Downloaders {
 //		}
 //	}
 
-	
 }

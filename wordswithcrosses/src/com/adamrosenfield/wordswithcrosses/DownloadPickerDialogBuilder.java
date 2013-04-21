@@ -90,7 +90,7 @@ public class DownloadPickerDialogBuilder {
                     mActivity.startActivityForResult(i, 0);
                 }
             });
-        
+
         layout.setDownloadPickerDialogBuilder(this);
 
         AlertDialog.Builder builder = (new AlertDialog.Builder(mActivity)).setPositiveButton("Download", clickHandler)
@@ -125,7 +125,7 @@ public class DownloadPickerDialogBuilder {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mPuzzleSelect.setAdapter(adapter);
     }
-    
+
     public void onViewLayout() {
         updateDateLabel();
         updatePuzzleSelect();

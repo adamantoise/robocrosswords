@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Environment;
 
 import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
 import com.adamrosenfield.wordswithcrosses.wordswithcrosses.WordsWithCrossesApplication;
@@ -24,7 +25,7 @@ public abstract class AbstractDownloader implements Downloader {
     public static File DOWNLOAD_DIR = WordsWithCrossesApplication.CROSSWORDS;
     public static final int DEFAULT_BUFFER_SIZE = 1024;
     @SuppressWarnings("unchecked")
-	protected static final Map<String, String> EMPTY_MAP = Collections.EMPTY_MAP;
+    protected static final Map<String, String> EMPTY_MAP = Collections.EMPTY_MAP;
     protected File downloadDirectory;
     protected String baseUrl;
     protected final AndroidVersionUtils utils = AndroidVersionUtils.Factory.getInstance();
@@ -94,10 +95,10 @@ public abstract class AbstractDownloader implements Downloader {
     protected abstract String createUrlSuffix(Calendar date);
 
     protected File download(Calendar date, String urlSuffix, Map<String, String> headers){
-    	System.out.println("DL From ASD");
-    	return download(date, urlSuffix, headers, true);
+        System.out.println("DL From ASD");
+        return download(date, urlSuffix, headers, true);
     }
-    
+
     protected File download(Calendar date, String urlSuffix, Map<String, String> headers, boolean canDefer) {
         LOG.info("Mkdirs: " + this.downloadDirectory.mkdirs());
         LOG.info("Exist: " + this.downloadDirectory.exists());
@@ -112,19 +113,19 @@ public abstract class AbstractDownloader implements Downloader {
             meta.source = getName();
             meta.sourceUrl = url.toString();
             meta.updateable = false;
-            
+
             utils.storeMetas(Uri.fromFile(f), meta);
-            if( canDefer ){
-	            if (utils.downloadFile(url, f, headers, true, this.getName())) {
-	                DownloadReceiver.metas.remove(Uri.fromFile(f));
-	
-	                return f;
-	            } else {
-	                return Downloader.DEFERRED_FILE;
-	            }
+            if (canDefer) {
+                if (utils.downloadFile(url, f, headers, true, this.getName())) {
+                    DownloadReceiver.metas.remove(Uri.fromFile(f));
+
+                    return f;
+                } else {
+                    return Downloader.DEFERRED_FILE;
+                }
             } else {
-            	new DefaultUtil().downloadFile(url, f, headers, true, this.getName());
-            	return f;
+                new DefaultUtil().downloadFile(url, f, headers, true, this.getName());
+                return f;
             }
         } catch (IOException e) {
             e.printStackTrace();
