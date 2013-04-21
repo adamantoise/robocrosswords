@@ -572,7 +572,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
                     dls.suppressMessages(true);
 
                     Scrapers scrapes = new Scrapers(prefs, nm, BrowseActivity.this);
-                    scrapes.supressMessages(true);
+                    scrapes.suppressMessages(true);
                     scrapes.scrape();
 
                     Calendar now = Calendar.getInstance();

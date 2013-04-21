@@ -185,14 +185,14 @@
 		android:title="No Download Notifications"
 		android:defaultValue="false"
 		android:summary="Prevents a notification for each puzzle downloaded from appearing in the notifications list."
-		android:key="supressMessages"
+		android:key="suppressMessages"
 	/>
 	
 	<CheckBoxPreference
 		android:title="No Hint Highlighting"
 		android:defaultValue="false"
 		android:summary="Prevents the pink boxes indicating 'hints' in the form of reveals or show errors."
-		android:key="supressHints"
+		android:key="suppressHints"
 	/>
 	
 	<CheckBoxPreference

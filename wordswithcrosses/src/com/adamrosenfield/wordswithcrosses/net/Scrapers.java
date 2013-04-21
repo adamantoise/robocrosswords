@@ -19,7 +19,7 @@ public class Scrapers {
     private ArrayList<AbstractPageScraper> scrapers = new ArrayList<AbstractPageScraper>();
     private Context context;
     private NotificationManager notificationManager;
-    private boolean supressMessages;
+    private boolean suppressMessages;
 
     public Scrapers(SharedPreferences prefs, NotificationManager notificationManager, Context context) {
         this.notificationManager = notificationManager;
@@ -42,7 +42,7 @@ public class Scrapers {
             scrapers.add(new PeopleScraper());
         }
 
-        this.supressMessages = prefs.getBoolean("supressMessages", false);
+        this.suppressMessages = prefs.getBoolean("suppressMessages", false);
     }
 
     public void scrape() {
@@ -59,13 +59,13 @@ public class Scrapers {
                 PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
                 not.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
 
-                if (!this.supressMessages && this.notificationManager != null) {
+                if (!this.suppressMessages && this.notificationManager != null) {
                     this.notificationManager.notify(0, not);
                 }
 
                 List<File> downloaded = scraper.scrape();
 
-                if (!this.supressMessages) {
+                if (!this.suppressMessages) {
                     for (File f : downloaded) {
                         postDownloadedNotification(i++, scraper.getSourceName(), f);
                     }
@@ -80,8 +80,8 @@ public class Scrapers {
         }
     }
 
-    public void supressMessages(boolean b) {
-        this.supressMessages = b;
+    public void suppressMessages(boolean b) {
+        this.suppressMessages = b;
     }
 
     private void postDownloadedNotification(int i, String name, File puzFile) {

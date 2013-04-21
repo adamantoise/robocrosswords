@@ -397,7 +397,7 @@ public class Downloaders {
 //		not.setLatestEventInfo(context, contentTitle, puzFile.getName(),
 //				contentIntent);
 //
-//		if ((this.notificationManager != null) && !supressMessages) {
+//		if ((this.notificationManager != null) && !suppressMessages) {
 //			this.notificationManager.notify(i, not);
 //		}
 //	}

@@ -200,7 +200,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
 			BOARD = new Playboard(puz, movement);
 			RENDERER = new PlayboardRenderer(BOARD, metrics.density,
-					!prefs.getBoolean("supressHints", false));
+					!prefs.getBoolean("suppressHints", false));
 
 			float scale = prefs.getFloat("scale", metrics.density);
 
