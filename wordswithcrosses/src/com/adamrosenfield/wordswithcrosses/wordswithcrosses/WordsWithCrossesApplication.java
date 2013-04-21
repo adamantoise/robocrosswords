@@ -54,7 +54,7 @@ public class WordsWithCrossesApplication extends Application {
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
-		} 
+		}
 	}
 
 	public static Playboard BOARD;
@@ -114,7 +114,7 @@ public class WordsWithCrossesApplication extends Application {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static boolean isLandscape(DisplayMetrics metrics){
 		return metrics.widthPixels > metrics.heightPixels;
 	}
@@ -140,7 +140,7 @@ public class WordsWithCrossesApplication extends Application {
 			return false;
 		}
 	}
-	
+
 	public static boolean isMiniTabletish(DisplayMetrics metrics) {
 		switch (android.os.Build.VERSION.SDK_INT) {
 		case 12:

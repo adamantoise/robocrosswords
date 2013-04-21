@@ -14,7 +14,7 @@ import android.view.View;
 import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
 
 public interface AndroidVersionUtils {
-	
+
 	public void storeMetas(Uri uri, PuzzleMeta meta);
 
 	public void setContext(Context ctx);
@@ -32,7 +32,7 @@ public interface AndroidVersionUtils {
 
 	public static class Factory {
 		private static AndroidVersionUtils INSTANCE;
-		
+
 		public static AndroidVersionUtils getInstance() {
 			if(INSTANCE != null){
 				return INSTANCE;
@@ -47,7 +47,6 @@ public interface AndroidVersionUtils {
 				case 13:
 				case 14:
 				case 15:
-				
 					return INSTANCE = (AndroidVersionUtils) Class.forName(
 							"com.adamrosenfield.wordswithcrosses.versions.HoneycombUtil")
 							.newInstance();
@@ -73,10 +72,8 @@ public interface AndroidVersionUtils {
 	}
 
 	public View onActionBarCustom(Activity a, int id);
-	
-	public void hideWindowTitle(Activity a);
-	
-	public void hideActionBar(Activity a);
 
-	
+	public void hideWindowTitle(Activity a);
+
+	public void hideActionBar(Activity a);
 }

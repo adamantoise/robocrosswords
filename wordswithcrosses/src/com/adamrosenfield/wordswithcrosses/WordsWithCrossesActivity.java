@@ -31,14 +31,14 @@ public class WordsWithCrossesActivity extends Activity {
 		}
 		StatFs stats = new StatFs(Environment.getExternalStorageDirectory()
 				.getAbsolutePath());
-		System.out.println("Avail blocks" + stats.getAvailableBlocks());
-		System.out.println("BLock size " + stats.getBlockSize());
-		System.out.println("Bytes Free" + (long) stats.getAvailableBlocks()
-				* (long) stats.getBlockSize());
-		System.out.println("Megs free "+ (((long) stats.getAvailableBlocks()
-				* (long) stats.getBlockSize())/1024L/1024L));
-		
-		if ( (long) stats.getAvailableBlocks() * (long) stats.getBlockSize() < 1024L * 1024L) {
+		System.out.println("Avail blocks: " + stats.getAvailableBlocks());
+		System.out.println("Block size: " + stats.getBlockSize());
+		System.out.println("Bytes free: " + (long) stats.getAvailableBlocks()
+				* (long)stats.getBlockSize());
+		System.out.println("MB free "+ (((long) stats.getAvailableBlocks()
+				* (long)stats.getBlockSize())/1024L/1024L));
+
+		if ((long)stats.getAvailableBlocks() * (long)stats.getBlockSize() < 1024L * 1024L) {
 			showSDCardFull();
 			finish();
 

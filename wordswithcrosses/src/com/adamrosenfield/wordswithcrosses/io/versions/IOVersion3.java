@@ -13,13 +13,13 @@ import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 // Saves the current board position and clue orientation.
 public class IOVersion3 extends IOVersion2 {
 
-	@Override 
+	@Override
 	protected void applyMeta(Puzzle puz, PuzzleMeta meta){
 		super.applyMeta(puz, meta);
 		puz.setPosition(meta.position);
 		puz.setAcross(meta.across);
 	}
-	
+
 	@Override
 	public PuzzleMeta readMeta(DataInputStream dis) throws IOException {
 		PuzzleMeta meta = new PuzzleMeta();
@@ -36,15 +36,15 @@ public class IOVersion3 extends IOVersion2 {
 		meta.across = dis.read() == 1;
 		return meta;
 	}
-	
-	@Override 
+
+	@Override
 	public void write(Puzzle puz, DataOutputStream dos) throws IOException {
 		IO.writeNullTerminatedString(dos, puz.getAuthor());
 		IO.writeNullTerminatedString(dos, puz.getSource());
 		IO.writeNullTerminatedString(dos, puz.getTitle());
 		IO.writeDate(dos, puz.getDate());
 		dos.writeInt(puz.getPercentComplete());
-		dos.write(puz.isUpdatable() ? 1 : -1); 
+		dos.write(puz.isUpdatable() ? 1 : -1);
 		IO.writeNullTerminatedString(dos, puz.getSourceUrl());
 		Position p = puz.getPosition();
 		if (p != null) {
@@ -67,5 +67,4 @@ public class IOVersion3 extends IOVersion2 {
 		}
 		dos.writeLong(puz.getTime());
 	}
-
 }

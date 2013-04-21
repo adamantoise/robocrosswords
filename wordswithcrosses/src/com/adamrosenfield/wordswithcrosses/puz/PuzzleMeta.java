@@ -5,9 +5,8 @@ import java.util.Calendar;
 
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 
-
 public class PuzzleMeta implements Serializable {
-	
+
 	public String author;
 	public String title;
 	public String source;
@@ -17,8 +16,7 @@ public class PuzzleMeta implements Serializable {
 	public String sourceUrl;
 	public Position position;
 	public boolean across;
-	
-	
+
 	public String toString(){
 		return new StringBuilder("author: ")
 		.append(author)
@@ -39,8 +37,5 @@ public class PuzzleMeta implements Serializable {
 		.append(" across: ")
 		.append(across)
 		.toString();
-		
 	}
-	
-
 }

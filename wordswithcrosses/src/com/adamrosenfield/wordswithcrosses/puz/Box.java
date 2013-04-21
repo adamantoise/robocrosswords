@@ -47,7 +47,7 @@ public class Box implements Serializable {
         	System.out.println("down");
             return false;
         }
-        
+
         if (isCircled() != other.isCircled()) {
         	System.out.println("circled");
         	return false;
@@ -143,14 +143,14 @@ public class Box implements Serializable {
     public void setDown(boolean down) {
         this.down = down;
     }
-    
+
     /**
      * @return if the box is circled
      */
     public boolean isCircled() {
     	return circled;
     }
-    
+
     /**
      * @param circled the circled to set
      */

@@ -28,10 +28,8 @@ public class IOVersion1 implements IOVersion {
 		}catch(IOException ioe){
 			ioe.printStackTrace();
 		}
-		
-		
 	}
-	
+
 	protected void applyMeta(Puzzle puz, PuzzleMeta meta){
 		//System.out.println("Applying V1 Meta");
 		puz.setSource(meta.source);
@@ -47,7 +45,6 @@ public class IOVersion1 implements IOVersion {
 		meta.date = IO.readDate(dis);
 		meta.percentComplete = dis.readInt();
 		return meta;
-		
 	}
 
 	public void write(Puzzle puz, DataOutputStream dos) throws IOException {
@@ -69,6 +66,4 @@ public class IOVersion1 implements IOVersion {
 		}
 		dos.writeLong(puz.getTime());
 	}
-
-	
 }

@@ -11,14 +11,14 @@ import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
 
 public class IOVersion2 extends IOVersion1 {
 
-	@Override 
+	@Override
 	protected void applyMeta(Puzzle puz, PuzzleMeta meta){
 		super.applyMeta(puz, meta);
 		//System.out.println("Applying V2 Meta");
 		puz.setUpdatable(meta.updateable);
 		puz.setSourceUrl(meta.sourceUrl);
 	}
-	
+
 	@Override
 	public PuzzleMeta readMeta(DataInputStream dis) throws IOException{
 		//System.out.println("Read V2");
@@ -33,15 +33,15 @@ public class IOVersion2 extends IOVersion1 {
 		//System.out.println(meta);
 		return meta;
 	}
-	
-	@Override 
+
+	@Override
 	public void write(Puzzle puz, DataOutputStream dos) throws IOException {
 		IO.writeNullTerminatedString(dos, puz.getAuthor());
 		IO.writeNullTerminatedString(dos, puz.getSource());
 		IO.writeNullTerminatedString(dos, puz.getTitle());
 		IO.writeDate(dos, puz.getDate());
 		dos.writeInt(puz.getPercentComplete());
-		dos.write(puz.isUpdatable() ? 1 : -1); 
+		dos.write(puz.isUpdatable() ? 1 : -1);
 		IO.writeNullTerminatedString(dos, puz.getSourceUrl());
 		//System.out.println("Meta written.");
 		Box[][] boxes = puz.getBoxes();
@@ -56,5 +56,4 @@ public class IOVersion2 extends IOVersion1 {
 		}
 		dos.writeLong(puz.getTime());
 	}
-	
 }
