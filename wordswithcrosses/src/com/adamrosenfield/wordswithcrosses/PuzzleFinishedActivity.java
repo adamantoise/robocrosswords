@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.adamrosenfield.wordswithcrosses.puz.Box;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
-import com.adamrosenfield.wordswithcrosses.wordswithcrosses.WordsWithCrossesApplication;
 
 public class PuzzleFinishedActivity extends WordsWithCrossesActivity{
 	private static final long SECONDS = 1000;

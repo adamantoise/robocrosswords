@@ -44,7 +44,6 @@ import com.adamrosenfield.wordswithcrosses.net.Scrapers;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
 import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
-import com.adamrosenfield.wordswithcrosses.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.view.SeparatedListAdapter;
 import com.adamrosenfield.wordswithcrosses.view.VerticalProgressBar;
 
@@ -419,8 +418,6 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
                 try {
                     m = IO.meta(f);
-
-                    //System.out.println("Read meta for "+f);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

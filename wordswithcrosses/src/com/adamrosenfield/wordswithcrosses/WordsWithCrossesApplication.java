@@ -1,4 +1,4 @@
-package com.adamrosenfield.wordswithcrosses.wordswithcrosses;
+package com.adamrosenfield.wordswithcrosses;
 
 import java.io.File;
 import java.io.FileInputStream;

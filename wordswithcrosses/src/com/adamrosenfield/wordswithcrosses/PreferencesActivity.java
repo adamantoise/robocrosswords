@@ -8,7 +8,6 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 
 import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
-import com.adamrosenfield.wordswithcrosses.wordswithcrosses.WordsWithCrossesApplication;
 
 
 public class PreferencesActivity extends PreferenceActivity {

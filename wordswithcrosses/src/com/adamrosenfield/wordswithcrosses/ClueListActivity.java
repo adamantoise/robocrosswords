@@ -29,7 +29,6 @@ import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Word;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
-import com.adamrosenfield.wordswithcrosses.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView;
 import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.ClickListener;
 import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.Point;

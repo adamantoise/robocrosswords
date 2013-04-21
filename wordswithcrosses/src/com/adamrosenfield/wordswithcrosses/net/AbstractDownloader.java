@@ -14,8 +14,8 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
 
+import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
-import com.adamrosenfield.wordswithcrosses.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.versions.AndroidVersionUtils;
 import com.adamrosenfield.wordswithcrosses.versions.DefaultUtil;
 
