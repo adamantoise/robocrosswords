@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -16,44 +17,39 @@ import android.net.Uri;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 
-import com.adamrosenfield.wordswithcrosses.io.IO;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard;
 import com.adamrosenfield.wordswithcrosses.view.PlayboardRenderer;
 
 public class WordsWithCrossesApplication extends Application {
 
     public static File CROSSWORDS_DIR;
-
     public static File ARCHIVE_DIR;
-    public static File DEBUG_DIR;
-    public static File TEMP_DIR;
 
     public static File CACHE_DIR;
+    public static File DEBUG_DIR;
+
+    private static Logger LOG;
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        LOG = Logger.getLogger(getPackageName());
 
         CROSSWORDS_DIR = new File(
             Environment.getExternalStorageDirectory(),
             "Android/data/" + getPackageName() + "/files/crosswords");
 
         ARCHIVE_DIR = new File(CROSSWORDS_DIR, "archive");
-        DEBUG_DIR = new File(CROSSWORDS_DIR, "debug");
 
         CACHE_DIR = getCacheDir();
+        DEBUG_DIR = new File(CACHE_DIR, "debug");
 
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            IO.TEMP_FOLDER = new File(CROSSWORDS_DIR, "temp");
-            if(!IO.TEMP_FOLDER.mkdirs()){
-                System.out.println("temp folder failed.");
-                return;
-            }
+            makeDirs();
+        }
 
-            if (!DEBUG_DIR.mkdirs()) {
-                System.out.println("debug folder failed");
-                return;
-            }
+        if (DEBUG_DIR.mkdirs()) {
             File info = new File(DEBUG_DIR, "device");
             try {
                 PrintWriter writer = new PrintWriter(new FileWriter(info));
@@ -66,9 +62,22 @@ public class WordsWithCrossesApplication extends Application {
                 writer.println("MANUFACTURER: " + android.os.Build.MANUFACTURER);
                 writer.close();
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
+            }
+        } else {
+            LOG.warning("Failed to create directory tree: " + DEBUG_DIR);
+        }
+    }
+
+    public static boolean makeDirs() {
+        for (File dir : new File[]{CROSSWORDS_DIR, ARCHIVE_DIR}) {
+            if (!dir.mkdirs()) {
+                LOG.warning("Failed to create directory tree: " + dir);
+                return false;
             }
         }
+
+        return true;
     }
 
     public static Playboard BOARD;

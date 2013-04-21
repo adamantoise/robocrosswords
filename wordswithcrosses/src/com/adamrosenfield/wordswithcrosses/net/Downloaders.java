@@ -25,140 +25,140 @@ import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
 import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
 
 public class Downloaders {
-	private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
-	private Context context;
-	private List<Downloader> downloaders = new LinkedList<Downloader>();
-	private NotificationManager notificationManager;
-	private boolean suppressMessages;
+    private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
+    private Context context;
+    private List<Downloader> downloaders = new LinkedList<Downloader>();
+    private NotificationManager notificationManager;
+    private boolean suppressMessages;
 
-	public Downloaders(SharedPreferences prefs,
-			NotificationManager notificationManager, Context context) {
-		this.notificationManager = notificationManager;
-		this.context = context;
+    public Downloaders(SharedPreferences prefs,
+            NotificationManager notificationManager, Context context) {
+        this.notificationManager = notificationManager;
+        this.context = context;
 
-		if (prefs.getBoolean("downloadGlobe", true)) {
-			downloaders.add(new BostonGlobeDownloader());
-		}
+        if (prefs.getBoolean("downloadGlobe", true)) {
+            downloaders.add(new BostonGlobeDownloader());
+        }
 
-		if (prefs.getBoolean("downloadThinks", true)) {
-			downloaders.add(new ThinksDownloader());
-		}
-		if (prefs.getBoolean("downloadWaPo", true)) {
-		 downloaders.add(new WaPoDownloader());
-		 }
+        if (prefs.getBoolean("downloadThinks", true)) {
+            downloaders.add(new ThinksDownloader());
+        }
+        if (prefs.getBoolean("downloadWaPo", true)) {
+         downloaders.add(new WaPoDownloader());
+         }
 
-		if (prefs.getBoolean("downloadWsj", true)) {
-			downloaders.add(new WSJDownloader());
-		}
+        if (prefs.getBoolean("downloadWsj", true)) {
+            downloaders.add(new WSJDownloader());
+        }
 
-		if (prefs.getBoolean("downloadWaPoPuzzler", true)) {
-			downloaders.add(new WaPoPuzzlerDownloader());
-		}
+        if (prefs.getBoolean("downloadWaPoPuzzler", true)) {
+            downloaders.add(new WaPoPuzzlerDownloader());
+        }
 
-		if (prefs.getBoolean("downloadNYTClassic", true)) {
-			downloaders.add(new NYTClassicDownloader());
-		}
+        if (prefs.getBoolean("downloadNYTClassic", true)) {
+            downloaders.add(new NYTClassicDownloader());
+        }
 
-		if (prefs.getBoolean("downloadInkwell", true)) {
-			downloaders.add(new InkwellDownloader());
-		}
+        if (prefs.getBoolean("downloadInkwell", true)) {
+            downloaders.add(new InkwellDownloader());
+        }
 
-		if (prefs.getBoolean("downloadJonesin", true)) {
-			downloaders.add(new JonesinDownloader());
-		}
+        if (prefs.getBoolean("downloadJonesin", true)) {
+            downloaders.add(new JonesinDownloader());
+        }
 
-		if (prefs.getBoolean("downloadLat", true)) {
-//			downloaders.add(new UclickDownloader("tmcal", "Los Angeles Times", "Rich Norris", Downloader.DATE_NO_SUNDAY));
-			downloaders.add(new LATimesDownloader());
-		}
+        if (prefs.getBoolean("downloadLat", true)) {
+//          downloaders.add(new UclickDownloader("tmcal", "Los Angeles Times", "Rich Norris", Downloader.DATE_NO_SUNDAY));
+            downloaders.add(new LATimesDownloader());
+        }
 
-		if (prefs.getBoolean("downloadAvClub", true)) {
-			downloaders.add(new AVClubDownloader());
-		}
+        if (prefs.getBoolean("downloadAvClub", true)) {
+            downloaders.add(new AVClubDownloader());
+        }
 
-		if (prefs.getBoolean("downloadPhilly", true)) {
-			downloaders.add(new PhillyDownloader());
-		}
+        if (prefs.getBoolean("downloadPhilly", true)) {
+            downloaders.add(new PhillyDownloader());
+        }
 
-		if (prefs.getBoolean("downloadCHE", true)) {
-			downloaders.add(new CHEDownloader());
-		}
+        if (prefs.getBoolean("downloadCHE", true)) {
+            downloaders.add(new CHEDownloader());
+        }
 
-		if (prefs.getBoolean("downloadJoseph", true)) {
-			downloaders.add(new KFSDownloader("joseph", "Joseph Crosswords",
-					"Thomas Joseph", Downloader.DATE_NO_SUNDAY));
-		}
+        if (prefs.getBoolean("downloadJoseph", true)) {
+            downloaders.add(new KFSDownloader("joseph", "Joseph Crosswords",
+                    "Thomas Joseph", Downloader.DATE_NO_SUNDAY));
+        }
 
-		if (prefs.getBoolean("downloadSheffer", true)) {
-			downloaders.add(new KFSDownloader("sheffer", "Sheffer Crosswords",
-					"Eugene Sheffer", Downloader.DATE_NO_SUNDAY));
-		}
+        if (prefs.getBoolean("downloadSheffer", true)) {
+            downloaders.add(new KFSDownloader("sheffer", "Sheffer Crosswords",
+                    "Eugene Sheffer", Downloader.DATE_NO_SUNDAY));
+        }
 
-		if (prefs.getBoolean("downloadPremier", true)) {
-			downloaders.add(new KFSDownloader("premier", "Premier Crosswords",
-					"Frank Longo", Downloader.DATE_SUNDAY));
-		}
+        if (prefs.getBoolean("downloadPremier", true)) {
+            downloaders.add(new KFSDownloader("premier", "Premier Crosswords",
+                    "Frank Longo", Downloader.DATE_SUNDAY));
+        }
 
-		if (prefs.getBoolean("downloadNewsday", true)) {
-			downloaders.add(new UclickDownloader("crnet", "Newsday",
-					"Stanley Newman, distributed by Creators Syndicate, Inc.",
-					Downloader.DATE_DAILY));
-		}
+        if (prefs.getBoolean("downloadNewsday", true)) {
+            downloaders.add(new UclickDownloader("crnet", "Newsday",
+                    "Stanley Newman, distributed by Creators Syndicate, Inc.",
+                    Downloader.DATE_DAILY));
+        }
 
-		if (prefs.getBoolean("downloadUSAToday", true)) {
-			downloaders.add(new UclickDownloader("usaon", "USA Today",
-					"USA Today", Downloader.DATE_NO_SUNDAY));
-		}
+        if (prefs.getBoolean("downloadUSAToday", true)) {
+            downloaders.add(new UclickDownloader("usaon", "USA Today",
+                    "USA Today", Downloader.DATE_NO_SUNDAY));
+        }
 
-		if (prefs.getBoolean("downloadUniversal", true)) {
-			downloaders.add(new UclickDownloader("fcx", "Universal Crossword",
-					"uclick LLC", Downloader.DATE_DAILY));
-		}
+        if (prefs.getBoolean("downloadUniversal", true)) {
+            downloaders.add(new UclickDownloader("fcx", "Universal Crossword",
+                    "uclick LLC", Downloader.DATE_DAILY));
+        }
 
-		if (prefs.getBoolean("downloadLACal", true)) {
-			downloaders.add(new UclickDownloader("lacal",
-					"LAT Sunday Calendar", "Los Angeles Times",
-					Downloader.DATE_SUNDAY));
-		}
+        if (prefs.getBoolean("downloadLACal", true)) {
+            downloaders.add(new UclickDownloader("lacal",
+                    "LAT Sunday Calendar", "Los Angeles Times",
+                    Downloader.DATE_SUNDAY));
+        }
 
-		if (prefs.getBoolean("downloadISwear", true)) {
-			downloaders.add(new ISwearDownloader());
-		}
+        if (prefs.getBoolean("downloadISwear", true)) {
+            downloaders.add(new ISwearDownloader());
+        }
 
-		if (prefs.getBoolean("downloadNYT", false)) {
-			downloaders.add(new NYTDownloader(context, prefs.getString(
-					"nytUsername", ""), prefs.getString("nytPassword", "")));
-		}
+        if (prefs.getBoolean("downloadNYT", false)) {
+            downloaders.add(new NYTDownloader(context, prefs.getString(
+                    "nytUsername", ""), prefs.getString("nytPassword", "")));
+        }
 
-		this.suppressMessages = prefs.getBoolean("suppressMessages", false);
-	}
+        this.suppressMessages = prefs.getBoolean("suppressMessages", false);
+    }
 
-	public List<Downloader> getDownloaders(Calendar date) {
-		int dayOfWeek = date.get(Calendar.DAY_OF_WEEK);
-		List<Downloader> retVal = new LinkedList<Downloader>();
+    public List<Downloader> getDownloaders(Calendar date) {
+        int dayOfWeek = date.get(Calendar.DAY_OF_WEEK);
+        List<Downloader> retVal = new LinkedList<Downloader>();
 
-		for (Downloader d : downloaders) {
-			if (arrayContains(d.getDownloadDates(), dayOfWeek)) {
-				retVal.add(d);
-			}
-		}
+        for (Downloader d : downloaders) {
+            if (arrayContains(d.getDownloadDates(), dayOfWeek)) {
+                retVal.add(d);
+            }
+        }
 
-		return retVal;
-	}
+        return retVal;
+    }
 
-	private static boolean arrayContains(int[] array, int key) {
-	    for (int x : array) {
-	        if (x == key) {
-	            return true;
-	        }
-	    }
+    private static boolean arrayContains(int[] array, int key) {
+        for (int x : array) {
+            if (x == key) {
+                return true;
+            }
+        }
 
-	    return false;
-	}
+        return false;
+    }
 
-	public void download(Calendar date) {
-		download(date, getDownloaders(date));
-	}
+    public void download(Calendar date) {
+        download(date, getDownloaders(date));
+    }
 
     public void download(Calendar date, List<Downloader> downloaders) {
         date = (Calendar)date.clone();
@@ -167,15 +167,6 @@ public class Downloaders {
         date.set(Calendar.SECOND, 0);
         date.set(Calendar.MILLISECOND, 0);
 
-        //Calendar now = Calendar.getInstance();
-        //now.setTimeInMillis(System.currentTimeMillis());
-
-        //now.set(Calendar.MINUTE, 0);
-        //now.set(Calendar.SECOND, 0);
-        //now.set(Calendar.MILLISECOND, 0);
-        //now.set(Calendar.HOUR_OF_DAY, 0);
-
-        int i = 1;
         String contentTitle = context.getResources().getString(R.string.downloading_puzzles);
 
         Notification not = new Notification(android.R.drawable.stat_sys_download, contentTitle,
@@ -185,21 +176,13 @@ public class Downloaders {
         File crosswordsDir = WordsWithCrossesApplication.CROSSWORDS_DIR;
         File archiveDir = WordsWithCrossesApplication.ARCHIVE_DIR;
 
-        if (!crosswordsDir.mkdirs()) {
-            LOG.warning("Failed to create directory tree: " + crosswordsDir);
+        if (!WordsWithCrossesApplication.makeDirs()) {
             return;
-        }
-        if (!archiveDir.mkdirs()) {
-            LOG.warning("Failed to create directory tree: " + archiveDir);
-            return;
-        }
-
-        if ((downloaders == null) || (downloaders.size() == 0)) {
-            downloaders = getDownloaders(date);
         }
 
         HashSet<File> newlyDownloaded = new HashSet<File>();
 
+        int i = 1;
         for (Downloader d : downloaders) {
             d.setContext(context);
 
@@ -231,12 +214,8 @@ public class Downloaders {
                 }
 
                 if (downloaded != null) {
-                	boolean updatable = false;
+                    boolean updatable = false;
 
-                    //                    if (d instanceof NYTDownloader &&
-                    //                            (date.getTime() >= now.getTimeInMillis())) {
-                    //                        updatable = true;
-                    //                    }
                     PuzzleMeta meta = new PuzzleMeta();
                     meta.date = date;
                     meta.source = d.getName();
@@ -268,85 +247,85 @@ public class Downloaders {
         }
     }
 
-	public static boolean processDownloadedPuzzle(File downloaded,
-			PuzzleMeta meta) {
-		try {
-			System.out.println("==PROCESSING " + downloaded + " hasmeta: "
-					+ (meta != null));
+    public static boolean processDownloadedPuzzle(File downloaded,
+            PuzzleMeta meta) {
+        try {
+            System.out.println("==PROCESSING " + downloaded + " hasmeta: "
+                    + (meta != null));
 
-			Puzzle puz = IO.load(downloaded);
-			if(puz == null){
-				return false;
-			}
-			puz.setDate(meta.date);
-			puz.setSource(meta.source);
-			puz.setSourceUrl(meta.sourceUrl);
-			puz.setUpdatable(meta.updateable);
+            Puzzle puz = IO.load(downloaded);
+            if(puz == null){
+                return false;
+            }
+            puz.setDate(meta.date);
+            puz.setSource(meta.source);
+            puz.setSourceUrl(meta.sourceUrl);
+            puz.setUpdatable(meta.updateable);
 
-			IO.save(puz, downloaded);
+            IO.save(puz, downloaded);
 
-			return true;
-		} catch (Exception ioe) {
-			LOG.log(Level.WARNING, "Exception reading " + downloaded, ioe);
-			downloaded.delete();
+            return true;
+        } catch (Exception ioe) {
+            LOG.log(Level.WARNING, "Exception reading " + downloaded, ioe);
+            downloaded.delete();
 
-			return false;
-		}
-	}
+            return false;
+        }
+    }
 
-	public void suppressMessages(boolean b) {
-		this.suppressMessages = b;
-	}
+    public void suppressMessages(boolean b) {
+        this.suppressMessages = b;
+    }
 
-	private void postDownloadedGeneral() {
-		String contentTitle = context.getResources().getString(R.string.downloaded_new_puzzles);
-		Notification not = new Notification(
-				android.R.drawable.stat_sys_download_done, contentTitle,
-				System.currentTimeMillis());
-		Intent notificationIntent = new Intent(Intent.ACTION_EDIT, null,
-				context, BrowseActivity.class);
-		PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-				notificationIntent, 0);
-		not.setLatestEventInfo(context, contentTitle,
-				"New puzzles were downloaded.", contentIntent);
+    private void postDownloadedGeneral() {
+        String contentTitle = context.getResources().getString(R.string.downloaded_new_puzzles);
+        Notification not = new Notification(
+                android.R.drawable.stat_sys_download_done, contentTitle,
+                System.currentTimeMillis());
+        Intent notificationIntent = new Intent(Intent.ACTION_EDIT, null,
+                context, BrowseActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
+                notificationIntent, 0);
+        not.setLatestEventInfo(context, contentTitle,
+                "New puzzles were downloaded.", contentIntent);
 
-		if (this.notificationManager != null) {
-			this.notificationManager.notify(0, not);
-		}
-	}
+        if (this.notificationManager != null) {
+            this.notificationManager.notify(0, not);
+        }
+    }
 
-	private void postDownloadedNotification(int i, String name, File puzFile) {
-		String contentTitle = "Downloaded " + name;
-		Notification not = new Notification(
-				android.R.drawable.stat_sys_download_done, contentTitle,
-				System.currentTimeMillis());
-		Intent notificationIntent = new Intent(Intent.ACTION_EDIT,
-				Uri.fromFile(puzFile), context, PlayActivity.class);
-		PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-				notificationIntent, 0);
-		not.setLatestEventInfo(context, contentTitle, puzFile.getName(),
-				contentIntent);
+    private void postDownloadedNotification(int i, String name, File puzFile) {
+        String contentTitle = "Downloaded " + name;
+        Notification not = new Notification(
+                android.R.drawable.stat_sys_download_done, contentTitle,
+                System.currentTimeMillis());
+        Intent notificationIntent = new Intent(Intent.ACTION_EDIT,
+                Uri.fromFile(puzFile), context, PlayActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
+                notificationIntent, 0);
+        not.setLatestEventInfo(context, contentTitle, puzFile.getName(),
+                contentIntent);
 
-		if (this.notificationManager != null) {
-			this.notificationManager.notify(i, not);
-		}
-	}
+        if (this.notificationManager != null) {
+            this.notificationManager.notify(i, not);
+        }
+    }
 
-//	private void postUpdatedNotification(int i, String name, File puzFile) {
-//		String contentTitle = "Updated " + name;
-//		Notification not = new Notification(
-//				android.R.drawable.stat_sys_download_done, contentTitle,
-//				System.currentTimeMillis());
-//		Intent notificationIntent = new Intent(Intent.ACTION_EDIT,
-//				Uri.fromFile(puzFile), context, PlayActivity.class);
-//		PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-//				notificationIntent, 0);
-//		not.setLatestEventInfo(context, contentTitle, puzFile.getName(),
-//				contentIntent);
+//  private void postUpdatedNotification(int i, String name, File puzFile) {
+//      String contentTitle = "Updated " + name;
+//      Notification not = new Notification(
+//              android.R.drawable.stat_sys_download_done, contentTitle,
+//              System.currentTimeMillis());
+//      Intent notificationIntent = new Intent(Intent.ACTION_EDIT,
+//              Uri.fromFile(puzFile), context, PlayActivity.class);
+//      PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
+//              notificationIntent, 0);
+//      not.setLatestEventInfo(context, contentTitle, puzFile.getName(),
+//              contentIntent);
 //
-//		if ((this.notificationManager != null) && !suppressMessages) {
-//			this.notificationManager.notify(i, not);
-//		}
-//	}
+//      if ((this.notificationManager != null) && !suppressMessages) {
+//          this.notificationManager.notify(i, not);
+//      }
+//  }
 
 }
