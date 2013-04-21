@@ -57,7 +57,7 @@ public class PreferencesActivity extends PreferenceActivity {
                     return true;
                 }
             });
-        
+
         Preference sendDebug = (Preference) findPreference("sendDebug");
         sendDebug.setOnPreferenceClickListener(new OnPreferenceClickListener(){
 
@@ -65,7 +65,6 @@ public class PreferencesActivity extends PreferenceActivity {
 				startActivity(WordsWithCrossesApplication.sendDebug());
 				return true;
 			}
-        	
         });
     }
 }

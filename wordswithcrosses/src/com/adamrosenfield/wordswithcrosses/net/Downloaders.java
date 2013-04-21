@@ -1,8 +1,6 @@
 package com.adamrosenfield.wordswithcrosses.net;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -17,10 +15,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Environment;
 
 import com.adamrosenfield.wordswithcrosses.BrowseActivity;
 import com.adamrosenfield.wordswithcrosses.PlayActivity;
+import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.io.IO;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
@@ -183,16 +181,17 @@ public class Downloaders {
         Notification not = new Notification(android.R.drawable.stat_sys_download, contentTitle,
                 System.currentTimeMillis());
         boolean somethingDownloaded = false;
-        File crosswords = new File(Environment.getExternalStorageDirectory(), "crosswords/");
-        File archive = new File(Environment.getExternalStorageDirectory(), "crosswords/archive/");
-        crosswords.mkdirs();
 
-        if ((crosswords != null) && (crosswords.listFiles() != null)) {
-            for (File isDel : crosswords.listFiles()) {
-                if (isDel.getName().endsWith(".tmp")) {
-                    isDel.delete();
-                }
-            }
+        File crosswordsDir = WordsWithCrossesApplication.CROSSWORDS_DIR;
+        File archiveDir = WordsWithCrossesApplication.ARCHIVE_DIR;
+
+        if (!crosswordsDir.mkdirs()) {
+            LOG.warning("Failed to create directory tree: " + crosswordsDir);
+            return;
+        }
+        if (!archiveDir.mkdirs()) {
+            LOG.warning("Failed to create directory tree: " + archiveDir);
+            return;
         }
 
         if ((downloaders == null) || (downloaders.size() == 0)) {
@@ -215,8 +214,8 @@ public class Downloaders {
                     this.notificationManager.notify(0, not);
                 }
 
-                File downloaded = new File(crosswords, d.createFileName(date));
-                File archived = new File(archive, d.createFileName(date));
+                File downloaded = new File(crosswordsDir, d.createFileName(date));
+                File archived = new File(archiveDir, d.createFileName(date));
 
                 System.out.println(downloaded.getAbsolutePath() + " " + downloaded.exists() + " OR " +
                     archived.getAbsolutePath() + " " + archived.exists());
@@ -257,58 +256,6 @@ public class Downloaders {
                 i++;
             } catch (Exception e) {
                 e.printStackTrace();
-            }
-        }
-
-        { // DO UPDATES
-
-            ArrayList<File> checkUpdate = new ArrayList<File>();
-
-            try {
-                for (File file : crosswords.listFiles()) {
-                    if (file.getName()
-                                .endsWith(".wordswithcrosses")) {
-                        File puz = new File(file.getAbsolutePath().substring(0,
-                                    file.getAbsolutePath().lastIndexOf('.') + 1) + "puz");
-                        System.out.println(puz.getAbsolutePath());
-
-                        if (!newlyDownloaded.contains(puz)) {
-                            checkUpdate.add(puz);
-                        }
-                    }
-                }
-
-                archive.mkdirs();
-
-                for (File file : archive.listFiles()) {
-                    if (file.getName()
-                                .endsWith(".wordswithcrosses")) {
-                        checkUpdate.add(new File(file.getAbsolutePath().substring(0,
-                                    file.getAbsolutePath().lastIndexOf('.') + 1) + "puz"));
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            for (File file : checkUpdate) {
-                try {
-                    IO.meta(file);
-
-                    //                    if ((meta != null) && meta.updateable && (nyt != null) &&
-                    //                            nyt.getName().equals(meta.source)) {
-                    //                        System.out.println("Trying update for " + file);
-                    //
-                    //                        File updated = nyt.update(file);
-                    //
-                    //                        if (updated != null) {
-                    //                            this.postUpdatedNotification(i, nyt.getName(),
-                    //                                updated);
-                    //                        }
-                    //                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
         }
 

@@ -22,19 +22,18 @@ import android.widget.Toast;
 
 
 public class HttpDownloadActivity extends Activity {
-    private File crosswordsFolder = new File(Environment.getExternalStorageDirectory(), "crosswords");
 
     /**
-    * Copies the data from an InputStream object to an OutputStream object.
-    *
-    * @param sourceStream
-    *            The input stream to be read.
-    * @param destinationStream
-    *            The output stream to be written to.
-    * @return int value of the number of bytes copied.
-    * @exception IOException
-    *                from java.io calls.
-    */
+     * Copies the data from an InputStream object to an OutputStream object.
+     *
+     * @param sourceStream
+     *            The input stream to be read.
+     * @param destinationStream
+     *            The output stream to be written to.
+     * @return int value of the number of bytes copied.
+     * @exception IOException
+     *                from java.io calls.
+     */
     public static int copyStream(InputStream sourceStream, OutputStream destinationStream)
         throws IOException {
         int bytesRead = 0;
@@ -92,7 +91,7 @@ public class HttpDownloadActivity extends Activity {
 
             InputStream is = response.getEntity()
                                      .getContent();
-            File puzFile = new File(crosswordsFolder, filename);
+            File puzFile = new File(WordsWithCrossesApplication.CROSSWORDS_DIR, filename);
             FileOutputStream fos = new FileOutputStream(puzFile);
             copyStream(is, fos);
             fos.close();

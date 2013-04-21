@@ -22,7 +22,7 @@ import com.adamrosenfield.wordswithcrosses.versions.DefaultUtil;
 
 public abstract class AbstractDownloader implements Downloader {
     protected static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
-    public static File DOWNLOAD_DIR = WordsWithCrossesApplication.CROSSWORDS;
+    public static File DOWNLOAD_DIR = WordsWithCrossesApplication.CROSSWORDS_DIR;
     public static final int DEFAULT_BUFFER_SIZE = 1024;
     @SuppressWarnings("unchecked")
     protected static final Map<String, String> EMPTY_MAP = Collections.EMPTY_MAP;

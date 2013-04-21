@@ -43,9 +43,9 @@ import com.adamrosenfield.wordswithcrosses.net.Downloaders;
 import com.adamrosenfield.wordswithcrosses.net.Scrapers;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
-import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
 import com.adamrosenfield.wordswithcrosses.view.SeparatedListAdapter;
 import com.adamrosenfield.wordswithcrosses.view.VerticalProgressBar;
+import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
 
 
 public class BrowseActivity extends WordsWithCrossesActivity implements OnItemClickListener {
@@ -54,9 +54,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
     private Accessor accessor = Accessor.DATE_DESC;
     private BaseAdapter currentAdapter = null;
     private Dialog mDownloadDialog;
-    private File archiveFolder = new File(Environment.getExternalStorageDirectory(), "crosswords/archive");
     private File contextFile;
-    private File crosswordsFolder = new File(Environment.getExternalStorageDirectory(), "crosswords");
     private FileHandle lastOpenedHandle = null;
     private Handler handler = new Handler();
     private List<String> sourceList = new ArrayList<String>();
@@ -85,16 +83,16 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
             return true;
         } else if (item.getTitle()
                            .equals("Archive")) {
-            this.archiveFolder.mkdirs();
-            this.contextFile.renameTo(new File(this.archiveFolder, this.contextFile.getName()));
-            meta.renameTo(new File(this.archiveFolder, meta.getName()));
+            WordsWithCrossesApplication.ARCHIVE_DIR.mkdirs();
+            this.contextFile.renameTo(new File(WordsWithCrossesApplication.ARCHIVE_DIR, this.contextFile.getName()));
+            meta.renameTo(new File(WordsWithCrossesApplication.ARCHIVE_DIR, meta.getName()));
             render();
 
             return true;
         } else if (item.getTitle()
                            .equals("Un-archive")) {
-            this.contextFile.renameTo(new File(this.crosswordsFolder, this.contextFile.getName()));
-            meta.renameTo(new File(this.crosswordsFolder, meta.getName()));
+            this.contextFile.renameTo(new File(WordsWithCrossesApplication.CROSSWORDS_DIR, this.contextFile.getName()));
+            meta.renameTo(new File(WordsWithCrossesApplication.CROSSWORDS_DIR, meta.getName()));
             render();
 
             return true;
@@ -277,7 +275,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
             this.accessor = Accessor.DATE_DESC;
         }
 
-        if (!crosswordsFolder.exists()) {
+        if (!WordsWithCrossesApplication.CROSSWORDS_DIR.exists()) {
             this.downloadTen();
 
             Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/welcome.html"), this,
@@ -534,8 +532,8 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
                 h.file.delete();
                 meta.delete();
             } else {
-                h.file.renameTo(new File(this.archiveFolder, h.file.getName()));
-                meta.renameTo(new File(this.archiveFolder, meta.getName()));
+                h.file.renameTo(new File(WordsWithCrossesApplication.ARCHIVE_DIR, h.file.getName()));
+                meta.renameTo(new File(WordsWithCrossesApplication.ARCHIVE_DIR, meta.getName()));
             }
         }
 
@@ -606,7 +604,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         dialog.setMessage("Please Wait...");
         dialog.setCancelable(false);
 
-        final File directory = viewArchive ? BrowseActivity.this.archiveFolder : BrowseActivity.this.crosswordsFolder;
+        final File directory = viewArchive ? WordsWithCrossesApplication.ARCHIVE_DIR : WordsWithCrossesApplication.CROSSWORDS_DIR;
         directory.mkdirs();
         //Only spawn a thread if there are a lot of puzzles.
         // Using SDK rev as a proxy to decide whether you have a slow processor or not.
