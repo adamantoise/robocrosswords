@@ -14,6 +14,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
 
     public static final String TABLE_NAME = "crosswords";
     public static final String COLUMN_ID = BaseColumns._ID;
+    public static final String COLUMN_FILENAME = "filename";
     public static final String COLUMN_AUTHOR = "author";
     public static final String COLUMN_TITLE = "title";
     public static final String COLUMN_SOURCE = "source";
@@ -41,6 +42,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
         db.execSQL(
             "CREATE TABLE " + TABLE_NAME + "(" +
             COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            COLUMN_FILENAME + " TEXT NOT NULL, " +
             COLUMN_AUTHOR + " TEXT NOT NULL, " +
             COLUMN_TITLE + " TEXT NOT NULL, " +
             COLUMN_SOURCE + " TEXT NOT NULL, " +
