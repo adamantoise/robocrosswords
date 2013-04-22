@@ -61,9 +61,9 @@ public class UclickDownloader extends AbstractDownloader {
         }
 
         try {
-        	LOG.log(Level.INFO, "TMP FILE "+plainText.getAbsolutePath());
+            LOG.log(Level.INFO, "TMP FILE "+plainText.getAbsolutePath());
             InputStream is = new FileInputStream(plainText);
-            DataOutputStream os = new DataOutputStream(new FileOutputStream(downloadTo));   
+            DataOutputStream os = new DataOutputStream(new FileOutputStream(downloadTo));
             boolean retVal = UclickXMLIO.convertUclickPuzzle(is, os,
                     "\u00a9 " + date.get(Calendar.YEAR) + " " + copyright, date);
             os.close();
@@ -113,7 +113,6 @@ public class UclickDownloader extends AbstractDownloader {
         }
 
         try {
-        	
             File tmpFile = new File(this.tempFolder, "uclick-temp"+System.currentTimeMillis()+".xml");
             f.renameTo(tmpFile);
 

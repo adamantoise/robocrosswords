@@ -5,7 +5,6 @@ import java.util.Calendar;
 
 import android.content.Context;
 
-
 public interface Downloader {
     // These lists must be sorted for binary search.
     public static final int[] DATE_SUNDAY = new int[] { Calendar.SUNDAY };

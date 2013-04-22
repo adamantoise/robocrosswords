@@ -11,13 +11,13 @@ import java.util.Calendar;
 public class ISwearDownloader extends AbstractDownloader {
     private static final String NAME = "I Swear";
     NumberFormat nf = NumberFormat.getInstance();
-    
+
     public ISwearDownloader(){
-    	super("http://wij.theworld.com/puzzles/dailyrecord/", DOWNLOAD_DIR, NAME);
+        super("http://wij.theworld.com/puzzles/dailyrecord/", DOWNLOAD_DIR, NAME);
         nf.setMinimumIntegerDigits(2);
         nf.setMaximumFractionDigits(0);
     }
-    
+
     public int[] getDownloadDates() {
         return DATE_FRIDAY;
     }
@@ -31,13 +31,11 @@ public class ISwearDownloader extends AbstractDownloader {
                 ".puz");
     }
 
-	public String getName() {
-		return NAME;
-	}
+    public String getName() {
+        return NAME;
+    }
 
-	public File download(Calendar date) {
-		return super.download(date, this.createUrlSuffix(date));
-	}
-    
-    
+    public File download(Calendar date) {
+        return super.download(date, this.createUrlSuffix(date));
+    }
 }

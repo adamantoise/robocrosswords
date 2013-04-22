@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 
 import android.content.Context;
 import android.net.Uri;
-import android.os.Environment;
 
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
@@ -78,16 +77,21 @@ public abstract class AbstractDownloader implements Downloader {
     }
 
     public String createFileName(Calendar date) {
-        return (date.get(Calendar.YEAR) + "-" +
-                (date.get(Calendar.MONTH) + 1) + "-" +
-                date.get(Calendar.DAY_OF_MONTH) + "-" +
-                this.downloaderName.replaceAll(" ", "") + ".puz");
+        return (date.get(Calendar.YEAR) +
+                "-" +
+                (date.get(Calendar.MONTH) + 1) +
+                "-" +
+                date.get(Calendar.DAY_OF_MONTH) +
+                "-" +
+                this.downloaderName.replaceAll(" ", "") +
+                ".puz");
     }
 
     public String sourceUrl(Calendar date) {
         return this.baseUrl + this.createUrlSuffix(date);
     }
 
+    @Override
     public String toString() {
         return getName();
     }
