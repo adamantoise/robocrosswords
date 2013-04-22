@@ -23,10 +23,6 @@ public class WaPoDownloader extends AbstractJPZDownloader {
         return DATE_DAILY;
     }
 
-    public String getName() {
-        return NAME;
-    }
-
     public File download(Calendar date) {
         return download(date, this.createUrlSuffix(date), EMPTY_MAP);
     }

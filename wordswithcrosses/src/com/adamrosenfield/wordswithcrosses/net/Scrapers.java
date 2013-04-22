@@ -14,7 +14,6 @@ import android.net.Uri;
 
 import com.adamrosenfield.wordswithcrosses.PlayActivity;
 
-
 public class Scrapers {
     private ArrayList<AbstractPageScraper> scrapers = new ArrayList<AbstractPageScraper>();
     private Context context;

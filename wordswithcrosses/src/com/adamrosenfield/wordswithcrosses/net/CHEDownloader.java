@@ -23,10 +23,6 @@ public class CHEDownloader extends AbstractDownloader {
         return DATE_FRIDAY;
     }
 
-    public String getName() {
-        return NAME;
-    }
-
     public File download(Calendar date) {
         return super.download(date, this.createUrlSuffix(date));
     }

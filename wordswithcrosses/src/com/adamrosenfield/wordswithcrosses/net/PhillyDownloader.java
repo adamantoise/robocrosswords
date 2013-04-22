@@ -23,10 +23,6 @@ public class PhillyDownloader extends AbstractDownloader {
         return DATE_SUNDAY;
     }
 
-    public String getName() {
-        return NAME;
-    }
-
     public File download(Calendar date) {
         return super.download(date, this.createUrlSuffix(date));
     }

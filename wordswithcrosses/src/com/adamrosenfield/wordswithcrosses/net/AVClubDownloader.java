@@ -28,10 +28,6 @@ public class AVClubDownloader extends AbstractDownloader {
         return DATE_WEDNESDAY;
     }
 
-    public String getName() {
-        return NAME;
-    }
-
     public File download(Calendar date) {
         return this.download(date, this.createUrlSuffix(date));
     }

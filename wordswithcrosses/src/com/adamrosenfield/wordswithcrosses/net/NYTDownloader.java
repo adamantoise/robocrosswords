@@ -70,10 +70,6 @@ public class NYTDownloader extends AbstractDownloader {
         return DATE_DAILY;
     }
 
-    public String getName() {
-        return NYTDownloader.NAME;
-    }
-
     public File download(Calendar date) {
         // Feb2310.puz
         return this.download(date, this.createUrlSuffix(date));

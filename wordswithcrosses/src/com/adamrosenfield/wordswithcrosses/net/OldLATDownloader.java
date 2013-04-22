@@ -24,10 +24,6 @@ public class OldLATDownloader extends AbstractDownloader {
         return DATE_DAILY;
     }
 
-    public String getName() {
-        return OldLATDownloader.NAME;
-    }
-
     public File download(Calendar date) {
         return this.download(date, this.createUrlSuffix(date));
     }

@@ -31,10 +31,6 @@ public class ISwearDownloader extends AbstractDownloader {
                 ".puz");
     }
 
-    public String getName() {
-        return NAME;
-    }
-
     public File download(Calendar date) {
         return super.download(date, this.createUrlSuffix(date));
     }

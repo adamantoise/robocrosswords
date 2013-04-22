@@ -19,10 +19,6 @@ public class NYTClassicDownloader extends AbstractDownloader {
         return DATE_MONDAY;
     }
 
-    public String getName() {
-        return NAME;
-    }
-
     public File download(Calendar date) {
         Calendar now = Calendar.getInstance();
 

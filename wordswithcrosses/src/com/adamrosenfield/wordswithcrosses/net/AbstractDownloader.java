@@ -96,6 +96,10 @@ public abstract class AbstractDownloader implements Downloader {
         return getName();
     }
 
+    public String getName() {
+        return downloaderName;
+    }
+
     protected abstract String createUrlSuffix(Calendar date);
 
     protected File download(Calendar date, String urlSuffix, Map<String, String> headers){

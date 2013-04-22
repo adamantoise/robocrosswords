@@ -43,10 +43,6 @@ public class UclickDownloader extends AbstractDownloader {
         return days;
     }
 
-    public String getName() {
-        return fullName;
-    }
-
     public File download(Calendar date) {
         File downloadTo = new File(this.downloadDirectory, this.createFileName(date));
 
