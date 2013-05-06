@@ -135,7 +135,7 @@ public class JPZIO {
             puz.setDate(date);
             puz.setVersion(IO.VERSION_STRING);
 
-            IO.saveNative(puz, os);
+            IO.save(puz, os);
 
             return true;
         } catch (Exception e) {

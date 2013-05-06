@@ -1,19 +1,18 @@
 package com.adamrosenfield.wordswithcrosses;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.FilenameFilter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import android.app.Dialog;
 import android.app.NotificationManager;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
@@ -39,24 +38,31 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.adamrosenfield.wordswithcrosses.io.IO;
+import com.adamrosenfield.wordswithcrosses.PuzzleDatabaseHelper.IDAndFilename;
 import com.adamrosenfield.wordswithcrosses.net.Downloader;
 import com.adamrosenfield.wordswithcrosses.net.Downloaders;
 import com.adamrosenfield.wordswithcrosses.net.Scrapers;
-import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
 import com.adamrosenfield.wordswithcrosses.view.SeparatedListAdapter;
 import com.adamrosenfield.wordswithcrosses.view.VerticalProgressBar;
 import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
 
 public class BrowseActivity extends WordsWithCrossesActivity implements OnItemClickListener {
+
+    private static Logger LOG;
+
     private static final String MENU_ARCHIVES = "Archives";
     private static final int DOWNLOAD_DIALOG_ID = 0;
-    private Accessor accessor = Accessor.DATE_DESC;
+    private SortOrder sortOrder = SortOrder.DATE_DESC;
     private BaseAdapter currentAdapter = null;
     private Dialog mDownloadDialog;
-    private File contextFile;
-    private FileHandle lastOpenedHandle = null;
+
+    /** Puzzle for which a context menu is currently open */
+    private PuzzleMeta contextPuzzle = null;
+
+    /** Most recently opened puzzle */
+    private PuzzleMeta lastOpenedPuzzle = null;
+
     private Handler handler = new Handler();
     private List<String> sourceList = new ArrayList<String>();
     private ListView puzzleList;
@@ -66,46 +72,25 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
     private View lastOpenedView = null;
     private boolean viewArchive;
 
+    private boolean hasShownSDCardWarning = false;
+
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        File meta = new File(this.contextFile.getParent(),
-                contextFile.getName().substring(0, contextFile.getName().lastIndexOf(".")) + ".wordswithcrosses");
-
-        if (item.getTitle()
-                    .equals("Delete")) {
-            this.contextFile.delete();
-
-            if (meta.exists()) {
-                meta.delete();
-            }
-
+        if (item.getTitle().equals("Delete")) {
+            deletePuzzle(contextPuzzle);
             render();
 
             return true;
-        } else if (item.getTitle()
-                           .equals("Archive")) {
-            WordsWithCrossesApplication.ARCHIVE_DIR.mkdirs();
-            this.contextFile.renameTo(new File(WordsWithCrossesApplication.ARCHIVE_DIR, this.contextFile.getName()));
-            meta.renameTo(new File(WordsWithCrossesApplication.ARCHIVE_DIR, meta.getName()));
+        } else if (item.getTitle().equals("Archive")) {
+            archivePuzzle(contextPuzzle, true);
             render();
 
             return true;
-        } else if (item.getTitle()
-                           .equals("Un-archive")) {
-            this.contextFile.renameTo(new File(WordsWithCrossesApplication.CROSSWORDS_DIR, this.contextFile.getName()));
-            meta.renameTo(new File(WordsWithCrossesApplication.CROSSWORDS_DIR, meta.getName()));
+        } else if (item.getTitle().equals("Un-archive")) {
+            archivePuzzle(contextPuzzle, false);
             render();
 
             return true;
-        } else if ("Mark as Updated".equals(item.getTitle())) {
-            try {
-                Puzzle p = IO.load(this.contextFile);
-                p.setUpdatable(false);
-                IO.save(p, this.contextFile);
-                render();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
 
         return super.onContextItemSelected(item);
@@ -116,26 +101,18 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         AdapterView.AdapterContextMenuInfo info;
 
         try {
-            info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+            info = (AdapterView.AdapterContextMenuInfo)menuInfo;
         } catch (ClassCastException e) {
             Log.e("com.adamrosenfield.wordswithcrosses", "bad menuInfo", e);
-
             return;
         }
 
-        contextFile = ((FileHandle) this.puzzleList.getAdapter()
-                                                   .getItem(info.position)).file;
+        contextPuzzle = ((PuzzleMeta)puzzleList.getAdapter().getItem(info.position));
 
-        PuzzleMeta meta = ((FileHandle) this.puzzleList.getAdapter()
-                                                       .getItem(info.position)).meta;
-        menu.setHeaderTitle(contextFile.getName());
+        menu.setHeaderTitle(contextPuzzle.title);
 
         menu.add("Delete");
-        this.archiveMenuItem = menu.add(this.viewArchive ? "Un-archive" : "Archive");
-
-        if ((meta != null) && meta.updateable) {
-            menu.add("Mark as Updated");
-        }
+        archiveMenuItem = menu.add(viewArchive ? "Un-archive" : "Archive");
     }
 
     @Override
@@ -167,9 +144,9 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
     public void onItemClick(AdapterView<?> l, View v, int position, long id) {
         lastOpenedView = v;
-        lastOpenedHandle = ((FileHandle) v.getTag());
+        lastOpenedPuzzle = ((PuzzleMeta)v.getTag());
 
-        File puzFile = lastOpenedHandle.file;
+        File puzFile = new File(lastOpenedPuzzle.filename);
         Intent i = new Intent(Intent.ACTION_EDIT, Uri.fromFile(puzFile), this, PlayActivity.class);
         this.startActivity(i);
     }
@@ -187,7 +164,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
             return true;
         } else if (item.getTitle().equals("Crosswords") ||
                    item.getTitle().equals(MENU_ARCHIVES)) {
-            this.viewArchive = !viewArchive;
+            viewArchive = !viewArchive;
             item.setTitle(viewArchive ? "Crosswords" : MENU_ARCHIVES);
 
             if (archiveMenuItem != null) {
@@ -202,31 +179,30 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
             return true;
         } else if (item.getTitle().equals("Help")) {
-            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/filescreen.html"), this,
-                    HTMLActivity.class);
-            this.startActivity(i);
+            showHTMLPage("filescreen.html");
         } else if (item.getTitle().equals("By Source")) {
-            this.accessor = Accessor.SOURCE;
+            sortOrder = SortOrder.SOURCE_ASC;
             prefs.edit()
-                 .putInt("sort", 2)
+                 .putInt("sort", sortOrder.ordinal())
                  .commit();
-            this.render();
+            render();
         } else if (item.getTitle().equals("By Date (Ascending)")) {
-            this.accessor = Accessor.DATE_ASC;
+            sortOrder = SortOrder.DATE_ASC;
             prefs.edit()
-                 .putInt("sort", 1)
+                 .putInt("sort", sortOrder.ordinal())
                  .commit();
-            this.render();
+            render();
         } else if (item.getTitle().equals("By Date (Descending)")) {
-            this.accessor = Accessor.DATE_DESC;
+            sortOrder = SortOrder.DATE_DESC;
             prefs.edit()
-                 .putInt("sort", 0)
+                 .putInt("sort", sortOrder.ordinal())
                  .commit();
-            this.render();
+            render();
         } else if("Send Debug Package".equals(item.getTitle())){
         	Intent i = WordsWithCrossesApplication.sendDebug();
-        	if(i != null)
+        	if (i != null) {
         		this.startActivity(i);
+        	}
         }
 
         return false;
@@ -243,6 +219,9 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LOG = Logger.getLogger(getPackageName());
+
         this.setTitle("Puzzles - Words With Crosses");
         setDefaultKeyMode(DEFAULT_KEYS_SHORTCUT);
         this.setContentView(R.layout.browse);
@@ -253,52 +232,66 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         upgradePreferences();
         this.nm = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        switch (prefs.getInt("sort", 0)) {
-        case 2:
-            this.accessor = Accessor.SOURCE;
+        sortOrder = SortOrder.values()[prefs.getInt("sort", SortOrder.DATE_DESC.ordinal())];
 
-            break;
+        // Check that the SD card is mounted
+        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            if (!hasShownSDCardWarning) {
+                showSDCardHelp();
+                hasShownSDCardWarning = true;
+            } else {
+                render();
+            }
+        } else if (!WordsWithCrossesApplication.CROSSWORDS_DIR.exists()) {
+            // If this is the first time the user has launched the app, start
+            // downloading a bunch of starter puzzles and show the welcome
+            // page
+            if (WordsWithCrossesApplication.makeDirs()) {
+                updateLastDatabaseSyncTime();
+                // TODO: TEMP
+                //downloadStarterPuzzles();
+            }
 
-        case 1:
-            this.accessor = Accessor.DATE_ASC;
+            showWelcomePage();
+        } else {
+            // Look up what the latest version of the app is which has shown
+            // the welcome screen
+            boolean showWelcome = false;
+            try {
+                PackageInfo pkgInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
 
-            break;
+                String welcomeShownRelease = prefs.getString("welcome_shown_release", "");
+                if (!welcomeShownRelease.equals(pkgInfo.versionName)) {
+                    showWelcome = true;
 
-        default:
-            this.accessor = Accessor.DATE_DESC;
+                    Editor e = prefs.edit();
+                    e.putString("welcome_shown_release", pkgInfo.versionName);
+                    e.commit();
+                }
+            } catch(PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            if (showWelcome) {
+                // Show the release notes if this is the first time the user
+                // launched this version of the app
+                showHTMLPage("release.html");
+            } else if (needDatabaseSync()) {
+                // If there are files in the crosswords directory which aren't
+                // known in the database, sync the database with the file
+                // system (on a background thread)
+                new Thread(new Runnable() {
+                    public void run() {
+                        syncDatabase();
+                    }
+                }).start();
+            } else {
+                // Normal case -- database is in sync and user has launched this
+                // version before.  Try to download new puzzles if necessary.
+                render();
+                checkDownload();
+            }
         }
-
-        String thisReleasePref = null;
-        try {
-            PackageInfo pkgInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            thisReleasePref = "release_" + pkgInfo.versionName;
-        } catch(PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        if (!WordsWithCrossesApplication.CROSSWORDS_DIR.exists()) {
-            // TEMP
-            //this.downloadTen();
-
-            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/welcome.html"), this,
-                    HTMLActivity.class);
-            this.startActivity(i);
-
-            return;
-        } else if (thisReleasePref != null && prefs.getBoolean(thisReleasePref, true)) {
-            Editor e = prefs.edit();
-            e.putBoolean(thisReleasePref, false);
-            e.commit();
-
-            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/release.html"), this,
-                    HTMLActivity.class);
-            this.startActivity(i);
-
-            return;
-        }
-
-        render();
-        this.checkDownload();
     }
 
     @Override
@@ -335,7 +328,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
                     now.get(Calendar.DAY_OF_MONTH),
                     new Provider<Downloaders>() {
                         public Downloaders get() {
-                            return new Downloaders(prefs, nm, BrowseActivity.this);
+                            return new Downloaders(BrowseActivity.this, nm);
                         }
                     });
 
@@ -354,42 +347,19 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         if (this.currentAdapter == null) {
             this.render();
         } else {
-            if (lastOpenedHandle != null) {
-                try {
-                    lastOpenedHandle.meta = IO.meta(lastOpenedHandle.file);
-
-                    VerticalProgressBar bar = (VerticalProgressBar) lastOpenedView.findViewById(R.id.puzzle_progress);
-
-                    if (lastOpenedHandle.meta.updateable) {
-                        bar.setPercentComplete(-1);
-                    } else {
-                        bar.setPercentComplete(lastOpenedHandle.getProgress());
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            if (lastOpenedPuzzle != null) {
+                VerticalProgressBar bar = (VerticalProgressBar)lastOpenedView.findViewById(R.id.puzzle_progress);
+                bar.setPercentComplete(lastOpenedPuzzle.percentComplete);
             }
         }
 
         this.checkDownload();
     }
 
-    private SeparatedListAdapter buildList(final Dialog dialog, File directory, Accessor accessor) {
-        directory.mkdirs();
-
-        long incept = System.currentTimeMillis();
-        ArrayList<FileHandle> files = new ArrayList<FileHandle>();
-        FileHandle[] puzFiles = null;
-
-        if (!directory.exists()) {
-            showSDCardHelp();
-
-            return new SeparatedListAdapter(this);
-        }
-
+    private SeparatedListAdapter buildList() {
+        // Get source filter, if any
         String sourceMatch = null;
-
-        if (this.sources != null) {
+        if (sources != null) {
             sourceMatch = ((SourceListAdapter) sources.getAdapter()).current;
 
             if (SourceListAdapter.ALL_SOURCES.equals(sourceMatch)) {
@@ -397,80 +367,32 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
             }
         }
 
-        HashSet<String> sourcesTemp = new HashSet<String>();
-
-        for (File f : directory.listFiles()) {
-            // if this is taking a while and we are off the EDT, pop up the dialog.
-            if ((dialog != null) && ((System.currentTimeMillis() - incept) > 2000) && !dialog.isShowing()) {
-                handler.post(new Runnable() {
-                        public void run() {
-                            try {
-                                dialog.show();
-                            } catch (RuntimeException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-            }
-
-            if (f.getName().endsWith(".puz")) {
-                PuzzleMeta m = null;
-
-                try {
-                    m = IO.meta(f);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                FileHandle h = new FileHandle(f, m);
-                sourcesTemp.add(h.getSource());
-
-                if ((sourceMatch == null) || sourceMatch.equals(h.getSource())) {
-                    files.add(h);
-                }
-            }
-        }
-
-        puzFiles = files.toArray(new FileHandle[files.size()]);
-
-        try {
-            Arrays.sort(puzFiles, accessor);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        PuzzleDatabaseHelper dbHelper = WordsWithCrossesApplication.getDatabaseHelper();
+        ArrayList<PuzzleMeta> puzzles = dbHelper.queryPuzzles(sourceMatch, viewArchive, sortOrder);
 
         SeparatedListAdapter adapter = new SeparatedListAdapter(this);
-        String lastHeader = null;
-        ArrayList<FileHandle> current = new ArrayList<FileHandle>();
+        FileAdapter lastAdapter = null;
+        String lastGroup = null;
 
-        for (FileHandle handle : puzFiles) {
-            String check = accessor.getLabel(handle);
-
-            if (!((lastHeader == null) || lastHeader.equals(check))) {
-                FileAdapter fa = new FileAdapter();
-                fa.puzFiles = current.toArray(new FileHandle[current.size()]);
-                adapter.addSection(lastHeader, fa);
-                current = new ArrayList<FileHandle>();
+        for (PuzzleMeta puzzle : puzzles) {
+            String group = sortOrder.getGroup(puzzle);
+            if (lastGroup == null || !lastGroup.equals(group)) {
+                lastAdapter = new FileAdapter();
+                lastGroup = group;
+                adapter.addSection(lastGroup, lastAdapter);
             }
 
-            lastHeader = check;
-            current.add(handle);
+            lastAdapter.addPuzzle(puzzle);
         }
 
-        if (lastHeader != null) {
-            FileAdapter fa = new FileAdapter();
-            fa.puzFiles = current.toArray(new FileHandle[current.size()]);
-            adapter.addSection(lastHeader, fa);
-            current = new ArrayList<FileHandle>();
-        }
-
-        if (this.sources != null) {
+        if (sources != null) {
+            ArrayList<String> newSourceList = dbHelper.querySources();
             this.sourceList.clear();
-            this.sourceList.addAll(sourcesTemp);
-            Collections.sort(this.sourceList);
+            this.sourceList.addAll(newSourceList);
+
             this.handler.post(new Runnable(){
             	public void run(){
-            		((SourceListAdapter) sources.getAdapter()).notifyDataSetInvalidated();
+            		((SourceListAdapter)sources.getAdapter()).notifyDataSetInvalidated();
             	}
             });
         }
@@ -478,9 +400,107 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         return adapter;
     }
 
+    /**
+     * Checks if the database needs to be synced with the file system
+     *
+     * @return True if the database needs to be synced
+     */
+    private boolean needDatabaseSync() {
+        long folderTimestamp = WordsWithCrossesApplication.CROSSWORDS_DIR.lastModified();
+        long lastDBSync = prefs.getLong(PREF_LAST_DB_SYNC_TIME, 0);
+        return (folderTimestamp > lastDBSync);
+    }
+
+    /**
+     * Syncs the database with the file system.  Any puzzle files found which
+     * are not in the database are added to the database, and any puzzles in
+     * the database which are missing in the file system are deleted from the
+     * database.
+     */
+    private void syncDatabase() {
+        long startTime = System.currentTimeMillis();
+
+        // Get the list of .puz files in the crosswords directory
+        File[] fileList = WordsWithCrossesApplication.CROSSWORDS_DIR.listFiles(
+            new FilenameFilter() {
+                public boolean accept(File dir, String name) {
+                    return name.endsWith(".puz");
+                }
+            });
+        if (fileList == null) {
+            LOG.warning("Unable to enumerate directory: " + WordsWithCrossesApplication.CROSSWORDS_DIR);
+            return;
+        }
+
+        // Sort the list of filenames
+        ArrayList<String> filenameList = new ArrayList<String>(fileList.length);
+        for (int i = 0; i < fileList.length; i++) {
+            filenameList.add(fileList[i].getAbsolutePath());
+        }
+        Collections.sort(
+            filenameList,
+            new Comparator<String>() {
+                public int compare(String s1, String s2) {
+                    return s1.compareTo(s2);
+                }
+            });
+
+        // Get the list of filenames in the database
+        PuzzleDatabaseHelper dbHelper = WordsWithCrossesApplication.getDatabaseHelper();
+        List<PuzzleDatabaseHelper.IDAndFilename> dbFileList = dbHelper.getFilenameList();
+
+        ArrayList<String> filesToAdd = new ArrayList<String>();
+        ArrayList<Integer> filesToRemove = new ArrayList<Integer>();
+
+        // Pseudo-merge the two sorted lists to reconcile them
+        int filenameIndex = 0;
+        int dbIndex = 0;
+        while (filenameIndex < filenameList.size() && dbIndex < dbFileList.size()) {
+            int cmp = filenameList.get(filenameIndex).compareTo(dbFileList.get(dbIndex).filename);
+            if (cmp == 0) {
+                // File exists in both the file system and database, we're good
+                filenameIndex++;
+                dbIndex++;
+            } else if (cmp < 0) {
+                // File exists in the file system but not in the database, so
+                // add it to the database
+                filesToAdd.add(filenameList.get(filenameIndex));
+                filenameIndex++;
+            } else {
+                // File exists in the database but not in the file system, so
+                // remove it from the database
+                filesToRemove.add(dbFileList.get(dbIndex).id);
+                dbIndex++;
+            }
+        }
+
+        while (filenameIndex < filenameList.size()) {
+            filesToAdd.add(filenameList.get(filenameIndex));
+            filenameIndex++;
+        }
+
+        while (dbIndex < dbFileList.size()) {
+            filesToRemove.add(dbFileList.get(dbIndex).id);
+            dbIndex++;
+        }
+
+        // Update the database accordingly
+        for (String filename : filesToAdd) {
+            File file = new File(WordsWithCrossesApplication.CROSSWORDS_DIR, filename);
+            dbHelper.addPuzzle(file, "", "", file.lastModified());
+        }
+
+        dbHelper.removePuzzles(filesToRemove);
+
+        updateLastDatabaseSyncTime();
+
+        long durationMs = System.currentTimeMillis() - startTime;
+        LOG.info("Database sync took " + durationMs + " ms");
+
+        postRenderMessage();
+    }
+
     private void checkDownload() {
-        // TEMP
-        /*
         long lastDL = prefs.getLong("dlLast", 0);
 
         if (prefs.getBoolean("dlOnStartup", true) &&
@@ -490,105 +510,121 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
                  .putLong("dlLast", System.currentTimeMillis())
                  .commit();
         }
-        */
     }
 
     private void cleanup() {
-        File directory = new File(Environment.getExternalStorageDirectory(), "crosswords");
-        ArrayList<FileHandle> files = new ArrayList<FileHandle>();
-        FileHandle[] puzFiles = null;
-
-        for (File f : directory.listFiles()) {
-            if (f.getName()
-                     .endsWith(".puz")) {
-                PuzzleMeta m = null;
-
-                try {
-                    m = IO.meta(f);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                files.add(new FileHandle(f, m));
-            }
-        }
-
-        puzFiles = files.toArray(new FileHandle[files.size()]);
-
         long cleanupValue = Long.parseLong(prefs.getString("cleanupAge", "2")) + 1;
         long maxAge = (cleanupValue == 0) ? 0 : (System.currentTimeMillis() - (cleanupValue * 24 * 60 * 60 * 1000));
+        boolean deleteOnCleanup = prefs.getBoolean("deleteOnCleanup", false);
 
-        ArrayList<FileHandle> toCleanup = new ArrayList<FileHandle>();
-        Arrays.sort(puzFiles);
-        files.clear();
+        PuzzleDatabaseHelper dbHelper = WordsWithCrossesApplication.getDatabaseHelper();
 
-        for (FileHandle h : puzFiles) {
-            //System.out.println(h.getDate().getTime() + " vs "+ maxAge);
-            if ((h.getProgress() == 100) || (h.getDate().getTimeInMillis() < maxAge)) {
-                toCleanup.add(h);
+        if (deleteOnCleanup) {
+            // Get list of puzzles to delete
+            List<IDAndFilename> puzzles = dbHelper.getFilenamesToCleanup(maxAge);
+            ArrayList<Integer> ids = new ArrayList<Integer>();
+
+            // Delete the puzzles from the file system
+            for (IDAndFilename idAndFilename : puzzles) {
+                LOG.info("Deleting puzzle: " + idAndFilename.filename);
+                ids.add(idAndFilename.id);
+
+                File puzzleFile = new File(idAndFilename.filename);
+                if (!puzzleFile.delete()) {
+                    LOG.warning("Failed to delete puzzle: " + idAndFilename.filename);
+                }
             }
-        }
 
-        for (FileHandle h : toCleanup) {
-            File meta = new File(directory,
-                    h.file.getName().substring(0, h.file.getName().lastIndexOf(".")) + ".wordswithcrosses");
+            // Delete the puzzles form the database
+            dbHelper.removePuzzles(ids);
 
-            if (prefs.getBoolean("deleteOnCleanup", false)) {
-                h.file.delete();
-                meta.delete();
-            } else {
-                h.file.renameTo(new File(WordsWithCrossesApplication.ARCHIVE_DIR, h.file.getName()));
-                meta.renameTo(new File(WordsWithCrossesApplication.ARCHIVE_DIR, meta.getName()));
-            }
+            updateLastDatabaseSyncTime();
+        } else {
+            // Just mark the puzzles as archived
+            int numArchived = dbHelper.archivePuzzles(maxAge);
+            LOG.info("Archived " + numArchived + " puzzles");
         }
 
         render();
     }
 
-    private void download(final Calendar date, final List<Downloader> downloaders, final boolean scrape) {
-        final Downloaders dls = new Downloaders(prefs, nm, this);
-        new Thread(new Runnable() {
-                public void run() {
-                    dls.download(date, downloaders);
+    /**
+     * Deletes the given puzzle from the file system and the database
+     *
+     * @param puzzle Puzzle to delete
+     */
+    private void deletePuzzle(PuzzleMeta puzzle) {
+        LOG.info("Deleting puzzle: " + puzzle.filename);
 
-                    if (scrape) {
-                        Scrapers scrapes = new Scrapers(prefs, nm, BrowseActivity.this);
-                        scrapes.scrape();
-                    }
+        // Delete the puzzle from the file system
+        File puzzleFile = new File(puzzle.filename);
+        if (!puzzleFile.delete()) {
+            LOG.warning("Failed to delete puzzle: " + puzzle.filename);
+        }
 
-                    handler.post(new Runnable() {
-                            public void run() {
-                                BrowseActivity.this.render();
-                            }
-                        });
-                }
-            }).start();
+        // Delete the puzzle from the database
+        PuzzleDatabaseHelper dbHelper = WordsWithCrossesApplication.getDatabaseHelper();
+        dbHelper.removePuzzles(new ArrayList<Integer>(puzzle.id));
     }
 
-    private void downloadTen() {
+    /**
+     * Archives or un-archives the given puzzle
+     *
+     * @param puzzle Puzzle to archive or un-archive
+     * @param archive True to archive or false to un-archive
+     */
+    private void archivePuzzle(PuzzleMeta puzzle, boolean archive) {
+        LOG.info((archive ? "Archiving " : "Un-archiving ") + puzzle.filename);
+
+        PuzzleDatabaseHelper dbHelper = WordsWithCrossesApplication.getDatabaseHelper();
+        dbHelper.archivePuzzle(puzzle.id, archive);
+    }
+
+    private void download(final Calendar date, final List<Downloader> downloaders, final boolean scrape) {
         new Thread(new Runnable() {
-                public void run() {
-                    Downloaders dls = new Downloaders(prefs, nm, BrowseActivity.this);
-                    dls.suppressMessages(true);
+            public void run() {
+                BrowseActivity.this.internalDownload(date, downloaders, scrape);
+            }
+        });
+    }
 
-                    Scrapers scrapes = new Scrapers(prefs, nm, BrowseActivity.this);
-                    scrapes.suppressMessages(true);
-                    scrapes.scrape();
+    private void internalDownload(Calendar date, List<Downloader> downloaders, boolean scrape) {
+        Downloaders dls = new Downloaders(this, nm);
+        dls.download(date, downloaders);
 
-                    Calendar now = Calendar.getInstance();
+        if (scrape) {
+            Scrapers scrapes = new Scrapers(prefs, nm, this);
+            scrapes.scrape();
+        }
 
-                    for (int i = 0; i < 5; i++) {
-                        Calendar date = (Calendar)now.clone();
-                        date.add(Calendar.DAY_OF_MONTH, -(i + 1));
-                        dls.download(date);
-                        handler.post(new Runnable() {
-                                public void run() {
-                                    BrowseActivity.this.render();
-                                }
-                            });
-                    }
-                }
-            }).start();
+        postRenderMessage();
+    }
+
+    private void downloadStarterPuzzles() {
+        new Thread(new Runnable() {
+            public void run() {
+                BrowseActivity.this.internalDownloadStarterPuzzles();
+            }
+        }).start();
+    }
+
+    private void internalDownloadStarterPuzzles() {
+        Downloaders dls = new Downloaders(this, nm);
+        dls.suppressMessages(true);
+
+        Scrapers scrapes = new Scrapers(prefs, nm, this);
+        scrapes.suppressMessages(true);
+        scrapes.scrape();
+
+        Calendar now = Calendar.getInstance();
+
+        for (int i = 0; i < 7; i++) {
+            Calendar date = (Calendar)now.clone();
+            date.add(Calendar.DAY_OF_MONTH, -i);
+            dls.download(date);
+
+            postRenderMessage();
+        }
     }
 
     private void render() {
@@ -605,36 +641,18 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
                 });
         }
 
-        final ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setMessage("Please Wait...");
-        dialog.setCancelable(false);
+        this.puzzleList.setAdapter(this.buildList());
+    }
 
-        final File directory = viewArchive ? WordsWithCrossesApplication.ARCHIVE_DIR : WordsWithCrossesApplication.CROSSWORDS_DIR;
-        directory.mkdirs();
-        //Only spawn a thread if there are a lot of puzzles.
-        // Using SDK rev as a proxy to decide whether you have a slow processor or not.
-
-        if (((android.os.Build.VERSION.SDK_INT >= 5) && directory.exists() && (directory.list().length > 500)) ||
-                ((android.os.Build.VERSION.SDK_INT < 5) && directory.exists() && (directory.list().length > 160))) {
-            Runnable r = new Runnable() {
-                    public void run() {
-                        currentAdapter = BrowseActivity.this.buildList(dialog, directory, BrowseActivity.this.accessor);
-                        BrowseActivity.this.handler.post(new Runnable() {
-                                public void run() {
-                                    BrowseActivity.this.puzzleList.setAdapter(currentAdapter);
-
-                                    if (dialog.isShowing()) {
-                                        dialog.hide();
-                                    }
-                                }
-                            });
-                    }
-                };
-
-            new Thread(r).start();
-        } else {
-            this.puzzleList.setAdapter(this.buildList(null, directory, accessor));
-        }
+    /**
+     * Posts a message to this object to render on the UI thread
+     */
+    public void postRenderMessage() {
+        handler.post(new Runnable() {
+            public void run() {
+                BrowseActivity.this.render();
+            }
+        });
     }
 
     private void upgradePreferences() {
@@ -644,12 +662,10 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
                           .putString("keyboardType", "NATIVE")
                           .commit();
             } else {
-                Configuration config = getBaseContext()
-                                           .getResources()
-                                           .getConfiguration();
+                Configuration config = getBaseContext().getResources().getConfiguration();
 
                 if ((config.navigation == Configuration.NAVIGATION_NONAV) ||
-                        (config.navigation == Configuration.NAVIGATION_UNDEFINED)) {
+                    (config.navigation == Configuration.NAVIGATION_UNDEFINED)) {
                     this.prefs.edit()
                               .putString("keyboardType", "CONDENSED_ARROWS")
                               .commit();
@@ -666,57 +682,106 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         T get();
     }
 
+    /**
+     * Enumeration of supported puzzle sort orders
+     */
+    public static enum SortOrder {
+        DATE_ASC,
+        DATE_DESC,
+        SOURCE_ASC;
+
+        public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("EEEEEEEEE MMM dd, yyyy");
+
+        /**
+         * Gets the "ORDER BY" clause to be used for database queries with this
+         * sort order
+         *
+         * @return The "ORDER BY" clause
+         */
+        public String getOrderByClause() {
+            switch (this)
+            {
+            case DATE_ASC:
+                return PuzzleDatabaseHelper.COLUMN_DATE + " ASC," + PuzzleDatabaseHelper.COLUMN_SOURCE + " ASC";
+            case DATE_DESC:
+                return PuzzleDatabaseHelper.COLUMN_DATE + " DESC," + PuzzleDatabaseHelper.COLUMN_SOURCE + " ASC";
+            case SOURCE_ASC:
+                return PuzzleDatabaseHelper.COLUMN_SOURCE + " ASC," + PuzzleDatabaseHelper.COLUMN_DATE + " ASC";
+             default:
+                 throw new IllegalArgumentException("Invalid sort order: " + this);
+            }
+        }
+
+        /**
+         * Gets the group under which the given puzzle should be sorted
+         *
+         * @param puzzle Puzzle to sort
+         *
+         * @return Group under which the given puzzle should be sorted
+         */
+        public String getGroup(PuzzleMeta puzzle) {
+            if (this == SOURCE_ASC) {
+                return puzzle.source;
+            } else {
+                return DATE_FORMAT.format(puzzle.date.getTime());
+            }
+        }
+    }
+
+    private static final SimpleDateFormat FILE_ADAPTER_DATE_FORMAT = new SimpleDateFormat("EEEEEEEEE\n MMM dd, yyyy");
+
     private class FileAdapter extends BaseAdapter {
-        SimpleDateFormat df = new SimpleDateFormat("EEEEEEEEE\n MMM dd, yyyy");
-        FileHandle[] puzFiles;
+        private ArrayList<PuzzleMeta> puzzles = new ArrayList<PuzzleMeta>();
 
         public FileAdapter() {
         }
 
         public int getCount() {
-            return puzFiles.length;
+            return puzzles.size();
         }
 
         public Object getItem(int i) {
-            return puzFiles[i];
+            return puzzles.get(i);
         }
 
-        public long getItemId(int arg0) {
-            return arg0;
+        public long getItemId(int arg) {
+            return arg;
         }
 
         public View getView(int i, View view, ViewGroup group) {
             if (view == null) {
-                LayoutInflater inflater = (LayoutInflater) BrowseActivity.this.getApplicationContext()
-                                                                              .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                LayoutInflater inflater = (LayoutInflater)BrowseActivity.this.getApplicationContext()
+                                                                             .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.puzzle_list_item, null);
             }
 
-            view.setTag(puzFiles[i]);
+            PuzzleMeta puzzle = puzzles.get(i);
+            view.setTag(puzzle);
 
-            TextView date = (TextView) view.findViewById(R.id.puzzle_date);
+            TextView date = (TextView)view.findViewById(R.id.puzzle_date);
 
-            date.setText(df.format(puzFiles[i].getDate().getTime()));
+            date.setText(FILE_ADAPTER_DATE_FORMAT.format(puzzle.date.getTime()));
 
-            if (accessor == Accessor.SOURCE) {
+            if (sortOrder == SortOrder.SOURCE_ASC) {
                 date.setVisibility(View.VISIBLE);
             } else {
                 date.setVisibility(View.GONE);
             }
 
-            TextView title = (TextView) view.findViewById(R.id.puzzle_name);
+            TextView title = (TextView)view.findViewById(R.id.puzzle_name);
+            title.setText(puzzle.source);
 
-            title.setText(puzFiles[i].getTitle());
+            VerticalProgressBar bar = (VerticalProgressBar)view.findViewById(R.id.puzzle_progress);
+            bar.setPercentComplete(puzzle.percentComplete);
 
-            VerticalProgressBar bar = (VerticalProgressBar) view.findViewById(R.id.puzzle_progress);
-
-            bar.setPercentComplete(puzFiles[i].getProgress());
-
-            TextView caption = (TextView) view.findViewById(R.id.puzzle_caption);
-
-            caption.setText(puzFiles[i].getCaption());
+            TextView caption = (TextView)view.findViewById(R.id.puzzle_caption);
+            caption.setText(puzzle.title);
 
             return view;
+        }
+
+        public void addPuzzle(PuzzleMeta puzzle) {
+            puzzles.add(puzzle);
         }
     }
 }

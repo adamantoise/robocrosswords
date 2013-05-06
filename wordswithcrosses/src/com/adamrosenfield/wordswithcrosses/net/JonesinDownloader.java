@@ -1,6 +1,5 @@
 package com.adamrosenfield.wordswithcrosses.net;
 
-import java.io.File;
 import java.text.NumberFormat;
 import java.util.Calendar;
 
@@ -21,10 +20,6 @@ public class JonesinDownloader extends AbstractDownloader {
 
     public int[] getDownloadDates() {
         return DATE_THURSDAY;
-    }
-
-    public File download(Calendar date) {
-        return super.download(date, this.createUrlSuffix(date));
     }
 
     @Override

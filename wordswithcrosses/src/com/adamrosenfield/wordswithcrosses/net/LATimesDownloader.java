@@ -1,6 +1,5 @@
 package com.adamrosenfield.wordswithcrosses.net;
 
-import java.io.File;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -30,10 +29,6 @@ public class LATimesDownloader extends AbstractJPZDownloader {
 
     public int[] getDownloadDates() {
         return DATE_DAILY;
-    }
-
-    public File download(Calendar date) {
-        return download(date, this.createUrlSuffix(date), headers);
     }
 
     @Override

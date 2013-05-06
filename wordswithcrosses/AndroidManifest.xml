@@ -91,11 +91,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:configChanges="keyboardHidden|orientation"
-            android:label="Browse for Puzzles"
-            android:name="com.adamrosenfield.wordswithcrosses.WebBrowserActivity" >
-        </activity>
-        <activity
             android:label="Puzzle Completed!"
             android:name="com.adamrosenfield.wordswithcrosses.PuzzleFinishedActivity"
             android:theme="@android:style/Theme.Dialog" >

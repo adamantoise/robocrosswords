@@ -1,13 +1,5 @@
 package com.adamrosenfield.wordswithcrosses.io;
 
-import com.adamrosenfield.wordswithcrosses.io.versions.IOVersion;
-import com.adamrosenfield.wordswithcrosses.io.versions.IOVersion1;
-import com.adamrosenfield.wordswithcrosses.io.versions.IOVersion2;
-import com.adamrosenfield.wordswithcrosses.io.versions.IOVersion3;
-import com.adamrosenfield.wordswithcrosses.puz.Box;
-import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
-import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
-
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -18,13 +10,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
-
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
+import com.adamrosenfield.wordswithcrosses.puz.Box;
+import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 
 public class IO {
 	public static final String FILE_MAGIC = "ACROSS&DOWN";
@@ -62,32 +56,15 @@ public class IO {
 		return cksum;
 	}
 
-	public static Puzzle load(DataInputStream puzzleInput,
-			DataInputStream metaInput) throws IOException {
-		Puzzle puz = IO.loadNative(puzzleInput);
-		puzzleInput.close();
-		IO.readCustom(puz, metaInput);
+	public static Puzzle load(File file) throws IOException {
+	    FileInputStream fis = new FileInputStream(file);
+	    Puzzle puz = load(new DataInputStream(fis));
+	    fis.close();
 
-		return puz;
+	    return puz;
 	}
 
-	public static Puzzle load(File baseFile) throws IOException {
-		File metaFile = new File(baseFile.getParentFile(), baseFile.getName()
-				.substring(0, baseFile.getName().lastIndexOf(".")) + ".wordswithcrosses");
-		FileInputStream fis = new FileInputStream(baseFile);
-		Puzzle puz = IO.loadNative(new DataInputStream(fis));
-		fis.close();
-
-		if (metaFile.exists()) {
-			fis = new FileInputStream(metaFile);
-			IO.readCustom(puz, new DataInputStream(fis));
-			fis.close();
-		}
-
-		return puz;
-	}
-
-	public static Puzzle loadNative(DataInputStream input) throws IOException {
+	public static Puzzle load(DataInputStream input) throws IOException {
 		Puzzle puz = new Puzzle();
 
 		input.skipBytes(0x18);
@@ -216,44 +193,6 @@ public class IO {
 		return puz;
 	}
 
-	public static PuzzleMeta meta(File baseFile) throws IOException {
-		File metaFile = new File(baseFile.getParentFile(), baseFile.getName()
-				.substring(0, baseFile.getName().lastIndexOf(".")) + ".wordswithcrosses");
-		FileInputStream fis = new FileInputStream(metaFile);
-		PuzzleMeta m = IO.readMeta(new DataInputStream(fis));
-		fis.close();
-
-		return m;
-	}
-
-	public static void readCustom(Puzzle puz, DataInputStream is)
-			throws IOException {
-		int version = is.read();
-		IOVersion v;
-
-		switch (version) {
-		case 1:
-			v = new IOVersion1();
-
-			break;
-
-		case 2:
-			v = new IOVersion2();
-
-			break;
-
-		case 3:
-			v = new IOVersion3();
-
-			break;
-
-		default:
-			throw new IOException("UnknownVersion " + version);
-		}
-
-		v.read(puz, is);
-	}
-
 	public static int readExtraSectionType(DataInputStream input)
 			throws IOException {
 		byte[] title = new byte[4];
@@ -293,35 +232,6 @@ public class IO {
 		input.skipBytes(1);
 	}
 
-	public static PuzzleMeta readMeta(DataInputStream is) throws IOException {
-		int version = is.read();
-		IOVersion v;
-
-		switch (version) {
-		case 1:
-			v = new IOVersion1();
-
-			break;
-
-		case 2:
-			v = new IOVersion2();
-
-			break;
-
-		case 3:
-			v = new IOVersion3();
-
-			break;
-
-		default:
-			throw new IOException("UnknownVersion  " + version);
-		}
-
-		PuzzleMeta m = v.readMeta(is);
-
-		return m;
-	}
-
 	public static String readNullTerminatedString(InputStream is)
 			throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream(128);
@@ -348,34 +258,24 @@ public class IO {
 	    return date;
 	}
 
-	public static void save(Puzzle puz, DataOutputStream puzzleOutputStream,
-			DataOutputStream metaOutputStream) throws IOException {
-		IO.saveNative(puz, puzzleOutputStream);
-		puzzleOutputStream.close();
-		IO.writeCustom(puz, metaOutputStream);
-		metaOutputStream.close();
-	}
-
-	public static void save(Puzzle puz, File baseFile) throws IOException {
+	public static void save(Puzzle puzzle, File destFile) throws IOException {
 		long incept = System.currentTimeMillis();
-		File metaFile = new File(baseFile.getParentFile(), baseFile.getName()
-				.substring(0, baseFile.getName().lastIndexOf(".")) + ".wordswithcrosses");
 
-		File puztemp = new File(TEMP_FOLDER, baseFile.getName());
-		File metatemp = new File(TEMP_FOLDER, metaFile.getName());
+		File tempFile = new File(WordsWithCrossesApplication.TEMP_DIR, destFile.getName());
 
-		FileOutputStream puzzle = new FileOutputStream(puztemp);
-		FileOutputStream meta = new FileOutputStream(metatemp);
+		FileOutputStream fos = new FileOutputStream(tempFile);
+		save(puzzle, new DataOutputStream(fos));
+		fos.close();
 
-		IO.save(puz, new DataOutputStream(puzzle), new DataOutputStream(meta));
+		if (!tempFile.renameTo(destFile)) {
+		    throw new IOException("Failed to rename " + tempFile + " to " + destFile);
+		}
 
-		puztemp.renameTo(baseFile);
-		metatemp.renameTo(metaFile);
 		System.out.println("Save complete in "
 				+ (System.currentTimeMillis() - incept));
 	}
 
-	public static void saveNative(Puzzle puz, DataOutputStream dos)
+	public static void save(Puzzle puz, DataOutputStream dos)
 			throws IOException {
 		/*
 		 * We write the puzzle to a temporary output stream, with 0 entered for
@@ -552,14 +452,6 @@ public class IO {
 			return true;
 		}
 		return false;
-	}
-
-	public static void writeCustom(Puzzle puz, DataOutputStream os)
-			throws IOException {
-		os.write(3);
-
-		IOVersion v = new IOVersion3();
-		v.write(puz, os);
 	}
 
 	public static boolean crack(Puzzle puz) {

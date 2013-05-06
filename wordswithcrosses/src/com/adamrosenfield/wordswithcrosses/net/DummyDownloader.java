@@ -1,6 +1,6 @@
 package com.adamrosenfield.wordswithcrosses.net;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.Calendar;
 
 import android.content.Context;
@@ -21,18 +21,19 @@ public class DummyDownloader implements Downloader {
         return null;
     }
 
-    public String createFileName(Calendar date) {
+    public String getFilename(Calendar date) {
         return null;
     }
 
-    public File download(Calendar date) {
-        return null;
+    public boolean download(Calendar date) throws IOException {
+        return false;
     }
 
     public String sourceUrl(Calendar date) {
         return null;
     }
 
+    @Override
     public String toString() {
         return "All available";
     }

@@ -31,10 +31,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.widget.Toast;
 
-import com.adamrosenfield.wordswithcrosses.io.IO;
-import com.adamrosenfield.wordswithcrosses.puz.Box;
-import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
-
 /**
  * New York Times URL: http://select.nytimes.com/premium/xword/[Mon]DDYY.puz
  * Date = Daily
@@ -70,84 +66,6 @@ public class NYTDownloader extends AbstractDownloader {
         return DATE_DAILY;
     }
 
-    public File download(Calendar date) {
-        // Feb2310.puz
-        return this.download(date, this.createUrlSuffix(date));
-    }
-
-    public File update(File source) {
-        try {
-            Puzzle oPuz = IO.load(source);
-
-            if (!oPuz.isUpdatable()) {
-                return null;
-            }
-
-            System.out.println("Source URL:" + oPuz.getSourceUrl());
-
-            URL url = new URL(oPuz.getSourceUrl());
-            HttpClient client = this.login();
-
-            HttpGet get = new HttpGet(url.toString());
-            HttpResponse response = client.execute(get);
-
-            if (response.getStatusLine().getStatusCode() == 200) {
-                File f = File.createTempFile(
-                        "update" + System.currentTimeMillis(), ".tmp");
-                f.deleteOnExit();
-
-                FileOutputStream fos = new FileOutputStream(f);
-                AbstractDownloader.copyStream(
-                        response.getEntity().getContent(), fos);
-                fos.close();
-
-                Puzzle nPuz = IO.load(f);
-                System.out.println("Temp puzzle loaded. " + nPuz.getTitle());
-
-                boolean updated = false;
-
-                for (int x = 0; x < oPuz.getBoxes().length; x++) {
-                    for (int y = 0; y < oPuz.getBoxes()[x].length; y++) {
-                        Box oBox = oPuz.getBoxes()[x][y];
-                        Box nBox = nPuz.getBoxes()[x][y];
-
-                        if ((oBox != null) && (nBox != null)) {
-                            System.out.println(oBox.getSolution() + "="
-                                    + nBox.getSolution());
-
-                            if (oBox.getSolution() != nBox.getSolution()) {
-                                oBox.setSolution(nBox.getSolution());
-                                updated = true;
-                            }
-                        }
-                    }
-                }
-
-                f.delete();
-
-                if (updated) {
-                    System.out.println("Saving puzzle as updated.");
-                    oPuz.setUpdatable(false);
-                    IO.save(oPuz, source);
-                } else {
-                    return null;
-                }
-
-                return source;
-            } else {
-                return null;
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
     @Override
     protected String createUrlSuffix(Calendar date) {
         return (date.get(Calendar.YEAR) + "/" +
@@ -162,7 +80,7 @@ public class NYTDownloader extends AbstractDownloader {
     }
 
     @Override
-    protected File download(Calendar date, String urlSuffix) {
+    protected boolean download(Calendar date, String urlSuffix) {
         try {
             URL url = new URL(this.baseUrl + urlSuffix);
             HttpClient client = this.login();
@@ -182,7 +100,7 @@ public class NYTDownloader extends AbstractDownloader {
             HttpResponse response = client.execute(get);
 
             if (response.getStatusLine().getStatusCode() == 200) {
-                File f = new File(downloadDirectory, this.createFileName(date));
+                File f = new File(downloadDirectory, this.getFilename(date));
                 FileOutputStream fos = new FileOutputStream(f);
                 AbstractDownloader.copyStream(
                         response.getEntity().getContent(), fos);
@@ -193,9 +111,9 @@ public class NYTDownloader extends AbstractDownloader {
                         new FileOutputStream(downloadDirectory
                                 .getAbsolutePath() + "/debug/debug.puz"));
 
-                return f;
+                return true;
             } else {
-                return null;
+                return false;
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -203,7 +121,7 @@ public class NYTDownloader extends AbstractDownloader {
             e.printStackTrace();
         }
 
-        return null;
+        return false;
     }
 
     private HttpClient login() throws IOException {

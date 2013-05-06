@@ -28,10 +28,6 @@ public class AVClubDownloader extends AbstractDownloader {
         return DATE_WEDNESDAY;
     }
 
-    public File download(Calendar date) {
-        return this.download(date, this.createUrlSuffix(date));
-    }
-
     @Override
     protected String createUrlSuffix(Calendar date) {
         return ("av" +
@@ -42,7 +38,7 @@ public class AVClubDownloader extends AbstractDownloader {
     }
 
     @Override
-    protected File download(Calendar date, String urlSuffix) {
+    protected boolean download(Calendar date, String urlSuffix) {
         try {
             URL url = new URL(this.baseUrl + urlSuffix);
             System.out.println(url);
@@ -53,14 +49,14 @@ public class AVClubDownloader extends AbstractDownloader {
             connection.setRequestProperty("Referer", this.baseUrl);
 
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                File f = new File(downloadDirectory, this.createFileName(date));
+                File f = new File(downloadDirectory, this.getFilename(date));
                 FileOutputStream fos = new FileOutputStream(f);
                 AbstractDownloader.copyStream(connection.getInputStream(), fos);
                 fos.close();
 
-                return f;
+                return true;
             } else {
-                return null;
+                return false;
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -68,6 +64,6 @@ public class AVClubDownloader extends AbstractDownloader {
             e.printStackTrace();
         }
 
-        return null;
+        return false;
     }
 }

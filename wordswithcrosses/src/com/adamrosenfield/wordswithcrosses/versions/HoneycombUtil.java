@@ -1,17 +1,9 @@
 package com.adamrosenfield.wordswithcrosses.versions;
 
-import java.io.File;
-import java.net.URL;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.DownloadManager;
 import android.app.DownloadManager.Request;
-import android.content.Context;
-import android.net.Uri;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
@@ -44,7 +36,6 @@ public class HoneycombUtil extends GingerbreadUtil {
         }
     }
 
-    @TargetApi(11)
     @Override
     public void holographic(Activity a) {
         if (a instanceof PuzzleFinishedActivity) {
@@ -63,32 +54,12 @@ public class HoneycombUtil extends GingerbreadUtil {
         a.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT + MenuItem.SHOW_AS_ACTION_IF_ROOM);
     }
 
+    @Override
     public void onActionBarWithText(SubMenu a) {
         this.onActionBarWithText(a.getItem());
     }
 
     @Override
-    public boolean downloadFile(URL url, File destination, Map<String, String> headers, boolean notification,
-            String title) {
-            DownloadManager mgr = (DownloadManager) ctx.getSystemService(Context.DOWNLOAD_SERVICE);
-
-            Request request = new Request(Uri.parse(url.toString()));
-            request.setDestinationUri(Uri.fromFile(destination));
-
-            for (Entry<String, String> entry : headers.entrySet()) {
-                request.addRequestHeader(entry.getKey(), entry.getValue());
-            }
-
-            request.setMimeType("application/x-crossword");
-
-            request.setNotificationVisibility(notification ? Request.VISIBILITY_VISIBLE : Request.VISIBILITY_HIDDEN);
-
-            request.setTitle(title);
-            mgr.enqueue(request);
-
-            return false;
-        }
-
     public View onActionBarCustom(Activity a, int id) {
         System.out.println("Setting custom ActionBar view");
         ActionBar bar = a.getActionBar();
@@ -103,15 +74,22 @@ public class HoneycombUtil extends GingerbreadUtil {
         return bar.getCustomView();
     }
 
+    @Override
     public void hideWindowTitle(Activity a) {
         // no op;
     }
 
+    @Override
     public void hideActionBar(Activity a) {
         ActionBar ab = a.getActionBar();
         if (ab == null) {
             return;
         }
         ab.hide();
+    }
+
+    @Override
+    protected void setNotificationVisibility(Request request, boolean notification) {
+        request.setNotificationVisibility(notification ? Request.VISIBILITY_VISIBLE : Request.VISIBILITY_HIDDEN);
     }
 }

@@ -6,15 +6,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.Map;
 
-import android.net.Uri;
-
+import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.io.JPZIO;
-import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
-import com.adamrosenfield.wordswithcrosses.versions.DefaultUtil;
 
 public abstract class AbstractJPZDownloader extends AbstractDownloader {
 
@@ -23,57 +21,38 @@ public abstract class AbstractJPZDownloader extends AbstractDownloader {
     }
 
     @Override
-    protected File download(Calendar date, String urlSuffix, Map<String, String> headers) {
-        File jpzFile = download(date, urlSuffix, headers, false);
-        File puzFile = new File(downloadDirectory, this.createFileName(date));
+    protected boolean download(Calendar date, String urlSuffix, Map<String, String> headers)
+            throws IOException {
+        URL url;
+        try {
+            url = new URL(this.baseUrl + urlSuffix);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        LOG.info("Downloading " + url);
+
+        String filename = getFilename(date);
+        File jpzFile = new File(WordsWithCrossesApplication.TEMP_DIR, filename);
+        if (!utils.downloadFile(url, headers, jpzFile, true, getName())) {
+            return false;
+        }
+
+        File destFile = new File(WordsWithCrossesApplication.CROSSWORDS_DIR, filename);
+
+        boolean succeeded = false;
         try {
             FileInputStream is = new FileInputStream(jpzFile);
-            DataOutputStream dos = new DataOutputStream(new FileOutputStream(puzFile));
-            JPZIO.convertJPZPuzzle(is, dos , date);
+            DataOutputStream dos = new DataOutputStream(new FileOutputStream(destFile));
+            succeeded = JPZIO.convertJPZPuzzle(is, dos, date);
             dos.close();
             jpzFile.delete();
-            return puzFile;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @Override
-    protected File download(Calendar date, String urlSuffix, Map<String, String> headers, boolean canDefer) {
-        LOG.info("Mkdirs: " + this.downloadDirectory.mkdirs());
-        LOG.info("Exist: " + this.downloadDirectory.exists());
-
-        try {
-            URL url = new URL(this.baseUrl + urlSuffix);
-            System.out.println(url);
-
-            File f = new File(downloadDirectory, this.createFileName(date)+".jpz");
-            PuzzleMeta meta = new PuzzleMeta();
-            meta.date = date;
-            meta.source = getName();
-            meta.sourceUrl = url.toString();
-            meta.updateable = false;
-
-            utils.storeMetas(Uri.fromFile(f), meta);
-            if (canDefer) {
-                if (utils.downloadFile(url, f, headers, true, this.getName())) {
-                    DownloadReceiver.metas.remove(Uri.fromFile(f));
-
-                    return f;
-                } else {
-                    return Downloader.DEFERRED_FILE;
-                }
-            } else {
-                new DefaultUtil().downloadFile(url, f, headers, true, this.getName());
-                return f;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+            return false;
         }
 
-        return null;
+        return succeeded;
     }
 }

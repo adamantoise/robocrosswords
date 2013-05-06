@@ -3,16 +3,17 @@ package com.adamrosenfield.wordswithcrosses.net;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.util.Calendar;
-import java.util.logging.Level;
+import java.util.Map;
 
+import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.io.UclickXMLIO;
-import com.adamrosenfield.wordswithcrosses.versions.DefaultUtil;
 
 /**
  * Uclick XML Puzzles
@@ -43,41 +44,41 @@ public class UclickDownloader extends AbstractDownloader {
         return days;
     }
 
-    public File download(Calendar date) {
-        File downloadTo = new File(this.downloadDirectory, this.createFileName(date));
-
-        if (downloadTo.exists()) {
-            return null;
-        }
-
-        File plainText = downloadToTempFile(date);
-
-        if (plainText == null) {
-            return null;
-        }
-
+    @Override
+    protected boolean download(Calendar date, String urlSuffix, Map<String, String> headers)
+            throws IOException {
+        URL url;
         try {
-            LOG.log(Level.INFO, "TMP FILE "+plainText.getAbsolutePath());
-            InputStream is = new FileInputStream(plainText);
-            DataOutputStream os = new DataOutputStream(new FileOutputStream(downloadTo));
-            boolean retVal = UclickXMLIO.convertUclickPuzzle(is, os,
-                    "\u00a9 " + date.get(Calendar.YEAR) + " " + copyright, date);
-            os.close();
-            is.close();
-            plainText.delete();
-
-            if (!retVal) {
-                LOG.log(Level.SEVERE, "Unable to convert uclick XML puzzle into Across Lite format.");
-                downloadTo.delete();
-                downloadTo = null;
-            }
-        } catch (IOException ioe) {
-            LOG.log(Level.SEVERE, "Exception converting uclick XML puzzle into Across Lite format.", ioe);
-            downloadTo.delete();
-            downloadTo = null;
+            url = new URL(this.baseUrl + urlSuffix);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return false;
         }
 
-        return downloadTo;
+        LOG.info("Downloading " + url);
+
+        String filename = getFilename(date);
+        File xmlFile = new File(WordsWithCrossesApplication.TEMP_DIR, filename);
+        if (!utils.downloadFile(url, headers, xmlFile, true, getName())) {
+            return false;
+        }
+
+        File destFile = new File(WordsWithCrossesApplication.CROSSWORDS_DIR, filename);
+        String fullCopyright = "\u00a9 " + date.get(Calendar.YEAR) + " " + copyright;
+
+        boolean succeeded = false;
+        try {
+            FileInputStream is = new FileInputStream(xmlFile);
+            DataOutputStream dos = new DataOutputStream(new FileOutputStream(destFile));
+            succeeded = UclickXMLIO.convertUclickPuzzle(is, dos, fullCopyright, date);
+            dos.close();
+            xmlFile.delete();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return succeeded;
     }
 
     @Override
@@ -87,36 +88,5 @@ public class UclickDownloader extends AbstractDownloader {
                 nf.format(date.get(Calendar.MONTH) + 1) +
                 nf.format(date.get(Calendar.DAY_OF_MONTH)) +
                 "-data.xml");
-    }
-
-    private File downloadToTempFile(Calendar date) {
-        DefaultUtil util = new DefaultUtil();
-        File f = new File(downloadDirectory, this.createFileName(date));
-
-        try {
-            URL url = new URL(this.baseUrl + this.createUrlSuffix(date));
-            LOG.log(Level.INFO, this.fullName+" "+url.toExternalForm());
-            util.downloadFile(url, f, EMPTY_MAP, false, null);
-        } catch (Exception e) {
-            e.printStackTrace();
-            f = null;
-        }
-
-        if (f == null) {
-            LOG.log(Level.SEVERE, "Unable to download uclick XML file.");
-
-            return null;
-        }
-
-        try {
-            File tmpFile = new File(this.tempFolder, "uclick-temp"+System.currentTimeMillis()+".xml");
-            f.renameTo(tmpFile);
-
-            return tmpFile;
-        } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Unable to move uclick XML file to temporary location.");
-
-            return null;
-        }
     }
 }

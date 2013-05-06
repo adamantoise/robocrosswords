@@ -1,6 +1,5 @@
 package com.adamrosenfield.wordswithcrosses.net;
 
-import java.io.File;
 import java.text.NumberFormat;
 import java.util.Calendar;
 
@@ -29,9 +28,5 @@ public class ISwearDownloader extends AbstractDownloader {
                 nf.format(date.get(Calendar.MONTH) + 1) +
                 nf.format(date.get(Calendar.DAY_OF_MONTH)) +
                 ".puz");
-    }
-
-    public File download(Calendar date) {
-        return super.download(date, this.createUrlSuffix(date));
     }
 }

@@ -1,51 +1,49 @@
 package com.adamrosenfield.wordswithcrosses.net;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Calendar;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 
 import com.adamrosenfield.wordswithcrosses.BrowseActivity;
 import com.adamrosenfield.wordswithcrosses.PlayActivity;
+import com.adamrosenfield.wordswithcrosses.PuzzleDatabaseHelper;
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
-import com.adamrosenfield.wordswithcrosses.io.IO;
-import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
-import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
 import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
 
 public class Downloaders {
     private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
-    private Context context;
+    private BrowseActivity context;
+    private SharedPreferences prefs;
     private List<Downloader> downloaders = new LinkedList<Downloader>();
     private NotificationManager notificationManager;
     private boolean suppressMessages;
 
-    public Downloaders(SharedPreferences prefs,
-            NotificationManager notificationManager, Context context) {
-        this.notificationManager = notificationManager;
+    public Downloaders(BrowseActivity context, NotificationManager notificationManager) {
         this.context = context;
+        this.notificationManager = notificationManager;
+        this.prefs = context.getPrefs();
 
-        if (prefs.getBoolean("downloadGlobe", true)) {
-            downloaders.add(new BostonGlobeDownloader());
-        }
+        // Boston Globe has stopped publishing their Sunday puzzles online
+        //if (prefs.getBoolean("downloadGlobe", true)) {
+        //    downloaders.add(new BostonGlobeDownloader());
+        //}
 
         if (prefs.getBoolean("downloadThinks", true)) {
             downloaders.add(new ThinksDownloader());
         }
         if (prefs.getBoolean("downloadWaPo", true)) {
-         downloaders.add(new WaPoDownloader());
-         }
+            downloaders.add(new WaPoDownloader());
+        }
 
         if (prefs.getBoolean("downloadWsj", true)) {
             downloaders.add(new WSJDownloader());
@@ -168,117 +166,85 @@ public class Downloaders {
         date.set(Calendar.MILLISECOND, 0);
 
         String contentTitle = context.getResources().getString(R.string.downloading_puzzles);
-
-        Notification not = new Notification(android.R.drawable.stat_sys_download, contentTitle,
-                System.currentTimeMillis());
+        Notification not = createDownloadingNotification(contentTitle);
         boolean somethingDownloaded = false;
-
-        File crosswordsDir = WordsWithCrossesApplication.CROSSWORDS_DIR;
-        File archiveDir = WordsWithCrossesApplication.ARCHIVE_DIR;
 
         if (!WordsWithCrossesApplication.makeDirs()) {
             return;
         }
 
-        HashSet<File> newlyDownloaded = new HashSet<File>();
+        PuzzleDatabaseHelper dbHelper = WordsWithCrossesApplication.getDatabaseHelper();
 
         int i = 1;
         for (Downloader d : downloaders) {
             d.setContext(context);
 
             try {
-                String contentText = context.getResources().getString(R.string.downloading_from);
-                contentText = contentText.replace("${SOURCE}", d.getName());
-                Intent notificationIntent = new Intent(context, PlayActivity.class);
-                PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
-                not.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
+                updateDownloadingNotification(not, contentTitle, d.getName());
 
-                if (!this.suppressMessages && this.notificationManager != null) {
-                    this.notificationManager.notify(0, not);
+                if (!suppressMessages && notificationManager != null) {
+                    notificationManager.notify(0, not);
                 }
 
-                File downloaded = new File(crosswordsDir, d.createFileName(date));
-                File archived = new File(archiveDir, d.createFileName(date));
-
-                System.out.println(downloaded.getAbsolutePath() + " " + downloaded.exists() + " OR " +
-                    archived.getAbsolutePath() + " " + archived.exists());
-
-                if (downloaded.exists() || archived.exists()) {
+                String filename = d.getFilename(date);
+                File downloadedFile = new File(WordsWithCrossesApplication.CROSSWORDS_DIR, filename);
+                if (dbHelper.filenameExists(filename) || downloadedFile.exists()) {
+                    LOG.info("Download skipped: " + filename);
                     continue;
                 }
 
-                downloaded = d.download(date);
+                LOG.info("Download beginning: " + filename);
 
-                if (downloaded == Downloader.DEFERRED_FILE) {
-                    continue;
-                }
-
-                if (downloaded != null) {
-                    boolean updatable = false;
-
-                    PuzzleMeta meta = new PuzzleMeta();
-                    meta.date = date;
-                    meta.source = d.getName();
-                    meta.sourceUrl = d.sourceUrl(date);
-                    meta.updateable = updatable;
-
-                    if (processDownloadedPuzzle(downloaded, meta)) {
-                        if (!this.suppressMessages) {
-                            this.postDownloadedNotification(i, d.getName(), downloaded);
-                        }
-
-                        newlyDownloaded.add(downloaded);
-                        somethingDownloaded = true;
+                if (d.download(date)) {
+                    LOG.info("Downloaded succeeded: " + filename);
+                    dbHelper.addPuzzle(downloadedFile, d.getName(), d.sourceUrl(date), date.getTimeInMillis());
+                    if (!suppressMessages) {
+                        postDownloadedNotification(i, d.getName(), downloadedFile);
                     }
+
+                    somethingDownloaded = true;
+                } else {
+                    LOG.warning("Download failed: " + filename);
                 }
 
                 i++;
-            } catch (Exception e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
-        if (this.notificationManager != null) {
-            this.notificationManager.cancel(0);
+        if (notificationManager != null) {
+            notificationManager.cancel(0);
         }
 
         if (somethingDownloaded) {
-            this.postDownloadedGeneral();
+            postDownloadedGeneral();
         }
-    }
 
-    public static boolean processDownloadedPuzzle(File downloaded,
-            PuzzleMeta meta) {
-        try {
-            System.out.println("==PROCESSING " + downloaded + " hasmeta: "
-                    + (meta != null));
-
-            Puzzle puz = IO.load(downloaded);
-            if(puz == null){
-                return false;
-            }
-            puz.setDate(meta.date);
-            puz.setSource(meta.source);
-            puz.setSourceUrl(meta.sourceUrl);
-            puz.setUpdatable(meta.updateable);
-
-            IO.save(puz, downloaded);
-
-            return true;
-        } catch (Exception ioe) {
-            LOG.log(Level.WARNING, "Exception reading " + downloaded, ioe);
-            downloaded.delete();
-
-            return false;
-        }
+        context.postRenderMessage();
     }
 
     public void suppressMessages(boolean b) {
         this.suppressMessages = b;
     }
 
+    @SuppressWarnings("deprecation")
+    private Notification createDownloadingNotification(String contentTitle) {
+        return new Notification(android.R.drawable.stat_sys_download, contentTitle, System.currentTimeMillis());
+    }
+
+    @SuppressWarnings("deprecation")
+    private void updateDownloadingNotification(Notification not, String contentTitle, String source) {
+        String contentText = context.getResources().getString(R.string.downloading_from);
+        contentText = contentText.replace("${SOURCE}", source);
+        Intent notificationIntent = new Intent(context, PlayActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+        not.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
+    }
+
+    @SuppressWarnings("deprecation")
     private void postDownloadedGeneral() {
-        String contentTitle = context.getResources().getString(R.string.downloaded_new_puzzles);
+        String contentTitle = context.getResources().getString(R.string.downloaded_new_puzzles_title);
         Notification not = new Notification(
                 android.R.drawable.stat_sys_download_done, contentTitle,
                 System.currentTimeMillis());
@@ -286,16 +252,19 @@ public class Downloaders {
                 context, BrowseActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
                 notificationIntent, 0);
-        not.setLatestEventInfo(context, contentTitle,
-                "New puzzles were downloaded.", contentIntent);
+
+        String contentText = context.getResources().getString(R.string.downloaded_new_puzzles_text);
+        not.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
 
         if (this.notificationManager != null) {
             this.notificationManager.notify(0, not);
         }
     }
 
+    @SuppressWarnings("deprecation")
     private void postDownloadedNotification(int i, String name, File puzFile) {
-        String contentTitle = "Downloaded " + name;
+        String contentTitle = context.getResources().getString(R.string.downloaded_new_puzzles_title);
+        contentTitle = contentTitle.replace("${SOURCE}", name);
         Notification not = new Notification(
                 android.R.drawable.stat_sys_download_done, contentTitle,
                 System.currentTimeMillis());
@@ -310,22 +279,4 @@ public class Downloaders {
             this.notificationManager.notify(i, not);
         }
     }
-
-//  private void postUpdatedNotification(int i, String name, File puzFile) {
-//      String contentTitle = "Updated " + name;
-//      Notification not = new Notification(
-//              android.R.drawable.stat_sys_download_done, contentTitle,
-//              System.currentTimeMillis());
-//      Intent notificationIntent = new Intent(Intent.ACTION_EDIT,
-//              Uri.fromFile(puzFile), context, PlayActivity.class);
-//      PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-//              notificationIntent, 0);
-//      not.setLatestEventInfo(context, contentTitle, puzFile.getName(),
-//              contentIntent);
-//
-//      if ((this.notificationManager != null) && !suppressMessages) {
-//          this.notificationManager.notify(i, not);
-//      }
-//  }
-
 }

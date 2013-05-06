@@ -1,6 +1,5 @@
 package com.adamrosenfield.wordswithcrosses.net;
 
-import java.io.File;
 import java.text.NumberFormat;
 import java.util.Calendar;
 
@@ -22,10 +21,6 @@ public class WaPoPuzzlerDownloader extends AbstractDownloader {
 
     public int[] getDownloadDates() {
         return DATE_SUNDAY;
-    }
-
-    public File download(Calendar date) {
-        return super.download(date, this.createUrlSuffix(date));
     }
 
     @Override

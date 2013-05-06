@@ -11,12 +11,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.content.Intent;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.Spinner;
@@ -82,14 +79,6 @@ public class DownloadPickerDialogBuilder {
                         mPuzzleSelect.getSelectedItemPosition());
                 }
             };
-
-        ((Button) layout.findViewById(R.id.browse)).setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    Intent i = new Intent();
-                    i.setClass(mActivity, WebBrowserActivity.class);
-                    mActivity.startActivityForResult(i, 0);
-                }
-            });
 
         layout.setDownloadPickerDialogBuilder(this);
 

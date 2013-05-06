@@ -194,7 +194,7 @@ public class KingFeaturesPlaintextIO {
         puz.setNotes("");
 
         try {
-            IO.saveNative(puz, os);
+            IO.save(puz, os);
         } catch (IOException e) {
             System.err.println("Unable to dump puzzle to output stream.");
             return false;

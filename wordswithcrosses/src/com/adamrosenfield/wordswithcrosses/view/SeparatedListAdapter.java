@@ -11,7 +11,6 @@ import android.widget.BaseAdapter;
 
 import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
 
-
 public class SeparatedListAdapter extends BaseAdapter {
     private static final int TYPE_SECTION_HEADER = 0;
     private final ArrayAdapter<String> headers;
@@ -31,6 +30,7 @@ public class SeparatedListAdapter extends BaseAdapter {
         return total;
     }
 
+    @Override
     public boolean isEnabled(int position) {
         return (getItemViewType(position) != TYPE_SECTION_HEADER);
     }
@@ -62,6 +62,7 @@ public class SeparatedListAdapter extends BaseAdapter {
         return position;
     }
 
+    @Override
     public int getItemViewType(int position) {
         for (Adapter adapter : this.sections) {
             int size = adapter.getCount() + 1;
@@ -107,6 +108,7 @@ public class SeparatedListAdapter extends BaseAdapter {
         return null;
     }
 
+    @Override
     public int getViewTypeCount() {
         //		// assume that headers count as one, then total all sections
         //		int total = 1;

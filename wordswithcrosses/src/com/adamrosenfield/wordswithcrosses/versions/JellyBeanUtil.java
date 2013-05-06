@@ -18,18 +18,19 @@ import com.adamrosenfield.wordswithcrosses.net.AbstractDownloader;
 public class JellyBeanUtil extends HoneycombUtil {
 
     @Override
-    public boolean downloadFile(URL url, File destination,
-            Map<String, String> headers, boolean notification, String title) {
+    public boolean downloadFile(URL url, Map<String, String> headers,
+            File destination, boolean notification, String title) {
 
+        // XXX
         DefaultHttpClient httpclient = new DefaultHttpClient();
         httpclient
                 .getParams()
                 .setParameter(
                         "User-Agent",
-                        "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6");
+                        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:20.0) Gecko/20100101 Firefox/20.0");
 
         HttpGet httpget = new HttpGet(url.toString());
-        for(Entry<String, String> e : headers.entrySet()){
+        for (Entry<String, String> e : headers.entrySet()) {
             httpget.setHeader(e.getKey(), e.getValue());
         }
         try {
@@ -50,34 +51,5 @@ public class JellyBeanUtil extends HoneycombUtil {
             e.printStackTrace();
             return false;
         }
-        // try {
-        // HttpURLConnection connection = (HttpURLConnection)
-        // url.openConnection();
-        // connection.setDoOutput(true);
-        // connection.setRequestMethod("GET");
-        //
-        // for (Entry<String, String> entry : headers.entrySet()) {
-        // System.out.println(entry.getKey()+" "+entry.getValue());
-        // connection.setRequestProperty(entry.getKey(), entry.getValue());
-        // }
-        //
-        // System.out.println(url + "\n Response : " +
-        // connection.getResponseCode());
-        //
-        // if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-        // FileOutputStream fos = new FileOutputStream(destination);
-        // AbstractDownloader.copyStream(connection.getInputStream(), fos);
-        // fos.close();
-        //
-        // return true;
-        // } else {
-        // ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        // JPZIO.copyStream(connection.getInputStream(), baos);
-        // System.out.println("CONTENT: "+ new String(baos.toByteArray()));
-        // throw new RuntimeException();
-        // }
-        // } catch (IOException ioe) {
-        // throw new RuntimeException(ioe);
-        // }
     }
 }

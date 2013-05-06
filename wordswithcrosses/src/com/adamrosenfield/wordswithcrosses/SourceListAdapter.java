@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
 
-
 public class SourceListAdapter extends BaseAdapter {
     static final String ALL_SOURCES = "All Sources";
     public String current = ALL_SOURCES;

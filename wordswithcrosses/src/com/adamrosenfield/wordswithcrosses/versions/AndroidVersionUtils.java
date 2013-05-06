@@ -1,26 +1,25 @@
 package com.adamrosenfield.wordswithcrosses.versions;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 
 import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 
-import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
-
 public interface AndroidVersionUtils {
-
-    public void storeMetas(Uri uri, PuzzleMeta meta);
 
     public void setContext(Context ctx);
 
-    public boolean downloadFile(URL url, File destination,
-            Map<String, String> headers, boolean notification, String title);
+    public boolean downloadFile(URL url, Map<String, String> headers,
+            File destination, boolean notification, String title)
+            throws IOException;
+
+    public void onFileDownloaded(long id, boolean successful);
 
     public void finishOnHomeButton(Activity a);
 
@@ -34,11 +33,10 @@ public interface AndroidVersionUtils {
         private static AndroidVersionUtils INSTANCE;
 
         public static AndroidVersionUtils getInstance() {
-            if(INSTANCE != null){
+            if (INSTANCE != null){
                 return INSTANCE;
             }
-            System.out.println("Creating utils for version: "
-                    + android.os.Build.VERSION.SDK_INT);
+            System.out.println("Creating utils for version: " + android.os.Build.VERSION.SDK_INT);
 
             try {
                 switch (android.os.Build.VERSION.SDK_INT) {

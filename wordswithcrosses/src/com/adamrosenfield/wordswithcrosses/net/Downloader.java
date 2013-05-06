@@ -1,6 +1,6 @@
 package com.adamrosenfield.wordswithcrosses.net;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.Calendar;
 
 import android.content.Context;
@@ -32,17 +32,15 @@ public interface Downloader {
         Calendar.SATURDAY
     };
 
-    public static final File DEFERRED_FILE = new File(".");
-
     public void setContext(Context context);
 
     public int[] getDownloadDates();
 
     public String getName();
 
-    public String createFileName(Calendar date);
+    public String getFilename(Calendar date);
 
-    public File download(Calendar date);
+    public boolean download(Calendar date) throws IOException;
 
     public String sourceUrl(Calendar date);
 }

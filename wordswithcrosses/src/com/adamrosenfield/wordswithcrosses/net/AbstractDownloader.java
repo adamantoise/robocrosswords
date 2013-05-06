@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.Collections;
@@ -11,25 +12,26 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import android.content.Context;
-import android.net.Uri;
 
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
-import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
 import com.adamrosenfield.wordswithcrosses.versions.AndroidVersionUtils;
-import com.adamrosenfield.wordswithcrosses.versions.DefaultUtil;
-
 
 public abstract class AbstractDownloader implements Downloader {
+
     protected static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
+
     public static File DOWNLOAD_DIR = WordsWithCrossesApplication.CROSSWORDS_DIR;
-    public static final int DEFAULT_BUFFER_SIZE = 1024;
-    @SuppressWarnings("unchecked")
-    protected static final Map<String, String> EMPTY_MAP = Collections.EMPTY_MAP;
-    protected File downloadDirectory;
+
+    public static final int DEFAULT_BUFFER_SIZE = 4096;
+
+    protected static final Map<String, String> EMPTY_MAP = Collections.<String, String>emptyMap();
+
     protected String baseUrl;
-    protected final AndroidVersionUtils utils = AndroidVersionUtils.Factory.getInstance();
+    protected File downloadDirectory;
     private String downloaderName;
     protected File tempFolder;
+
+    protected final AndroidVersionUtils utils = AndroidVersionUtils.Factory.getInstance();
 
     protected AbstractDownloader(String baseUrl, File downloadDirectory, String downloaderName) {
         this.baseUrl = baseUrl;
@@ -76,7 +78,7 @@ public abstract class AbstractDownloader implements Downloader {
         return totalBytes;
     }
 
-    public String createFileName(Calendar date) {
+    public String getFilename(Calendar date) {
         return (date.get(Calendar.YEAR) +
                 "-" +
                 (date.get(Calendar.MONTH) + 1) +
@@ -102,47 +104,28 @@ public abstract class AbstractDownloader implements Downloader {
 
     protected abstract String createUrlSuffix(Calendar date);
 
-    protected File download(Calendar date, String urlSuffix, Map<String, String> headers){
-        System.out.println("DL From ASD");
-        return download(date, urlSuffix, headers, true);
+    public boolean download(Calendar date) throws IOException {
+        return download(date, createUrlSuffix(date));
     }
 
-    protected File download(Calendar date, String urlSuffix, Map<String, String> headers, boolean canDefer) {
-        LOG.info("Mkdirs: " + this.downloadDirectory.mkdirs());
-        LOG.info("Exist: " + this.downloadDirectory.exists());
+    protected boolean download(Calendar date, String urlSuffix) throws IOException {
+        return download(date, urlSuffix, EMPTY_MAP);
+    }
 
+    protected boolean download(Calendar date, String urlSuffix, Map<String, String> headers)
+            throws IOException {
+        URL url;
         try {
-            URL url = new URL(this.baseUrl + urlSuffix);
-            System.out.println(url);
-
-            File f = new File(downloadDirectory, this.createFileName(date));
-            PuzzleMeta meta = new PuzzleMeta();
-            meta.date = date;
-            meta.source = getName();
-            meta.sourceUrl = url.toString();
-            meta.updateable = false;
-
-            utils.storeMetas(Uri.fromFile(f), meta);
-            if (canDefer) {
-                if (utils.downloadFile(url, f, headers, true, this.getName())) {
-                    DownloadReceiver.metas.remove(Uri.fromFile(f));
-
-                    return f;
-                } else {
-                    return Downloader.DEFERRED_FILE;
-                }
-            } else {
-                new DefaultUtil().downloadFile(url, f, headers, true, this.getName());
-                return f;
-            }
-        } catch (IOException e) {
+            url = new URL(this.baseUrl + urlSuffix);
+        } catch (MalformedURLException e) {
             e.printStackTrace();
+            return false;
         }
 
-        return null;
-    }
+        LOG.info("Downloading " + url);
 
-    protected File download(Calendar date, String urlSuffix) {
-        return download(date, urlSuffix, EMPTY_MAP);
+        String filename = getFilename(date);
+        File destFile = new File(WordsWithCrossesApplication.CROSSWORDS_DIR, filename);
+        return utils.downloadFile(url, headers, destFile, true, getName());
     }
 }

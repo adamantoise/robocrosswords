@@ -3,6 +3,7 @@ package com.adamrosenfield.wordswithcrosses;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +16,9 @@ import com.adamrosenfield.wordswithcrosses.versions.AndroidVersionUtils;
 public class WordsWithCrossesActivity extends Activity {
 	protected AndroidVersionUtils utils = AndroidVersionUtils.Factory.getInstance();
 	protected SharedPreferences prefs;
+
+    // Preference key for the time of the last database sync
+    protected static final String PREF_LAST_DB_SYNC_TIME = "last_db_sync_time";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,18 +61,23 @@ public class WordsWithCrossesActivity extends Activity {
 		doOrientation();
 	}
 
+	protected void showHTMLPage(String pageName) {
+	    Intent i = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("file:///android_asset/" + pageName), this,
+                HTMLActivity.class);
+        this.startActivity(i);
+	}
+
 	protected void showSDCardFull() {
-		Intent i = new Intent(Intent.ACTION_VIEW,
-				Uri.parse("file:///android_asset/sdcard-full.html"), this,
-				HTMLActivity.class);
-		this.startActivity(i);
+	    showHTMLPage("sdcard-full.html");
 	}
 
 	protected void showSDCardHelp() {
-		Intent i = new Intent(Intent.ACTION_VIEW,
-				Uri.parse("file:///android_asset/sdcard.html"), this,
-				HTMLActivity.class);
-		this.startActivity(i);
+	    showHTMLPage("sdcard.html");
+	}
+
+	protected void showWelcomePage() {
+	    showHTMLPage("welcome.html");
 	}
 
 	private void doOrientation() {
@@ -81,4 +90,20 @@ public class WordsWithCrossesActivity extends Activity {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 		}
 	}
+
+	public SharedPreferences getPrefs()
+	{
+	    return prefs;
+	}
+
+    /**
+     * Updates our record of the last time we synced the database with the
+     * file system
+     */
+    public void updateLastDatabaseSyncTime() {
+        long folderTimestamp = WordsWithCrossesApplication.CROSSWORDS_DIR.lastModified();
+        Editor e = prefs.edit();
+        e.putLong(PREF_LAST_DB_SYNC_TIME, folderTimestamp);
+        e.commit();
+    }
 }

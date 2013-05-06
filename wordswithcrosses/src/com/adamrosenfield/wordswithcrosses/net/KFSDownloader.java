@@ -3,16 +3,18 @@ package com.adamrosenfield.wordswithcrosses.net;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.Calendar;
-import java.util.logging.Level;
+import java.util.Map;
 
+import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.io.KingFeaturesPlaintextIO;
-import com.adamrosenfield.wordswithcrosses.versions.DefaultUtil;
 
 /**
  * King Features Syndicate Puzzles
@@ -41,42 +43,44 @@ public class KFSDownloader extends AbstractDownloader {
         return days;
     }
 
-    public File download(Calendar date) {
-        File downloadTo = new File(this.downloadDirectory, this.createFileName(date));
-
-        if (downloadTo.exists()) {
-            return null;
+    @Override
+    protected boolean download(Calendar date, String urlSuffix, Map<String, String> headers)
+            throws IOException {
+        URL url;
+        try {
+            url = new URL(this.baseUrl + urlSuffix);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return false;
         }
 
-        File plainText = downloadToTempFile(date);
+        LOG.info("Downloading " + url);
 
-        if (plainText == null) {
-            return null;
+        String filename = getFilename(date);
+        File txtFile = new File(WordsWithCrossesApplication.TEMP_DIR, filename);
+        if (!utils.downloadFile(url, headers, txtFile, true, getName())) {
+            return false;
         }
 
+        File destFile = new File(WordsWithCrossesApplication.CROSSWORDS_DIR, filename);
         String copyright = "\u00a9 " + date.get(Calendar.YEAR) + " King Features Syndicate.";
 
+        boolean succeeded = false;
         try {
-            InputStream is = new FileInputStream(plainText);
-            DataOutputStream os = new DataOutputStream(new FileOutputStream(downloadTo));
-            boolean retVal = KingFeaturesPlaintextIO.convertKFPuzzle(is, os, fullName + ", " + df.format(date.getTime()), author,
+            FileInputStream is = new FileInputStream(txtFile);
+            DataOutputStream dos = new DataOutputStream(new FileOutputStream(destFile));
+            succeeded = KingFeaturesPlaintextIO.convertKFPuzzle(
+                    is, dos, fullName + ", " + df.format(date.getTime()), author,
                     copyright, date);
-            os.close();
+            dos.close();
             is.close();
-            plainText.delete();
-
-            if (!retVal) {
-                LOG.log(Level.SEVERE, "Unable to convert KFS puzzle into Across Lite format.");
-                downloadTo.delete();
-                downloadTo = null;
-            }
-        } catch (Exception ioe) {
-            LOG.log(Level.SEVERE, "Exception converting KFS puzzle into Across Lite format.", ioe);
-            downloadTo.delete();
-            downloadTo = null;
+            txtFile.delete();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
         }
 
-        return downloadTo;
+        return succeeded;
     }
 
     @Override
@@ -85,39 +89,5 @@ public class KFSDownloader extends AbstractDownloader {
                 nf.format(date.get(Calendar.MONTH) + 1) +
                 nf.format(date.get(Calendar.DAY_OF_MONTH)) +
                 ".txt");
-    }
-
-    private File downloadToTempFile(Calendar date) {
-        DefaultUtil util = new DefaultUtil();
-        File downloaded = new File(downloadDirectory, this.createFileName(date));
-
-        try {
-            URL url = new URL(this.baseUrl + this.createUrlSuffix(date));
-            LOG.log(Level.INFO, this.fullName +" "+url.toExternalForm());
-            util.downloadFile(url, downloaded, EMPTY_MAP, false, null);
-        } catch (Exception e) {
-            e.printStackTrace();
-            downloaded.delete();
-            downloaded = null;
-        }
-
-        if (downloaded == null) {
-            LOG.log(Level.SEVERE, "Unable to download plain text KFS file.");
-
-            return null;
-        }
-
-        System.out.println("DownloadedKFS: " + downloaded);
-
-        try {
-            File tmpFile =  new File(this.tempFolder, "kfs-temp"+System.currentTimeMillis()+".txt"); //File.createTempFile("kfs-temp", "txt");
-            downloaded.renameTo(tmpFile);
-
-            return tmpFile;
-        } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Unable to move KFS file to temporary location.");
-
-            return null;
-        }
     }
 }

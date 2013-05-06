@@ -7,20 +7,29 @@ import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 
 public class PuzzleMeta implements Serializable {
 
+    public int id;
+    public String filename;
+    public boolean archived;
 	public String author;
 	public String title;
 	public String source;
 	public Calendar date;
 	public int percentComplete;
-	public boolean updateable;
 	public String sourceUrl;
 	public Position position;
 	public boolean across;
 
-	public String toString(){
-		return new StringBuilder("author: ")
+	@Override
+    public String toString(){
+		return new StringBuilder("id: ")
+		.append(id)
+		.append(" filename: ")
+		.append(filename)
+		.append(" archived: ")
+		.append(archived)
+		.append("author: ")
 		.append(author)
-		.append( "title: ")
+		.append(" title: ")
 		.append(title)
 		.append(" source: ")
 		.append(source)
@@ -30,8 +39,6 @@ public class PuzzleMeta implements Serializable {
 		.append(date)
 		.append(" percentCompelete: ")
 		.append(percentComplete)
-		.append(" updateable: ")
-		.append(updateable)
 		.append(" position: ")
 		.append(position)
 		.append(" across: ")

@@ -1,6 +1,6 @@
 package com.adamrosenfield.wordswithcrosses.net;
 
-import java.io.File;
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -24,10 +24,6 @@ public class OldLATDownloader extends AbstractDownloader {
         return DATE_DAILY;
     }
 
-    public File download(Calendar date) {
-        return this.download(date, this.createUrlSuffix(date));
-    }
-
     @Override
     protected String createUrlSuffix(Calendar date) {
         return ("lat" +
@@ -38,7 +34,7 @@ public class OldLATDownloader extends AbstractDownloader {
     }
 
     @Override
-    protected File download(Calendar date, String urlSuffix) {
+    protected boolean download(Calendar date, String urlSuffix) throws IOException {
         HashMap<String, String> headers = new HashMap<String, String>();
         headers.put("Referer", "http://www.cruciverb.com/puzzles.php?op=showarch&pub=lat");
         headers.put("User-Agent",

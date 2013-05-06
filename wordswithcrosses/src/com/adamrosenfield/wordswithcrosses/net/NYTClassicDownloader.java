@@ -1,6 +1,6 @@
 package com.adamrosenfield.wordswithcrosses.net;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.Calendar;
 
 /**
@@ -19,16 +19,17 @@ public class NYTClassicDownloader extends AbstractDownloader {
         return DATE_MONDAY;
     }
 
-    public File download(Calendar date) {
+    @Override
+    public boolean download(Calendar date) throws IOException {
         Calendar now = Calendar.getInstance();
 
         // Only download if requested week is same as current week, because there is no archive.
         if ((now.get(Calendar.YEAR) != date.get(Calendar.YEAR)) ||
             (now.get(Calendar.WEEK_OF_YEAR) != date.get(Calendar.WEEK_OF_YEAR))) {
-            return null;
+            return false;
         }
 
-        return super.download(date, this.createUrlSuffix(date));
+        return super.download(date, createUrlSuffix(date));
     }
 
     @Override

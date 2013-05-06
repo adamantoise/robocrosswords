@@ -23,12 +23,20 @@ import com.adamrosenfield.wordswithcrosses.view.PlayboardRenderer;
 public class WordsWithCrossesApplication extends Application {
 
     public static File CROSSWORDS_DIR;
-    public static File ARCHIVE_DIR;
+
+    public static File TEMP_DIR;
 
     public static File CACHE_DIR;
     public static File DEBUG_DIR;
 
     private static Logger LOG;
+
+    public static final String DEVELOPER_EMAIL = "adam@adamrosenfield.com";
+
+    public static Playboard BOARD;
+    public static PlayboardRenderer RENDERER;
+
+    private static PuzzleDatabaseHelper dbHelper;
 
     @Override
     public void onCreate() {
@@ -36,27 +44,25 @@ public class WordsWithCrossesApplication extends Application {
 
         LOG = Logger.getLogger(getPackageName());
 
-        CROSSWORDS_DIR = new File(
+        File externalStorageDir = new File(
             Environment.getExternalStorageDirectory(),
-            "Android/data/" + getPackageName() + "/files/crosswords");
+            "Android/data/" + getPackageName() + "/files");
 
-        ARCHIVE_DIR = new File(CROSSWORDS_DIR, "archive");
+        CROSSWORDS_DIR = new File(externalStorageDir, "crosswords");
+
+        TEMP_DIR = new File(externalStorageDir, "temp");
 
         CACHE_DIR = getCacheDir();
         DEBUG_DIR = new File(CACHE_DIR, "debug");
 
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            makeDirs();
-        }
+        makeDirs();
 
         if (DEBUG_DIR.mkdirs()) {
             File info = new File(DEBUG_DIR, "device");
             try {
                 PrintWriter writer = new PrintWriter(new FileWriter(info));
-                writer.println("VERSION INT: "
-                        + android.os.Build.VERSION.SDK_INT);
-                writer.println("VERSION RELEASE: "
-                        + android.os.Build.VERSION.RELEASE);
+                writer.println("VERSION INT: " + android.os.Build.VERSION.SDK_INT);
+                writer.println("VERSION RELEASE: " + android.os.Build.VERSION.RELEASE);
                 writer.println("MODEL: " + android.os.Build.DEVICE);
                 writer.println("DISPLAY: " + android.os.Build.DISPLAY);
                 writer.println("MANUFACTURER: " + android.os.Build.MANUFACTURER);
@@ -67,21 +73,22 @@ public class WordsWithCrossesApplication extends Application {
         } else {
             LOG.warning("Failed to create directory tree: " + DEBUG_DIR);
         }
+
+        dbHelper = new PuzzleDatabaseHelper(this);
     }
 
     public static boolean makeDirs() {
-        for (File dir : new File[]{CROSSWORDS_DIR, ARCHIVE_DIR}) {
-            if (!dir.mkdirs()) {
-                LOG.warning("Failed to create directory tree: " + dir);
-                return false;
-            }
+        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            return false;
+        }
+
+        if (!CROSSWORDS_DIR.mkdirs()) {
+            LOG.warning("Failed to create directory tree: " + CROSSWORDS_DIR);
+            return false;
         }
 
         return true;
     }
-
-    public static Playboard BOARD;
-    public static PlayboardRenderer RENDERER;
 
     public static Intent sendDebug() {
         File zip = new File(CACHE_DIR, "debug.stz");
@@ -96,7 +103,7 @@ public class WordsWithCrossesApplication extends Application {
                 zos.close();
                 Intent sendIntent = new Intent(Intent.ACTION_SEND);
                 sendIntent.putExtra(android.content.Intent.EXTRA_EMAIL,
-                        new String[] { "adam@adamrosenfield.com" });
+                        new String[] { DEVELOPER_EMAIL });
                 sendIntent.putExtra(Intent.EXTRA_SUBJECT,
                         "Words With Crosses Debug Package");
                 sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(zip));
@@ -115,7 +122,7 @@ public class WordsWithCrossesApplication extends Application {
         throws FileNotFoundException, IOException {
         File zipDir = new File(dir2zip);
         String[] dirList = zipDir.list();
-        byte[] readBuffer = new byte[2156];
+        byte[] readBuffer = new byte[4096];
         int bytesIn = 0;
         for (int i = 0; i < dirList.length; i++) {
             File f = new File(zipDir, dirList[i]);
@@ -133,6 +140,10 @@ public class WordsWithCrossesApplication extends Application {
             }
             fis.close();
         }
+    }
+
+    public static PuzzleDatabaseHelper getDatabaseHelper() {
+        return dbHelper;
     }
 
     public static boolean isLandscape(DisplayMetrics metrics){
