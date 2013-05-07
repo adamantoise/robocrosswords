@@ -48,15 +48,13 @@ public class Scrapers {
         int i = 1;
         String contentTitle = "Downloading Scrape Puzzles";
 
-        Notification not = new Notification(android.R.drawable.stat_sys_download, contentTitle,
-                System.currentTimeMillis());
+        Notification not = createNotification(android.R.drawable.stat_sys_download, contentTitle);
 
         for (AbstractPageScraper scraper : scrapers) {
             try {
                 String contentText = "Downloading from " + scraper.getSourceName();
                 Intent notificationIntent = new Intent(context, PlayActivity.class);
-                PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
-                not.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
+                setNotificationEventInfo(not, contentTitle, contentText, notificationIntent);
 
                 if (!this.suppressMessages && this.notificationManager != null) {
                     this.notificationManager.notify(0, not);
@@ -85,14 +83,24 @@ public class Scrapers {
 
     private void postDownloadedNotification(int i, String name, File puzFile) {
         String contentTitle = "Downloaded Puzzle From " + name;
-        Notification not = new Notification(android.R.drawable.stat_sys_download_done, contentTitle,
-                System.currentTimeMillis());
+        Notification not = createNotification(android.R.drawable.stat_sys_download_done, contentTitle);
         Intent notificationIntent = new Intent(Intent.ACTION_EDIT, Uri.fromFile(puzFile), context, PlayActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
-        not.setLatestEventInfo(context, contentTitle, puzFile.getName(), contentIntent);
+        setNotificationEventInfo(not, contentTitle, puzFile.getName(), notificationIntent);
 
         if (this.notificationManager != null) {
             this.notificationManager.notify(i, not);
         }
+    }
+
+    @SuppressWarnings("deprecation")
+    private Notification createNotification(int resource, String contentTitle) {
+        return new Notification(resource, contentTitle, System.currentTimeMillis());
+    }
+
+    @SuppressWarnings("deprecation")
+    private void setNotificationEventInfo(Notification notification, String contentTitle,
+            String contentText, Intent intent) {
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
     }
 }
