@@ -21,7 +21,7 @@ import android.view.View;
 import android.view.Window;
 
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
-import com.adamrosenfield.wordswithcrosses.net.AbstractDownloader;
+import com.adamrosenfield.wordswithcrosses.io.IO;
 import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
 
 public class DefaultUtil implements AndroidVersionUtils {
@@ -50,8 +50,11 @@ public class DefaultUtil implements AndroidVersionUtils {
 
         File tempFile = new File(WordsWithCrossesApplication.TEMP_DIR, destination.getName());
         FileOutputStream fos = new FileOutputStream(tempFile);
-        AbstractDownloader.copyStream(entity.getContent(), fos);
-        fos.close();
+        try {
+            IO.copyStream(entity.getContent(), fos);
+        } finally {
+            fos.close();
+        }
 
         return tempFile.renameTo(destination);
     }

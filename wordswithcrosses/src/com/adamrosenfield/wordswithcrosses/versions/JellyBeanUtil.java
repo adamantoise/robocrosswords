@@ -13,7 +13,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import com.adamrosenfield.wordswithcrosses.net.AbstractDownloader;
+import com.adamrosenfield.wordswithcrosses.io.IO;
 
 public class JellyBeanUtil extends HoneycombUtil {
 
@@ -39,11 +39,11 @@ public class JellyBeanUtil extends HoneycombUtil {
             FileOutputStream fos = new FileOutputStream(destination);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-            AbstractDownloader.copyStream(entity.getContent(), baos);
+            IO.copyStream(entity.getContent(), baos);
             if(url.toExternalForm().indexOf("crnet") != -1){
                 System.out.println(new String(baos.toByteArray()));
             }
-            AbstractDownloader.copyStream(new ByteArrayInputStream(baos.toByteArray()), fos);
+            IO.copyStream(new ByteArrayInputStream(baos.toByteArray()), fos);
             fos.close();
             return true;
 

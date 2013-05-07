@@ -6,13 +6,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 
 import javax.xml.parsers.SAXParser;
@@ -46,32 +46,11 @@ import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
  * </crossword-compiler-applet>
  */
 public class JPZIO {
-    public static int copyStream(InputStream sourceStream,
-            OutputStream destinationStream) throws IOException {
-        int bytesRead = 0;
-        int totalBytes = 0;
-        byte[] buffer = new byte[1024];
-
-        while (bytesRead >= 0) {
-            bytesRead = sourceStream.read(buffer, 0, buffer.length);
-
-            if (bytesRead > 0) {
-                destinationStream.write(buffer, 0, bytesRead);
-            }
-
-            totalBytes += bytesRead;
-        }
-
-        destinationStream.flush();
-        destinationStream.close();
-
-        return totalBytes;
-    }
 
     private static InputStream unzipOrPassthrough(InputStream is)
             throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        copyStream(is, baos);
+        IO.copyStream(is, baos);
         try {
             ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
             ZipEntry entry = zis.getNextEntry();
@@ -79,10 +58,10 @@ public class JPZIO {
                 entry = zis.getNextEntry();
             }
             baos = new ByteArrayOutputStream();
-            copyStream(zis, baos);
+            IO.copyStream(zis, baos);
             is = new ByteArrayInputStream(baos.toByteArray());
-        } catch (Exception e) {
-            System.out.println("Not zipped");
+        } catch (ZipException e) {
+            e.printStackTrace();
             return new ByteArrayInputStream(baos.toByteArray());
         }
 
@@ -90,16 +69,13 @@ public class JPZIO {
 
         Scanner in = new Scanner(is);
         ByteArrayOutputStream replaced = new ByteArrayOutputStream();
-        BufferedWriter out = new BufferedWriter(
-                new OutputStreamWriter(replaced));
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(replaced));
         while (in.hasNextLine()) {
             String line = in.nextLine();
             line = line.replaceAll("&nbsp;", " ");
             out.write(line + "\n");
         }
-        out.flush();
         out.close();
-        is.close();
         return new ByteArrayInputStream(replaced.toByteArray());
 
     }

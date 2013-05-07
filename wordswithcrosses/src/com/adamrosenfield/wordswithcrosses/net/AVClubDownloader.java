@@ -9,6 +9,8 @@ import java.net.URL;
 import java.text.NumberFormat;
 import java.util.Calendar;
 
+import com.adamrosenfield.wordswithcrosses.io.IO;
+
 /**
  * The Onion AV Club
  * URL: http://herbach.dnsalias.com/Tausig/avYYMMDD.puz
@@ -38,32 +40,32 @@ public class AVClubDownloader extends AbstractDownloader {
     }
 
     @Override
-    protected boolean download(Calendar date, String urlSuffix) {
+    protected boolean download(Calendar date, String urlSuffix) throws IOException {
+        URL url;
         try {
-            URL url = new URL(this.baseUrl + urlSuffix);
-            System.out.println(url);
-
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoOutput(true);
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("Referer", this.baseUrl);
-
-            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                File f = new File(downloadDirectory, this.getFilename(date));
-                FileOutputStream fos = new FileOutputStream(f);
-                AbstractDownloader.copyStream(connection.getInputStream(), fos);
-                fos.close();
-
-                return true;
-            } else {
-                return false;
-            }
+            url = new URL(this.baseUrl + urlSuffix);
         } catch (MalformedURLException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            return false;
         }
 
-        return false;
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setDoOutput(true);
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Referer", this.baseUrl);
+
+        if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+            File f = new File(downloadDirectory, this.getFilename(date));
+            FileOutputStream fos = new FileOutputStream(f);
+            try {
+                IO.copyStream(connection.getInputStream(), fos);
+            } finally {
+                fos.close();
+            }
+
+            return true;
+        } else {
+            return false;
+        }
     }
 }

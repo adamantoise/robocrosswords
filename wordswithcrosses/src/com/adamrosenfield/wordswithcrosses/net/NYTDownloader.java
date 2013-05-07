@@ -31,6 +31,8 @@ import android.content.Context;
 import android.os.Handler;
 import android.widget.Toast;
 
+import com.adamrosenfield.wordswithcrosses.io.IO;
+
 /**
  * New York Times URL: http://select.nytimes.com/premium/xword/[Mon]DDYY.puz
  * Date = Daily
@@ -80,48 +82,54 @@ public class NYTDownloader extends AbstractDownloader {
     }
 
     @Override
-    protected boolean download(Calendar date, String urlSuffix) {
+    protected boolean download(Calendar date, String urlSuffix) throws IOException {
+        URL url;
         try {
-            URL url = new URL(this.baseUrl + urlSuffix);
-            HttpClient client = this.login();
-
-            HttpGet fetchIndex = new HttpGet(
-                    "http://select.nytimes.com/premium/xword/puzzles.html");
-            HttpResponse indexResponse = client.execute(fetchIndex);
-            AbstractDownloader.copyStream(indexResponse.getEntity()
-                    .getContent(),
-                    new FileOutputStream(downloadDirectory.getAbsolutePath()
-                            + "/debug/xword-puzzles.html"));
-
-            HttpGet get = new HttpGet(url.toString());
-            get.addHeader("Referer",
-                    "http://select.nytimes.com/premium/xword/puzzles.html");
-
-            HttpResponse response = client.execute(get);
-
-            if (response.getStatusLine().getStatusCode() == 200) {
-                File f = new File(downloadDirectory, this.getFilename(date));
-                FileOutputStream fos = new FileOutputStream(f);
-                AbstractDownloader.copyStream(
-                        response.getEntity().getContent(), fos);
-                fos.close();
-
-                AbstractDownloader.copyStream(
-                        new FileInputStream(f),
-                        new FileOutputStream(downloadDirectory
-                                .getAbsolutePath() + "/debug/debug.puz"));
-
-                return true;
-            } else {
-                return false;
-            }
+            url = new URL(this.baseUrl + urlSuffix);
         } catch (MalformedURLException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            return false;
         }
 
-        return false;
+        HttpClient client = this.login();
+
+        HttpGet fetchIndex = new HttpGet("http://select.nytimes.com/premium/xword/puzzles.html");
+        HttpResponse indexResponse = client.execute(fetchIndex);
+
+        FileOutputStream fos = new FileOutputStream(downloadDirectory.getAbsolutePath()
+                + "/debug/xword-puzzles.html");
+        try {
+            IO.copyStream(indexResponse.getEntity().getContent(), fos);
+        } finally {
+            fos.close();
+        }
+
+        HttpGet get = new HttpGet(url.toString());
+        get.addHeader("Referer",
+                "http://select.nytimes.com/premium/xword/puzzles.html");
+
+        HttpResponse response = client.execute(get);
+
+        if (response.getStatusLine().getStatusCode() != 200) {
+            return false;
+        }
+
+        File f = new File(downloadDirectory, this.getFilename(date));
+        fos = new FileOutputStream(f);
+        try {
+            IO.copyStream(response.getEntity().getContent(), fos);
+        } finally {
+            fos.close();
+        }
+
+        fos = new FileOutputStream(downloadDirectory.getAbsolutePath() + "/debug/debug.puz");
+        try {
+            IO.copyStream(new FileInputStream(f), fos);
+        } finally {
+            fos.close();
+        }
+
+        return true;
     }
 
     private HttpClient login() throws IOException {
@@ -203,10 +211,14 @@ public class NYTDownloader extends AbstractDownloader {
             entity.writeTo(baos);
 
             new File(this.downloadDirectory, "debug/").mkdirs();
-            copyStream(
-                    new ByteArrayInputStream(baos.toByteArray()),
-                    new FileOutputStream(this.downloadDirectory
-                            .getAbsolutePath() + "/debug/authresp.html"));
+
+            FileOutputStream fos = new FileOutputStream(
+                    this.downloadDirectory.getAbsolutePath() + "/debug/authresp.html");
+            try {
+                IO.copyStream(new ByteArrayInputStream(baos.toByteArray()), fos);
+            } finally {
+                fos.close();
+            }
 
             String resp = new String(baos.toByteArray());
 

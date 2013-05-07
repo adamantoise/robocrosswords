@@ -2,8 +2,6 @@ package com.adamrosenfield.wordswithcrosses.net;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
@@ -43,39 +41,6 @@ public abstract class AbstractDownloader implements Downloader {
 
     public void setContext(Context ctx) {
         this.utils.setContext(ctx);
-    }
-
-    /**
-     * Copies the data from an InputStream object to an OutputStream object.
-     *
-     * @param sourceStream
-     *            The input stream to be read.
-     * @param destinationStream
-     *            The output stream to be written to.
-     * @return int value of the number of bytes copied.
-     * @exception IOException
-     *                from java.io calls.
-     */
-    public static int copyStream(InputStream sourceStream, OutputStream destinationStream)
-        throws IOException {
-        int bytesRead = 0;
-        int totalBytes = 0;
-        byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-
-        while (bytesRead >= 0) {
-            bytesRead = sourceStream.read(buffer, 0, buffer.length);
-
-            if (bytesRead > 0) {
-                destinationStream.write(buffer, 0, bytesRead);
-            }
-
-            totalBytes += bytesRead;
-        }
-
-        destinationStream.flush();
-        destinationStream.close();
-
-        return totalBytes;
     }
 
     public String getFilename(Calendar date) {
