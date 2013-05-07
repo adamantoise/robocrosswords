@@ -3,7 +3,6 @@ package com.adamrosenfield.wordswithcrosses.net;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -39,20 +38,25 @@ public abstract class AbstractJPZDownloader extends AbstractDownloader {
             return false;
         }
 
-        File destFile = new File(WordsWithCrossesApplication.CROSSWORDS_DIR, filename);
-
-        boolean succeeded = false;
         try {
-            FileInputStream is = new FileInputStream(jpzFile);
-            DataOutputStream dos = new DataOutputStream(new FileOutputStream(destFile));
-            succeeded = JPZIO.convertJPZPuzzle(is, dos, date);
-            dos.close();
+            File destFile = new File(WordsWithCrossesApplication.CROSSWORDS_DIR, filename);
+            return convertJPZPuzzle(jpzFile, destFile, date);
+        } finally {
             jpzFile.delete();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return false;
         }
+    }
 
-        return succeeded;
+    private boolean convertJPZPuzzle(File jpzFile, File destFile, Calendar date) throws IOException {
+        FileInputStream fis = new FileInputStream(jpzFile);
+        try {
+            DataOutputStream dos = new DataOutputStream(new FileOutputStream(destFile));
+            try {
+                return JPZIO.convertJPZPuzzle(fis, dos, date);
+            } finally {
+                dos.close();
+            }
+        } finally {
+            fis.close();
+        }
     }
 }
