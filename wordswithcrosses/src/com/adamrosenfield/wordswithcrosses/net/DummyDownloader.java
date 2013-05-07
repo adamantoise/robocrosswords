@@ -10,7 +10,6 @@ import android.content.Context;
  */
 public class DummyDownloader implements Downloader {
     public void setContext(Context context) {
-        // TODO Auto-generated method stub
     }
 
     public int[] getDownloadDates() {

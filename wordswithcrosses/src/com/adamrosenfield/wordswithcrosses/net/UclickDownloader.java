@@ -25,14 +25,14 @@ import com.adamrosenfield.wordswithcrosses.io.UclickXMLIO;
 public class UclickDownloader extends AbstractDownloader {
     NumberFormat nf = NumberFormat.getInstance();
     private String copyright;
-    private String fullName;
+    //private String fullName;
     private String shortName;
     private int[] days;
 
     public UclickDownloader(String shortName, String fullName, String copyright, int[] days) {
         super("http://picayune.uclick.com/comics/" + shortName + "/data/", DOWNLOAD_DIR, fullName);
         this.shortName = shortName;
-        this.fullName = fullName;
+        //this.fullName = fullName;
         this.copyright = copyright;
         this.days = days;
         nf.setMinimumIntegerDigits(2);

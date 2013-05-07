@@ -39,31 +39,26 @@ public interface AndroidVersionUtils {
             System.out.println("Creating utils for version: " + android.os.Build.VERSION.SDK_INT);
 
             try {
-                switch (android.os.Build.VERSION.SDK_INT) {
-                case 11:
-                case 12:
-                case 13:
-                case 14:
-                case 15:
-                    return INSTANCE = (AndroidVersionUtils) Class.forName(
-                            "com.adamrosenfield.wordswithcrosses.versions.HoneycombUtil")
-                            .newInstance();
-                case 16:
-                case 17:
-                    return INSTANCE = (AndroidVersionUtils) Class.forName(
-                            "com.adamrosenfield.wordswithcrosses.versions.JellyBeanUtil")
-                            .newInstance();
-                case 10:
-                case 9:
-                    System.out.println("Using Gingerbread.");
-                    return INSTANCE = (AndroidVersionUtils) Class.forName(
+                int version = android.os.Build.VERSION.SDK_INT;
+                if (version < 9) {
+                    return INSTANCE = new DefaultUtil();
+                } else if (version < 11) {
+                    return INSTANCE = (AndroidVersionUtils)Class.forName(
                             "com.adamrosenfield.wordswithcrosses.versions.GingerbreadUtil")
                             .newInstance();
-
-                default:
-                    return INSTANCE = new DefaultUtil();
+                } else {
+                    return INSTANCE = (AndroidVersionUtils)Class.forName(
+                            "com.adamrosenfield.wordswithcrosses.versions.HoneycombUtil")
+                            .newInstance();
                 }
-            } catch (Exception e) {
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+                return INSTANCE = new DefaultUtil();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+                return INSTANCE = new DefaultUtil();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
                 return INSTANCE = new DefaultUtil();
             }
         }

@@ -26,7 +26,6 @@ import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
 
 public class DefaultUtil implements AndroidVersionUtils {
     public void setContext(Context ctx) {
-        // TODO Auto-generated method stub
     }
 
     public boolean downloadFile(URL url, Map<String, String> headers,
@@ -60,27 +59,21 @@ public class DefaultUtil implements AndroidVersionUtils {
     }
 
     public void onFileDownloaded(long id, boolean successful) {
-        // No-op
     }
 
     public void finishOnHomeButton(Activity a) {
-        // TODO Auto-generated method stub
     }
 
     public void holographic(Activity playActivity) {
-        // TODO Auto-generated method stub
     }
 
     public void onActionBarWithText(MenuItem a) {
-        // TODO Auto-generated method stub
     }
 
     public void onActionBarWithText(SubMenu reveal) {
-        // TODO Auto-generated method stub
     }
 
     public void storeMetas(Uri uri, PuzzleMeta meta) {
-        // TODO Auto-generated method stub
     }
 
     public View onActionBarCustom(Activity a, int id) {
@@ -92,6 +85,5 @@ public class DefaultUtil implements AndroidVersionUtils {
     }
 
     public void hideActionBar(Activity a) {
-        ; //no op;
     }
 }

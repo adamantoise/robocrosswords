@@ -38,7 +38,7 @@ public class GingerbreadUtil extends DefaultUtil {
     @Override
     public boolean downloadFile(URL url, Map<String, String> headers, File destination, boolean notification,
         String title) {
-        DownloadManager mgr = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager mgr = (DownloadManager)context.getSystemService(Context.DOWNLOAD_SERVICE);
 
         Request request = new Request(Uri.parse(url.toString()));
         File tempFile = new File(WordsWithCrossesApplication.TEMP_DIR, destination.getName());
@@ -120,10 +120,8 @@ public class GingerbreadUtil extends DefaultUtil {
 
     @Override
     public void hideActionBar(Activity a) {
-        // no op
     }
 
     protected void setNotificationVisibility(Request reqest, boolean notification) {
-        // no op
     }
 }
