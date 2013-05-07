@@ -6,10 +6,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
+
+import android.util.SparseArray;
 
 import com.adamrosenfield.wordswithcrosses.io.charset.MacRoman;
 import com.adamrosenfield.wordswithcrosses.puz.Box;
@@ -110,7 +110,7 @@ public class KingFeaturesPlaintextIO {
         puz.setBoxes(boxes);
 
         // Process clues.
-        Map<Integer, String> acrossNumToClueMap = new HashMap<Integer, String>();
+        SparseArray<String> acrossNumToClueMap = new SparseArray<String>();
         line = line.substring(1);
         int clueNum;
         do {
@@ -137,7 +137,7 @@ public class KingFeaturesPlaintextIO {
 
         int maxClueNum = clueNum;
 
-        Map<Integer, String> downNumToClueMap = new HashMap<Integer, String>();
+        SparseArray<String> downNumToClueMap = new SparseArray<String>();
         line = line.substring(1);
         boolean finished = false;
         do {
@@ -173,13 +173,16 @@ public class KingFeaturesPlaintextIO {
         puz.setNumberOfClues(numberOfClues);
         String[] rawClues = new String[numberOfClues];
         int i = 0;
-        for(clueNum = 1; clueNum <= maxClueNum; clueNum++) {
-            if(acrossNumToClueMap.containsKey(clueNum)) {
-                rawClues[i] = acrossNumToClueMap.get(clueNum);
+        for (clueNum = 1; clueNum <= maxClueNum; clueNum++) {
+            String clue = acrossNumToClueMap.get(clueNum);
+            if (clue != null) {
+                rawClues[i] = clue;
                 i++;
             }
-            if(downNumToClueMap.containsKey(clueNum)) {
-                rawClues[i] = downNumToClueMap.get(clueNum);
+
+            clue = downNumToClueMap.get(clueNum);
+            if (clue != null) {
+                rawClues[i] = clue;
                 i++;
             }
         }
