@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
@@ -23,6 +21,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
+
+import android.util.SparseArray;
 
 import com.adamrosenfield.wordswithcrosses.puz.Box;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
@@ -77,7 +77,6 @@ public class JPZIO {
         }
         out.close();
         return new ByteArrayInputStream(replaced.toByteArray());
-
     }
 
     public static Puzzle readPuzzle(InputStream is) {
@@ -123,8 +122,8 @@ public class JPZIO {
     }
 
     private static class JPZXMLParser extends DefaultHandler {
-        private Map<Integer, String> acrossNumToClueMap = new HashMap<Integer, String>();
-        private Map<Integer, String> downNumToClueMap = new HashMap<Integer, String>();
+        private SparseArray<String> acrossNumToClueMap = new SparseArray<String>();
+        private SparseArray<String> downNumToClueMap = new SparseArray<String>();
         private Puzzle puz;
         private StringBuilder curBuffer;
         private Box[][] boxes;
@@ -160,8 +159,7 @@ public class JPZIO {
                 throws SAXException {
             strippedName = strippedName.trim();
 
-            String name = (strippedName.length() == 0) ? tagName.trim()
-                    : strippedName;
+            String name = (strippedName.length() == 0) ? tagName.trim() : strippedName;
 
             if (name.equalsIgnoreCase("metadata")) {
                 inMetadata = false;
@@ -198,16 +196,14 @@ public class JPZIO {
                     } else if (title.contains("Down")) {
                         inDown = true;
                     } else {
-                        throw new SAXException(
-                                "Clue list is neither across nor down.");
+                        throw new SAXException("Clue list is neither across nor down.");
                     }
 
                     inClueTitle = false;
                     curBuffer = null;
                 } else if (name.equalsIgnoreCase("clue")) {
                     if (inAcross) {
-                        acrossNumToClueMap
-                                .put(clueNumber, curBuffer.toString());
+                        acrossNumToClueMap.put(clueNumber, curBuffer.toString());
                     } else if (inDown) {
                         downNumToClueMap.put(clueNumber, curBuffer.toString());
                     } else {
@@ -215,21 +211,22 @@ public class JPZIO {
                     }
                 }
             } else if (name.equalsIgnoreCase("crossword")) {
-                int numberOfClues = acrossNumToClueMap.size()
-                        + downNumToClueMap.size();
+                int numberOfClues = acrossNumToClueMap.size() + downNumToClueMap.size();
                 puz.setNumberOfClues(numberOfClues);
 
                 String[] rawClues = new String[numberOfClues];
                 int i = 0;
 
                 for (int clueNum = 1; clueNum <= maxClueNum; clueNum++) {
-                    if (acrossNumToClueMap.containsKey(clueNum)) {
-                        rawClues[i] = acrossNumToClueMap.get(clueNum);
+                    String clue = acrossNumToClueMap.get(clueNum);
+                    if (clue != null) {
+                        rawClues[i] = clue;
                         i++;
                     }
 
-                    if (downNumToClueMap.containsKey(clueNum)) {
-                        rawClues[i] = downNumToClueMap.get(clueNum);
+                    clue = downNumToClueMap.get(clueNum);
+                    if (clue != null) {
+                        rawClues[i] = clue;
                         i++;
                     }
                 }
@@ -241,8 +238,7 @@ public class JPZIO {
                     for (int x = 0; x < width; x++) {
                         if (clueNums[y][x] != 0) {
                             if (puz.getBoxes()[y][x].getClueNumber() != clueNums[y][x]) {
-                                throw new SAXException(
-                                        "Irregular numbering scheme.");
+                                throw new SAXException("Irregular numbering scheme.");
                             }
                         }
                     }
@@ -255,8 +251,7 @@ public class JPZIO {
                 String tagName, Attributes attributes) throws SAXException {
             strippedName = strippedName.trim();
 
-            String name = (strippedName.length() == 0) ? tagName.trim()
-                    : strippedName;
+            String name = (strippedName.length() == 0) ? tagName.trim() : strippedName;
 
             if (name.equalsIgnoreCase("metadata")) {
                 inMetadata = true;
