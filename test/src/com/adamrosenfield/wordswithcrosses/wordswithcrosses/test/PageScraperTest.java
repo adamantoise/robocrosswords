@@ -11,28 +11,22 @@ public class PageScraperTest extends AndroidTestCase{
 		String testString = "<a href=\"http://code.google.com/some/test/puzzle.puz\"> test puzzle</a>\n<a href=\"http://code.google.com/some/test/puzzle2.puz\"> test2 puzzle</a>";
 		System.out.println("Running...");
 		System.out.println(AbstractPageScraper.puzzleURLs(testString));
-
 	}
-	
+
 	public void testBEQ() throws Exception {
-		
+
 		AbstractPageScraper scraper = new TestScraper();
-		
+
 		String payload = scraper.getContent();
 		System.out.println(payload);
-		
-		System.out.println(scraper.puzzleURLs(payload));
-		
-		
-		
+
+		System.out.println(AbstractPageScraper.puzzleURLs(payload));
 	}
-	
-	
+
 	private static class TestScraper extends AbstractPageScraper {
-		
+
 		TestScraper(){
 			super("http://www.fleetwoodwack.typepad.com/", "BEQ");
 		}
 	}
-
 }
