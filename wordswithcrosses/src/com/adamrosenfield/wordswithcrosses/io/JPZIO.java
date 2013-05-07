@@ -129,15 +129,15 @@ public class JPZIO {
         private Box[][] boxes;
         private int[][] clueNums;
         private boolean inAcross = false;
-        private boolean inAuthor = false;
-        private boolean inClue = false;
-        private boolean inClueTitle = false;
+        //private boolean inAuthor = false;
+        //private boolean inClue = false;
+        //private boolean inClueTitle = false;
         private boolean inClues = false;
-        private boolean inCopyright = false;
-        private boolean inDescription = false;
+        //private boolean inCopyright = false;
+        //private boolean inDescription = false;
         private boolean inDown = false;
         private boolean inMetadata = false;
-        private boolean inTitle = false;
+        //private boolean inTitle = false;
         private int clueNumber = 0;
         private int height;
         private int maxClueNum = -1;
@@ -166,19 +166,19 @@ public class JPZIO {
             } else if (inMetadata) {
                 if (name.equalsIgnoreCase("title")) {
                     puz.setTitle(curBuffer.toString());
-                    inTitle = false;
+                    //inTitle = false;
                     curBuffer = null;
                 } else if (name.equalsIgnoreCase("creator")) {
                     puz.setAuthor(curBuffer.toString());
-                    inAuthor = false;
+                    //inAuthor = false;
                     curBuffer = null;
                 } else if (name.equalsIgnoreCase("copyright")) {
                     puz.setCopyright(curBuffer.toString());
-                    inCopyright = false;
+                    //inCopyright = false;
                     curBuffer = null;
                 } else if (name.equalsIgnoreCase("description")) {
                     puz.setNotes(curBuffer.toString());
-                    inDescription = false;
+                    //inDescription = false;
                     curBuffer = null;
                 }
             } else if (name.equalsIgnoreCase("grid")) {
@@ -199,7 +199,7 @@ public class JPZIO {
                         throw new SAXException("Clue list is neither across nor down.");
                     }
 
-                    inClueTitle = false;
+                    //inClueTitle = false;
                     curBuffer = null;
                 } else if (name.equalsIgnoreCase("clue")) {
                     if (inAcross) {
@@ -257,16 +257,16 @@ public class JPZIO {
                 inMetadata = true;
             } else if (inMetadata) {
                 if (name.equalsIgnoreCase("title")) {
-                    inTitle = true;
+                    //inTitle = true;
                     curBuffer = new StringBuilder();
                 } else if (name.equalsIgnoreCase("creator")) {
-                    inAuthor = true;
+                    //inAuthor = true;
                     curBuffer = new StringBuilder();
                 } else if (name.equalsIgnoreCase("copyright")) {
-                    inCopyright = true;
+                    //inCopyright = true;
                     curBuffer = new StringBuilder();
                 } else if (name.equalsIgnoreCase("description")) {
-                    inDescription = true;
+                    //inDescription = true;
                     curBuffer = new StringBuilder();
                 }
             } else if (name.equalsIgnoreCase("grid")) {
@@ -301,10 +301,10 @@ public class JPZIO {
                 inClues = true;
             } else if (inClues) {
                 if (name.equalsIgnoreCase("title")) {
-                    inClueTitle = true;
+                    //inClueTitle = true;
                     curBuffer = new StringBuilder();
                 } else if (name.equalsIgnoreCase("clue")) {
-                    inClue = true;
+                    //inClue = true;
                     clueNumber = Integer
                             .parseInt(attributes.getValue("number"));
 
