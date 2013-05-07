@@ -5,8 +5,6 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -16,6 +14,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
+
+import android.util.SparseArray;
 
 import com.adamrosenfield.wordswithcrosses.puz.Box;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
@@ -48,8 +48,8 @@ public class UclickXMLIO {
 
 	private static class UclickXMLParser extends DefaultHandler {
 		private Puzzle puz;
-		private Map<Integer, String> acrossNumToClueMap = new HashMap<Integer, String>();
-		private Map<Integer, String> downNumToClueMap = new HashMap<Integer, String>();
+		private SparseArray<String> acrossNumToClueMap = new SparseArray<String>();
+		private SparseArray<String> downNumToClueMap = new SparseArray<String>();
 		private boolean inAcross = false;
 		private boolean inDown = false;
 		private int maxClueNum = -1;
@@ -131,14 +131,17 @@ public class UclickXMLIO {
 				String[] rawClues = new String[numberOfClues];
 				int i = 0;
 				for(int clueNum = 1; clueNum <= maxClueNum; clueNum++) {
-					if(acrossNumToClueMap.containsKey(clueNum)) {
-						rawClues[i] = acrossNumToClueMap.get(clueNum);
-						i++;
-					}
-					if(downNumToClueMap.containsKey(clueNum)) {
-						rawClues[i] = downNumToClueMap.get(clueNum);
-						i++;
-					}
+		            String clue = acrossNumToClueMap.get(clueNum);
+		            if (clue != null) {
+		                rawClues[i] = clue;
+		                i++;
+		            }
+
+		            clue = downNumToClueMap.get(clueNum);
+		            if (clue != null) {
+		                rawClues[i] = clue;
+		                i++;
+		            }
 				}
 				puz.setRawClues(rawClues);
 			}
