@@ -154,7 +154,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getTitle().equals("Download")) {
-            showDialog(DOWNLOAD_DIALOG_ID);
+            deprecatedShowDialog(DOWNLOAD_DIALOG_ID);
 
             return true;
         } else if (item.getTitle().equals("Settings")) {
@@ -206,6 +206,11 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         }
 
         return false;
+    }
+
+    @SuppressWarnings("deprecation")
+    void deprecatedShowDialog(int dialog) {
+        showDialog(dialog);
     }
 
     @Override
