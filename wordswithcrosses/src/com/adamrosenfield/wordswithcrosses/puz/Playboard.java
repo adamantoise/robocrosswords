@@ -3,16 +3,16 @@ package com.adamrosenfield.wordswithcrosses.puz;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
+import android.util.SparseArray;
 
 public class Playboard implements Serializable {
 
     private static final long serialVersionUID = 6405191453517814859L;
 
-    private HashMap<Integer, Position> acrossWordStarts = new HashMap<Integer, Position>();
-    private HashMap<Integer, Position> downWordStarts = new HashMap<Integer, Position>();
+    private SparseArray<Position> acrossWordStarts = new SparseArray<Position>();
+    private SparseArray<Position> downWordStarts = new SparseArray<Position>();
     private MovementStrategy movementStrategy = MovementStrategy.MOVE_NEXT_ON_AXIS;
     private Position highlightLetter = new Position(0, 0);
     private Puzzle puzzle;
