@@ -3,7 +3,6 @@ package com.adamrosenfield.wordswithcrosses.net;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -63,22 +62,28 @@ public class UclickDownloader extends AbstractDownloader {
             return false;
         }
 
-        File destFile = new File(WordsWithCrossesApplication.CROSSWORDS_DIR, filename);
+        try {
+            File destFile = new File(WordsWithCrossesApplication.CROSSWORDS_DIR, filename);
+            return convertUclickPuzzle(xmlFile, destFile, date);
+        } finally {
+            xmlFile.delete();
+        }
+    }
+
+    private boolean convertUclickPuzzle(File xmlFile, File destFile, Calendar date) throws IOException {
         String fullCopyright = "\u00a9 " + date.get(Calendar.YEAR) + " " + copyright;
 
-        boolean succeeded = false;
+        FileInputStream fis = new FileInputStream(xmlFile);
         try {
-            FileInputStream is = new FileInputStream(xmlFile);
             DataOutputStream dos = new DataOutputStream(new FileOutputStream(destFile));
-            succeeded = UclickXMLIO.convertUclickPuzzle(is, dos, fullCopyright, date);
-            dos.close();
-            xmlFile.delete();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return false;
+            try {
+                return UclickXMLIO.convertUclickPuzzle(fis, dos, fullCopyright, date);
+            } finally {
+                dos.close();
+            }
+        } finally {
+            fis.close();
         }
-
-        return succeeded;
     }
 
     @Override
