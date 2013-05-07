@@ -2,7 +2,6 @@ package com.adamrosenfield.wordswithcrosses;
 
 import java.text.NumberFormat;
 
-
 public class ImaginaryTimer {
     private static final long SECONDS = 1000L;
     private static final long MINUTES = 60L * SECONDS;

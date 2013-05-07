@@ -51,13 +51,13 @@ import com.adamrosenfield.wordswithcrosses.puz.Playboard.Clue;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Word;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
-import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
 import com.adamrosenfield.wordswithcrosses.view.PlayboardRenderer;
 import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView;
 import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.ClickListener;
 import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.Point;
 import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.ScaleListener;
 import com.adamrosenfield.wordswithcrosses.view.SeparatedListAdapter;
+import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
 
 public class PlayActivity extends WordsWithCrossesActivity {
 	private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
@@ -141,11 +141,11 @@ public class PlayActivity extends WordsWithCrossesActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		metrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		this.configuration = getBaseContext().getResources().getConfiguration();
-		
+
 		try {
 			if (!prefs.getBoolean("showTimer", false)) {
 				System.out.println("tabletish "+WordsWithCrossesApplication.isTabletish(metrics) );
@@ -153,7 +153,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 					if(WordsWithCrossesApplication.isMiniTabletish(metrics)){
 						utils.hideWindowTitle(this);
 					}
-					
+
 				}
 			} else {
 				requestWindowFeature(Window.FEATURE_PROGRESS);
@@ -169,10 +169,10 @@ public class PlayActivity extends WordsWithCrossesActivity {
 				if(WordsWithCrossesApplication.isMiniTabletish(metrics)){
 					utils.hideActionBar(this);
 				}
-				
+
 			}
 		}
-		
+
 		this.showErrors = this.prefs.getBoolean("showErrors", false);
 		setDefaultKeyMode(Activity.DEFAULT_KEYS_DISABLE);
 
@@ -268,7 +268,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
 						}
 
 						public void onText(CharSequence text) {
-							// TODO Auto-generated method stub
 						}
 
 						public void swipeDown() {
@@ -479,7 +478,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 			BOARD.toggleShowErrors();
 		}
 
-		
+
 		this.render();
 
 		this.across = (AdapterView) this.findViewById(R.id.acrossList);
@@ -605,13 +604,13 @@ public class PlayActivity extends WordsWithCrossesActivity {
 					}
 					float newScale = RENDERER.fitTo(v);
 					System.out.println("SIZE "+v+" SCALE "+newScale);
-					
+
 					prefs.edit().putFloat("scale", newScale).commit();
 					render();
 				}
-				
+
 			}, 100);
-			
+
 		}
 
 	}
@@ -815,7 +814,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
 			return true;
 		} else if (item.getTitle().equals("Puzzle")) {
-			this.showDialog(REVEAL_PUZZLE_DIALOG);
+			deprecatedShowDialog(REVEAL_PUZZLE_DIALOG);
 
 			return true;
 		} else if (item.getTitle().equals("Show Errors")
@@ -882,7 +881,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 				}
 			}
 
-			this.showDialog(INFO_DIALOG);
+			deprecatedShowDialog(INFO_DIALOG);
 
 			return true;
 		} else if (item.getTitle().equals("Clues")) {
@@ -907,11 +906,18 @@ public class PlayActivity extends WordsWithCrossesActivity {
 		return false;
 	}
 
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	@SuppressWarnings("deprecation")
+    private void deprecatedShowDialog(int dialog) {
+	    showDialog(dialog);
+	}
+
+	@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		this.render();
 	}
 
-	protected Dialog onCreateDialog(int id) {
+	@Override
+    protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case INFO_DIALOG:
 
@@ -1155,7 +1161,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 			// ensure the cursor is always on the screen.
 			this.boardView.ensureVisible(cursorBottomRight);
 			this.boardView.ensureVisible(cursorTopLeft);
-			
+
 		}
 
 		this.clue
