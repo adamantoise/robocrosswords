@@ -23,7 +23,6 @@ import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 public class IO {
 	public static final String FILE_MAGIC = "ACROSS&DOWN";
 	public static final String VERSION_STRING = "1.2";
-	public static File TEMP_FOLDER;
 	private static final Charset CHARSET = Charset.forName("Cp1252");
 
 	// Extra Section IDs
@@ -31,14 +30,6 @@ public class IO {
 
 	// GEXT section bitmasks
 	private static final byte GEXT_SQUARE_CIRCLED = (byte) 0x80;
-
-	static {
-		try {
-			TEMP_FOLDER = new File(System.getProperty("java.io.tmpdir", "tmp"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
     /**
      * Copies the data from an InputStream object to an OutputStream object.
