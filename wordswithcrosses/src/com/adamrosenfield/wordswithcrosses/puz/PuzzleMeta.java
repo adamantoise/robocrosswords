@@ -7,6 +7,8 @@ import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 
 public class PuzzleMeta implements Serializable {
 
+    private static final long serialVersionUID = -3211472808737203931L;
+
     public int id;
     public String filename;
     public boolean archived;

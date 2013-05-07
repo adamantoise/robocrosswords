@@ -1,7 +1,6 @@
 package com.adamrosenfield.wordswithcrosses.puz;
 
 import java.io.Serializable;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -9,6 +8,9 @@ import java.util.List;
 
 
 public class Playboard implements Serializable {
+
+    private static final long serialVersionUID = 6405191453517814859L;
+
     private HashMap<Integer, Position> acrossWordStarts = new HashMap<Integer, Position>();
     private HashMap<Integer, Position> downWordStarts = new HashMap<Integer, Position>();
     private MovementStrategy movementStrategy = MovementStrategy.MOVE_NEXT_ON_AXIS;
@@ -627,6 +629,9 @@ public class Playboard implements Serializable {
     }
 
     public static class Clue implements Serializable {
+
+        private static final long serialVersionUID = -1864152109239464267L;
+
         public String hint;
         public int number;
 
@@ -665,6 +670,9 @@ public class Playboard implements Serializable {
     }
 
     public static class Position implements Serializable {
+
+        private static final long serialVersionUID = 2454894630972632348L;
+
         public int across;
         public int down;
 
@@ -700,6 +708,9 @@ public class Playboard implements Serializable {
     }
 
     public static class Word implements Serializable {
+
+        private static final long serialVersionUID = 6016784568874558665L;
+
         public Position start;
         public boolean across;
         public int length;

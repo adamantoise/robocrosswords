@@ -7,6 +7,9 @@ import java.util.Calendar;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 
 public class Puzzle implements Serializable{
+
+    private static final long serialVersionUID = -4009551624322300644L;
+
     private String author;
     private String copyright;
     private String notes;
