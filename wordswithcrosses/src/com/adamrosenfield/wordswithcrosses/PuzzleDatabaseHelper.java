@@ -3,6 +3,7 @@ package com.adamrosenfield.wordswithcrosses;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -16,6 +17,7 @@ import android.text.TextUtils;
 
 import com.adamrosenfield.wordswithcrosses.BrowseActivity.SortOrder;
 import com.adamrosenfield.wordswithcrosses.io.IO;
+import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
 
@@ -240,9 +242,16 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
         String orderBy = sortOrder.getOrderByClause();
 
         ArrayList<PuzzleMeta> puzzles = new ArrayList<PuzzleMeta>();
+        String[] columns = new String[] {
+            COLUMN_ID, COLUMN_FILENAME, COLUMN_ARCHIVED, COLUMN_AUTHOR,
+            COLUMN_TITLE, COLUMN_SOURCE, COLUMN_DATE,
+            COLUMN_PERCENT_COMPLETE, COLUMN_SOURCE_URL,
+            COLUMN_CURRENT_POSITION_ROW, COLUMN_CURRENT_POSITION_COL,
+            COLUMN_CURRENT_ORIENTATION_ACROSS
+        };
         Cursor cursor = db.query(
             TABLE_NAME,
-            null,      // Columns
+            columns,   // Columns
             selection, // Selection
             args,      // Selection args
             null,      // Group by
@@ -252,7 +261,18 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
         while (cursor.moveToNext())
         {
             PuzzleMeta puzzle = new PuzzleMeta();
-            // TODO
+            puzzle.id = cursor.getInt(0);
+            puzzle.filename = cursor.getString(1);
+            puzzle.archived = (cursor.getInt(2) != 0);
+            puzzle.author = cursor.getString(3);
+            puzzle.title = cursor.getString(4);
+            puzzle.source = cursor.getString(5);
+            puzzle.date = Calendar.getInstance();
+            puzzle.date.setTimeInMillis(cursor.getLong(6));
+            puzzle.percentComplete = cursor.getInt(7);
+            puzzle.sourceUrl = cursor.getString(8);
+            puzzle.position = new Position(cursor.getInt(9), cursor.getInt(10));
+            puzzle.across = (cursor.getInt(11) != 0);
             puzzles.add(puzzle);
         }
 
