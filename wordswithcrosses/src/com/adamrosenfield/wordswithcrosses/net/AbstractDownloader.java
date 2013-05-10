@@ -18,8 +18,6 @@ public abstract class AbstractDownloader implements Downloader {
 
     protected static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
 
-    public static File DOWNLOAD_DIR = WordsWithCrossesApplication.CROSSWORDS_DIR;
-
     public static final int DEFAULT_BUFFER_SIZE = 4096;
 
     protected static final Map<String, String> EMPTY_MAP = Collections.<String, String>emptyMap();

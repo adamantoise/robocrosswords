@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.io.IO;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 
@@ -41,7 +42,7 @@ public class AbstractPageScraper {
 
 	public static File download(String url, String fileName) throws IOException {
 		URL u = new URL(url);
-		File output = new File(AbstractDownloader.DOWNLOAD_DIR, fileName);
+		File output = new File(WordsWithCrossesApplication.CROSSWORDS_DIR, fileName);
         FileOutputStream fos = new FileOutputStream(output);
 		try {
 			IO.copyStream(u.openStream(), fos);
@@ -130,9 +131,9 @@ public class AbstractPageScraper {
 			for (String url : urls) {
 				String filename = urlsToFilenames.get(url);
 
-				if (!(new File(AbstractDownloader.DOWNLOAD_DIR, filename)
+				if (!(new File(WordsWithCrossesApplication.CROSSWORDS_DIR, filename)
 						.exists())
-						&& !(new File(AbstractDownloader.DOWNLOAD_DIR,
+						&& !(new File(WordsWithCrossesApplication.CROSSWORDS_DIR,
 								"archive/" + filename).exists())
 						&& (scrapedFiles.size() < 3)) {
 					System.out.println("Attempting " + url + "  scraped "
