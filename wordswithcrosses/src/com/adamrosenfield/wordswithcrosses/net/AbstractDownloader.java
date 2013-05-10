@@ -27,7 +27,6 @@ public abstract class AbstractDownloader implements Downloader {
     protected String baseUrl;
     protected File downloadDirectory;
     private String downloaderName;
-    protected File tempFolder;
 
     protected final AndroidVersionUtils utils = AndroidVersionUtils.Factory.getInstance();
 
@@ -35,8 +34,6 @@ public abstract class AbstractDownloader implements Downloader {
         this.baseUrl = baseUrl;
         this.downloadDirectory = downloadDirectory;
         this.downloaderName = downloaderName;
-        this.tempFolder = new File(downloadDirectory, "temp");
-        this.tempFolder.mkdirs();
     }
 
     public void setContext(Context ctx) {
