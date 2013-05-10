@@ -57,7 +57,7 @@ public class WordsWithCrossesApplication extends Application {
 
         makeDirs();
 
-        if (DEBUG_DIR.mkdirs()) {
+        if (DEBUG_DIR.isDirectory() || DEBUG_DIR.mkdirs()) {
             File info = new File(DEBUG_DIR, "device");
             try {
                 PrintWriter writer = new PrintWriter(new FileWriter(info));
@@ -82,7 +82,7 @@ public class WordsWithCrossesApplication extends Application {
             return false;
         }
 
-        if (!CROSSWORDS_DIR.mkdirs()) {
+        if (!CROSSWORDS_DIR.isDirectory() && !CROSSWORDS_DIR.mkdirs()) {
             LOG.warning("Failed to create directory tree: " + CROSSWORDS_DIR);
             return false;
         }
