@@ -33,11 +33,6 @@ public class Downloaders {
         this.notificationManager = notificationManager;
         this.prefs = context.getPrefs();
 
-        // Boston Globe has stopped publishing their Sunday puzzles online
-        //if (prefs.getBoolean("downloadGlobe", true)) {
-        //    downloaders.add(new BostonGlobeDownloader());
-        //}
-
         if (prefs.getBoolean("downloadThinks", true)) {
             downloaders.add(new ThinksDownloader());
         }
@@ -68,10 +63,6 @@ public class Downloaders {
         if (prefs.getBoolean("downloadLat", true)) {
 //          downloaders.add(new UclickDownloader("tmcal", "Los Angeles Times", "Rich Norris", Downloader.DATE_NO_SUNDAY));
             downloaders.add(new LATimesDownloader());
-        }
-
-        if (prefs.getBoolean("downloadAvClub", true)) {
-            downloaders.add(new AVClubDownloader());
         }
 
         if (prefs.getBoolean("downloadPhilly", true)) {

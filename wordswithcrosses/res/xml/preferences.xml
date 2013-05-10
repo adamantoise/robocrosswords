@@ -99,11 +99,6 @@
 				android:summary="Updates Mondays"
 				android:key="downloadNYTClassic" />
 			<CheckBoxPreference
-				android:title="The Onion AV Club"
-				android:defaultValue="true"
-				android:summary="Updates Wednesdays"
-				android:key="downloadAvClub" />
-			<CheckBoxPreference
 				android:title="Washington Post Puzzler"
 				android:defaultValue="true"
 				android:summary="Updates Sundays"
@@ -120,13 +115,6 @@
 				android:key="downloadISwear" />
 		</PreferenceCategory>
 		<PreferenceCategory android:title="Large Sized">
-			<!--
-			<CheckBoxPreference
-				android:title="Boston Globe"
-				android:defaultValue="true"
-				android:summary="Updates Sundays"
-				android:key="downloadGlobe" />
-			-->
 			<CheckBoxPreference
 				android:title="Chron. of Higher Ed."
 				android:defaultValue="true"
