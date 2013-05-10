@@ -253,8 +253,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
             // page
             if (WordsWithCrossesApplication.makeDirs()) {
                 updateLastDatabaseSyncTime();
-                // TODO: TEMP
-                //downloadStarterPuzzles();
+                downloadStarterPuzzles();
             }
 
             showWelcomePage();
