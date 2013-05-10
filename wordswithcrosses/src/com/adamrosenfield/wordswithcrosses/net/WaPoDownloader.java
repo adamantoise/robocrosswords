@@ -13,7 +13,7 @@ public class WaPoDownloader extends AbstractJPZDownloader {
     NumberFormat nf = NumberFormat.getInstance();
 
     public WaPoDownloader() {
-        super("http://www.washingtonpost.com/r/WashingtonPost/Content/Puzzles/Daily/", DOWNLOAD_DIR, NAME);
+        super("http://www.washingtonpost.com/r/WashingtonPost/Content/Puzzles/Daily/", NAME);
         nf.setMinimumIntegerDigits(2);
         nf.setMaximumFractionDigits(0);
     }

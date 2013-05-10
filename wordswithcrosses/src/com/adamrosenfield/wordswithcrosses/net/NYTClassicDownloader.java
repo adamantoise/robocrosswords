@@ -12,7 +12,7 @@ public class NYTClassicDownloader extends AbstractDownloader {
     private static final String NAME = "New York Times Classic";
 
     public NYTClassicDownloader() {
-        super("http://www.nytimes.com/specials/puzzles/", DOWNLOAD_DIR, NAME);
+        super("http://www.nytimes.com/specials/puzzles/", NAME);
     }
 
     public int[] getDownloadDates() {

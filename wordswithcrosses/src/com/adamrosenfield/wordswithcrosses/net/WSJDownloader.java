@@ -13,7 +13,7 @@ public class WSJDownloader extends AbstractDownloader {
     NumberFormat nf = NumberFormat.getInstance();
 
     public WSJDownloader() {
-        super("http://mazerlm.home.comcast.net/~mazerlm/", DOWNLOAD_DIR, NAME);
+        super("http://mazerlm.home.comcast.net/~mazerlm/", NAME);
         nf.setMinimumIntegerDigits(2);
         nf.setMaximumFractionDigits(0);
     }

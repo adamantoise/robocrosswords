@@ -25,14 +25,12 @@ public abstract class AbstractDownloader implements Downloader {
     protected static final Map<String, String> EMPTY_MAP = Collections.<String, String>emptyMap();
 
     protected String baseUrl;
-    protected File downloadDirectory;
     private String downloaderName;
 
     protected final AndroidVersionUtils utils = AndroidVersionUtils.Factory.getInstance();
 
-    protected AbstractDownloader(String baseUrl, File downloadDirectory, String downloaderName) {
+    protected AbstractDownloader(String baseUrl, String downloaderName) {
         this.baseUrl = baseUrl;
-        this.downloadDirectory = downloadDirectory;
         this.downloaderName = downloaderName;
     }
 

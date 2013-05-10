@@ -14,7 +14,7 @@ public class WaPoPuzzlerDownloader extends AbstractDownloader {
 
     public WaPoPuzzlerDownloader() {
         super("http://crosswords.washingtonpost.com/wp-srv/style/crosswords/util/csserve2.cgi?t=puz&z=puzzler&f=",
-            DOWNLOAD_DIR, NAME);
+            NAME);
         nf.setMinimumIntegerDigits(2);
         nf.setMaximumFractionDigits(0);
     }

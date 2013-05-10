@@ -15,8 +15,8 @@ import com.adamrosenfield.wordswithcrosses.io.JPZIO;
 
 public abstract class AbstractJPZDownloader extends AbstractDownloader {
 
-    protected AbstractJPZDownloader(String baseUrl, File downloadDirectory, String downloaderName) {
-        super(baseUrl, downloadDirectory, downloaderName);
+    protected AbstractJPZDownloader(String baseUrl, String downloaderName) {
+        super(baseUrl, downloaderName);
     }
 
     @Override

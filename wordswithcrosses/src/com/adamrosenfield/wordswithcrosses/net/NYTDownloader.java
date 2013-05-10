@@ -47,7 +47,7 @@ public class NYTDownloader extends AbstractDownloader {
     private HashMap<String, String> params = new HashMap<String, String>();
 
     protected NYTDownloader(Context context, String username, String password) {
-        super("http://www.nytimes.com/premium/xword/", DOWNLOAD_DIR, NAME);
+        super("http://www.nytimes.com/premium/xword/", NAME);
         this.context = context;
         nf.setMinimumIntegerDigits(2);
         nf.setMaximumFractionDigits(0);

@@ -30,7 +30,7 @@ public class UclickDownloader extends AbstractDownloader {
     private int[] days;
 
     public UclickDownloader(String shortName, String fullName, String copyright, int[] days) {
-        super("http://picayune.uclick.com/comics/" + shortName + "/data/", DOWNLOAD_DIR, fullName);
+        super("http://picayune.uclick.com/comics/" + shortName + "/data/", fullName);
         this.shortName = shortName;
         //this.fullName = fullName;
         this.copyright = copyright;

@@ -13,7 +13,7 @@ public class CHEDownloader extends AbstractDownloader {
     NumberFormat nf = NumberFormat.getInstance();
 
     public CHEDownloader() {
-        super("http://chronicle.com/items/biz/puzzles/", DOWNLOAD_DIR, NAME);
+        super("http://chronicle.com/items/biz/puzzles/", NAME);
         nf.setMinimumIntegerDigits(2);
         nf.setMaximumFractionDigits(0);
     }
