@@ -138,7 +138,7 @@ public class NYTDownloader extends AbstractDownloader {
                 .getParams()
                 .setParameter(
                         "User-Agent",
-                        "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6");
+                        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:20.0) Gecko/20100101 Firefox/20.0");
 
         HttpGet httpget = new HttpGet(LOGIN_URL);
 
