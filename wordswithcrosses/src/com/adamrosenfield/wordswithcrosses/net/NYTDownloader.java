@@ -1,9 +1,7 @@
 package com.adamrosenfield.wordswithcrosses.net;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -31,10 +29,11 @@ import android.content.Context;
 import android.os.Handler;
 import android.widget.Toast;
 
+import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.io.IO;
 
 /**
- * New York Times URL: http://select.nytimes.com/premium/xword/[Mon]DDYY.puz
+ * New York Times URL: http://www.nytimes.com/premium/xword/YYYY/MM/DD/[Mon]DDYY.puz
  * Date = Daily
  */
 public class NYTDownloader extends AbstractDownloader {
@@ -48,20 +47,13 @@ public class NYTDownloader extends AbstractDownloader {
     private HashMap<String, String> params = new HashMap<String, String>();
 
     protected NYTDownloader(Context context, String username, String password) {
-        super("http://select.nytimes.com/premium/xword/", DOWNLOAD_DIR, NAME);
+        super("http://www.nytimes.com/premium/xword/", DOWNLOAD_DIR, NAME);
         this.context = context;
         nf.setMinimumIntegerDigits(2);
         nf.setMaximumFractionDigits(0);
-        params.put("is_continue", "true");
-        params.put("SAVEOPTION", "YES");
-        params.put("URI",
-                "http://select.nytimes.com/premium/xword/puzzles.html");
-        params.put("OQ", "");
-        params.put("OP", "");
+        params.put("is_continue", "false");
         params.put("userid", username);
         params.put("password", password);
-        params.put("USERID", username);
-        params.put("PASSWORD", password);
     }
 
     public int[] getDownloadDates() {
@@ -92,44 +84,27 @@ public class NYTDownloader extends AbstractDownloader {
         }
 
         HttpClient client = this.login();
-
-        HttpGet fetchIndex = new HttpGet("http://select.nytimes.com/premium/xword/puzzles.html");
-        HttpResponse indexResponse = client.execute(fetchIndex);
-
-        FileOutputStream fos = new FileOutputStream(downloadDirectory.getAbsolutePath()
-                + "/debug/xword-puzzles.html");
-        try {
-            IO.copyStream(indexResponse.getEntity().getContent(), fos);
-        } finally {
-            fos.close();
+        if (client == null) {
+            return false;
         }
 
         HttpGet get = new HttpGet(url.toString());
-        get.addHeader("Referer",
-                "http://select.nytimes.com/premium/xword/puzzles.html");
-
         HttpResponse response = client.execute(get);
 
         if (response.getStatusLine().getStatusCode() != 200) {
             return false;
         }
 
-        File f = new File(downloadDirectory, this.getFilename(date));
-        fos = new FileOutputStream(f);
+        File tempFile = new File(WordsWithCrossesApplication.TEMP_DIR, getFilename(date));
+        FileOutputStream fos = new FileOutputStream(tempFile);
         try {
             IO.copyStream(response.getEntity().getContent(), fos);
         } finally {
             fos.close();
         }
 
-        fos = new FileOutputStream(downloadDirectory.getAbsolutePath() + "/debug/debug.puz");
-        try {
-            IO.copyStream(new FileInputStream(f), fos);
-        } finally {
-            fos.close();
-        }
-
-        return true;
+        File destFile = new File(WordsWithCrossesApplication.CROSSWORDS_DIR, getFilename(date));
+        return tempFile.renameTo(destFile);
     }
 
     private HttpClient login() throws IOException {
@@ -209,16 +184,6 @@ public class NYTDownloader extends AbstractDownloader {
 
         if (entity != null) {
             entity.writeTo(baos);
-
-            new File(this.downloadDirectory, "debug/").mkdirs();
-
-            FileOutputStream fos = new FileOutputStream(
-                    this.downloadDirectory.getAbsolutePath() + "/debug/authresp.html");
-            try {
-                IO.copyStream(new ByteArrayInputStream(baos.toByteArray()), fos);
-            } finally {
-                fos.close();
-            }
 
             String resp = new String(baos.toByteArray());
 
