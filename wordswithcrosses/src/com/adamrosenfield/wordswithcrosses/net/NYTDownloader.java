@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -75,13 +74,7 @@ public class NYTDownloader extends AbstractDownloader {
 
     @Override
     protected boolean download(Calendar date, String urlSuffix) throws IOException {
-        URL url;
-        try {
-            url = new URL(this.baseUrl + urlSuffix);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return false;
-        }
+        URL url = new URL(this.baseUrl + urlSuffix);
 
         HttpClient client = this.login();
         if (client == null) {

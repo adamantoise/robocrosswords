@@ -1,9 +1,18 @@
 package com.adamrosenfield.wordswithcrosses.net;
 
+import java.util.Calendar;
 
-//http://www.lafn.org/~keglerron/Block_style/index.html
 public class KeglerScraper extends AbstractPageScraper {
     public KeglerScraper() {
-        super("http://www.lafn.org/~keglerron/Block_style/index.html", "Kegler's Kryptics");
+        super("Kegler's Kryptics");
+    }
+
+    @Override
+    protected String getScrapeURL(Calendar date) {
+        return "http://www.lafn.org/~keglerron/Block_style/index.html";
+    }
+
+    public int[] getDownloadDates() {
+        return DATE_DAILY;
     }
 }

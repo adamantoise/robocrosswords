@@ -2,7 +2,6 @@ package com.adamrosenfield.wordswithcrosses.net;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.Collections;
@@ -17,8 +16,6 @@ import com.adamrosenfield.wordswithcrosses.versions.AndroidVersionUtils;
 public abstract class AbstractDownloader implements Downloader {
 
     protected static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
-
-    public static final int DEFAULT_BUFFER_SIZE = 4096;
 
     protected static final Map<String, String> EMPTY_MAP = Collections.<String, String>emptyMap();
 
@@ -72,13 +69,7 @@ public abstract class AbstractDownloader implements Downloader {
 
     protected boolean download(Calendar date, String urlSuffix, Map<String, String> headers)
             throws IOException {
-        URL url;
-        try {
-            url = new URL(this.baseUrl + urlSuffix);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return false;
-        }
+        URL url = new URL(this.baseUrl + urlSuffix);
 
         LOG.info("Downloading " + url);
 

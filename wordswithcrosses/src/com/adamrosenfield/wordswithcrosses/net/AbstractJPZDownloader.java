@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.Map;
@@ -22,13 +21,7 @@ public abstract class AbstractJPZDownloader extends AbstractDownloader {
     @Override
     protected boolean download(Calendar date, String urlSuffix, Map<String, String> headers)
             throws IOException {
-        URL url;
-        try {
-            url = new URL(this.baseUrl + urlSuffix);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return false;
-        }
+        URL url = new URL(this.baseUrl + urlSuffix);
 
         LOG.info("Downloading " + url);
 

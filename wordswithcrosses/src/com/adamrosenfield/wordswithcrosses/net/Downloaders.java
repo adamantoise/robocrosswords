@@ -119,6 +119,22 @@ public class Downloaders {
                     "nytUsername", ""), prefs.getString("nytPassword", "")));
         }
 
+        //if (prefs.getBoolean("scrapeBEQ", true)) {
+        //    scrapers.add(new BEQuigleyScraper());
+        //}
+
+        if (prefs.getBoolean("scrapeCru", false)) {
+            downloaders.add(new CruScraper());
+        }
+
+        if (prefs.getBoolean("scrapeKegler", false)) {
+            downloaders.add(new KeglerScraper());
+        }
+
+        if (prefs.getBoolean("scrapePeople", true)) {
+            downloaders.add(new PeopleScraper());
+        }
+
         this.suppressMessages = prefs.getBoolean("suppressMessages", false);
     }
 

@@ -191,6 +191,26 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
     }
 
     /**
+     * Tests if a puzzle with the given URL exists in the database
+     *
+     * @param url Puzzle URL to test
+     *
+     * @return True if a puzzle with the given URL exists in the database
+     */
+    public boolean puzzleUrlExists(String url)
+    {
+        SQLiteDatabase db = getReadableDatabase();
+
+        String query = "SELECT 1 FROM " + TABLE_NAME +
+            " WHERE " + COLUMN_SOURCE_URL + "=?";
+        Cursor cursor = db.rawQuery(query,  new String[]{url});
+        boolean result = (cursor.getCount() > 0);
+        cursor.close();
+
+        return result;
+    }
+
+    /**
      * Queries the list of all puzzle sources in the database
      *
      * @return The list of all puzzle sources in the database
