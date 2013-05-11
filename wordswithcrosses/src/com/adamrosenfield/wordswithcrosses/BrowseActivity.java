@@ -246,7 +246,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
             } else {
                 render();
             }
-        } else if (!WordsWithCrossesApplication.CROSSWORDS_DIR.exists()) {
+        } else if (!WordsWithCrossesApplication.getDatabaseHelper().hasAnyPuzzles()) {
             // If this is the first time the user has launched the app, start
             // downloading a bunch of starter puzzles and show the welcome
             // page

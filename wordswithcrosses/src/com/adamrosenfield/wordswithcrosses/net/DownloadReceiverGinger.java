@@ -7,7 +7,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 
 import com.adamrosenfield.wordswithcrosses.versions.AndroidVersionUtils;
 
@@ -23,7 +22,6 @@ public class DownloadReceiverGinger extends BroadcastReceiver {
             !"application/x-crossword".equals(mgr.getMimeTypeForDownloadedFile(id))) {
             return;
         }
-        Uri uri = null;
 
         Query q = new Query();
         q.setFilterById(id);
@@ -36,17 +34,11 @@ public class DownloadReceiverGinger extends BroadcastReceiver {
         }
 
         cursor.moveToFirst();
-        String uriString = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
         int status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
-        System.out.println("uriString: " + uriString);
-        uri = Uri.parse(uriString);
+        int reason = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_REASON));
         cursor.close();
 
-        if (uri == null || !uri.toString().endsWith(".puz")) {
-            return;
-        }
-
-        System.out.println("===RECEIVED: " + uri);
+        System.out.println("Download completed: status=" + status + " reason=" + reason);
 
         AndroidVersionUtils.Factory.getInstance().onFileDownloaded(id, status == DownloadManager.STATUS_SUCCESSFUL);
     }

@@ -200,6 +200,13 @@ public class Downloaders {
                     continue;
                 }
 
+                if (downloadedFile.exists()) {
+                    LOG.info("File already downloaded but not in database: " + downloadedFile);
+                    dbHelper.addPuzzle(downloadedFile, d.getName(), d.sourceUrl(date), date.getTimeInMillis());
+                    somethingDownloaded = true;
+                    continue;
+                }
+
                 LOG.info("Download beginning: " + filename);
 
                 if (d.download(date)) {

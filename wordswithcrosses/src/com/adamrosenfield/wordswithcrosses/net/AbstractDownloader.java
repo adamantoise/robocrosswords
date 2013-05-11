@@ -40,7 +40,7 @@ public abstract class AbstractDownloader implements Downloader {
                 "-" +
                 date.get(Calendar.DAY_OF_MONTH) +
                 "-" +
-                this.downloaderName.replaceAll(" ", "") +
+                this.downloaderName.replaceAll(" ", "").replace("/", "_") +
                 ".puz");
     }
 

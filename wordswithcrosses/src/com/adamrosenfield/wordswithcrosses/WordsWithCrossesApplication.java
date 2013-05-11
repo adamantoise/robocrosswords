@@ -82,9 +82,11 @@ public class WordsWithCrossesApplication extends Application {
             return false;
         }
 
-        if (!CROSSWORDS_DIR.isDirectory() && !CROSSWORDS_DIR.mkdirs()) {
-            LOG.warning("Failed to create directory tree: " + CROSSWORDS_DIR);
-            return false;
+        for (File dir : new File[]{CROSSWORDS_DIR, TEMP_DIR, DEBUG_DIR}) {
+            if (!dir.isDirectory() && !dir.mkdirs()) {
+                LOG.warning("Failed to create directory tree: " + dir);
+                return false;
+            }
         }
 
         return true;

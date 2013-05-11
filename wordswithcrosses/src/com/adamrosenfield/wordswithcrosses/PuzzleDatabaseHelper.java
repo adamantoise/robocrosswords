@@ -67,7 +67,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
             COLUMN_PERCENT_COMPLETE + " REAL NOT NULL, " +
             COLUMN_CURRENT_POSITION_ROW + " INTEGER NOT NULL, " +
             COLUMN_CURRENT_POSITION_COL + " INTEGER NOT NULL, " +
-            COLUMN_CURRENT_ORIENTATION_ACROSS + " INTEGER NOT NULL"
+            COLUMN_CURRENT_ORIENTATION_ACROSS + " INTEGER NOT NULL)"
             );
 
         //db.execSQL(
@@ -102,10 +102,15 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
     {
         SQLiteDatabase db = getReadableDatabase();
 
-        String query = "SELECT " + COLUMN_ID + "," + COLUMN_FILENAME +
-                " FROM " + TABLE_NAME +
-                "ORDER BY " + COLUMN_FILENAME;
-        Cursor cursor = db.rawQuery(query,  null);
+        Cursor cursor = db.query(
+            TABLE_NAME,
+            new String[]{COLUMN_ID, COLUMN_FILENAME},  // Columns
+            null,             // Selection
+            null,             // Selection args
+            null,             // Group by
+            null,             // Having
+            COLUMN_FILENAME); // Order by
+
         ArrayList<IDAndFilename> filenameList = new ArrayList<IDAndFilename>(cursor.getCount());
         while (cursor.moveToNext())
         {
@@ -171,6 +176,23 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
     }
 
     /**
+     * Tests if the database contains any puzzles in it
+     *
+     * @return True if the database has any puzzles in it
+     */
+    public boolean hasAnyPuzzles()
+    {
+        SQLiteDatabase db = getReadableDatabase();
+
+        String query = "SELECT 1 FROM " + TABLE_NAME + " LIMIT 1";
+        Cursor cursor = db.rawQuery(query, null);
+        boolean result = (cursor.getCount() > 0);
+        cursor.close();
+
+        return result;
+    }
+
+    /**
      * Tests if the given filename exists in the database
      *
      * @param filename Filename to test
@@ -182,7 +204,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
         SQLiteDatabase db = getReadableDatabase();
 
         String query = "SELECT 1 FROM " + TABLE_NAME +
-            " WHERE " + COLUMN_FILENAME + "=?";
+            " WHERE " + COLUMN_FILENAME + "=? LIMIT 1";
         Cursor cursor = db.rawQuery(query,  new String[]{filename});
         boolean result = (cursor.getCount() > 0);
         cursor.close();
@@ -202,7 +224,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
         SQLiteDatabase db = getReadableDatabase();
 
         String query = "SELECT 1 FROM " + TABLE_NAME +
-            " WHERE " + COLUMN_SOURCE_URL + "=?";
+            " WHERE " + COLUMN_SOURCE_URL + "=? LIMIT 1";
         Cursor cursor = db.rawQuery(query,  new String[]{url});
         boolean result = (cursor.getCount() > 0);
         cursor.close();
