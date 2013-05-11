@@ -585,7 +585,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
             public void run() {
                 BrowseActivity.this.internalDownload(date, downloaders);
             }
-        });
+        }).start();
     }
 
     private void internalDownload(Calendar date, List<Downloader> downloaders) {
