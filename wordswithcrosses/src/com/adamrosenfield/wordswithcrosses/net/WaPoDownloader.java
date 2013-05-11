@@ -5,15 +5,15 @@ import java.util.Calendar;
 
 /**
  * Washington Post downloader
- * URL: http://www.washingtonpost.com/r/WashingtonPost/Content/Puzzles/Daily/csYYMMDD.jpz
+ * URL: http://cdn.games.arkadiumhosted.com/washingtonpost/crossynergy/csYYMMDD.jpz
  * Date = Daily
  */
 public class WaPoDownloader extends AbstractJPZDownloader {
-    private static final String NAME = "Washington Post";
+    private static final String NAME = "CrosSynergy/Washington Post";
     NumberFormat nf = NumberFormat.getInstance();
 
     public WaPoDownloader() {
-        super("http://www.washingtonpost.com/r/WashingtonPost/Content/Puzzles/Daily/", NAME);
+        super("http://cdn.games.arkadiumhosted.com/washingtonpost/crossynergy/", NAME);
         nf.setMinimumIntegerDigits(2);
         nf.setMaximumFractionDigits(0);
     }

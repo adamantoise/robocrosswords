@@ -33,7 +33,7 @@
 				android:key="nytSubscribe"/>
 		</PreferenceScreen>
 		<CheckBoxPreference
-			android:title="Washington Post"
+			android:title="CrosSynergy/Washington Post"
 			android:defaultValue="true"
 			android:key="downloadWaPo" />
 		<CheckBoxPreference
