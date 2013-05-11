@@ -2,14 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
   android:layout_height="72dp" >
-  <com.adamrosenfield.wordswithcrosses.view.VerticalProgressBar 
+  <com.adamrosenfield.wordswithcrosses.view.VerticalProgressBar
   	android:layout_height="72dp"
   	android:layout_width="8dp"
   	android:layout_alignParentRight="true"
   	android:layout_alignParentTop="true"
   	android:id="@+id/puzzle_progress"
   />
-  
+
 <LinearLayout
   android:layout_width="wrap_content"
   android:layout_height="72dp"
@@ -26,8 +26,6 @@
   	android:gravity="center_horizontal|center_vertical"
   	android:text="Wed
 Jan 2, 2001"/>
-  
-
 	<LinearLayout
 		android:layout_toLeftOf="@id/puzzle_date"
 		android:layout_alignParentTop="true"
@@ -40,7 +38,7 @@ Jan 2, 2001"/>
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
 	android:ellipsize="start"
-	android:lines="1"
+	android:singleLine="true"
 	android:textSize="25dp"
 	android:textColor="#FFFFFF"
 	android:text="New York Times"
@@ -60,7 +58,7 @@ Jan 2, 2001"/>
   	android:paddingLeft="12dp"
   	android:text="Caption text"/>
   	</LinearLayout>
-	
+
   	<!--  ProgressBar
   		style="?android:attr/progressBarStyleHorizontal"
   		android:layout_width="fill_parent"
@@ -68,7 +66,7 @@ Jan 2, 2001"/>
   		android:max="100"
   		android:progress="80"
   		android:id="@+id/puzzle_progress"
-  		
+
   		/-->
 </LinearLayout>
 </RelativeLayout>
