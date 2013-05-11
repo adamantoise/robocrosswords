@@ -182,6 +182,10 @@ public class Downloaders {
 
         PuzzleDatabaseHelper dbHelper = WordsWithCrossesApplication.getDatabaseHelper();
 
+        if (downloaders == null || downloaders.size() == 0) {
+            downloaders = getDownloaders(date);
+        }
+
         int i = 1;
         for (Downloader d : downloaders) {
             d.setContext(context);
