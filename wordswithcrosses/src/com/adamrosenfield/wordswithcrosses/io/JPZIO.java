@@ -10,7 +10,6 @@ import java.io.OutputStreamWriter;
 import java.util.Calendar;
 import java.util.Scanner;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 
 import javax.xml.parsers.SAXParser;
@@ -54,15 +53,19 @@ public class JPZIO {
         try {
             ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
             ZipEntry entry = zis.getNextEntry();
-            while (entry.isDirectory()) {
-                entry = zis.getNextEntry();
+            if (entry == null) {
+                is = new ByteArrayInputStream(baos.toByteArray());
+            } else {
+                while (entry != null && entry.isDirectory()) {
+                    entry = zis.getNextEntry();
+                }
+                baos = new ByteArrayOutputStream();
+                IO.copyStream(zis, baos);
+                is = new ByteArrayInputStream(baos.toByteArray());
             }
-            baos = new ByteArrayOutputStream();
-            IO.copyStream(zis, baos);
-            is = new ByteArrayInputStream(baos.toByteArray());
-        } catch (ZipException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-            return new ByteArrayInputStream(baos.toByteArray());
+            is = new ByteArrayInputStream(baos.toByteArray());
         }
 
         // replace &nbsp; with space
