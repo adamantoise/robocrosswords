@@ -486,7 +486,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
         // Update the database accordingly
         for (String filename : filesToAdd) {
-            File file = new File(WordsWithCrossesApplication.CROSSWORDS_DIR, filename);
+            File file = new File(filename);
             dbHelper.addPuzzle(file, "", "", file.lastModified());
         }
 
