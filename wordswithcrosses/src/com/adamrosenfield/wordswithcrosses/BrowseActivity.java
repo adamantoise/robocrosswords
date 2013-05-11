@@ -564,7 +564,9 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
         // Delete the puzzle from the database
         PuzzleDatabaseHelper dbHelper = WordsWithCrossesApplication.getDatabaseHelper();
-        dbHelper.removePuzzles(new ArrayList<Integer>(puzzle.id));
+        ArrayList<Integer> idsToRemove = new ArrayList<Integer>(1);
+        idsToRemove.add(puzzle.id);
+        dbHelper.removePuzzles(idsToRemove);
     }
 
     /**
