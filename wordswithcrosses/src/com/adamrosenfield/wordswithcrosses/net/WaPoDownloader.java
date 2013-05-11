@@ -4,12 +4,12 @@ import java.text.NumberFormat;
 import java.util.Calendar;
 
 /**
- * Washington Post downloader
+ * CrosSynergy/Washington Post downloader
  * URL: http://cdn.games.arkadiumhosted.com/washingtonpost/crossynergy/csYYMMDD.jpz
  * Date = Daily
  */
 public class WaPoDownloader extends AbstractJPZDownloader {
-    private static final String NAME = "CrosSynergy/Washington Post";
+    private static final String NAME = "Washington Post";
     NumberFormat nf = NumberFormat.getInstance();
 
     public WaPoDownloader() {
