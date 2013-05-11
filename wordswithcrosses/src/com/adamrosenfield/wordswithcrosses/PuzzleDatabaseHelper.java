@@ -143,7 +143,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
         }
 
         ContentValues values = new ContentValues();
-        values.put(COLUMN_FILENAME, path.getName());
+        values.put(COLUMN_FILENAME, path.getAbsolutePath());
         values.put(COLUMN_ARCHIVED, false);
         values.put(COLUMN_AUTHOR, puz.getAuthor());
         values.put(COLUMN_TITLE, puz.getTitle());
