@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.logging.Logger;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -21,11 +22,14 @@ import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 
 @TargetApi(9)
 public class GingerbreadUtil extends DefaultUtil {
+
+    protected static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
+
     protected Context context;
 
     private static class DownloadingFile
     {
-        public boolean successful = false;
+        public boolean succeeded = false;
     }
 
     private static ConcurrentMap<Long, DownloadingFile> waitingDownloads = new ConcurrentSkipListMap<Long, DownloadingFile>();
@@ -44,7 +48,7 @@ public class GingerbreadUtil extends DefaultUtil {
         File tempFile = new File(WordsWithCrossesApplication.TEMP_DIR, destination.getName());
 
         request.setDestinationUri(Uri.fromFile(tempFile));
-        System.out.println("====REQUESTING " + Uri.fromFile(tempFile));
+        LOG.info("Downloading " + url + " ==> " + tempFile);
 
         for (Entry<String, String> entry : headers.entrySet()) {
             request.addRequestHeader(entry.getKey(), entry.getValue());
@@ -61,39 +65,39 @@ public class GingerbreadUtil extends DefaultUtil {
         DownloadingFile downloadingFile = new DownloadingFile();
         waitingDownloads.put(id, downloadingFile);
 
-        boolean successful;
+        boolean succeeded;
         try {
             synchronized (downloadingFile) {
                 downloadingFile.wait();
-                successful = downloadingFile.successful;
+                succeeded = downloadingFile.succeeded;
             }
         } catch (InterruptedException e) {
-            System.out.println("Download interrupted");
+            LOG.warning("Download interrupted: " + url);
             return false;
         }
 
-        System.out.println("Download " + (successful ? "succeeded" : "failed"));
+        LOG.info("Download " + (succeeded ? "succeeded" : "failed") + ": " + url);
 
-        if (successful) {
+        if (succeeded) {
             if (!destination.equals(tempFile) && !tempFile.renameTo(destination)) {
-                System.out.println("Renaming " + tempFile + " to " + destination + " failed");
+                LOG.warning("Renaming " + tempFile + " to " + destination + " failed");
                 return false;
             }
         }
 
-        return successful;
+        return succeeded;
     }
 
     @Override
-    public void onFileDownloaded(long id, boolean successful) {
+    public void onFileDownloaded(long id, boolean succeeded) {
         DownloadingFile downloadingFile = waitingDownloads.remove(id);
         if (downloadingFile != null) {
             synchronized (downloadingFile) {
-                downloadingFile.successful = successful;
+                downloadingFile.succeeded = succeeded;
                 downloadingFile.notifyAll();
             }
         } else {
-            System.out.println("No thread is waiting on download for id=" + id);
+            LOG.warning("No thread is waiting on download for id=" + id);
         }
     }
 

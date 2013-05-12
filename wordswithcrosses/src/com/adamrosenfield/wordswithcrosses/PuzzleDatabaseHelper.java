@@ -1,6 +1,8 @@
 package com.adamrosenfield.wordswithcrosses;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -81,6 +83,42 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
         LOG.info("Upgrading SQLite database from version " + oldVersion + " to version " + newVersion);
     }
 
+    /**
+     * Workaround for http://code.google.com/p/android/issues/detail?id=16391 -
+     * copies the database file to external storage so that it can be downloaded
+     * and debugged.
+     */
+    public void debugCopyDatabaseFileToExternalStorage()
+    {
+        try
+        {
+            String dbPath = getReadableDatabase().getPath();
+            FileInputStream fis = new FileInputStream(dbPath);
+            try
+            {
+                File tempFile = new File(WordsWithCrossesApplication.TEMP_DIR, "crosswords.db");
+                LOG.info("Copying " + dbPath + " ==> " + tempFile);
+                FileOutputStream fos = new FileOutputStream(tempFile);
+                try
+                {
+                    IO.copyStream(fis, fos);
+                }
+                finally
+                {
+                    fos.close();
+                }
+            }
+            finally
+            {
+                fis.close();
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     public static class IDAndFilename
     {
         public IDAndFilename(int id, String filename)
@@ -156,7 +194,10 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
         values.put(COLUMN_CURRENT_ORIENTATION_ACROSS, true);
 
         SQLiteDatabase db = getWritableDatabase();
-        db.insert(TABLE_NAME, null, values);
+        if (db.insert(TABLE_NAME, null, values) == -1)
+        {
+            LOG.warning("Failed to insert puzzle into database: " + path);
+        }
     }
 
     /**

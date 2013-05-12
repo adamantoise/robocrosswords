@@ -7,10 +7,14 @@ import android.content.Intent;
 public class DownloadReceiver extends BroadcastReceiver {
 
     private BroadcastReceiver impl;
+
+    public DownloadReceiver()
     {
         if (android.os.Build.VERSION.SDK_INT >= 9) {
             try {
-                BroadcastReceiver built = (BroadcastReceiver) Class.forName("com.adamrosenfield.wordswithcrosses.net.DownloadReceiverGinger").newInstance();
+                BroadcastReceiver built = (BroadcastReceiver)
+                    Class.forName("com.adamrosenfield.wordswithcrosses.net.DownloadReceiverGinger")
+                    .newInstance();
                 impl = built;
             } catch(Exception e) {
                 e.printStackTrace();
