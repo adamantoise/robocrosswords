@@ -33,9 +33,9 @@ public class Downloaders {
         this.notificationManager = notificationManager;
         this.prefs = context.getPrefs();
 
-        if (prefs.getBoolean("downloadThinks", true)) {
-            downloaders.add(new ThinksDownloader());
-        }
+        //if (prefs.getBoolean("downloadThinks", true)) {
+        //    downloaders.add(new ThinksDownloader());
+        //}
         if (prefs.getBoolean("downloadWaPo", true)) {
             downloaders.add(new WaPoDownloader());
         }
@@ -121,8 +121,8 @@ public class Downloaders {
                 prefs.getString("nytPassword", "")));
         }
 
-        //if (prefs.getBoolean("scrapeBEQ", true)) {
-        //    scrapers.add(new BEQuigleyScraper());
+        //if (prefs.getBoolean("downloadBEQ", true)) {
+        //    downloaders.add(new BEQuigleyScraper());
         //}
 
         if (prefs.getBoolean("scrapeCru", false)) {
@@ -133,7 +133,7 @@ public class Downloaders {
             downloaders.add(new KeglerScraper());
         }
 
-        if (prefs.getBoolean("scrapePeople", true)) {
+        if (prefs.getBoolean("downloadPeople", true)) {
             downloaders.add(new PeopleScraper());
         }
 

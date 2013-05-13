@@ -40,11 +40,6 @@
 			android:title="Newsday"
 			android:defaultValue="true"
 			android:key="downloadNewsday" />
-		<!-- CheckBoxPreference
-			android:title="Houston Chronicle"
-			android:defaultValue="true"
-			android:summary="Also known as CrosSynergy"
-			android:key="downloadChron" /-->
 		<CheckBoxPreference
 			android:title="Joseph Crosswords"
 			android:defaultValue="true"
@@ -59,10 +54,12 @@
 			android:defaultValue="true"
 			android:summary="Updates Monday-Saturday"
 			android:key="downloadSheffer" />
+		<!--
 		<CheckBoxPreference
 			android:title="Thinks.com"
 			android:defaultValue="true"
 			android:key="downloadThinks" />
+		-->
 		<CheckBoxPreference
 			android:title="Universal Crossword"
 			android:defaultValue="true"
@@ -78,11 +75,13 @@
 		android:summary="Puzzles which update weekly."
 		android:key="selectWeekly">
 		<PreferenceCategory android:title="Regular Sized">
-			<!--CheckBoxPreference
+		    <!--
+			<CheckBoxPreference
 				android:title="Brendan Emmett Quigley"
 				android:defaultValue="true"
 				android:summary="Updates Mondays &amp; Thursdays - brendanemmettquigley.com"
-				android:key="scrapeBEQ" /-->
+				android:key="downloadBEQ" />
+			-->
 			<CheckBoxPreference
 				android:title="Ink Well"
 				android:defaultValue="true"
@@ -107,7 +106,7 @@
 				android:title="People Magazine"
 				android:defaultValue="true"
 				android:summary="Updates Thursdays"
-				android:key="scrapePeople" />
+				android:key="downloadPeople" />
 			 <CheckBoxPreference
 				android:title="I Swear"
 				android:defaultValue="true"
@@ -125,11 +124,13 @@
 				android:defaultValue="true"
 				android:summary="Updates Sundays"
 				android:key="downloadLACal" />
+			<!--
 			<CheckBoxPreference
 				android:title="Philadelphia Inquirer"
 				android:defaultValue="true"
 				android:summary="Updates Sundays - By Merl Reagle"
 				android:key="downloadPhilly" />
+			-->
 			<CheckBoxPreference
 				android:title="Premier Crosswords"
 				android:defaultValue="true"
