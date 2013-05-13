@@ -18,6 +18,8 @@ public class VerticalProgressBar extends View {
     private int percentComplete;
     private int width;
 
+    private Paint paint = new Paint();
+
     public VerticalProgressBar(Context context) {
         super(context);
     }
@@ -40,16 +42,14 @@ public class VerticalProgressBar extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Paint paint = new Paint();
         paint.setColor(GRAY);
         paint.setStyle(Style.FILL);
 
-        //System.out.println("Draw "+this.width + " " +this.height);
         if (this.percentComplete < 0) {
-            paint.setColor(RED);
-            paint.setStyle(Style.FILL);
             canvas.drawRect(0, 0, this.width, this.height, paint);
         } else if (this.percentComplete == 0) {
+            paint.setColor(RED);
+            paint.setStyle(Style.FILL);
             canvas.drawRect(0, 0, this.width, this.height, paint);
         } else if (this.percentComplete == 100) {
             paint.setColor(GREEN);
@@ -76,7 +76,6 @@ public class VerticalProgressBar extends View {
     protected void onMeasure(int widthSpecId, int heightSpecId) {
         this.height = View.MeasureSpec.getSize(heightSpecId);
         this.width = View.MeasureSpec.getSize(widthSpecId);
-        //System.out.println("On Measure "+this.width+" "+this.height );
         setMeasuredDimension(this.width, this.height);
     }
 }
