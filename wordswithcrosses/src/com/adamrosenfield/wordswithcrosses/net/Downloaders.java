@@ -64,9 +64,9 @@ public class Downloaders {
             downloaders.add(new LATimesDownloader());
         }
 
-        if (prefs.getBoolean("downloadPhilly", true)) {
-            downloaders.add(new PhillyDownloader());
-        }
+        //if (prefs.getBoolean("downloadPhilly", true)) {
+        //    downloaders.add(new PhillyDownloader());
+        //}
 
         if (prefs.getBoolean("downloadCHE", true)) {
             downloaders.add(new CHEDownloader());
