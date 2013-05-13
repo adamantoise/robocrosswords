@@ -42,12 +42,13 @@ public class NYTDownloader extends AbstractDownloader {
     private static final String LOGIN_URL = "https://myaccount.nytimes.com/auth/login?URI=http://select.nytimes.com/premium/xword/puzzles.html";
     NumberFormat nf = NumberFormat.getInstance();
     private Context context;
-    private Handler handler = new Handler();
+    private Handler handler;
     private HashMap<String, String> params = new HashMap<String, String>();
 
-    protected NYTDownloader(Context context, String username, String password) {
+    protected NYTDownloader(Context context, Handler handler, String username, String password) {
         super("http://www.nytimes.com/premium/xword/", NAME);
         this.context = context;
+        this.handler = handler;
         nf.setMinimumIntegerDigits(2);
         nf.setMaximumFractionDigits(0);
         params.put("is_continue", "false");

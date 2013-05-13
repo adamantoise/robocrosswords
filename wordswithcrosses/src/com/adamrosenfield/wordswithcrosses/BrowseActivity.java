@@ -620,6 +620,10 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         }
     }
 
+    public Handler getHandler() {
+        return handler;
+    }
+
     private void render() {
         if ((this.sources != null) && (this.sources.getAdapter() == null)) {
             final SourceListAdapter adapter = new SourceListAdapter(this, this.sourceList);

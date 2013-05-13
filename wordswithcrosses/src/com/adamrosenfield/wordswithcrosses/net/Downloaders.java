@@ -61,7 +61,6 @@ public class Downloaders {
         }
 
         if (prefs.getBoolean("downloadLat", true)) {
-//          downloaders.add(new UclickDownloader("tmcal", "Los Angeles Times", "Rich Norris", Downloader.DATE_NO_SUNDAY));
             downloaders.add(new LATimesDownloader());
         }
 
@@ -115,8 +114,11 @@ public class Downloaders {
         }
 
         if (prefs.getBoolean("downloadNYT", false)) {
-            downloaders.add(new NYTDownloader(context, prefs.getString(
-                    "nytUsername", ""), prefs.getString("nytPassword", "")));
+            downloaders.add(new NYTDownloader(
+                context,
+                context.getHandler(),
+                prefs.getString("nytUsername", ""),
+                prefs.getString("nytPassword", "")));
         }
 
         //if (prefs.getBoolean("scrapeBEQ", true)) {
