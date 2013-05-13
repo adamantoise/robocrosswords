@@ -19,7 +19,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
@@ -82,10 +81,12 @@ public class NYTDownloader extends AbstractDownloader {
             return false;
         }
 
+        LOG.info("NYT: Downloading " + url);
         HttpGet get = new HttpGet(url.toString());
         HttpResponse response = client.execute(get);
 
         if (response.getStatusLine().getStatusCode() != 200) {
+            LOG.warning("NYT: Download failed: " + response.getStatusLine());
             return false;
         }
 
@@ -111,10 +112,9 @@ public class NYTDownloader extends AbstractDownloader {
 
         HttpGet httpget = new HttpGet(LOGIN_URL);
 
+        LOG.info("NYT: Logging in");
         HttpResponse response = httpclient.execute(httpget);
         HttpEntity entity = response.getEntity();
-
-        System.out.println("Login form get: " + response.getStatusLine());
 
         if (entity != null) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -130,7 +130,8 @@ public class NYTDownloader extends AbstractDownloader {
                         "token",
                         resp.substring(tokIndex + tok.length(),
                                 resp.indexOf("\"", tokIndex + tok.length())));
-                System.out.println("Got token: " + params.get("token"));
+            } else {
+                LOG.warning("NYT: Failed to parse token in login page");
             }
 
             int expiresIndex = resp.indexOf(expires);
@@ -142,19 +143,8 @@ public class NYTDownloader extends AbstractDownloader {
                                 expiresIndex + expires.length(),
                                 resp.indexOf("\"",
                                         expiresIndex + expires.length())));
-                System.out.println("Got expires: " + params.get("expires"));
-            }
-        }
-
-        System.out.println("Initial set of cookies:");
-
-        List<Cookie> cookies = httpclient.getCookieStore().getCookies();
-
-        if (cookies.isEmpty()) {
-            System.out.println("None");
-        } else {
-            for (int i = 0; i < cookies.size(); i++) {
-                System.out.println("- " + cookies.get(i).toString());
+            } else {
+                LOG.warning("NYT: Failed to parse expires in login page");
             }
         }
 
@@ -164,15 +154,12 @@ public class NYTDownloader extends AbstractDownloader {
 
         for (Entry<String, String> e : this.params.entrySet()) {
             nvps.add(new BasicNameValuePair(e.getKey(), e.getValue()));
-            System.out.println(e.getKey() + "=" + e.getValue());
         }
 
         httpost.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
 
         response = httpclient.execute(httpost);
         entity = response.getEntity();
-
-        System.out.println("Login form get: " + response.getStatusLine());
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -182,8 +169,7 @@ public class NYTDownloader extends AbstractDownloader {
             String resp = new String(baos.toByteArray());
 
             if (resp.indexOf("Log in to manage") != -1) {
-                System.out.println("=================== Password error\n"
-                        + resp);
+                LOG.warning("NYT: Password error");
                 this.handler.post(new Runnable() {
                     public void run() {
                         Toast.makeText(
@@ -197,16 +183,7 @@ public class NYTDownloader extends AbstractDownloader {
             }
         }
 
-        System.out.println("Post logon cookies:");
-        cookies = httpclient.getCookieStore().getCookies();
-
-        if (cookies.isEmpty()) {
-            System.out.println("None");
-        } else {
-            for (int i = 0; i < cookies.size(); i++) {
-                System.out.println("- " + cookies.get(i).toString());
-            }
-        }
+        LOG.info("NYT: Logged in");
 
         return httpclient;
     }
