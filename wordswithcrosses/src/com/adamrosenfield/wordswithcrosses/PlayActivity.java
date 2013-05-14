@@ -470,10 +470,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
 			}
 		});
 
-		if (puz.isUpdatable()) {
-			this.showErrors = false;
-		}
-
 		if (BOARD.isShowErrors() != this.showErrors) {
 			BOARD.toggleShowErrors();
 		}
@@ -634,27 +630,20 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		if (!puz.isUpdatable()) {
-			MenuItem showItem = menu.add(
-					this.showErrors ? "Hide Errors" : "Show Errors").setIcon(
-					android.R.drawable.ic_menu_view);
-			if (WordsWithCrossesApplication.isTabletish(metrics)) {
-				utils.onActionBarWithText(showItem);
-			}
+		MenuItem showItem = menu.add(
+				this.showErrors ? "Hide Errors" : "Show Errors").setIcon(
+				android.R.drawable.ic_menu_view);
+		if (WordsWithCrossesApplication.isTabletish(metrics)) {
+			utils.onActionBarWithText(showItem);
+		}
 
-			SubMenu reveal = menu.addSubMenu("Reveal").setIcon(
-					android.R.drawable.ic_menu_view);
-			reveal.add("Letter");
-			reveal.add("Word");
-			reveal.add("Puzzle");
-			if (WordsWithCrossesApplication.isTabletish(metrics)) {
-				utils.onActionBarWithText(reveal);
-			}
-		} else {
-			menu.add("Show Errors").setEnabled(false)
-					.setIcon(android.R.drawable.ic_menu_view);
-			menu.add("Reveal").setIcon(android.R.drawable.ic_menu_view)
-					.setEnabled(false);
+		SubMenu reveal = menu.addSubMenu("Reveal").setIcon(
+				android.R.drawable.ic_menu_view);
+		reveal.add("Letter");
+		reveal.add("Word");
+		reveal.add("Puzzle");
+		if (WordsWithCrossesApplication.isTabletish(metrics)) {
+			utils.onActionBarWithText(reveal);
 		}
 
 		menu.add("Clues").setIcon(android.R.drawable.ic_menu_agenda);

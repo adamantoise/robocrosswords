@@ -1,9 +1,7 @@
 package com.adamrosenfield.wordswithcrosses.net;
 
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -59,18 +57,20 @@ public class KFSDownloader extends AbstractDownloader {
         String copyright = "\u00a9 " + date.get(Calendar.YEAR) + " King Features Syndicate.";
 
         boolean succeeded = false;
+
+        FileInputStream fis = new FileInputStream(txtFile);
         try {
-            FileInputStream is = new FileInputStream(txtFile);
-            DataOutputStream dos = new DataOutputStream(new FileOutputStream(destFile));
-            succeeded = KingFeaturesPlaintextIO.convertKFPuzzle(
-                    is, dos, fullName + ", " + df.format(date.getTime()), author,
+            FileOutputStream fos = new FileOutputStream(destFile);
+            try {
+                succeeded = KingFeaturesPlaintextIO.convertKFPuzzle(
+                    fis, fos, fullName + ", " + df.format(date.getTime()), author,
                     copyright, date);
-            dos.close();
-            is.close();
+            } finally {
+                fos.close();
+            }
+        } finally {
+            fis.close();
             txtFile.delete();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return false;
         }
 
         return succeeded;

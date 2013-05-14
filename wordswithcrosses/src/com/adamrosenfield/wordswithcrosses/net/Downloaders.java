@@ -88,9 +88,7 @@ public class Downloaders {
         }
 
         if (prefs.getBoolean("downloadNewsday", true)) {
-            downloaders.add(new UclickDownloader("crnet", "Newsday",
-                    "Stanley Newman, distributed by Creators Syndicate, Inc.",
-                    Downloader.DATE_DAILY));
+            downloaders.add(new NewsdayDownloader());
         }
 
         if (prefs.getBoolean("downloadUSAToday", true)) {

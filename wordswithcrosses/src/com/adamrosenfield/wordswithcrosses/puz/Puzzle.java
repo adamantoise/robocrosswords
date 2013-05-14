@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Calendar;
 
+import com.adamrosenfield.wordswithcrosses.io.IO;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 
 public class Puzzle implements Serializable{
@@ -12,7 +13,7 @@ public class Puzzle implements Serializable{
 
     private String author;
     private String copyright;
-    private String notes;
+    private String notes = "";
     private String title;
     private String[] acrossClues;
     private Integer[] acrossCluesLookup;
@@ -25,13 +26,12 @@ public class Puzzle implements Serializable{
     private Box[][] boxes;
     private Box[] boxesList;
     private String[] rawClues;
-    private boolean updatable;
     private int height;
     private int width;
     private long playedTime;
     private boolean scrambled;
     public short solutionChecksum;
-    private String version;
+    private String version = IO.VERSION_STRING;
     private boolean hasGEXT;
     private Position position;
     private boolean across = true;
@@ -164,7 +164,6 @@ public class Puzzle implements Serializable{
 			}
 		}
 		setScrambled(false);
-		setUpdatable(false);
 	}
 
     public void setCopyright(String copyright) {
@@ -305,14 +304,6 @@ public class Puzzle implements Serializable{
 
     public String getTitle() {
         return title;
-    }
-
-    public void setUpdatable(boolean updatable) {
-        this.updatable = updatable;
-    }
-
-    public boolean isUpdatable() {
-        return updatable;
     }
 
     public void setVersion(String version) {

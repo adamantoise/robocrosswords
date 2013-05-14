@@ -1,9 +1,9 @@
 package com.adamrosenfield.wordswithcrosses.io;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -36,7 +36,7 @@ public class KingFeaturesPlaintextIO {
      * the generated .puz file.  Returns true if the process succeeded, or false if it fails
      * (for example, if the plaintext file is not in a valid format).
      */
-    public static boolean convertKFPuzzle(InputStream is, DataOutputStream os,
+    public static boolean convertKFPuzzle(InputStream is, OutputStream os,
             String title, String author, String copyright, Calendar date) {
         Puzzle puz = new Puzzle();
 
@@ -193,8 +193,6 @@ public class KingFeaturesPlaintextIO {
         puz.setAuthor(author);
         puz.setDate(date);
         puz.setCopyright(copyright);
-        puz.setVersion(IO.VERSION_STRING);
-        puz.setNotes("");
 
         try {
             IO.save(puz, os);

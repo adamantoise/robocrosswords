@@ -81,8 +81,12 @@ public class IO {
 
 	public static Puzzle load(File file) throws IOException {
 	    FileInputStream fis = new FileInputStream(file);
-	    Puzzle puz = load(new DataInputStream(fis));
-	    fis.close();
+	    Puzzle puz;
+        try {
+            puz = load(new DataInputStream(fis));
+        } finally {
+            fis.close();
+        }
 
 	    return puz;
 	}
@@ -287,8 +291,11 @@ public class IO {
 		File tempFile = new File(WordsWithCrossesApplication.TEMP_DIR, destFile.getName());
 
 		FileOutputStream fos = new FileOutputStream(tempFile);
-		save(puzzle, new DataOutputStream(fos));
-		fos.close();
+        try {
+            save(puzzle, fos);
+        } finally {
+            fos.close();
+        }
 
 		if (!tempFile.renameTo(destFile)) {
 		    throw new IOException("Failed to rename " + tempFile + " to " + destFile);
@@ -298,7 +305,7 @@ public class IO {
 				+ (System.currentTimeMillis() - incept));
 	}
 
-	public static void save(Puzzle puz, DataOutputStream dos)
+	public static void save(Puzzle puz, OutputStream os)
 			throws IOException {
 		/*
 		 * We write the puzzle to a temporary output stream, with 0 entered for
@@ -424,7 +431,7 @@ public class IO {
 		bb.put((byte) (0x44 ^ ((c_part & 0xFF00) >> 8)));
 
 		// Dump byte array to output stream.
-		dos.write(puzByteArray);
+		os.write(puzByteArray);
 	}
 
 	public static void skipExtraSection(DataInputStream input)
