@@ -4,7 +4,10 @@ import java.text.NumberFormat;
 import java.util.Calendar;
 
 /**
- * http://wij.theworld.com/puzzles/dailyrecord/DR110401.puz
+ * Daily Record "I Swear" crossword
+ * URL: http://wij.theworld.com/puzzles/dailyrecord/DR110401.puz
+ * Date: Friday
+ *
  * @author robert.cooper
  */
 public class ISwearDownloader extends AbstractDownloader {
@@ -17,8 +20,8 @@ public class ISwearDownloader extends AbstractDownloader {
         nf.setMaximumFractionDigits(0);
     }
 
-    public int[] getDownloadDates() {
-        return DATE_FRIDAY;
+    public boolean isPuzzleAvailable(Calendar date) {
+        return (date.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY);
     }
 
     @Override

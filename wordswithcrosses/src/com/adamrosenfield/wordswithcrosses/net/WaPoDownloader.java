@@ -6,7 +6,7 @@ import java.util.Calendar;
 /**
  * CrosSynergy/Washington Post downloader
  * URL: http://cdn.games.arkadiumhosted.com/washingtonpost/crossynergy/csYYMMDD.jpz
- * Date = Daily
+ * Date: Daily
  */
 public class WaPoDownloader extends AbstractJPZDownloader {
     private static final String NAME = "Washington Post";
@@ -18,8 +18,8 @@ public class WaPoDownloader extends AbstractJPZDownloader {
         nf.setMaximumFractionDigits(0);
     }
 
-    public int[] getDownloadDates() {
-        return DATE_DAILY;
+    public boolean isPuzzleAvailable(Calendar date) {
+        return true;
     }
 
     @Override

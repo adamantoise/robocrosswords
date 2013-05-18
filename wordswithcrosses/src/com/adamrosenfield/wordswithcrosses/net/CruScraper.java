@@ -12,7 +12,7 @@ public class CruScraper extends AbstractPageScraper {
         return "http://world.std.com/~wij/puzzles/cru/";
     }
 
-    public int[] getDownloadDates() {
-        return DATE_DAILY;
+    public boolean isPuzzleAvailable(Calendar date) {
+        return true;  // TODO
     }
 }

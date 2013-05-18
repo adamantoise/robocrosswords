@@ -6,7 +6,7 @@ import java.util.Calendar;
 /**
  * Chronicle of Higher Education
  * URL: http://chronicle.com/items/biz/puzzles/YYYYMMDD.puz
- * Date = Fridays
+ * Date: Friday
  */
 public class CHEDownloader extends AbstractDownloader {
     private static final String NAME = "Chronicle of Higher Education";
@@ -18,8 +18,8 @@ public class CHEDownloader extends AbstractDownloader {
         nf.setMaximumFractionDigits(0);
     }
 
-    public int[] getDownloadDates() {
-        return DATE_FRIDAY;
+    public boolean isPuzzleAvailable(Calendar date) {
+        return (date.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY);
     }
 
     @Override

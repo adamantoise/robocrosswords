@@ -6,7 +6,7 @@ import java.util.Calendar;
 /**
  * Jonesin' Crosswords Downloader
  * URL: http://herbach.dnsalias.com/Jonesin/jzYYMMDD.puz
- * Date = Thursdays
+ * Date: Thursday
  */
 public class JonesinDownloader extends AbstractDownloader {
     private static final String NAME = "Jonesin' Crosswords";
@@ -18,8 +18,8 @@ public class JonesinDownloader extends AbstractDownloader {
         nf.setMaximumFractionDigits(0);
     }
 
-    public int[] getDownloadDates() {
-        return DATE_THURSDAY;
+    public boolean isPuzzleAvailable(Calendar date) {
+        return (date.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY);
     }
 
     @Override

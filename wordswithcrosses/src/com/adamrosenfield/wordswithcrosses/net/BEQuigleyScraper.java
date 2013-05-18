@@ -2,9 +2,12 @@ package com.adamrosenfield.wordswithcrosses.net;
 
 import java.util.Calendar;
 
+/**
+ * Brendan Emmett QUigley
+ * URL: http://www.brendanemmettquigley.com/files/[puzzle-name].puz
+ * Date: Monday, Thursday
+ */
 public class BEQuigleyScraper extends AbstractPageScraper {
-
-    private static final int[] DATE_MONDAY_THURSDAY = new int[]{Calendar.MONDAY, Calendar.THURSDAY};
 
     public BEQuigleyScraper() {
         super("Brendan Emmett Quigley");
@@ -15,7 +18,8 @@ public class BEQuigleyScraper extends AbstractPageScraper {
         return "http://www.brendanemmettquigley.com/";
     }
 
-    public int[] getDownloadDates() {
-        return DATE_MONDAY_THURSDAY;
+    public boolean isPuzzleAvailable(Calendar date) {
+        int day = date.get(Calendar.DAY_OF_WEEK);
+        return (day == Calendar.MONDAY || day == Calendar.THURSDAY);
     }
 }

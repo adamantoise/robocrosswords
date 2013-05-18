@@ -12,8 +12,8 @@ public class DummyDownloader implements Downloader {
     public void setContext(Context context) {
     }
 
-    public int[] getDownloadDates() {
-        return null;
+    public boolean isPuzzleAvailable(Calendar date) {
+        return false;
     }
 
     public String getName() {

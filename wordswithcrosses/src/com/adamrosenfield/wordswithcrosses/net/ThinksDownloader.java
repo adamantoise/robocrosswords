@@ -3,10 +3,13 @@ package com.adamrosenfield.wordswithcrosses.net;
 import java.text.NumberFormat;
 import java.util.Calendar;
 
+// FIXME: This downloader is broken (though apparently so is their web
+// crossword...)
+
 /**
  * Thinks.com
  * URL: http://thinks.com/daily-crossword/puzzles/YYYY-MM/dc1-YYYY-MM-DD.puz
- * Date = Fridays
+ * Date: Friday
  */
 public class ThinksDownloader extends AbstractDownloader {
     private static final String NAME = "Thinks.com";
@@ -18,8 +21,8 @@ public class ThinksDownloader extends AbstractDownloader {
         nf.setMaximumFractionDigits(0);
     }
 
-    public int[] getDownloadDates() {
-        return DATE_DAILY;
+    public boolean isPuzzleAvailable(Calendar date) {
+        return true;
     }
 
     @Override

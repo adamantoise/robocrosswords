@@ -12,7 +12,7 @@ public class KeglerScraper extends AbstractPageScraper {
         return "http://www.lafn.org/~keglerron/Block_style/index.html";
     }
 
-    public int[] getDownloadDates() {
-        return DATE_DAILY;
+    public boolean isPuzzleAvailable(Calendar date) {
+        return true;  // TODO
     }
 }

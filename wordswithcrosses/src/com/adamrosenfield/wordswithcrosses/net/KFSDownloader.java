@@ -20,24 +20,18 @@ import com.adamrosenfield.wordswithcrosses.io.KingFeaturesPlaintextIO;
  * joseph = Monday-Saturday
  * sheffer = Monday-Saturday
  */
-public class KFSDownloader extends AbstractDownloader {
+public abstract class KFSDownloader extends AbstractDownloader {
     DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
     NumberFormat nf = NumberFormat.getInstance();
     private String author;
     private String fullName;
-    private int[] days;
 
-    public KFSDownloader(String shortName, String fullName, String author, int[] days) {
+    public KFSDownloader(String shortName, String fullName, String author) {
         super("http://" + shortName + ".king-online.com/clues/", fullName);
         this.fullName = fullName;
         this.author = author;
-        this.days = days;
         nf.setMinimumIntegerDigits(2);
         nf.setMaximumFractionDigits(0);
-    }
-
-    public int[] getDownloadDates() {
-        return days;
     }
 
     @Override

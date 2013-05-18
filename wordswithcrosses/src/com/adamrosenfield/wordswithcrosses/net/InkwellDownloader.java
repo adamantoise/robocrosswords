@@ -6,7 +6,7 @@ import java.util.Calendar;
 /**
  * Ink Well Crosswords
  * URL: http://herbach.dnsalias.com/Tausig/vvYYMMDD.puz
- * Date = Fridays
+ * Date: Friday
  */
 public class InkwellDownloader extends AbstractDownloader {
     private static final String NAME = "InkWellXWords.com";
@@ -18,8 +18,8 @@ public class InkwellDownloader extends AbstractDownloader {
         nf.setMaximumFractionDigits(0);
     }
 
-    public int[] getDownloadDates() {
-        return DATE_FRIDAY;
+    public boolean isPuzzleAvailable(Calendar date) {
+        return (date.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY);
     }
 
     @Override

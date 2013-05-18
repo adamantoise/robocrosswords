@@ -14,7 +14,7 @@ import com.adamrosenfield.wordswithcrosses.io.NewsdayPlaintextIO;
 /**
  * Newsday Crossword
  * URL: http://www.brainsonly.com/servlets-newsday-crossword/newsdaycrossword?date=YYMMDD
- * Date = Daily
+ * Date: Daily
  */
 public class NewsdayDownloader extends AbstractDownloader
 {
@@ -30,9 +30,8 @@ public class NewsdayDownloader extends AbstractDownloader
         nf.setMaximumFractionDigits(0);
     }
 
-    public int[] getDownloadDates()
-    {
-        return DATE_DAILY;
+    public boolean isPuzzleAvailable(Calendar date) {
+        return true;
     }
 
     @Override

@@ -73,18 +73,15 @@ public class Downloaders {
         }
 
         if (prefs.getBoolean("downloadJoseph", true)) {
-            downloaders.add(new KFSDownloader("joseph", "Joseph Crosswords",
-                    "Thomas Joseph", Downloader.DATE_NO_SUNDAY));
+            downloaders.add(new JosephDownloader());
         }
 
         if (prefs.getBoolean("downloadSheffer", true)) {
-            downloaders.add(new KFSDownloader("sheffer", "Sheffer Crosswords",
-                    "Eugene Sheffer", Downloader.DATE_NO_SUNDAY));
+            downloaders.add(new ShefferDownloader());
         }
 
         if (prefs.getBoolean("downloadPremier", true)) {
-            downloaders.add(new KFSDownloader("premier", "Premier Crosswords",
-                    "Frank Longo", Downloader.DATE_SUNDAY));
+            downloaders.add(new PremierDownloader());
         }
 
         if (prefs.getBoolean("downloadNewsday", true)) {
@@ -92,19 +89,11 @@ public class Downloaders {
         }
 
         if (prefs.getBoolean("downloadUSAToday", true)) {
-            downloaders.add(new UclickDownloader("usaon", "USA Today",
-                    "USA Today", Downloader.DATE_NO_SUNDAY));
+            downloaders.add(new USATodayDownloader());
         }
 
         if (prefs.getBoolean("downloadUniversal", true)) {
-            downloaders.add(new UclickDownloader("fcx", "Universal Crossword",
-                    "uclick LLC", Downloader.DATE_DAILY));
-        }
-
-        if (prefs.getBoolean("downloadLACal", true)) {
-            downloaders.add(new UclickDownloader("lacal",
-                    "LAT Sunday Calendar", "Los Angeles Times",
-                    Downloader.DATE_SUNDAY));
+            downloaders.add(new UniversalDownloader());
         }
 
         if (prefs.getBoolean("downloadISwear", true)) {
@@ -139,26 +128,15 @@ public class Downloaders {
     }
 
     public List<Downloader> getDownloaders(Calendar date) {
-        int dayOfWeek = date.get(Calendar.DAY_OF_WEEK);
         List<Downloader> retVal = new LinkedList<Downloader>();
 
         for (Downloader d : downloaders) {
-            if (arrayContains(d.getDownloadDates(), dayOfWeek)) {
+            if (d.isPuzzleAvailable(date)) {
                 retVal.add(d);
             }
         }
 
         return retVal;
-    }
-
-    private static boolean arrayContains(int[] array, int key) {
-        for (int x : array) {
-            if (x == key) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public void download(Calendar date) {

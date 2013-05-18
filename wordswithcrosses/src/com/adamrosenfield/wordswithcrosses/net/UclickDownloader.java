@@ -16,30 +16,23 @@ import com.adamrosenfield.wordswithcrosses.io.UclickXMLIO;
 /**
  * Uclick XML Puzzles
  * URL: http://picayune.uclick.com/comics/[puzzle]/data/[puzzle]YYMMDD-data.xml
- * crnet (Newsday) = Daily
  * usaon (USA Today) = Monday-Saturday (not holidays)
  * fcx (Universal) = Daily
  * lacal (LA Times Sunday Calendar) = Sunday
  */
-public class UclickDownloader extends AbstractDownloader {
+public abstract class UclickDownloader extends AbstractDownloader {
     NumberFormat nf = NumberFormat.getInstance();
     private String copyright;
     //private String fullName;
     private String shortName;
-    private int[] days;
 
-    public UclickDownloader(String shortName, String fullName, String copyright, int[] days) {
+    public UclickDownloader(String shortName, String fullName, String copyright) {
         super("http://picayune.uclick.com/comics/" + shortName + "/data/", fullName);
         this.shortName = shortName;
         //this.fullName = fullName;
         this.copyright = copyright;
-        this.days = days;
         nf.setMinimumIntegerDigits(2);
         nf.setMaximumFractionDigits(0);
-    }
-
-    public int[] getDownloadDates() {
-        return days;
     }
 
     @Override

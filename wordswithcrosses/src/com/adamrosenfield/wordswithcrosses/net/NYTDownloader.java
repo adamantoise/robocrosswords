@@ -31,8 +31,9 @@ import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.io.IO;
 
 /**
- * New York Times URL: http://www.nytimes.com/premium/xword/YYYY/MM/DD/[Mon]DDYY.puz
- * Date = Daily
+ * New York Times
+ * URL: http://www.nytimes.com/premium/xword/YYYY/MM/DD/[Mon]DDYY.puz
+ * Date: Daily
  */
 public class NYTDownloader extends AbstractDownloader {
     private static final String[] MONTHS = new String[] { "Jan", "Feb", "Mar",
@@ -55,8 +56,8 @@ public class NYTDownloader extends AbstractDownloader {
         params.put("password", password);
     }
 
-    public int[] getDownloadDates() {
-        return DATE_DAILY;
+    public boolean isPuzzleAvailable(Calendar date) {
+        return true;
     }
 
     @Override

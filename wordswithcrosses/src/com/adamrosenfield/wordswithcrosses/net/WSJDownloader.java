@@ -6,7 +6,7 @@ import java.util.Calendar;
 /**
  * Wall Street Journal
  * URL: http://mazerlm.home.comcast.net/~mazerlm/wsjYYMMDD.puz
- * Date = Fridays
+ * Date: Friday
  */
 public class WSJDownloader extends AbstractDownloader {
     private static final String NAME = "Wall Street Journal";
@@ -18,8 +18,8 @@ public class WSJDownloader extends AbstractDownloader {
         nf.setMaximumFractionDigits(0);
     }
 
-    public int[] getDownloadDates() {
-        return DATE_FRIDAY;
+    public boolean isPuzzleAvailable(Calendar date) {
+        return (date.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY);
     }
 
     @Override

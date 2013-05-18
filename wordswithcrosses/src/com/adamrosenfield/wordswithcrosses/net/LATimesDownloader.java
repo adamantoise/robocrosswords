@@ -2,33 +2,25 @@ package com.adamrosenfield.wordswithcrosses.net;
 
 import java.text.NumberFormat;
 import java.util.Calendar;
-import java.util.HashMap;
 
+/**
+ * Los Angeles Times
+ * URL: http://cdn.games.arkadiumhosted.com/latimes/assets/DailyCrossword/puzzle_YYMMDD.xml
+ * Date: Daily
+ */
 public class LATimesDownloader extends AbstractJPZDownloader {
 
     private static final String NAME = "Los Angeles Times";
-    private final HashMap<String, String> headers = new HashMap<String, String>();
-    NumberFormat nf = NumberFormat.getInstance();
+    private NumberFormat nf = NumberFormat.getInstance();
 
     public LATimesDownloader() {
-        super(
-                "http://cdn.games.arkadiumhosted.com/latimes/assets/DailyCrossword/",
-                NAME);
+        super("http://cdn.games.arkadiumhosted.com/latimes/assets/DailyCrossword/", NAME);
         nf.setMinimumIntegerDigits(2);
         nf.setMaximumFractionDigits(0);
-        headers.put("Accept","*/*");
-        headers.put("Accept-Charset", "ISO-8859-1,utf-8;q=0.7,*;q=0.3");
-        headers.put("Accept-Language", "en-US,en;q=0.8");
-        headers.put("Connection", "keep-alive");
-        headers.put("Host", "cdn.games.arkadiumhosted.com");
-        headers.put(
-                "Referer",
-                "http://cdn.games.arkadiumhosted.com/latimes/games/daily-crossword/game/crossword-expert.swf");
-        headers.put("Content-Length", "0");
     }
 
-    public int[] getDownloadDates() {
-        return DATE_DAILY;
+    public boolean isPuzzleAvailable(Calendar date) {
+        return true;
     }
 
     @Override

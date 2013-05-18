@@ -3,10 +3,12 @@ package com.adamrosenfield.wordswithcrosses.net;
 import java.text.NumberFormat;
 import java.util.Calendar;
 
+// FIXME: This downloader doesn't work
+
 /**
  * Philadelphia Inquirer
  * URL: http://mazerlm.home.comcast.net/~mazerlm/piYYMMDD.puz
- * Date = Sundays
+ * Date: Sunday
  */
 public class PhillyDownloader extends AbstractDownloader {
     private static final String NAME = "Phil Inquirer";
@@ -18,8 +20,8 @@ public class PhillyDownloader extends AbstractDownloader {
         nf.setMaximumFractionDigits(0);
     }
 
-    public int[] getDownloadDates() {
-        return DATE_SUNDAY;
+    public boolean isPuzzleAvailable(Calendar date) {
+        return (date.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY);
     }
 
     @Override
