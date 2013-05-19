@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -40,7 +39,6 @@ public class NYTDownloader extends AbstractDownloader {
             "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
     public static final String NAME = "New York Times";
     private static final String LOGIN_URL = "https://myaccount.nytimes.com/auth/login?URI=http://select.nytimes.com/premium/xword/puzzles.html";
-    NumberFormat nf = NumberFormat.getInstance();
     private Context context;
     private Handler handler;
     private HashMap<String, String> params = new HashMap<String, String>();
@@ -49,8 +47,6 @@ public class NYTDownloader extends AbstractDownloader {
         super("http://www.nytimes.com/premium/xword/", NAME);
         this.context = context;
         this.handler = handler;
-        nf.setMinimumIntegerDigits(2);
-        nf.setMaximumFractionDigits(0);
         params.put("is_continue", "false");
         params.put("userid", username);
         params.put("password", password);
@@ -63,13 +59,13 @@ public class NYTDownloader extends AbstractDownloader {
     @Override
     protected String createUrlSuffix(Calendar date) {
         return (date.get(Calendar.YEAR) + "/" +
-                this.nf.format(date.get(Calendar.MONTH) + 1) +
+                DEFAULT_NF.format(date.get(Calendar.MONTH) + 1) +
                 "/" +
-                this.nf.format(date.get(Calendar.DAY_OF_MONTH)) +
+                DEFAULT_NF.format(date.get(Calendar.DAY_OF_MONTH)) +
                 "/" +
                 MONTHS[date.get(Calendar.MONTH)] +
-                this.nf.format(date.get(Calendar.DAY_OF_MONTH)) +
-                this.nf.format(date.get(Calendar.YEAR) % 100) +
+                DEFAULT_NF.format(date.get(Calendar.DAY_OF_MONTH)) +
+                DEFAULT_NF.format(date.get(Calendar.YEAR) % 100) +
                 ".puz");
     }
 

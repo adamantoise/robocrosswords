@@ -6,6 +6,7 @@ import java.util.Calendar;
 import android.content.Context;
 
 public interface Downloader {
+
     public void setContext(Context context);
 
     public boolean isPuzzleAvailable(Calendar date);

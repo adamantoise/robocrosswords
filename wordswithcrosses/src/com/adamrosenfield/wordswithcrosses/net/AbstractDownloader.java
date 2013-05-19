@@ -3,6 +3,7 @@ package com.adamrosenfield.wordswithcrosses.net;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Map;
@@ -23,6 +24,15 @@ public abstract class AbstractDownloader implements Downloader {
     private String downloaderName;
 
     protected final AndroidVersionUtils utils = AndroidVersionUtils.Factory.getInstance();
+
+    protected static final NumberFormat DEFAULT_NF;
+
+    static {
+        NumberFormat nf = NumberFormat.getInstance();
+        nf.setMinimumIntegerDigits(2);
+        nf.setMaximumFractionDigits(0);
+        DEFAULT_NF = nf;
+    }
 
     protected AbstractDownloader(String baseUrl, String downloaderName) {
         this.baseUrl = baseUrl;

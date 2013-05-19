@@ -1,6 +1,5 @@
 package com.adamrosenfield.wordswithcrosses.net;
 
-import java.text.NumberFormat;
 import java.util.Calendar;
 
 /**
@@ -10,12 +9,9 @@ import java.util.Calendar;
  */
 public class WSJDownloader extends AbstractDownloader {
     private static final String NAME = "Wall Street Journal";
-    NumberFormat nf = NumberFormat.getInstance();
 
     public WSJDownloader() {
         super("http://mazerlm.home.comcast.net/~mazerlm/", NAME);
-        nf.setMinimumIntegerDigits(2);
-        nf.setMaximumFractionDigits(0);
     }
 
     public boolean isPuzzleAvailable(Calendar date) {
@@ -25,9 +21,9 @@ public class WSJDownloader extends AbstractDownloader {
     @Override
     protected String createUrlSuffix(Calendar date) {
         return ("wsj" +
-                nf.format(date.get(Calendar.YEAR) % 100) +
-                nf.format(date.get(Calendar.MONTH) + 1) +
-                nf.format(date.get(Calendar.DAY_OF_MONTH)) +
+                DEFAULT_NF.format(date.get(Calendar.YEAR) % 100) +
+                DEFAULT_NF.format(date.get(Calendar.MONTH) + 1) +
+                DEFAULT_NF.format(date.get(Calendar.DAY_OF_MONTH)) +
                 ".puz");
     }
 }

@@ -1,6 +1,5 @@
 package com.adamrosenfield.wordswithcrosses.net;
 
-import java.text.NumberFormat;
 import java.util.Calendar;
 
 /**
@@ -12,12 +11,9 @@ import java.util.Calendar;
  */
 public class ISwearDownloader extends AbstractDownloader {
     private static final String NAME = "I Swear";
-    NumberFormat nf = NumberFormat.getInstance();
 
     public ISwearDownloader(){
         super("http://wij.theworld.com/puzzles/dailyrecord/", NAME);
-        nf.setMinimumIntegerDigits(2);
-        nf.setMaximumFractionDigits(0);
     }
 
     public boolean isPuzzleAvailable(Calendar date) {
@@ -28,8 +24,8 @@ public class ISwearDownloader extends AbstractDownloader {
     protected String createUrlSuffix(Calendar date) {
         return ("DR" +
                 (date.get(Calendar.YEAR) % 100) +
-                nf.format(date.get(Calendar.MONTH) + 1) +
-                nf.format(date.get(Calendar.DAY_OF_MONTH)) +
+                DEFAULT_NF.format(date.get(Calendar.MONTH) + 1) +
+                DEFAULT_NF.format(date.get(Calendar.DAY_OF_MONTH)) +
                 ".puz");
     }
 }

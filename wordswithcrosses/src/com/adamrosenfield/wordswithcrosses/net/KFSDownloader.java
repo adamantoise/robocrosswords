@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
-import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Map;
 
@@ -22,7 +21,6 @@ import com.adamrosenfield.wordswithcrosses.io.KingFeaturesPlaintextIO;
  */
 public abstract class KFSDownloader extends AbstractDownloader {
     DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
-    NumberFormat nf = NumberFormat.getInstance();
     private String author;
     private String fullName;
 
@@ -30,8 +28,6 @@ public abstract class KFSDownloader extends AbstractDownloader {
         super("http://" + shortName + ".king-online.com/clues/", fullName);
         this.fullName = fullName;
         this.author = author;
-        nf.setMinimumIntegerDigits(2);
-        nf.setMaximumFractionDigits(0);
     }
 
     @Override
@@ -73,8 +69,8 @@ public abstract class KFSDownloader extends AbstractDownloader {
     @Override
     protected String createUrlSuffix(Calendar date) {
         return (date.get(Calendar.YEAR) +
-                nf.format(date.get(Calendar.MONTH) + 1) +
-                nf.format(date.get(Calendar.DAY_OF_MONTH)) +
+                DEFAULT_NF.format(date.get(Calendar.MONTH) + 1) +
+                DEFAULT_NF.format(date.get(Calendar.DAY_OF_MONTH)) +
                 ".txt");
     }
 }

@@ -1,6 +1,5 @@
 package com.adamrosenfield.wordswithcrosses.net;
 
-import java.text.NumberFormat;
 import java.util.Calendar;
 
 // FIXME: This downloader doesn't work
@@ -12,12 +11,9 @@ import java.util.Calendar;
  */
 public class PhillyDownloader extends AbstractDownloader {
     private static final String NAME = "Phil Inquirer";
-    NumberFormat nf = NumberFormat.getInstance();
 
     public PhillyDownloader() {
         super("http://mazerlm.home.comcast.net/~mazerlm/", NAME);
-        nf.setMinimumIntegerDigits(2);
-        nf.setMaximumFractionDigits(0);
     }
 
     public boolean isPuzzleAvailable(Calendar date) {
@@ -27,9 +23,9 @@ public class PhillyDownloader extends AbstractDownloader {
     @Override
     protected String createUrlSuffix(Calendar date) {
         return ("pi" +
-                nf.format(date.get(Calendar.YEAR) % 100) +
-                nf.format(date.get(Calendar.MONTH) + 1) +
-                nf.format(date.get(Calendar.DAY_OF_MONTH)) +
+                DEFAULT_NF.format(date.get(Calendar.YEAR) % 100) +
+                DEFAULT_NF.format(date.get(Calendar.MONTH) + 1) +
+                DEFAULT_NF.format(date.get(Calendar.DAY_OF_MONTH)) +
                 ".puz");
     }
 }

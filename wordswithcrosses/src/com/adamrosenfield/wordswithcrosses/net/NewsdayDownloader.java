@@ -3,8 +3,6 @@ package com.adamrosenfield.wordswithcrosses.net;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.text.DateFormat;
-import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Map;
 
@@ -20,14 +18,9 @@ public class NewsdayDownloader extends AbstractDownloader
 {
     private static final String NAME = "Newsday";
 
-    DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
-    NumberFormat nf = NumberFormat.getInstance();
-
     public NewsdayDownloader()
     {
         super("http://www.brainsonly.com/servlets-newsday-crossword/", NAME);
-        nf.setMinimumIntegerDigits(2);
-        nf.setMaximumFractionDigits(0);
     }
 
     public boolean isPuzzleAvailable(Calendar date) {
@@ -67,7 +60,7 @@ public class NewsdayDownloader extends AbstractDownloader
     {
         return ("newsdaycrossword?date=" +
                 (date.get(Calendar.YEAR) % 100) +
-                nf.format(date.get(Calendar.MONTH) + 1) +
-                nf.format(date.get(Calendar.DAY_OF_MONTH)));
+                DEFAULT_NF.format(date.get(Calendar.MONTH) + 1) +
+                DEFAULT_NF.format(date.get(Calendar.DAY_OF_MONTH)));
     }
 }

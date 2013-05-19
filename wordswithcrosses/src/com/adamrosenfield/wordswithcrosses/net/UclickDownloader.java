@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Map;
 
@@ -21,7 +20,6 @@ import com.adamrosenfield.wordswithcrosses.io.UclickXMLIO;
  * lacal (LA Times Sunday Calendar) = Sunday
  */
 public abstract class UclickDownloader extends AbstractDownloader {
-    NumberFormat nf = NumberFormat.getInstance();
     private String copyright;
     //private String fullName;
     private String shortName;
@@ -31,8 +29,6 @@ public abstract class UclickDownloader extends AbstractDownloader {
         this.shortName = shortName;
         //this.fullName = fullName;
         this.copyright = copyright;
-        nf.setMinimumIntegerDigits(2);
-        nf.setMaximumFractionDigits(0);
     }
 
     @Override
@@ -75,9 +71,9 @@ public abstract class UclickDownloader extends AbstractDownloader {
     @Override
     protected String createUrlSuffix(Calendar date) {
         return (this.shortName +
-                nf.format(date.get(Calendar.YEAR) % 100) +
-                nf.format(date.get(Calendar.MONTH) + 1) +
-                nf.format(date.get(Calendar.DAY_OF_MONTH)) +
+                DEFAULT_NF.format(date.get(Calendar.YEAR) % 100) +
+                DEFAULT_NF.format(date.get(Calendar.MONTH) + 1) +
+                DEFAULT_NF.format(date.get(Calendar.DAY_OF_MONTH)) +
                 "-data.xml");
     }
 }

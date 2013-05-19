@@ -1,6 +1,5 @@
 package com.adamrosenfield.wordswithcrosses.net;
 
-import java.text.NumberFormat;
 import java.util.Calendar;
 
 /**
@@ -10,12 +9,9 @@ import java.util.Calendar;
  */
 public class JonesinDownloader extends AbstractDownloader {
     private static final String NAME = "Jonesin' Crosswords";
-    NumberFormat nf = NumberFormat.getInstance();
 
     public JonesinDownloader() {
         super("http://herbach.dnsalias.com/Jonesin/", NAME);
-        nf.setMinimumIntegerDigits(2);
-        nf.setMaximumFractionDigits(0);
     }
 
     public boolean isPuzzleAvailable(Calendar date) {
@@ -26,8 +22,8 @@ public class JonesinDownloader extends AbstractDownloader {
     protected String createUrlSuffix(Calendar date) {
         return ("jz" +
                 (date.get(Calendar.YEAR) % 100) +
-                nf.format(date.get(Calendar.MONTH) + 1) +
-                nf.format(date.get(Calendar.DAY_OF_MONTH)) +
+                DEFAULT_NF.format(date.get(Calendar.MONTH) + 1) +
+                DEFAULT_NF.format(date.get(Calendar.DAY_OF_MONTH)) +
                 ".puz");
     }
 }
