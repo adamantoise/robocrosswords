@@ -3,13 +3,13 @@ package com.adamrosenfield.wordswithcrosses.net;
 import java.util.Calendar;
 
 /**
- * Brendan Emmett QUigley
+ * Brendan Emmett Quigley
  * URL: http://www.brendanemmettquigley.com/files/[puzzle-name].puz
  * Date: Monday, Thursday
  */
-public class BEQuigleyScraper extends AbstractPageScraper {
+public class BEQDownloader extends AbstractPageScraper {
 
-    public BEQuigleyScraper() {
+    public BEQDownloader() {
         super("Brendan Emmett Quigley");
     }
 
