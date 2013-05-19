@@ -124,6 +124,10 @@ public class Downloaders {
             downloaders.add(new PeopleScraper());
         }
 
+        if (prefs.getBoolean("downloadPatrickBlindauer",  true)) {
+            downloaders.add(new PatrickBlindauerDownloader());
+        }
+
         this.suppressMessages = prefs.getBoolean("suppressMessages", false);
     }
 

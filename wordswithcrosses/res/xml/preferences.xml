@@ -143,7 +143,17 @@
 				android:key="downloadWsj" />
 		</PreferenceCategory>
 	</PreferenceScreen>
-	<PreferenceScreen
+    <PreferenceScreen
+        android:title="Monthly Crosswords"
+        android:summary="Puzzles which update monthly."
+        android:key="selectMonthly">
+        <CheckBoxPreference
+            android:title="Patrick Blindauer Free Monthly Puzzle"
+            android:defaultValue="true"
+            android:summary="http://www.patrickblindauer.com"
+            android:key="downloadPatrickBlindauer" />
+    </PreferenceScreen>
+    <PreferenceScreen
 		android:title="Experimental Sources"
 		android:summary="May or may not function correctly."
 		android:key="selectExperimental">
