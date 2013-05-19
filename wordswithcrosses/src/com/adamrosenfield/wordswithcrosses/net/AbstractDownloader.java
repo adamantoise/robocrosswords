@@ -1,5 +1,6 @@
 package com.adamrosenfield.wordswithcrosses.net;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -12,6 +13,7 @@ import java.util.logging.Logger;
 import android.content.Context;
 
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
+import com.adamrosenfield.wordswithcrosses.io.IO;
 import com.adamrosenfield.wordswithcrosses.versions.AndroidVersionUtils;
 
 public abstract class AbstractDownloader implements Downloader {
@@ -24,6 +26,11 @@ public abstract class AbstractDownloader implements Downloader {
     private String downloaderName;
 
     protected final AndroidVersionUtils utils = AndroidVersionUtils.Factory.getInstance();
+
+    protected static final String[] SHORT_MONTHS = new String[] {
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    };
 
     protected static final NumberFormat DEFAULT_NF;
 
@@ -86,5 +93,13 @@ public abstract class AbstractDownloader implements Downloader {
         String filename = getFilename(date);
         File destFile = new File(WordsWithCrossesApplication.CROSSWORDS_DIR, filename);
         return utils.downloadFile(url, headers, destFile, true, getName());
+    }
+
+    protected String downloadUrlToString(String url) throws IOException {
+        URL u = new URL(url);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        IO.copyStream(u.openStream(), baos);
+
+        return new String(baos.toByteArray());
     }
 }

@@ -9,7 +9,7 @@ import java.util.Calendar;
  */
 public class PatrickBlindauerDownloader extends AbstractPageScraper
 {
-    private static final String SHORT_MONTHS[] =
+    private static final String BLINDAUER_SHORT_MONTHS[] =
     {
         "Jan",
         "Feb",
@@ -34,7 +34,7 @@ public class PatrickBlindauerDownloader extends AbstractPageScraper
     protected String getScrapeURL(Calendar date)
     {
         return ("http://www.patrickblindauer.com/Free_Monthly_Puzzles/" +
-                SHORT_MONTHS[date.get(Calendar.MONTH)] +
+                BLINDAUER_SHORT_MONTHS[date.get(Calendar.MONTH)] +
                 "_" +
                 date.get(Calendar.YEAR) +
                 "/");

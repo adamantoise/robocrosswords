@@ -1,6 +1,5 @@
 package com.adamrosenfield.wordswithcrosses.net;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -12,7 +11,6 @@ import java.util.regex.Pattern;
 
 import com.adamrosenfield.wordswithcrosses.PuzzleDatabaseHelper;
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
-import com.adamrosenfield.wordswithcrosses.io.IO;
 
 public abstract class AbstractPageScraper extends AbstractDownloader {
 
@@ -56,14 +54,6 @@ public abstract class AbstractPageScraper extends AbstractDownloader {
         }
 
         return false;
-	}
-
-	private String downloadUrlToString(String url) throws IOException {
-		URL u = new URL(url);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		IO.copyStream(u.openStream(), baos);
-
-		return new String(baos.toByteArray());
 	}
 
 	public static List<String> getPuzzleRelativeURLs(String baseUrl, String input)

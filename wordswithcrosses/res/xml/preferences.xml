@@ -148,9 +148,14 @@
         android:summary="Puzzles which update monthly."
         android:key="selectMonthly">
         <CheckBoxPreference
+            android:title="Muller Monthly Music Meta"
+            android:defaultValue="true"
+            android:summary="Updates first Tuesday of the month\nSubmit meta answer online at:\nhttp://pmxwords.com"
+            android:key="downloadMMMM" />
+        <CheckBoxPreference
             android:title="Patrick Blindauer Free Monthly Puzzle"
             android:defaultValue="true"
-            android:summary="http://www.patrickblindauer.com"
+            android:summary="Updates on 1st of the month\nhttp://www.patrickblindauer.com"
             android:key="downloadPatrickBlindauer" />
     </PreferenceScreen>
     <PreferenceScreen

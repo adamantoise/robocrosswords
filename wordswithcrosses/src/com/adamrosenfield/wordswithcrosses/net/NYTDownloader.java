@@ -35,8 +35,6 @@ import com.adamrosenfield.wordswithcrosses.io.IO;
  * Date: Daily
  */
 public class NYTDownloader extends AbstractDownloader {
-    private static final String[] MONTHS = new String[] { "Jan", "Feb", "Mar",
-            "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
     public static final String NAME = "New York Times";
     private static final String LOGIN_URL = "https://myaccount.nytimes.com/auth/login?URI=http://select.nytimes.com/premium/xword/puzzles.html";
     private Context context;
@@ -63,7 +61,7 @@ public class NYTDownloader extends AbstractDownloader {
                 "/" +
                 DEFAULT_NF.format(date.get(Calendar.DAY_OF_MONTH)) +
                 "/" +
-                MONTHS[date.get(Calendar.MONTH)] +
+                SHORT_MONTHS[date.get(Calendar.MONTH)] +
                 DEFAULT_NF.format(date.get(Calendar.DAY_OF_MONTH)) +
                 DEFAULT_NF.format(date.get(Calendar.YEAR) % 100) +
                 ".puz");
