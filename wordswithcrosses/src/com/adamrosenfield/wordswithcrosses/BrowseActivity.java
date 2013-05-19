@@ -198,7 +198,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
                  .commit();
             render();
         } else if("Send Debug Package".equals(item.getTitle())){
-        	Intent i = WordsWithCrossesApplication.sendDebug();
+        	Intent i = WordsWithCrossesApplication.sendDebug(this);
         	if (i != null) {
         		this.startActivity(i);
         	}

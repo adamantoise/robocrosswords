@@ -62,7 +62,7 @@ public class PreferencesActivity extends PreferenceActivity {
         sendDebug.setOnPreferenceClickListener(new OnPreferenceClickListener(){
 
 			public boolean onPreferenceClick(Preference preference) {
-				startActivity(WordsWithCrossesApplication.sendDebug());
+				startActivity(WordsWithCrossesApplication.sendDebug(PreferencesActivity.this));
 				return true;
 			}
         });

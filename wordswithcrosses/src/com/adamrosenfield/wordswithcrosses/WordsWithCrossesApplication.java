@@ -2,8 +2,6 @@ package com.adamrosenfield.wordswithcrosses;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -11,7 +9,9 @@ import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
@@ -92,36 +92,46 @@ public class WordsWithCrossesApplication extends Application {
         return true;
     }
 
-    public static Intent sendDebug() {
-        File zip = new File(CACHE_DIR, "debug.stz");
-        if (zip.exists()) {
-            zip.delete();
+    @SuppressLint("WorldReadableFiles")
+    public static Intent sendDebug(Context context) {
+        String filename = "debug.zip";
+        File zipFile = new File(context.getFilesDir(), filename);
+        if (zipFile.exists()) {
+            zipFile.delete();
         }
 
-        if (DEBUG_DIR.exists()) {
-            try {
-                ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zip));
-                zipDir(DEBUG_DIR.getAbsolutePath(), zos);
-                zos.close();
-                Intent sendIntent = new Intent(Intent.ACTION_SEND);
-                sendIntent.putExtra(android.content.Intent.EXTRA_EMAIL,
-                        new String[] { DEVELOPER_EMAIL });
-                sendIntent.putExtra(Intent.EXTRA_SUBJECT,
-                        "Words With Crosses Debug Package");
-                sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(zip));
-                sendIntent.setType("application/octet-stream");
-                return sendIntent;
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if (!DEBUG_DIR.exists()) {
+            LOG.warning("Can't send debug package, " + DEBUG_DIR + " doesn't exist");
+            return null;
         }
-        return null;
+
+        try {
+            ZipOutputStream zos = new ZipOutputStream(
+                context.openFileOutput(filename, MODE_WORLD_READABLE));
+            try {
+                zipDir(DEBUG_DIR.getAbsolutePath(), zos);
+            } finally {
+                zos.close();
+            }
+            Intent sendIntent = new Intent(Intent.ACTION_SEND);
+            sendIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            sendIntent.putExtra(android.content.Intent.EXTRA_EMAIL,
+                    new String[] { DEVELOPER_EMAIL });
+            sendIntent.putExtra(Intent.EXTRA_SUBJECT,
+                    "Words With Crosses Debug Package");
+            Uri uri = Uri.fromFile(zipFile);
+            sendIntent.putExtra(Intent.EXTRA_STREAM, uri);
+            LOG.info("Sending debug info: " + uri);
+            sendIntent.setType("application/octet-stream");
+            return sendIntent;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static void zipDir(String dir2zip, ZipOutputStream zos)
-        throws FileNotFoundException, IOException {
+        throws IOException {
         File zipDir = new File(dir2zip);
         String[] dirList = zipDir.list();
         byte[] readBuffer = new byte[4096];
