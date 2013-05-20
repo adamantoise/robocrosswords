@@ -53,9 +53,9 @@ public abstract class AbstractDownloader implements Downloader {
     public String getFilename(Calendar date) {
         return (date.get(Calendar.YEAR) +
                 "-" +
-                (date.get(Calendar.MONTH) + 1) +
+                DEFAULT_NF.format(date.get(Calendar.MONTH) + 1) +
                 "-" +
-                date.get(Calendar.DAY_OF_MONTH) +
+                DEFAULT_NF.format(date.get(Calendar.DAY_OF_MONTH)) +
                 "-" +
                 this.downloaderName.replaceAll(" ", "").replace("/", "_") +
                 ".puz");

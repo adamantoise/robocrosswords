@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import android.app.Dialog;
 import android.app.NotificationManager;
@@ -47,8 +46,6 @@ import com.adamrosenfield.wordswithcrosses.view.VerticalProgressBar;
 import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
 
 public class BrowseActivity extends WordsWithCrossesActivity implements OnItemClickListener {
-
-    private static Logger LOG;
 
     private static final String MENU_ARCHIVES = "Archives";
     private static final int DOWNLOAD_DIALOG_ID = 0;
@@ -223,8 +220,6 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        LOG = Logger.getLogger(getPackageName());
 
         this.setTitle("Puzzles - Words With Crosses");
         setDefaultKeyMode(DEFAULT_KEYS_SHORTCUT);

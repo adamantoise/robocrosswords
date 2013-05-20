@@ -1,5 +1,7 @@
 package com.adamrosenfield.wordswithcrosses;
 
+import java.util.logging.Logger;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,8 +19,20 @@ public class WordsWithCrossesActivity extends Activity {
 	protected AndroidVersionUtils utils = AndroidVersionUtils.Factory.getInstance();
 	protected SharedPreferences prefs;
 
+	private boolean useUserOrientation = true;
+
+	protected static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
+
     // Preference key for the time of the last database sync
     protected static final String PREF_LAST_DB_SYNC_TIME = "last_db_sync_time";
+
+    public WordsWithCrossesActivity() {
+        // No-op
+    }
+
+    public WordsWithCrossesActivity(boolean useUserOrientation) {
+        this.useUserOrientation = useUserOrientation;
+    }
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,34 +45,38 @@ public class WordsWithCrossesActivity extends Activity {
 
 			return;
 		}
-		StatFs stats = new StatFs(Environment.getExternalStorageDirectory().getAbsolutePath());
-		System.out.println("Avail blocks: " + stats.getAvailableBlocks());
-		System.out.println("Block size: " + stats.getBlockSize());
-		System.out.println("Bytes free: " + (long) stats.getAvailableBlocks()
-				* (long)stats.getBlockSize());
-		System.out.println("MB free "+ (((long) stats.getAvailableBlocks()
-				* (long)stats.getBlockSize())/1024L/1024L));
 
-		if ((long)stats.getAvailableBlocks() * (long)stats.getBlockSize() < 1024L * 1024L) {
+		StatFs stats = new StatFs(Environment.getExternalStorageDirectory().getAbsolutePath());
+		long bytesFree = (long)stats.getAvailableBlocks() * (long)stats.getBlockSize();
+		LOG.info("Avail blocks: " + stats.getAvailableBlocks());
+		LOG.info("Block size: " + stats.getBlockSize());
+		LOG.info("Bytes free: " + bytesFree);
+
+		if (bytesFree < 1024L * 1024L) {
 			showSDCardFull();
 			finish();
 
 			return;
 		}
-		doOrientation();
+
+		if (useUserOrientation) {
+		    doOrientation();
+		}
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if (!Environment.MEDIA_MOUNTED.equals(Environment
-				.getExternalStorageState())) {
+		if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
 			showSDCardHelp();
 			finish();
 
 			return;
 		}
-		doOrientation();
+
+	    if (useUserOrientation) {
+	        doOrientation();
+	    }
 	}
 
 	protected void showHTMLPage(String pageName) {
