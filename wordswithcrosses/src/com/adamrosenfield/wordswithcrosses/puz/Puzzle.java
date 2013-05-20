@@ -3,13 +3,16 @@ package com.adamrosenfield.wordswithcrosses.puz;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.logging.Logger;
 
 import com.adamrosenfield.wordswithcrosses.io.IO;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 
-public class Puzzle implements Serializable{
+public class Puzzle implements Serializable {
 
     private static final long serialVersionUID = -4009551624322300644L;
+
+    private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
 
     private String author;
     private String copyright;
@@ -244,7 +247,12 @@ public class Puzzle implements Serializable{
             }
         }
 
-        return (correct * 100) / (total);
+        if (total > 0) {
+            return (correct * 100) / (total);
+        } else {
+            LOG.warning("getPercentComplete(): Puzzle is empty?");
+            return -1;
+        }
     }
 
     public int getPercentFilled() {

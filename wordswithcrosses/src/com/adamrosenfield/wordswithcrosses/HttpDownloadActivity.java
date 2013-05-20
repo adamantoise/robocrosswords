@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Map;
 
 import android.app.ProgressDialog;
@@ -11,11 +12,16 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.widget.Toast;
+
+import com.adamrosenfield.wordswithcrosses.io.JPZIO;
 
 public class HttpDownloadActivity extends WordsWithCrossesActivity {
 
     private static final Map<String, String> EMPTY_MAP = Collections.<String, String>emptyMap();
+
+    private Handler handler = new Handler();
 
     public HttpDownloadActivity() {
         super(false);
@@ -48,27 +54,54 @@ public class HttpDownloadActivity extends WordsWithCrossesActivity {
         finish();
     }
 
-    private void doDownload(String uriString, String filename) {
+    private void doDownload(String uriString, final String filename) {
         try {
-            File destFile = getDestFile(filename);
+            File finalDestFile = getDestFile(filename);
+            File downloadDestFile = finalDestFile;
+
+            // If we're asked to download a JPZ file, download it to a temporary
+            // file
+            boolean isJpz = false;
+            if (filename.toLowerCase(Locale.US).endsWith(".jpz")) {
+                isJpz = true;
+                downloadDestFile = new File(WordsWithCrossesApplication.TEMP_DIR,
+                        filename + "-" + System.currentTimeMillis());
+            }
+
             utils.setContext(this);
-            if (!utils.downloadFile(new URL(uriString), EMPTY_MAP, destFile, true, filename)) {
+            if (!utils.downloadFile(new URL(uriString), EMPTY_MAP, downloadDestFile, true, filename)) {
                 throw new IOException("Download failed: " + uriString);
+            }
+
+            // If it's a JPZ file, convert it
+            if (isJpz) {
+                try {
+                    JPZIO.convertJPZPuzzle(downloadDestFile, finalDestFile);
+                } finally {
+                    downloadDestFile.delete();
+                }
             }
 
             // Add the puzzle to the database
             PuzzleDatabaseHelper dbHelper = WordsWithCrossesApplication.getDatabaseHelper();
-            dbHelper.addPuzzle(destFile,  "Downloaded puzzles", uriString, System.currentTimeMillis());
+            dbHelper.addPuzzle(finalDestFile,  "Downloaded puzzles", uriString, System.currentTimeMillis());
             updateLastDatabaseSyncTime();
 
             // Start playing the puzzle
-            Intent intent = new Intent(Intent.ACTION_EDIT, Uri.fromFile(destFile), this, PlayActivity.class);
+            Intent intent = new Intent(Intent.ACTION_EDIT, Uri.fromFile(finalDestFile), this, PlayActivity.class);
             startActivity(intent);
         } catch (IOException e) {
             e.printStackTrace();
 
-            Toast toast = Toast.makeText(this, "Unabled to download from\n" + filename, Toast.LENGTH_LONG);
-            toast.show();
+            handler.post(new Runnable() {
+                public void run() {
+                    Toast toast = Toast.makeText(
+                        HttpDownloadActivity.this,
+                        "Unabled to download from\n" + filename,
+                        Toast.LENGTH_LONG);
+                    toast.show();
+                }
+            });
         }
     }
 
@@ -81,6 +114,7 @@ public class HttpDownloadActivity extends WordsWithCrossesActivity {
             prefix = filename;
         }
 
-        return File.createTempFile(prefix, ".puz", WordsWithCrossesApplication.CROSSWORDS_DIR);
+        return new File(WordsWithCrossesApplication.CROSSWORDS_DIR,
+                prefix + "-" + System.currentTimeMillis() + ".puz");
     }
 }

@@ -1,9 +1,6 @@
 package com.adamrosenfield.wordswithcrosses.net;
 
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Calendar;
@@ -33,23 +30,10 @@ public abstract class AbstractJPZDownloader extends AbstractDownloader {
 
         try {
             File destFile = new File(WordsWithCrossesApplication.CROSSWORDS_DIR, filename);
-            return convertJPZPuzzle(jpzFile, destFile, date);
+            JPZIO.convertJPZPuzzle(jpzFile, destFile);
+            return true;
         } finally {
             jpzFile.delete();
-        }
-    }
-
-    private boolean convertJPZPuzzle(File jpzFile, File destFile, Calendar date) throws IOException {
-        FileInputStream fis = new FileInputStream(jpzFile);
-        try {
-            DataOutputStream dos = new DataOutputStream(new FileOutputStream(destFile));
-            try {
-                return JPZIO.convertJPZPuzzle(fis, dos, date);
-            } finally {
-                dos.close();
-            }
-        } finally {
-            fis.close();
         }
     }
 }

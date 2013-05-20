@@ -4,11 +4,14 @@ import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
-import java.util.Calendar;
 import java.util.Scanner;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -45,6 +48,8 @@ import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
  * </crossword-compiler-applet>
  */
 public class JPZIO {
+
+    private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
 
     private static InputStream unzipOrPassthrough(InputStream is)
             throws IOException {
@@ -99,18 +104,16 @@ public class JPZIO {
 
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println("Unable to parse XML file: " + e.getMessage());
+            LOG.warning("Unable to parse XML file: " + e.getMessage());
             throw new RuntimeException(e);
         }
         return puz;
     }
 
-    public static boolean convertJPZPuzzle(InputStream is, DataOutputStream os,
-            Calendar date) {
+    public static boolean convertJPZPuzzle(InputStream is, DataOutputStream os) {
 
         try {
             Puzzle puz = readPuzzle(is);
-            puz.setDate(date);
             puz.setVersion(IO.VERSION_STRING);
 
             IO.save(puz, os);
@@ -118,9 +121,26 @@ public class JPZIO {
             return true;
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println("Unable to parse XML file: " + e.getMessage());
+            LOG.warning("Unable to parse XML file: " + e.getMessage());
 
             return false;
+        }
+    }
+
+    public static void convertJPZPuzzle(File jpzFile, File destFile)
+            throws IOException {
+        FileInputStream fis = new FileInputStream(jpzFile);
+        try {
+            DataOutputStream dos = new DataOutputStream(new FileOutputStream(destFile));
+            try {
+                if (!convertJPZPuzzle(fis, dos)) {
+                    throw new IOException("Failed to convert JPZ file: " + jpzFile);
+                }
+            } finally {
+                dos.close();
+            }
+        } finally {
+            fis.close();
         }
     }
 
@@ -282,11 +302,19 @@ public class JPZIO {
             } else if (name.equalsIgnoreCase("cell")) {
                 int x = Integer.parseInt(attributes.getValue("x")) - 1;
                 int y = Integer.parseInt(attributes.getValue("y")) - 1;
-                String sol = attributes.getValue("solution");
 
-                if (sol != null) {
+                String type = attributes.getValue("type");
+                if (type == null || !type.equals("block")) {
                     boxes[y][x] = new Box();
-                    boxes[y][x].setSolution(sol.charAt(0));
+
+                    String sol = attributes.getValue("solution");
+                    if (sol != null) {
+                        boxes[y][x].setSolution(sol.charAt(0));
+                    } else {
+                        // If the file doesn't have a solution, just put in filler
+                        // data
+                        boxes[y][x].setSolution('Z');
+                    }
 
                     if ("circle".equalsIgnoreCase(attributes
                             .getValue("background-shape"))) {

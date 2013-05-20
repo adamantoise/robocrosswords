@@ -108,7 +108,7 @@ public class IO {
 		input.skipBytes(2);
 		puz.setSolutionChecksum(Short.reverseBytes(input.readShort()));
 
-		input.skipBytes(0xC);
+		input.skipBytes(12);
 
 		puz.setWidth(0xFFFF & input.readByte());
 		puz.setHeight(0xFFFF & input.readByte());
@@ -329,7 +329,7 @@ public class IO {
 
 		tmpDos.writeShort(Short.reverseBytes(puz.getSolutionChecksum()));
 
-		tmpDos.write(new byte[0xC]);
+		tmpDos.write(new byte[12]);
 
 		int width = puz.getWidth();
 		int height = puz.getHeight();
@@ -543,7 +543,7 @@ public class IO {
 		for (int i = 0; i < (4 + numberOfClues); i++) {
 			int startOffset = offset;
 
-			while (puzByteArray[offset] != 0) {
+			while (puzByteArray[offset] != 0 && offset < puzByteArray.length) {
 				offset++;
 			}
 
