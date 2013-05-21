@@ -1,7 +1,9 @@
 package com.adamrosenfield.wordswithcrosses;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Locale;
@@ -15,6 +17,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.widget.Toast;
 
+import com.adamrosenfield.wordswithcrosses.io.IO;
 import com.adamrosenfield.wordswithcrosses.io.JPZIO;
 
 public class HttpDownloadActivity extends WordsWithCrossesActivity {
@@ -47,14 +50,16 @@ public class HttpDownloadActivity extends WordsWithCrossesActivity {
 
         new Thread(new Runnable() {
             public void run() {
-                doDownload(uriString, filename);
+                doDownload(uri, filename);
             }
         }).start();
 
         finish();
     }
 
-    private void doDownload(String uriString, final String filename) {
+    private void doDownload(Uri uri, final String filename) {
+        String scheme = uri.getScheme();
+        String uriString = uri.toString();
         try {
             File finalDestFile = getDestFile(filename);
             File downloadDestFile = finalDestFile;
@@ -68,9 +73,25 @@ public class HttpDownloadActivity extends WordsWithCrossesActivity {
                         filename + "-" + System.currentTimeMillis());
             }
 
-            utils.setContext(this);
-            if (!utils.downloadFile(new URL(uriString), EMPTY_MAP, downloadDestFile, true, filename)) {
-                throw new IOException("Download failed: " + uriString);
+            if (scheme.equals("http") || scheme.equals("https")) {
+                // If we're opening a HTTP(S) URI, download the file
+                utils.setContext(this);
+                if (!utils.downloadFile(new URL(uriString), EMPTY_MAP, downloadDestFile, true, filename)) {
+                    throw new IOException("Download failed: " + uriString);
+                }
+            } else {
+                // Otherwise, just open the content stream directly and save it
+                InputStream is = getContentResolver().openInputStream(uri);
+                try {
+                    FileOutputStream fos = new FileOutputStream(downloadDestFile);
+                    try {
+                        IO.copyStream(is, fos);
+                    } finally {
+                        fos.close();
+                    }
+                } finally {
+                    is.close();
+                }
             }
 
             // If it's a JPZ file, convert it
@@ -92,17 +113,20 @@ public class HttpDownloadActivity extends WordsWithCrossesActivity {
             startActivity(intent);
         } catch (IOException e) {
             e.printStackTrace();
-
-            handler.post(new Runnable() {
-                public void run() {
-                    Toast toast = Toast.makeText(
-                        HttpDownloadActivity.this,
-                        "Unabled to download from\n" + filename,
-                        Toast.LENGTH_LONG);
-                    toast.show();
-                }
-            });
+            notifyDownloadFailed(filename);
         }
+    }
+
+    private void notifyDownloadFailed(final String filename) {
+        handler.post(new Runnable() {
+            public void run() {
+                Toast toast = Toast.makeText(
+                    HttpDownloadActivity.this,
+                    "Unable to download\n" + filename,
+                    Toast.LENGTH_LONG);
+                toast.show();
+            }
+        });
     }
 
     private static File getDestFile(String filename) throws IOException {
