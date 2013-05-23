@@ -49,6 +49,7 @@ public class HttpDownloadActivity extends WordsWithCrossesActivity {
         PuzzleDatabaseHelper dbHelper = WordsWithCrossesApplication.getDatabaseHelper();
         String existingFilename = dbHelper.getFilenameForURL(uriString);
         if (existingFilename != null) {
+            LOG.info("Skipping download for " + uriString + ", already downloaded at " + existingFilename);
             Intent intent = new Intent(Intent.ACTION_EDIT, Uri.fromFile(new File(existingFilename)), this, PlayActivity.class);
             startActivity(intent);
         } else {
@@ -90,6 +91,7 @@ public class HttpDownloadActivity extends WordsWithCrossesActivity {
                 }
             } else {
                 // Otherwise, just open the content stream directly and save it
+                LOG.info("Copying " + uriString + " ==> " + downloadDestFile);
                 InputStream is = getContentResolver().openInputStream(uri);
                 try {
                     FileOutputStream fos = new FileOutputStream(downloadDestFile);
@@ -105,6 +107,7 @@ public class HttpDownloadActivity extends WordsWithCrossesActivity {
 
             // If it's a JPZ file, convert it
             if (isJpz) {
+                LOG.info("Converting JPZ file " + downloadDestFile + " ==> " + finalDestFile);
                 try {
                     JPZIO.convertJPZPuzzle(downloadDestFile, finalDestFile);
                 } finally {
