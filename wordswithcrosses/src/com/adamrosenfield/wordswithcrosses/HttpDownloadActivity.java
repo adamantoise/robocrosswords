@@ -44,15 +44,24 @@ public class HttpDownloadActivity extends WordsWithCrossesActivity {
         final String uriString = uri.toString();
         final String filename = uriString.substring(uriString.lastIndexOf('/') + 1);
 
-        final ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setMessage("Downloading...\n" + filename);
-        dialog.setCancelable(false);
+        // Check if the puzzle is already in the database.  If so, skip the
+        // download and start playing it.
+        PuzzleDatabaseHelper dbHelper = WordsWithCrossesApplication.getDatabaseHelper();
+        String existingFilename = dbHelper.getFilenameForURL(uriString);
+        if (existingFilename != null) {
+            Intent intent = new Intent(Intent.ACTION_EDIT, Uri.fromFile(new File(existingFilename)), this, PlayActivity.class);
+            startActivity(intent);
+        } else {
+            final ProgressDialog dialog = new ProgressDialog(this);
+            dialog.setMessage("Downloading...\n" + filename);
+            dialog.setCancelable(false);
 
-        new Thread(new Runnable() {
-            public void run() {
-                doDownload(uri, filename);
-            }
-        }).start();
+            new Thread(new Runnable() {
+                public void run() {
+                    doDownload(uri, filename);
+                }
+            }).start();
+        }
 
         finish();
     }

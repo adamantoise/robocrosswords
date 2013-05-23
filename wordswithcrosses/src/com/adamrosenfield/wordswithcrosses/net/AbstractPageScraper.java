@@ -45,7 +45,7 @@ public abstract class AbstractPageScraper extends AbstractDownloader {
 
         PuzzleDatabaseHelper dbHelper = WordsWithCrossesApplication.getDatabaseHelper();
         for (String puzzleUrl : puzzleUrls) {
-            if (!dbHelper.puzzleUrlExists(puzzleUrl)) {
+            if (!dbHelper.puzzleURLExists(puzzleUrl)) {
                 // TODO: Support scraping more than one puzzle per page
                 return super.download(date, puzzleUrl);
             } else {

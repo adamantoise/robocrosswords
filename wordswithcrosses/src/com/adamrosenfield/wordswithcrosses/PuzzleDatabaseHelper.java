@@ -254,23 +254,66 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
     }
 
     /**
+     * Gets the ID of the puzzle with the given source URL, or -1 if no such
+     * puzzle exists.
+     *
+     * @param url Source URL of the puzzle to query
+     *
+     * @return The ID of the puzzle with the given source URL, or -1 if no such
+     *         puzzle exists
+     */
+    public int getPuzzleIDForURL(String url)
+    {
+        SQLiteDatabase db = getReadableDatabase();
+
+        String query = "SELECT " + COLUMN_ID + " FROM " + TABLE_NAME +
+            " WHERE " + COLUMN_SOURCE_URL + "=? LIMIT 1";
+        Cursor cursor = db.rawQuery(query,  new String[]{url});
+        int id = -1;
+        if (cursor.moveToNext())
+        {
+            id = cursor.getInt(0);
+        }
+        cursor.close();
+
+        return id;
+    }
+
+    /**
      * Tests if a puzzle with the given URL exists in the database
      *
      * @param url Puzzle URL to test
      *
      * @return True if a puzzle with the given URL exists in the database
      */
-    public boolean puzzleUrlExists(String url)
+    public boolean puzzleURLExists(String url)
+    {
+        return (getPuzzleIDForURL(url) != -1);
+    }
+
+    /**
+     * Gets the filename for the puzzle with the given URL
+     *
+     * @param url Source URL of the puzzle to query
+     *
+     * @return The filename of the puzzle with the given source URL, or null
+     *         if no such puzzle exists
+     */
+    public String getFilenameForURL(String url)
     {
         SQLiteDatabase db = getReadableDatabase();
 
-        String query = "SELECT 1 FROM " + TABLE_NAME +
+        String query = "SELECT " + COLUMN_FILENAME + " FROM " + TABLE_NAME +
             " WHERE " + COLUMN_SOURCE_URL + "=? LIMIT 1";
         Cursor cursor = db.rawQuery(query,  new String[]{url});
-        boolean result = (cursor.getCount() > 0);
+        String filename = null;
+        if (cursor.moveToNext())
+        {
+            filename = cursor.getString(0);
+        }
         cursor.close();
 
-        return result;
+        return filename;
     }
 
     /**
