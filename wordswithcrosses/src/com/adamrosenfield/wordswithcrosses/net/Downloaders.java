@@ -33,23 +33,16 @@ public class Downloaders {
         this.notificationManager = notificationManager;
         this.prefs = context.getPrefs();
 
-        //if (prefs.getBoolean("downloadThinks", true)) {
-        //    downloaders.add(new ThinksDownloader());
+        //if (prefs.getBoolean("downloadBEQ", true)) {
+        //    downloaders.add(new BEQuigleyScraper());
         //}
-        if (prefs.getBoolean("downloadWaPo", true)) {
-            downloaders.add(new WaPoDownloader());
+
+        if (prefs.getBoolean("downloadCHE", true)) {
+            downloaders.add(new CHEDownloader());
         }
 
-        if (prefs.getBoolean("downloadWsj", true)) {
-            downloaders.add(new WSJDownloader());
-        }
-
-        if (prefs.getBoolean("downloadWaPoPuzzler", true)) {
-            downloaders.add(new WaPoPuzzlerDownloader());
-        }
-
-        if (prefs.getBoolean("downloadNYTClassic", true)) {
-            downloaders.add(new NYTClassicDownloader());
+        if (prefs.getBoolean("downloadISwear", true)) {
+            downloaders.add(new ISwearDownloader());
         }
 
         if (prefs.getBoolean("downloadInkwell", true)) {
@@ -60,44 +53,20 @@ public class Downloaders {
             downloaders.add(new JonesinDownloader());
         }
 
-        if (prefs.getBoolean("downloadLat", true)) {
-            downloaders.add(new LATimesDownloader());
-        }
-
-        //if (prefs.getBoolean("downloadPhilly", true)) {
-        //    downloaders.add(new PhillyDownloader());
-        //}
-
-        if (prefs.getBoolean("downloadCHE", true)) {
-            downloaders.add(new CHEDownloader());
-        }
-
         if (prefs.getBoolean("downloadJoseph", true)) {
             downloaders.add(new JosephDownloader());
         }
 
-        if (prefs.getBoolean("downloadSheffer", true)) {
-            downloaders.add(new ShefferDownloader());
+        if (prefs.getBoolean("downloadLat", true)) {
+            downloaders.add(new LATimesDownloader());
         }
 
-        if (prefs.getBoolean("downloadPremier", true)) {
-            downloaders.add(new PremierDownloader());
+        if (prefs.getBoolean("downloadMGDC", true)) {
+            downloaders.add(new MGDCDownloader());
         }
 
-        if (prefs.getBoolean("downloadNewsday", true)) {
-            downloaders.add(new NewsdayDownloader());
-        }
-
-        if (prefs.getBoolean("downloadUSAToday", true)) {
-            downloaders.add(new USATodayDownloader());
-        }
-
-        if (prefs.getBoolean("downloadUniversal", true)) {
-            downloaders.add(new UniversalDownloader());
-        }
-
-        if (prefs.getBoolean("downloadISwear", true)) {
-            downloaders.add(new ISwearDownloader());
+        if (prefs.getBoolean("downloadMMMM",  true)) {
+            downloaders.add(new MMMMDownloader());
         }
 
         if (prefs.getBoolean("downloadNYT", false)) {
@@ -108,9 +77,57 @@ public class Downloaders {
                 prefs.getString("nytPassword", "")));
         }
 
-        //if (prefs.getBoolean("downloadBEQ", true)) {
-        //    downloaders.add(new BEQuigleyScraper());
+        if (prefs.getBoolean("downloadNYTClassic", true)) {
+            downloaders.add(new NYTClassicDownloader());
+        }
+
+        if (prefs.getBoolean("downloadNewsday", true)) {
+            downloaders.add(new NewsdayDownloader());
+        }
+
+        if (prefs.getBoolean("downloadPatrickBlindauer",  true)) {
+            downloaders.add(new PatrickBlindauerDownloader());
+        }
+
+        if (prefs.getBoolean("downloadPeople", true)) {
+            downloaders.add(new PeopleScraper());
+        }
+
+        //if (prefs.getBoolean("downloadPhilly", true)) {
+        //    downloaders.add(new PhillyDownloader());
         //}
+
+        if (prefs.getBoolean("downloadPremier", true)) {
+            downloaders.add(new PremierDownloader());
+        }
+
+        if (prefs.getBoolean("downloadSheffer", true)) {
+            downloaders.add(new ShefferDownloader());
+        }
+
+        //if (prefs.getBoolean("downloadThinks", true)) {
+        //    downloaders.add(new ThinksDownloader());
+        //}
+
+        if (prefs.getBoolean("downloadUniversal", true)) {
+            downloaders.add(new UniversalDownloader());
+        }
+
+        if (prefs.getBoolean("downloadUSAToday", true)) {
+            downloaders.add(new USATodayDownloader());
+        }
+
+        if (prefs.getBoolean("downloadWaPo", true)) {
+            downloaders.add(new WaPoDownloader());
+        }
+
+        if (prefs.getBoolean("downloadWaPoPuzzler", true)) {
+            downloaders.add(new WaPoPuzzlerDownloader());
+        }
+
+        if (prefs.getBoolean("downloadWsj", true)) {
+            downloaders.add(new WSJDownloader());
+        }
 
         if (prefs.getBoolean("scrapeCru", false)) {
             downloaders.add(new CruScraper());
@@ -118,18 +135,6 @@ public class Downloaders {
 
         if (prefs.getBoolean("scrapeKegler", false)) {
             downloaders.add(new KeglerScraper());
-        }
-
-        if (prefs.getBoolean("downloadPeople", true)) {
-            downloaders.add(new PeopleScraper());
-        }
-
-        if (prefs.getBoolean("downloadMMMM",  true)) {
-            downloaders.add(new MMMMDownloader());
-        }
-
-        if (prefs.getBoolean("downloadPatrickBlindauer",  true)) {
-            downloaders.add(new PatrickBlindauerDownloader());
         }
 
         this.suppressMessages = prefs.getBoolean("suppressMessages", false);

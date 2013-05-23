@@ -3,6 +3,7 @@ package com.adamrosenfield.wordswithcrosses.net;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.util.Calendar;
@@ -96,9 +97,16 @@ public abstract class AbstractDownloader implements Downloader {
     }
 
     protected String downloadUrlToString(String url) throws IOException {
+        LOG.info("Downloading to string: " + url);
+
         URL u = new URL(url);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        IO.copyStream(u.openStream(), baos);
+        InputStream is = u.openStream();
+        try {
+            IO.copyStream(is, baos);
+        } finally {
+            is.close();
+        }
 
         return new String(baos.toByteArray());
     }
