@@ -21,5 +21,6 @@
     <string name="downloaded_new_puzzles_title">Downloaded new puzzles!</string>
     <string name="downloaded_new_puzzles_text">New puzzles were downloaded.</string>
     <string name="downloaded_puzzle_title">Downloaded ${SOURCE}</string>
+    <string name="download_failed">Download failed: ${SOURCE}</string>
 
 </resources>

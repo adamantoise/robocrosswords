@@ -100,6 +100,7 @@ public final class R {
         public static final int close_browser=0x7f06000a;
         public static final int completed_in=0x7f060002;
         public static final int done=0x7f060007;
+        public static final int download_failed=0x7f060010;
         public static final int downloaded_new_puzzles_text=0x7f06000e;
         public static final int downloaded_new_puzzles_title=0x7f06000d;
         public static final int downloaded_puzzle_title=0x7f06000f;

@@ -172,10 +172,11 @@ public class Downloaders {
             downloaders = getDownloaders(date);
         }
 
-        int i = 1;
+        int notifId = 1;
         for (Downloader d : downloaders) {
             d.setContext(context);
 
+            boolean succeeded = false;
             try {
                 updateDownloadingNotification(not, contentTitle, d.getName());
 
@@ -201,20 +202,25 @@ public class Downloaders {
 
                 if (d.download(date)) {
                     LOG.info("Downloaded succeeded: " + filename);
+                    succeeded = true;
                     dbHelper.addPuzzle(downloadedFile, d.getName(), d.sourceUrl(date), date.getTimeInMillis());
                     if (!suppressMessages) {
-                        postDownloadedNotification(i, d.getName(), downloadedFile);
+                        postDownloadedNotification(notifId, d.getName(), downloadedFile);
                     }
 
                     somethingDownloaded = true;
                 } else {
                     LOG.warning("Download failed: " + filename);
                 }
-
-                i++;
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            if (!succeeded && !suppressMessages && notificationManager != null) {
+                postDownloadFailedNotification(notifId, d.getName());
+            }
+
+            notifId++;
         }
 
         if (notificationManager != null) {
@@ -260,14 +266,14 @@ public class Downloaders {
         String contentText = context.getResources().getString(R.string.downloaded_new_puzzles_text);
         not.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
 
-        if (this.notificationManager != null) {
-            this.notificationManager.notify(0, not);
+        if (notificationManager != null) {
+            notificationManager.notify(0, not);
         }
     }
 
     @SuppressWarnings("deprecation")
-    private void postDownloadedNotification(int i, String name, File puzFile) {
-        String contentTitle = context.getResources().getString(R.string.downloaded_new_puzzles_title);
+    private void postDownloadedNotification(int notifId, String name, File puzFile) {
+        String contentTitle = context.getResources().getString(R.string.downloaded_puzzle_title);
         contentTitle = contentTitle.replace("${SOURCE}", name);
         Notification not = new Notification(
                 android.R.drawable.stat_sys_download_done, contentTitle,
@@ -279,8 +285,24 @@ public class Downloaders {
         not.setLatestEventInfo(context, contentTitle, puzFile.getName(),
                 contentIntent);
 
+        if (notificationManager != null) {
+            notificationManager.notify(notifId, not);
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private void postDownloadFailedNotification(int notifId, String name) {
+        String contentTitle = context.getResources().getString(R.string.download_failed);
+        contentTitle = contentTitle.replace("${SOURCE}", name);
+        Notification not = new Notification(
+                android.R.drawable.stat_notify_error, contentTitle,
+                System.currentTimeMillis());
+        Intent notificationIntent = new Intent(Intent.ACTION_EDIT, null, context, BrowseActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+        not.setLatestEventInfo(context, contentTitle, name, contentIntent);
+
         if (this.notificationManager != null) {
-            this.notificationManager.notify(i, not);
+            this.notificationManager.notify(notifId, not);
         }
     }
 }
