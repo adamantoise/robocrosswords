@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 /**
  * Matt Gaffney's Daily Crossword
  * URL: http://mattgaffneydaily.blogspot.com/YYYY/MM/mgdc-####-weekday-month-dayth-year.html
- * Date = Monday-Friday
+ * Date: Monday-Friday
  */
 public class MGDCDownloader extends AbstractDownloader
 {

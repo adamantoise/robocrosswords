@@ -26,7 +26,7 @@
 		<CheckBoxPreference
 			android:title="Matt Gaffney's Daily Crossword"
 			android:defaultValue="true"
-			android:summary="Updates Monday-Friday"
+			android:summary="Updates Monday-Friday\nhttp://mattgaffneydaily.blogspot.com/"
 			android:key="downloadMGDC" />
 		<PreferenceScreen
 			android:title="New York Times"
@@ -102,7 +102,12 @@
 				android:defaultValue="true"
 				android:summary="Updates Thursdays"
 				android:key="downloadJonesin" />
-			<CheckBoxPreference
+            <CheckBoxPreference
+                android:title="Matt Gaffney's Weekly Crossword Contest"
+                android:defaultValue="true"
+                android:summary="Updates Fridays\nSubmit meta answer online at:\nhttp://xwordcontest.com/"
+                android:key="downloadMGWCC" />
+            <CheckBoxPreference
 				android:title="New York Times Classic"
 				android:defaultValue="true"
 				android:summary="Updates Mondays"

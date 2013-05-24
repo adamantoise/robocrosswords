@@ -65,6 +65,10 @@ public class Downloaders {
             downloaders.add(new MGDCDownloader());
         }
 
+        if (prefs.getBoolean("downloadMGWCC", true)) {
+            downloaders.add(new MGWCCDownloader());
+        }
+
         if (prefs.getBoolean("downloadMMMM",  true)) {
             downloaders.add(new MMMMDownloader());
         }
