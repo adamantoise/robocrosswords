@@ -1,6 +1,7 @@
 package com.adamrosenfield.wordswithcrosses;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,10 +12,12 @@ import java.util.Map;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.widget.Toast;
 
 import com.adamrosenfield.wordswithcrosses.io.IO;
@@ -42,7 +45,10 @@ public class HttpDownloadActivity extends WordsWithCrossesActivity {
 
         final Uri uri = getIntent().getData();
         final String uriString = uri.toString();
-        final String filename = uriString.substring(uriString.lastIndexOf('/') + 1);
+        String scheme = uri.getScheme();
+
+        LOG.info("Attempting to download URI: " + uriString);
+        LOG.info("MIME type: " + getIntent().getType());
 
         // Check if the puzzle is already in the database.  If so, skip the
         // download and start playing it.
@@ -52,28 +58,80 @@ public class HttpDownloadActivity extends WordsWithCrossesActivity {
             LOG.info("Skipping download for " + uriString + ", already downloaded at " + existingFilename);
             Intent intent = new Intent(Intent.ACTION_EDIT, Uri.fromFile(new File(existingFilename)), this, PlayActivity.class);
             startActivity(intent);
-        } else {
-            Toast toast = Toast.makeText(
-                this,
-                "Downloading\n" + filename,
-                Toast.LENGTH_SHORT);
-            toast.show();
-
-            final ProgressDialog dialog = new ProgressDialog(this);
-            dialog.setMessage("Downloading...\n" + filename);
-            dialog.setCancelable(false);
-
-            new Thread(new Runnable() {
-                public void run() {
-                    doDownload(uri, filename);
-                }
-            }).start();
+            finish();
+            return;
         }
+
+        // If we're opening a content URI (e.g. from an email attachment),
+        // query the content provider to get the real filename
+        String filename = null;
+        if (scheme.equals("content")) {
+            filename = getContentFilename(uri);
+        }
+
+        // For non-content URIs, or if getting the content filename failed,
+        // use the last path component of the URI
+        if (filename == null) {
+            int slashIndex = uriString.lastIndexOf('/');
+            if (slashIndex != -1) {
+                filename = uriString.substring(slashIndex + 1);
+            }
+        }
+
+        final String filenameRef = filename;
+
+        // For content and file URIs, open the input stream before finish()ing,
+        // since otherwise we can sometimes lose the permission to open the
+        // content stream.
+        InputStream input = null;
+        if (!scheme.equals("http") && !scheme.equals("https")) {
+            try {
+                input = getContentResolver().openInputStream(uri);
+            } catch (FileNotFoundException e) {
+                notifyDownloadFailed(filenameRef);
+                return;
+            }
+        }
+
+        final InputStream inputRef = input;
+
+        Toast toast = Toast.makeText(
+            this,
+            "Downloading\n" + filenameRef,
+            Toast.LENGTH_SHORT);
+        toast.show();
+
+        final ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setMessage("Downloading...\n" + filenameRef);
+        dialog.setCancelable(false);
+
+        new Thread(new Runnable() {
+            public void run() {
+                doDownload(uri, filenameRef, inputRef);
+            }
+        }).start();
 
         finish();
     }
 
-    private void doDownload(Uri uri, final String filename) {
+    private String getContentFilename(Uri uri) {
+        String filename = null;
+
+        Cursor cursor = getContentResolver().query(
+            uri,
+            new String[]{MediaStore.MediaColumns.DISPLAY_NAME}, // projection
+            null,  // selection
+            null,  // selectionArgs
+            null); // sortOrder
+        if (cursor.moveToNext()) {
+            filename = cursor.getString(0);
+        }
+        cursor.close();
+
+        return filename;
+    }
+
+    private void doDownload(Uri uri, final String filename, InputStream input) {
         String scheme = uri.getScheme();
         String uriString = uri.toString();
         try {
@@ -98,16 +156,16 @@ public class HttpDownloadActivity extends WordsWithCrossesActivity {
             } else {
                 // Otherwise, just open the content stream directly and save it
                 LOG.info("Copying " + uriString + " ==> " + downloadDestFile);
-                InputStream is = getContentResolver().openInputStream(uri);
+
                 try {
                     FileOutputStream fos = new FileOutputStream(downloadDestFile);
                     try {
-                        IO.copyStream(is, fos);
+                        IO.copyStream(input, fos);
                     } finally {
                         fos.close();
                     }
                 } finally {
-                    is.close();
+                    input.close();
                 }
             }
 
