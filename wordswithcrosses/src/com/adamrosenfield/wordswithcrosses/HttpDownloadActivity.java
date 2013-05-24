@@ -75,7 +75,28 @@ public class HttpDownloadActivity extends WordsWithCrossesActivity {
             int slashIndex = uriString.lastIndexOf('/');
             if (slashIndex != -1) {
                 filename = uriString.substring(slashIndex + 1);
+            } else {
+                filename = uriString;
             }
+        }
+
+        // Check the filename extension
+        String extension = filename;
+        int lastDot = filename.lastIndexOf('.');
+        if (lastDot != -1) {
+            extension = filename.substring(lastDot);
+        }
+        String lowercaseExtension = extension.toLowerCase(Locale.US);
+
+        if (!lowercaseExtension.equals(".puz") && !lowercaseExtension.equals(".jpz")) {
+            LOG.warning("Unknown file extension: " + filename);
+            Toast toast = Toast.makeText(
+                this,
+                "Unknown file extension: " + extension,
+                Toast.LENGTH_SHORT);
+            toast.show();
+            finish();
+            return;
         }
 
         final String filenameRef = filename;
