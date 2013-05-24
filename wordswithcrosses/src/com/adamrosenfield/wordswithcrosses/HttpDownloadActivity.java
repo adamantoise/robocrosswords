@@ -53,6 +53,12 @@ public class HttpDownloadActivity extends WordsWithCrossesActivity {
             Intent intent = new Intent(Intent.ACTION_EDIT, Uri.fromFile(new File(existingFilename)), this, PlayActivity.class);
             startActivity(intent);
         } else {
+            Toast toast = Toast.makeText(
+                this,
+                "Downloading\n" + filename,
+                Toast.LENGTH_SHORT);
+            toast.show();
+
             final ProgressDialog dialog = new ProgressDialog(this);
             dialog.setMessage("Downloading...\n" + filename);
             dialog.setCancelable(false);

@@ -47,15 +47,19 @@
 
                 <data
                     android:pathPattern=".*\\.puz"
+                    android:host="*"
                     android:scheme="http" />
                 <data
                     android:pathPattern=".*\\.jpz"
+                    android:host="*"
                     android:scheme="http" />
                 <data
                     android:pathPattern=".*\\.puz"
+                    android:host="*"
                     android:scheme="https" />
                 <data
                     android:pathPattern=".*\\.jpz"
+                    android:host="*"
                     android:scheme="https" />
             </intent-filter>
             <intent-filter >
