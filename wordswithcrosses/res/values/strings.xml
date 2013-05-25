@@ -2,6 +2,10 @@
 <resources>
     <string name="app_name">Words With Crosses</string>
 
+    <string name="activity_settings">Settings</string>
+    <string name="activity_clues">Clues</string>
+    <string name="activity_puzzle_completed">Puzzle Completed!</string>
+
     <string name="hello">Hello World, Play!</string>
 
     <string name="completed_in">Completed In</string>

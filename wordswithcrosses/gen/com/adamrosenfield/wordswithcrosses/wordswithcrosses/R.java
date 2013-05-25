@@ -96,23 +96,26 @@ public final class R {
         public static final int web_browser_view=0x7f03000d;
     }
     public static final class string {
+        public static final int activity_clues=0x7f060002;
+        public static final int activity_puzzle_completed=0x7f060003;
+        public static final int activity_settings=0x7f060001;
         public static final int app_name=0x7f060000;
-        public static final int close_browser=0x7f06000a;
-        public static final int completed_in=0x7f060002;
-        public static final int done=0x7f060007;
-        public static final int download_failed=0x7f060010;
-        public static final int downloaded_new_puzzles_text=0x7f06000e;
-        public static final int downloaded_new_puzzles_title=0x7f06000d;
-        public static final int downloaded_puzzle_title=0x7f06000f;
-        public static final int downloading_from=0x7f06000c;
-        public static final int downloading_puzzles=0x7f06000b;
-        public static final int hello=0x7f060001;
-        public static final int hinted_boxes=0x7f060005;
-        public static final int online=0x7f060009;
-        public static final int puzzle_select=0x7f060008;
-        public static final int share=0x7f060006;
-        public static final int total_boxes=0x7f060004;
-        public static final int total_clues=0x7f060003;
+        public static final int close_browser=0x7f06000d;
+        public static final int completed_in=0x7f060005;
+        public static final int done=0x7f06000a;
+        public static final int download_failed=0x7f060013;
+        public static final int downloaded_new_puzzles_text=0x7f060011;
+        public static final int downloaded_new_puzzles_title=0x7f060010;
+        public static final int downloaded_puzzle_title=0x7f060012;
+        public static final int downloading_from=0x7f06000f;
+        public static final int downloading_puzzles=0x7f06000e;
+        public static final int hello=0x7f060004;
+        public static final int hinted_boxes=0x7f060008;
+        public static final int online=0x7f06000c;
+        public static final int puzzle_select=0x7f06000b;
+        public static final int share=0x7f060009;
+        public static final int total_boxes=0x7f060007;
+        public static final int total_clues=0x7f060006;
     }
     public static final class style {
         public static final int WordsWithCrossesTheme=0x7f070000;

@@ -36,7 +36,7 @@
             android:value="AEdPqrEAAAAIpupOi468PpFd3hXnN3o4Omx0Fgu9FyojG9lvzw" />
 
         <activity
-            android:label="Words With Crosses"
+            android:label="@string/app_name"
             android:name="com.adamrosenfield.wordswithcrosses.HttpDownloadActivity"
             tools:ignore="ExportedActivity">
             <intent-filter >
@@ -81,35 +81,18 @@
         </activity>
         <activity
             android:label="@string/app_name"
-            android:name="com.adamrosenfield.wordswithcrosses.PlayActivity"
-            tools:ignore="ExportedActivity">
-            <!--
-            <intent-filter >
-                <action android:name="android.intent.action.VIEW" />
-                <action android:name="android.intent.action.EDIT" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data
-                    android:host="*"
-                    android:pathPattern=".*\\.puz"
-                    android:scheme="file" />
-                <data
-                    android:mimeType="application/x-crossword"
-                    android:scheme="file" />
-            </intent-filter>
-            -->
+            android:name="com.adamrosenfield.wordswithcrosses.PlayActivity">
         </activity>
         <activity
-            android:label="Settings"
+            android:label="@string/activity_settings"
             android:name="com.adamrosenfield.wordswithcrosses.PreferencesActivity" >
         </activity>
         <activity
-            android:label="Clues"
+            android:label="@string/activity_clues"
             android:name="com.adamrosenfield.wordswithcrosses.ClueListActivity" >
         </activity>
         <activity
-            android:label="Words With Crosses"
+            android:label="@string/app_name"
             android:name="com.adamrosenfield.wordswithcrosses.HTMLActivity" >
         </activity>
         <activity
@@ -122,7 +105,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:label="Puzzle Completed!"
+            android:label="@string/activity_puzzle_completed"
             android:name="com.adamrosenfield.wordswithcrosses.PuzzleFinishedActivity"
             android:theme="@android:style/Theme.Dialog" >
         </activity>
