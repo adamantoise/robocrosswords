@@ -51,6 +51,23 @@ public class JPZIO {
 
     private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
 
+    /**
+     * Interface for setting additional puzzle metadata during JPZ-to-PUZ
+     * conversion
+     */
+    public static interface PuzzleMetadataSetter {
+        public void setMetadata(Puzzle puzzle);
+    }
+
+    /**
+     * Default puzzle metadata setter -- does nothing
+     */
+    public static final PuzzleMetadataSetter NOOP_METADATA_SETTER = new PuzzleMetadataSetter() {
+        public void setMetadata(Puzzle puzzle) {
+            // No-op
+        }
+    };
+
     private static InputStream unzipOrPassthrough(InputStream is)
             throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -111,10 +128,16 @@ public class JPZIO {
     }
 
     public static boolean convertJPZPuzzle(InputStream is, DataOutputStream os) {
+        return convertJPZPuzzle(is, os, NOOP_METADATA_SETTER);
+    }
+
+    public static boolean convertJPZPuzzle(InputStream is, DataOutputStream os,
+            PuzzleMetadataSetter metadataSetter) {
 
         try {
             Puzzle puz = readPuzzle(is);
             puz.setVersion(IO.VERSION_STRING);
+            metadataSetter.setMetadata(puz);
 
             IO.save(puz, os);
 
@@ -129,11 +152,16 @@ public class JPZIO {
 
     public static void convertJPZPuzzle(File jpzFile, File destFile)
             throws IOException {
+        convertJPZPuzzle(jpzFile, destFile, NOOP_METADATA_SETTER);
+    }
+
+    public static void convertJPZPuzzle(File jpzFile, File destFile,
+            PuzzleMetadataSetter metadataSetter) throws IOException {
         FileInputStream fis = new FileInputStream(jpzFile);
         try {
             DataOutputStream dos = new DataOutputStream(new FileOutputStream(destFile));
             try {
-                if (!convertJPZPuzzle(fis, dos)) {
+                if (!convertJPZPuzzle(fis, dos, metadataSetter)) {
                     throw new IOException("Failed to convert JPZ file: " + jpzFile);
                 }
             } finally {

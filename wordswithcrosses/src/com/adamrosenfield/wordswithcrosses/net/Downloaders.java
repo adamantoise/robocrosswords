@@ -69,6 +69,10 @@ public class Downloaders {
             downloaders.add(new MGWCCDownloader());
         }
 
+        if (prefs.getBoolean("downloadMerlReagle", true)) {
+            downloaders.add(new MerlReagleDownloader());
+        }
+
         if (prefs.getBoolean("downloadMMMM",  true)) {
             downloaders.add(new MMMMDownloader());
         }
@@ -96,10 +100,6 @@ public class Downloaders {
         if (prefs.getBoolean("downloadPeople", true)) {
             downloaders.add(new PeopleScraper());
         }
-
-        //if (prefs.getBoolean("downloadPhilly", true)) {
-        //    downloaders.add(new PhillyDownloader());
-        //}
 
         if (prefs.getBoolean("downloadPremier", true)) {
             downloaders.add(new PremierDownloader());

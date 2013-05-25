@@ -134,14 +134,12 @@
 				android:defaultValue="true"
 				android:summary="Updates Sundays"
 				android:key="downloadLACal" />
-			<!--
-			<CheckBoxPreference
-				android:title="Philadelphia Inquirer"
-				android:defaultValue="true"
-				android:summary="Updates Sundays - By Merl Reagle"
-				android:key="downloadPhilly" />
-			-->
-			<CheckBoxPreference
+            <CheckBoxPreference
+                android:title="Merl Reagle's Crossword"
+                android:defaultValue="true"
+                android:summary="Updates Sundays"
+                android:key="downloadMerlReagle" />
+		    <CheckBoxPreference
 				android:title="Premier Crosswords"
 				android:defaultValue="true"
 				android:summary="Updates Sundays"
