@@ -34,15 +34,7 @@ public class DownloadPickerDialogBuilder {
     private Activity mActivity;
     private Dialog mDialog;
     private List<Downloader> mAvailableDownloaders;
-    private OnDateChangedListener dateChangedListener = new DatePicker.OnDateChangedListener() {
-            public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                mYear = year;
-                mMonthOfYear = monthOfYear;
-                mDayOfMonth = dayOfMonth;
-                updateDateLabel();
-                updatePuzzleSelect();
-            }
-        };
+    private OnDateChangedListener dateChangedListener;
 
     private Provider<Downloaders> mDownloaders;
     private Spinner mPuzzleSelect;
@@ -63,10 +55,21 @@ public class DownloadPickerDialogBuilder {
         mDownloaders = provider;
 
         LayoutInflater inflater = (LayoutInflater)mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        ScrollView layout = (ScrollView)inflater.inflate(R.layout.download_dialog, (ViewGroup) mActivity.findViewById(R.id.download_root));
+        ScrollView layout = (ScrollView)inflater.inflate(R.layout.download_dialog, (ViewGroup)mActivity.findViewById(R.id.download_root));
 
         mDateLabel = (TextView)layout.findViewById(R.id.dateLabel);
         updateDateLabel();
+
+        dateChangedListener = new DatePicker.OnDateChangedListener() {
+            public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                String curPuzzle = mPuzzleSelect.getSelectedItem().toString();
+                mYear = year;
+                mMonthOfYear = monthOfYear;
+                mDayOfMonth = dayOfMonth;
+                updateDateLabel();
+                updatePuzzleSelect(curPuzzle);
+            }
+        };
 
         DatePicker datePicker = (DatePicker)layout.findViewById(R.id.datePicker);
         datePicker.init(year, monthOfYear, dayOfMonth, dateChangedListener);
@@ -77,7 +80,7 @@ public class DownloadPickerDialogBuilder {
         mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mPuzzleSelect.setAdapter(mAdapter);
 
-        updatePuzzleSelect();
+        updatePuzzleSelect(null);
 
         OnClickListener clickHandler = new OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
@@ -108,16 +111,25 @@ public class DownloadPickerDialogBuilder {
         mDateLabel.setText(df.format(getCurrentDate().getTime()));
     }
 
-    private void updatePuzzleSelect() {
+    private void updatePuzzleSelect(String toSelect) {
         mAvailableDownloaders = mDownloaders.get().getDownloaders(getCurrentDate());
         mAvailableDownloaders.add(0, new DummyDownloader());
 
         mAdapter.setNotifyOnChange(false);
         mAdapter.clear();
+
+        int indexToSelect = 0, i =0;
         for (Downloader downloader : mAvailableDownloaders) {
             mAdapter.add(downloader);
+            if (downloader.toString().equals(toSelect)) {
+                indexToSelect = i;
+            }
+
+            i++;
         }
         mAdapter.notifyDataSetChanged();
+
+        mPuzzleSelect.setSelection(indexToSelect, false);
     }
 
     public interface OnDownloadSelectedListener {
