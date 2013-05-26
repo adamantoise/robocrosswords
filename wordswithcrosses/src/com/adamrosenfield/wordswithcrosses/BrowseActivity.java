@@ -47,7 +47,20 @@ import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
 
 public class BrowseActivity extends WordsWithCrossesActivity implements OnItemClickListener {
 
-    private static final String MENU_ARCHIVES = "Archives";
+    private String MENU_CROSSWORDS;
+    private String MENU_ARCHIVES;
+    private String MENU_ARCHIVE;
+    private String MENU_UNARCHIVE;
+    private String MENU_DELETE;
+    private String MENU_DOWNLOAD;
+    private String MENU_SORT;
+    private String MENU_BYDATE_ASCENDING;
+    private String MENU_BYDATE_DESCENDING;
+    private String MENU_BYSOURCE;
+    private String MENU_CLEANUP;
+    private String MENU_HELP;
+    private String MENU_SETTINGS;
+
     private static final int DOWNLOAD_DIALOG_ID = 0;
     private SortOrder sortOrder = SortOrder.DATE_DESC;
     private BaseAdapter currentAdapter = null;
@@ -75,17 +88,17 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        if (item.getTitle().equals("Delete")) {
+        if (item.getTitle().equals(MENU_DELETE)) {
             deletePuzzle(contextPuzzle);
             render();
 
             return true;
-        } else if (item.getTitle().equals("Archive")) {
+        } else if (item.getTitle().equals(MENU_ARCHIVE)) {
             archivePuzzle(contextPuzzle, true);
             render();
 
             return true;
-        } else if (item.getTitle().equals("Un-archive")) {
+        } else if (item.getTitle().equals(MENU_UNARCHIVE)) {
             archivePuzzle(contextPuzzle, false);
             render();
 
@@ -110,33 +123,35 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
         menu.setHeaderTitle(contextPuzzle.title);
 
-        menu.add("Delete");
-        archiveMenuItem = menu.add(viewArchive ? "Un-archive" : "Archive");
+        menu.add(MENU_DELETE);
+        archiveMenuItem = menu.add(viewArchive ? MENU_UNARCHIVE : MENU_ARCHIVE);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        System.setProperty("http.keepAlive", "false");
-        utils.onActionBarWithText(menu.add("Download").setIcon(android.R.drawable.ic_menu_rotate));
 
-        SubMenu sortMenu = menu.addSubMenu("Sort")
+        System.setProperty("http.keepAlive", "false");
+
+        utils.onActionBarWithText(menu.add(MENU_DOWNLOAD).setIcon(android.R.drawable.ic_menu_rotate));
+
+        SubMenu sortMenu = menu.addSubMenu(MENU_SORT)
                                .setIcon(android.R.drawable.ic_menu_sort_alphabetically);
-        sortMenu.add("By Date (Descending)")
+        sortMenu.add(MENU_BYDATE_DESCENDING)
                 .setIcon(android.R.drawable.ic_menu_day);
-        sortMenu.add("By Date (Ascending)")
+        sortMenu.add(MENU_BYDATE_ASCENDING)
                 .setIcon(android.R.drawable.ic_menu_day);
-        sortMenu.add("By Source")
+        sortMenu.add(MENU_BYSOURCE)
                 .setIcon(android.R.drawable.ic_menu_upload);
         utils.onActionBarWithText(sortMenu);
 
-        menu.add("Cleanup")
+        menu.add(MENU_CLEANUP)
             .setIcon(android.R.drawable.ic_menu_manage);
         menu.add(MENU_ARCHIVES)
             .setIcon(android.R.drawable.ic_menu_view);
-        menu.add("Help")
+        menu.add(MENU_HELP)
             .setIcon(android.R.drawable.ic_menu_help);
-        menu.add("Settings")
+        menu.add(MENU_SETTINGS)
             .setIcon(android.R.drawable.ic_menu_preferences);
         return true;
     }
@@ -152,46 +167,46 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getTitle().equals("Download")) {
+        if (item.getTitle().equals(MENU_DOWNLOAD)) {
             deprecatedShowDialog(DOWNLOAD_DIALOG_ID);
 
             return true;
-        } else if (item.getTitle().equals("Settings")) {
+        } else if (item.getTitle().equals(MENU_SETTINGS)) {
             Intent i = new Intent(this, PreferencesActivity.class);
             this.startActivity(i);
 
             return true;
-        } else if (item.getTitle().equals("Crosswords") ||
+        } else if (item.getTitle().equals(MENU_CROSSWORDS) ||
                    item.getTitle().equals(MENU_ARCHIVES)) {
             viewArchive = !viewArchive;
-            item.setTitle(viewArchive ? "Crosswords" : MENU_ARCHIVES);
+            item.setTitle(viewArchive ? MENU_CROSSWORDS : MENU_ARCHIVES);
 
             if (archiveMenuItem != null) {
-                archiveMenuItem.setTitle(viewArchive ? "Un-archive" : "Archive");
+                archiveMenuItem.setTitle(viewArchive ? MENU_UNARCHIVE : MENU_ARCHIVE);
             }
 
             render();
 
             return true;
-        } else if (item.getTitle().equals("Cleanup")) {
+        } else if (item.getTitle().equals(MENU_CLEANUP)) {
             this.cleanup();
 
             return true;
-        } else if (item.getTitle().equals("Help")) {
+        } else if (item.getTitle().equals(MENU_HELP)) {
             showHTMLPage("filescreen.html");
-        } else if (item.getTitle().equals("By Source")) {
+        } else if (item.getTitle().equals(MENU_BYSOURCE)) {
             sortOrder = SortOrder.SOURCE_ASC;
             prefs.edit()
                  .putInt("sort", sortOrder.ordinal())
                  .commit();
             render();
-        } else if (item.getTitle().equals("By Date (Ascending)")) {
+        } else if (item.getTitle().equals(MENU_BYDATE_ASCENDING)) {
             sortOrder = SortOrder.DATE_ASC;
             prefs.edit()
                  .putInt("sort", sortOrder.ordinal())
                  .commit();
             render();
-        } else if (item.getTitle().equals("By Date (Descending)")) {
+        } else if (item.getTitle().equals(MENU_BYDATE_DESCENDING)) {
             sortOrder = SortOrder.DATE_DESC;
             prefs.edit()
                  .putInt("sort", sortOrder.ordinal())
@@ -224,15 +239,29 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        MENU_CROSSWORDS = getResources().getString(R.string.menu_crosswords);
+        MENU_ARCHIVES = getResources().getString(R.string.menu_archives);
+        MENU_ARCHIVE = getResources().getString(R.string.menu_archive);
+        MENU_UNARCHIVE = getResources().getString(R.string.menu_unarchive);
+        MENU_DELETE = getResources().getString(R.string.menu_delete);
+        MENU_DOWNLOAD = getResources().getString(R.string.menu_download);
+        MENU_SORT = getResources().getString(R.string.menu_sort);
+        MENU_BYDATE_ASCENDING = getResources().getString(R.string.menu_bydate_asc);
+        MENU_BYDATE_DESCENDING = getResources().getString(R.string.menu_bydate_desc);
+        MENU_BYSOURCE = getResources().getString(R.string.menu_bysource);
+        MENU_CLEANUP = getResources().getString(R.string.menu_cleanup);
+        MENU_HELP = getResources().getString(R.string.menu_help);
+        MENU_SETTINGS = getResources().getString(R.string.menu_settings);
+
         this.setTitle("Puzzles - Words With Crosses");
         setDefaultKeyMode(DEFAULT_KEYS_SHORTCUT);
         this.setContentView(R.layout.browse);
-        this.puzzleList = (ListView) this.findViewById(R.id.puzzleList);
+        this.puzzleList = (ListView)this.findViewById(R.id.puzzleList);
         this.puzzleList.setOnCreateContextMenuListener(this);
         this.puzzleList.setOnItemClickListener(this);
-        this.sources = (ListView) this.findViewById(R.id.sourceList);
+        this.sources = (ListView)this.findViewById(R.id.sourceList);
         upgradePreferences();
-        this.nm = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        this.nm = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
 
         sortOrder = SortOrder.values()[prefs.getInt("sort", SortOrder.DATE_DESC.ordinal())];
 
