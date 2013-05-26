@@ -70,6 +70,9 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
     private boolean hasShownSDCardWarning = false;
 
+    /** Number of threads which are currently downloading puzzles */
+    private int downloadingThreads = 0;
+
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getTitle().equals("Delete")) {
@@ -496,6 +499,12 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
     }
 
     private void checkDownload() {
+        synchronized (this) {
+            if (downloadingThreads > 0) {
+                // No automatic downloads while other downloads are pending
+                return;
+            }
+        }
         long lastDL = prefs.getLong("dlLast", 0);
 
         if (prefs.getBoolean("dlOnStartup", true) &&
@@ -586,8 +595,16 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
     }
 
     private void internalDownload(Calendar date, List<Downloader> downloaders) {
+        synchronized (this) {
+            downloadingThreads++;
+        }
+
         Downloaders dls = new Downloaders(this, nm);
         dls.download(date, downloaders);
+
+        synchronized (this) {
+            downloadingThreads--;
+        }
 
         postRenderMessage();
     }
@@ -601,6 +618,10 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
     }
 
     private void internalDownloadStarterPuzzles() {
+        synchronized (this) {
+            downloadingThreads++;
+        }
+
         Downloaders dls = new Downloaders(this, nm);
         dls.suppressMessages(true);
 
@@ -612,6 +633,10 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
             dls.download(date);
 
             postRenderMessage();
+        }
+
+        synchronized (this) {
+            downloadingThreads--;
         }
     }
 
