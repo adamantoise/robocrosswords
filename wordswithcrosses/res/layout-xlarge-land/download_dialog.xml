@@ -1,36 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.adamrosenfield.wordswithcrosses.view.DownloadPickerView xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/download_root"
-  android:layout_width="wrap_content"
-  android:layout_height="fill_parent">
-	<LinearLayout
-	  android:layout_width="fill_parent"
-	  android:layout_height="wrap_content"
-	  android:orientation="vertical">
-	  	<TextView
-	  	  android:id="@+id/dateLabel"
-	  	  android:layout_width="wrap_content"
-	  	  android:layout_height="wrap_content"
-	  	  android:textSize="20sp"
-	  	  android:paddingLeft="10dip" />
-	  	<DatePicker
-	      android:id="@+id/datePicker"
-	      android:padding="5dip"
-	      android:layout_gravity="center_horizontal"
-	      android:layout_width="wrap_content"
-	      android:layout_height="wrap_content" />
-	    <LinearLayout
-	      android:layout_width="fill_parent"
-	      android:layout_height="wrap_content"
-	      android:orientation="horizontal"
-	      android:padding="5dip">
-		    <Spinner
-		      android:id="@+id/puzzleSelect"
-		      android:layout_width="fill_parent"
-		      android:layout_height="wrap_content"
-		      android:layout_weight="2"
-		      android:drawSelectorOnTop="true"
-		      android:prompt="@string/puzzle_select" />
-	    </LinearLayout>
-	</LinearLayout>
-</com.adamrosenfield.wordswithcrosses.view.DownloadPickerView>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/download_root"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent">
+  <LinearLayout
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+    <TextView
+        android:id="@+id/dateLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:paddingLeft="10dip" />
+    <DatePicker
+        android:id="@+id/datePicker"
+        android:padding="5dip"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <Spinner
+        android:id="@+id/puzzleSelect"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dip"
+        android:drawSelectorOnTop="true"
+        android:prompt="@string/puzzle_select" />
+  </LinearLayout>
+</ScrollView>
