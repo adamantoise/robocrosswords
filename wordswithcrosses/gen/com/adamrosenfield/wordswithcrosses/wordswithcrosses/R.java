@@ -32,10 +32,10 @@ public final class R {
         public static final int space=0x7f020008;
     }
     public static final class id {
-        public static final int acrossLabel=0x7f08001d;
+        public static final int acrossLabel=0x7f08001b;
         public static final int acrossList=0x7f080008;
-        public static final int acrossListGal=0x7f08001e;
-        public static final int allClues=0x7f08001b;
+        public static final int acrossListGal=0x7f08001c;
+        public static final int allClues=0x7f080020;
         public static final int board=0x7f080019;
         public static final int buttons=0x7f080015;
         public static final int cheatedBoxes=0x7f08000e;
@@ -44,14 +44,14 @@ public final class R {
         public static final int clueKeyboard=0x7f080005;
         public static final int clueLine=0x7f080002;
         public static final int clueWord=0x7f080003;
-        public static final int clues=0x7f08001a;
-        public static final int cluesLinear=0x7f08001c;
+        public static final int clues=0x7f08001f;
+        public static final int cluesLinear=0x7f08001a;
         public static final int dateLabel=0x7f080012;
         public static final int datePicker=0x7f080013;
         public static final int done=0x7f080010;
-        public static final int downLabel=0x7f08001f;
+        public static final int downLabel=0x7f08001d;
         public static final int downList=0x7f080007;
-        public static final int downListGal=0x7f080020;
+        public static final int downListGal=0x7f08001e;
         public static final int download_root=0x7f080011;
         public static final int elapsed=0x7f08000b;
         public static final int finished=0x7f080009;
