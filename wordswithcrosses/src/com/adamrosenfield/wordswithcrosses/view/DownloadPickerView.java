@@ -1,10 +1,10 @@
 package com.adamrosenfield.wordswithcrosses.view;
 
-import com.adamrosenfield.wordswithcrosses.DownloadPickerDialogBuilder;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ScrollView;
+
+import com.adamrosenfield.wordswithcrosses.DownloadPickerDialogBuilder;
 
 public class DownloadPickerView extends ScrollView
 {
@@ -14,7 +14,7 @@ public class DownloadPickerView extends ScrollView
     {
         super(context);
     }
-    
+
     public DownloadPickerView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
@@ -29,11 +29,15 @@ public class DownloadPickerView extends ScrollView
     {
         mDownloadPicker = downloadPickerDialogBuilder;
     }
-    
+
+    @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom)
     {
         super.onLayout(changed, left, top, right,  bottom);
-        
-        mDownloadPicker.onViewLayout();
+
+        if (mDownloadPicker != null)
+        {
+            mDownloadPicker.onViewLayout();
+        }
     }
 }
