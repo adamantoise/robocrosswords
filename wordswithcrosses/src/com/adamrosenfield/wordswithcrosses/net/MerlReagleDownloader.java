@@ -95,13 +95,13 @@ public class MerlReagleDownloader extends AbstractJPZDownloader
                 }
 
                 // Get the day from the regex match
-                String yearString = matcher.group(3);
                 String monthString = matcher.group(1);
                 String dayString = matcher.group(2);
-                int year, month, day;
+                int month, day;
                 try
                 {
-                    year = Integer.parseInt(yearString);
+                    // Ignore year, since sometimes the year on the web page is
+                    // wrong (sigh...)
                     month = Integer.parseInt(monthString);
                     day = Integer.parseInt(dayString);
                 }
@@ -113,13 +113,20 @@ public class MerlReagleDownloader extends AbstractJPZDownloader
                     return false;
                 }
 
-                if (year != prevPuzzleDate.get(Calendar.YEAR) ||
-                    month != prevPuzzleDate.get(Calendar.MONTH) + 1 ||
-                    day != prevPuzzleDate.get(Calendar.DATE))
+                int expectedMonth = prevPuzzleDate.get(Calendar.MONTH) + 1;
+                int expectedDay = prevPuzzleDate.get(Calendar.DATE);
+                if (month != expectedMonth ||
+                    day != expectedDay)
                 {
                     // Date was wrong, try again
+                    int year = prevPuzzleDate.get(Calendar.YEAR);
+                    if (month > expectedMonth + 1)
+                    {
+                        year--;
+                    }
+
                     Calendar scrapedPrevPuzzleDate = Calendar.getInstance();
-                    scrapedPrevPuzzleDate.set(year,  month,  day,  0,  0,  0);
+                    scrapedPrevPuzzleDate.set(year,  month - 1,  day,  0,  0,  0);
                     deltaMillis = scrapedPrevPuzzleDate.getTimeInMillis() - prevPuzzleDate.getTimeInMillis();
                     int deltaWeeks = (int)(deltaMillis / MILLIS_PER_WEEK);
                     weeksOld += deltaWeeks;
