@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.adamrosenfield.wordswithcrosses.puz.Box;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
-import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
 
 public class PuzzleFinishedActivity extends WordsWithCrossesActivity{
 	private static final long SECONDS = 1000;
@@ -21,20 +20,20 @@ public class PuzzleFinishedActivity extends WordsWithCrossesActivity{
     private static final long HOURS = MINUTES * 60;
     private final NumberFormat two_int = NumberFormat.getIntegerInstance();
 	private final DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
-	
+
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         utils.holographic(this);
         setContentView(R.layout.completed);
         this.getWindow().setLayout(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        
+
         Puzzle puz = WordsWithCrossesApplication.BOARD.getPuzzle();
-        
+
         two_int.setMinimumIntegerDigits(2);
-        
+
         long elapsed = puz.getTime();
-        
+
         long hours = elapsed / HOURS;
         elapsed = elapsed % HOURS;
 
@@ -42,11 +41,11 @@ public class PuzzleFinishedActivity extends WordsWithCrossesActivity{
         elapsed = elapsed % MINUTES;
 
         long seconds = elapsed / SECONDS;
-        
-        String elapsedString = (hours > 0 ? two_int.format(hours) + ":" : "") + 
+
+        String elapsedString = (hours > 0 ? two_int.format(hours) + ":" : "") +
         		two_int.format(minutes) + ":"+
                 two_int.format(seconds);
-        
+
         int totalClues = puz.getAcrossClues().length + puz.getDownClues().length;
         int totalBoxes = 0;
         int cheatedBoxes = 0;
@@ -59,10 +58,10 @@ public class PuzzleFinishedActivity extends WordsWithCrossesActivity{
         	}
         	totalBoxes++;
         }
-        
+
         String cheatedString = cheatedBoxes +" ("+
         two_int.format( (double) cheatedBoxes  * 100D / (double) totalBoxes)+"%)";
-        
+
         final String shareMessage;
         if(puz.getSource() != null && puz.getDate() != null){
             shareMessage = "I finished the "+puz.getSource()+" crossword for "+ df.format(puz.getDate().getTime()) +" in "+
@@ -71,19 +70,19 @@ public class PuzzleFinishedActivity extends WordsWithCrossesActivity{
             shareMessage = "I finished "+puz.getSource()+" in "+
                 elapsedString +(cheatedBoxes > 0 ? "but got "+cheatedBoxes +" hints" : "")+" with #WordsWithCrosses!";
         }
-        
+
         TextView elapsedTime = (TextView) this.findViewById(R.id.elapsed);
         elapsedTime.setText(elapsedString);
-        
+
         TextView totalCluesView = (TextView) this.findViewById(R.id.totalClues);
         totalCluesView.setText(Integer.toString(totalClues));
-        
+
         TextView totalBoxesView = (TextView) this.findViewById(R.id.totalBoxes);
         totalBoxesView.setText(Integer.toString(totalBoxes));
-        
+
         TextView cheatedBoxesView = (TextView) this.findViewById(R.id.cheatedBoxes);
         cheatedBoxesView.setText(cheatedString);
-        
+
         Button share = (Button) this.findViewById(R.id.share);
         share.setOnClickListener(new OnClickListener(){
 
@@ -95,17 +94,17 @@ public class PuzzleFinishedActivity extends WordsWithCrossesActivity{
 				sendIntent.setType("text/plain");
 				startActivity(Intent.createChooser(sendIntent, "Share your time"));
 			}
-        	
+
         });
-        
+
         Button done = (Button) this.findViewById(R.id.done);
         done.setOnClickListener(new OnClickListener(){
 
 			public void onClick(View v) {
 				finish();
 			}
-        	
+
         });
-        
+
 	}
 }

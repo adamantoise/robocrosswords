@@ -7,8 +7,6 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 
-import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
-
 public class PreferencesActivity extends PreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {

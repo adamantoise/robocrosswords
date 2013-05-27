@@ -57,7 +57,6 @@ import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.ClickListener
 import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.Point;
 import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.ScaleListener;
 import com.adamrosenfield.wordswithcrosses.view.SeparatedListAdapter;
-import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
 
 public class PlayActivity extends WordsWithCrossesActivity {
 	private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");

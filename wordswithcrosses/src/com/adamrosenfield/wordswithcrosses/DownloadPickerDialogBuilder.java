@@ -24,7 +24,6 @@ import com.adamrosenfield.wordswithcrosses.BrowseActivity.Provider;
 import com.adamrosenfield.wordswithcrosses.net.Downloader;
 import com.adamrosenfield.wordswithcrosses.net.Downloaders;
 import com.adamrosenfield.wordswithcrosses.net.DummyDownloader;
-import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
 
 /**
  * Custom dialog for choosing puzzles to download.

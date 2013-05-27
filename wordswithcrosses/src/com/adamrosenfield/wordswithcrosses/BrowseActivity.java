@@ -43,7 +43,6 @@ import com.adamrosenfield.wordswithcrosses.net.Downloaders;
 import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
 import com.adamrosenfield.wordswithcrosses.view.SeparatedListAdapter;
 import com.adamrosenfield.wordswithcrosses.view.VerticalProgressBar;
-import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
 
 public class BrowseActivity extends WordsWithCrossesActivity implements OnItemClickListener {
 

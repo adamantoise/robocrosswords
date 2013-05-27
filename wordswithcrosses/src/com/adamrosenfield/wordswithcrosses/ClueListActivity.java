@@ -28,7 +28,6 @@ import com.adamrosenfield.wordswithcrosses.puz.Playboard.Clue;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Word;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
-import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
 import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView;
 import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.ClickListener;
 import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.Point;
@@ -380,14 +379,14 @@ public class ClueListActivity extends WordsWithCrossesActivity {
 			}
 
 			this.render();
-			
+
 			if ((puz.getPercentComplete() == 100) && (timer != null)) {
 	            timer.stop();
 	            puz.setTime(timer.getElapsed());
 	            this.timer = null;
 	            Intent i = new Intent(ClueListActivity.this, PuzzleFinishedActivity.class);
 	            this.startActivity(i);
-	            
+
 	        }
 
 			return true;

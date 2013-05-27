@@ -18,8 +18,8 @@ import android.net.Uri;
 import com.adamrosenfield.wordswithcrosses.BrowseActivity;
 import com.adamrosenfield.wordswithcrosses.PlayActivity;
 import com.adamrosenfield.wordswithcrosses.PuzzleDatabaseHelper;
+import com.adamrosenfield.wordswithcrosses.R;
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
-import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
 
 public class Downloaders {
     private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");

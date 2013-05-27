@@ -8,13 +8,11 @@ import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.Button;
 
-import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
 import com.adamrosenfield.wordswithcrosses.versions.AndroidVersionUtils;
-
 
 public class HTMLActivity extends Activity {
 	protected AndroidVersionUtils utils = AndroidVersionUtils.Factory.getInstance();
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

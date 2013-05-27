@@ -9,7 +9,7 @@ import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 
-import com.adamrosenfield.wordswithcrosses.wordswithcrosses.R;
+import com.adamrosenfield.wordswithcrosses.R;
 
 public class SeparatedListAdapter extends BaseAdapter {
     private static final int TYPE_SECTION_HEADER = 0;
