@@ -15,7 +15,7 @@ import android.preference.PreferenceManager;
 
 import com.adamrosenfield.wordswithcrosses.versions.AndroidVersionUtils;
 
-public class WordsWithCrossesActivity extends Activity {
+public abstract class WordsWithCrossesActivity extends Activity {
 	protected AndroidVersionUtils utils = AndroidVersionUtils.Factory.getInstance();
 	protected SharedPreferences prefs;
 
