@@ -31,7 +31,7 @@ public class WordsWithCrossesApplication extends Application {
 
     private static Logger LOG;
 
-    public static final String DEVELOPER_EMAIL = "adam@adamrosenfield.com";
+    public static final String DEVELOPER_EMAIL = "wordswithcrosses@adamrosenfield.com";
 
     public static Playboard BOARD;
     public static PlayboardRenderer RENDERER;
