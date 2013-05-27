@@ -156,7 +156,7 @@ public class WordsWithCrossesApplication extends Application {
         return dbHelper;
     }
 
-    public static boolean isLandscape(DisplayMetrics metrics){
+    public static boolean isLandscape(DisplayMetrics metrics) {
         return metrics.widthPixels > metrics.heightPixels;
     }
 

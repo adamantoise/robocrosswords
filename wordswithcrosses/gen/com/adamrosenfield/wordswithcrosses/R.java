@@ -39,7 +39,6 @@ public final class R {
         public static final int board=0x7f080019;
         public static final int buttons=0x7f080015;
         public static final int cheatedBoxes=0x7f08000e;
-        public static final int close=0x7f08002d;
         public static final int closeButton=0x7f080016;
         public static final int clueKeyboard=0x7f080005;
         public static final int clueLine=0x7f080002;
@@ -75,9 +74,7 @@ public final class R {
         public static final int tableLayout1=0x7f08000a;
         public static final int totalBoxes=0x7f08000d;
         public static final int totalClues=0x7f08000c;
-        public static final int url=0x7f08002b;
         public static final int webkit=0x7f080017;
-        public static final int webview=0x7f08002c;
     }
     public static final class layout {
         public static final int browse=0x7f030000;
@@ -93,22 +90,21 @@ public final class R {
         public static final int puzzle_list_item=0x7f03000a;
         public static final int source_item=0x7f03000b;
         public static final int source_item_highlight=0x7f03000c;
-        public static final int web_browser_view=0x7f03000d;
     }
     public static final class string {
         public static final int activity_clues=0x7f060002;
         public static final int activity_puzzle_completed=0x7f060003;
         public static final int activity_settings=0x7f060001;
         public static final int app_name=0x7f060000;
-        public static final int close_browser=0x7f060062;
+        public static final int close_browser=0x7f060061;
         public static final int completed_in=0x7f06005a;
         public static final int done=0x7f06005f;
-        public static final int download_failed=0x7f060068;
-        public static final int downloaded_new_puzzles_text=0x7f060066;
-        public static final int downloaded_new_puzzles_title=0x7f060065;
-        public static final int downloaded_puzzle_title=0x7f060067;
-        public static final int downloading_from=0x7f060064;
-        public static final int downloading_puzzles=0x7f060063;
+        public static final int download_failed=0x7f060067;
+        public static final int downloaded_new_puzzles_text=0x7f060065;
+        public static final int downloaded_new_puzzles_title=0x7f060064;
+        public static final int downloaded_puzzle_title=0x7f060066;
+        public static final int downloading_from=0x7f060063;
+        public static final int downloading_puzzles=0x7f060062;
         public static final int hello=0x7f060004;
         public static final int hinted_boxes=0x7f06005d;
         public static final int menu_archive=0x7f060007;
@@ -124,7 +120,6 @@ public final class R {
         public static final int menu_settings=0x7f060011;
         public static final int menu_sort=0x7f06000b;
         public static final int menu_unarchive=0x7f060008;
-        public static final int online=0x7f060061;
         public static final int pref_about_app=0x7f060054;
         public static final int pref_application_settings=0x7f06002f;
         public static final int pref_automatic_download=0x7f060030;
