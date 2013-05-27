@@ -160,47 +160,27 @@ public class WordsWithCrossesApplication extends Application {
         return metrics.widthPixels > metrics.heightPixels;
     }
 
+    public static double getScreenSizeInInches(DisplayMetrics metrics) {
+        double x = metrics.widthPixels/metrics.xdpi;
+        double y = metrics.heightPixels/metrics.ydpi;
+        return Math.hypot(x, y);
+    }
+
     public static boolean isTabletish(DisplayMetrics metrics) {
-        switch (android.os.Build.VERSION.SDK_INT) {
-        case 12:
-        case 11:
-        case 13:
-        case 14:
-        case 15:
-        case 16:
-            double x = Math.pow(metrics.widthPixels/metrics.xdpi,2);
-            double y = Math.pow(metrics.heightPixels/metrics.ydpi,2);
-            double screenInches = Math.sqrt(x+y);
-            System.out.println("SCREEN SIZE: "+(screenInches));
-            if (screenInches > 9) { // look for a 9" or larger screen.
-                return true;
-            } else {
-                return false;
-            }
-        default:
+        if (android.os.Build.VERSION.SDK_INT < 11) {
             return false;
         }
+
+        double screenInches = getScreenSizeInInches(metrics);
+        return (screenInches > 9.0);  // look for a 9" or larger screen.
     }
 
     public static boolean isMiniTabletish(DisplayMetrics metrics) {
-        switch (android.os.Build.VERSION.SDK_INT) {
-        case 12:
-        case 11:
-        case 13:
-        case 14:
-        case 15:
-        case 16:
-            double x = Math.pow(metrics.widthPixels/metrics.xdpi,2);
-            double y = Math.pow(metrics.heightPixels/metrics.ydpi,2);
-            double screenInches = Math.sqrt(x+y);
-            System.out.println("SCREEN SIZE: "+(screenInches));
-            if (screenInches > 5.5 && screenInches <= 9) {
-                return true;
-            } else {
-                return false;
-            }
-        default:
+        if (android.os.Build.VERSION.SDK_INT < 11) {
             return false;
         }
+
+        double screenInches = getScreenSizeInInches(metrics);
+        return (screenInches > 5.5 && screenInches <= 9.0);
     }
 }
