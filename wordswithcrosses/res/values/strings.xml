@@ -91,7 +91,9 @@
     <string name="pref_about_app">About Words With Crosses</string>
     <string name="pref_release_notes">Release Notes</string>
     <string name="pref_license">License</string>
+    <string name="pref_source_code">Source Code</string>
     <string name="pref_send_debug_package">Send Debug Package</string>
+    <string name="pref_send_debug_package_summary">Emails debugging information about your device to the developer</string>
 
     <string name="completed_in">Completed In</string>
     <string name="total_clues">Total Clues</string>

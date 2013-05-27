@@ -100,17 +100,17 @@ public final class R {
         public static final int activity_puzzle_completed=0x7f060003;
         public static final int activity_settings=0x7f060001;
         public static final int app_name=0x7f060000;
-        public static final int close_browser=0x7f060060;
-        public static final int completed_in=0x7f060058;
-        public static final int done=0x7f06005d;
-        public static final int download_failed=0x7f060066;
-        public static final int downloaded_new_puzzles_text=0x7f060064;
-        public static final int downloaded_new_puzzles_title=0x7f060063;
-        public static final int downloaded_puzzle_title=0x7f060065;
-        public static final int downloading_from=0x7f060062;
-        public static final int downloading_puzzles=0x7f060061;
+        public static final int close_browser=0x7f060062;
+        public static final int completed_in=0x7f06005a;
+        public static final int done=0x7f06005f;
+        public static final int download_failed=0x7f060068;
+        public static final int downloaded_new_puzzles_text=0x7f060066;
+        public static final int downloaded_new_puzzles_title=0x7f060065;
+        public static final int downloaded_puzzle_title=0x7f060067;
+        public static final int downloading_from=0x7f060064;
+        public static final int downloading_puzzles=0x7f060063;
         public static final int hello=0x7f060004;
-        public static final int hinted_boxes=0x7f06005b;
+        public static final int hinted_boxes=0x7f06005d;
         public static final int menu_archive=0x7f060007;
         public static final int menu_archives=0x7f060006;
         public static final int menu_bydate_asc=0x7f06000c;
@@ -124,7 +124,7 @@ public final class R {
         public static final int menu_settings=0x7f060011;
         public static final int menu_sort=0x7f06000b;
         public static final int menu_unarchive=0x7f060008;
-        public static final int online=0x7f06005f;
+        public static final int online=0x7f060061;
         public static final int pref_about_app=0x7f060054;
         public static final int pref_application_settings=0x7f06002f;
         public static final int pref_automatic_download=0x7f060030;
@@ -175,7 +175,8 @@ public final class R {
         public static final int pref_scroll_to_clue=0x7f06003e;
         public static final int pref_scroll_to_clue_summary=0x7f06003f;
         public static final int pref_select_puzzle_sources=0x7f060012;
-        public static final int pref_send_debug_package=0x7f060057;
+        public static final int pref_send_debug_package=0x7f060058;
+        public static final int pref_send_debug_package_summary=0x7f060059;
         public static final int pref_show_length=0x7f06003c;
         public static final int pref_show_length_summary=0x7f06003d;
         public static final int pref_show_timer=0x7f06004a;
@@ -184,6 +185,7 @@ public final class R {
         public static final int pref_skip_filled_boxes_summary=0x7f060043;
         public static final int pref_snap_to_current_word=0x7f06003a;
         public static final int pref_snap_to_current_word_summary=0x7f06003b;
+        public static final int pref_source_code=0x7f060057;
         public static final int pref_space_changes_direction=0x7f060044;
         public static final int pref_space_changes_direction_summary=0x7f060045;
         public static final int pref_updates_fri=0x7f060024;
@@ -195,10 +197,10 @@ public final class R {
         public static final int pref_username_summary_nyt=0x7f06001d;
         public static final int pref_weekly_crosswords=0x7f060015;
         public static final int pref_weekly_crosswords_summary=0x7f060016;
-        public static final int puzzle_select=0x7f06005e;
-        public static final int share=0x7f06005c;
-        public static final int total_boxes=0x7f06005a;
-        public static final int total_clues=0x7f060059;
+        public static final int puzzle_select=0x7f060060;
+        public static final int share=0x7f06005e;
+        public static final int total_boxes=0x7f06005c;
+        public static final int total_clues=0x7f06005b;
     }
     public static final class style {
         public static final int WordsWithCrossesTheme=0x7f070000;

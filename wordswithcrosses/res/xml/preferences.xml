@@ -306,8 +306,13 @@
 		android:title="@string/pref_license"
 		android:key="license"/>
 
+	<Preference
+		android:title="@string/pref_source_code"
+		android:key="sourceCode"/>
+
 	 <Preference
 		android:title="@string/pref_send_debug_package"
+		android:summary="@string/pref_send_debug_package_summary"
 		android:key="sendDebug"/>
 
 	</PreferenceCategory>

@@ -15,6 +15,9 @@ public class PreferencesActivity extends PreferenceActivity {
         super.onCreate(savedInstanceState);
         deprecatedAddPreferencesFromResource(R.xml.preferences);
 
+        Preference subscribeNyt = deprecatedFindPreference("nytSubscribe");
+        subscribeNyt.setOnPreferenceClickListener(new OpenHTMLClickListener("http://www.nytimes.com/puzzle"));
+
         Preference morePuzzleLinks = deprecatedFindPreference("morePuzzleLinks");
         morePuzzleLinks.setOnPreferenceClickListener(new OpenHTMLClickListener("file:///android_asset/puzzle-links.html"));
 
@@ -24,8 +27,8 @@ public class PreferencesActivity extends PreferenceActivity {
         Preference license = deprecatedFindPreference("license");
         license.setOnPreferenceClickListener(new OpenHTMLClickListener("file:///android_asset/license.html"));
 
-        Preference subscribeNyt = deprecatedFindPreference("nytSubscribe");
-        subscribeNyt.setOnPreferenceClickListener(new OpenHTMLClickListener("http://www.nytimes.com/puzzle"));
+        Preference sourceCode = deprecatedFindPreference("sourceCode");
+        sourceCode.setOnPreferenceClickListener(new OpenHTMLClickListener("http://github.com/adamantoise/wordswithcrosses"));
 
         Preference sendDebug = deprecatedFindPreference("sendDebug");
         sendDebug.setOnPreferenceClickListener(new OnPreferenceClickListener(){
@@ -57,8 +60,16 @@ public class PreferencesActivity extends PreferenceActivity {
 
         public boolean onPreferenceClick(Preference preference) {
             Uri uri = Uri.parse(url);
-            Intent intent = new Intent(Intent.ACTION_VIEW, uri,
-                PreferencesActivity.this, HTMLActivity.class);
+            Intent intent;
+
+            // Open the URI in either our HTML activity for local files, or in
+            // the user's browser for other URL schemes
+            if (uri.getScheme().equals("file")) {
+                intent = new Intent(Intent.ACTION_VIEW, uri, PreferencesActivity.this, HTMLActivity.class);
+            } else {
+                intent = new Intent(Intent.ACTION_VIEW, uri);
+            }
+
             PreferencesActivity.this.startActivity(intent);
 
             return true;
