@@ -2,6 +2,7 @@ package com.adamrosenfield.wordswithcrosses.versions;
 
 import java.io.File;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentMap;
@@ -30,9 +31,12 @@ public class GingerbreadUtil extends DefaultUtil {
     private static class DownloadingFile
     {
         public boolean succeeded = false;
+        public boolean completed = false;
     }
 
     private static ConcurrentMap<Long, DownloadingFile> waitingDownloads = new ConcurrentSkipListMap<Long, DownloadingFile>();
+
+    private static Map<Long, Boolean> completedDownloads = new HashMap<Long, Boolean>();
 
     @Override
     public void setContext(Context ctx) {
@@ -60,20 +64,35 @@ public class GingerbreadUtil extends DefaultUtil {
 
         request.setTitle(title);
         long id = mgr.enqueue(request);
+        Long idObj = id;
 
-        // Wait for the request to complete
+        // If the request completed really fast, we're done
         DownloadingFile downloadingFile = new DownloadingFile();
-        waitingDownloads.put(id, downloadingFile);
-
-        boolean succeeded;
-        try {
-            synchronized (downloadingFile) {
-                downloadingFile.wait();
-                succeeded = downloadingFile.succeeded;
+        boolean succeeded = false;
+        boolean completed = false;
+        synchronized (completedDownloads) {
+            Boolean b = completedDownloads.remove(idObj);
+            if (b != null) {
+                succeeded = b;
+                completed = true;
+            } else {
+                waitingDownloads.put(idObj, downloadingFile);
             }
-        } catch (InterruptedException e) {
-            LOG.warning("Download interrupted: " + url);
-            return false;
+        }
+
+        // Wait for the request to complete, if it hasn't completed already
+        if (!completed) {
+            try {
+                synchronized (downloadingFile) {
+                    if (!downloadingFile.completed) {
+                        downloadingFile.wait();
+                    }
+                    succeeded = downloadingFile.succeeded;
+                }
+            } catch (InterruptedException e) {
+                LOG.warning("Download interrupted: " + url);
+                return false;
+            }
         }
 
         LOG.info("Download " + (succeeded ? "succeeded" : "failed") + ": " + url);
@@ -90,14 +109,19 @@ public class GingerbreadUtil extends DefaultUtil {
 
     @Override
     public void onFileDownloaded(long id, boolean succeeded) {
-        DownloadingFile downloadingFile = waitingDownloads.remove(id);
-        if (downloadingFile != null) {
-            synchronized (downloadingFile) {
-                downloadingFile.succeeded = succeeded;
-                downloadingFile.notifyAll();
+        Long idObj = id;
+        synchronized (completedDownloads) {
+            DownloadingFile downloadingFile = waitingDownloads.remove(idObj);
+            if (downloadingFile != null) {
+                synchronized (downloadingFile) {
+                    downloadingFile.succeeded = succeeded;
+                    downloadingFile.completed = true;
+                    downloadingFile.notifyAll();
+                }
+            } else {
+                LOG.info("No thread is waiting on download for id=" + id);
+                completedDownloads.put(idObj, succeeded);
             }
-        } else {
-            LOG.warning("No thread is waiting on download for id=" + id);
         }
     }
 
