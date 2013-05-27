@@ -1,12 +1,13 @@
 package com.adamrosenfield.wordswithcrosses.view;
 
+import android.annotation.TargetApi;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
 
 import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.AuxTouchHandler;
 
-
+@TargetApi(8)
 public class MultitouchHandler implements OnScaleGestureListener, AuxTouchHandler {
     private ScaleGestureDetector scaleDetector;
     private ScrollingImageView view;
