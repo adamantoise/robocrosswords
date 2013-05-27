@@ -2,10 +2,10 @@ package com.adamrosenfield.wordswithcrosses;
 
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +22,7 @@ public class ClueListAdapter extends BaseAdapter {
     public int textSize = 14;
     private Clue highlightClue;
     private Context context;
-    private HashMap<Integer, Box[]> cache = new HashMap<Integer, Box[]>();
+    private SparseArray<Box[]> cache = new SparseArray<Box[]>();
     private Clue[] clues;
     private boolean across;
     private boolean isActive = false;
