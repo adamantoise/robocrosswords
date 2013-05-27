@@ -38,7 +38,7 @@ public class Downloaders {
         this.prefs = context.getPrefs();
 
         //if (prefs.getBoolean("downloadBEQ", true)) {
-        //    downloaders.add(new BEQuigleyScraper());
+        //    downloaders.add(new BEQDownloader());
         //}
 
         if (prefs.getBoolean("downloadCHE", true)) {
