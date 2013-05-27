@@ -42,13 +42,11 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
     public static final String COLUMN_CURRENT_POSITION_COL = "current_position_col";
     public static final String COLUMN_CURRENT_ORIENTATION_ACROSS = "current_orientation_across";
 
-    private final Logger LOG;
+    private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
 
     public PuzzleDatabaseHelper(Context context)
     {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-
-        LOG = Logger.getLogger(context.getPackageName());
     }
 
     @Override

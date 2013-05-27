@@ -29,7 +29,7 @@ public class WordsWithCrossesApplication extends Application {
     public static File CACHE_DIR;
     public static File DEBUG_DIR;
 
-    private static Logger LOG;
+    private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
 
     public static final String DEVELOPER_EMAIL = "wordswithcrosses@adamrosenfield.com";
 
@@ -41,8 +41,6 @@ public class WordsWithCrossesApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
-        LOG = Logger.getLogger(getPackageName());
 
         File externalStorageDir = new File(
             Environment.getExternalStorageDirectory(),
