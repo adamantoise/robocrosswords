@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 import android.app.Notification;
@@ -27,6 +28,9 @@ public class Downloaders {
     private List<Downloader> downloaders = new LinkedList<Downloader>();
     private NotificationManager notificationManager;
     private boolean suppressMessages;
+
+    private static final int GENERAL_NOTIF_ID = 0;
+    private static AtomicInteger nextNotifId = new AtomicInteger(1);
 
     public Downloaders(BrowseActivity context, NotificationManager notificationManager) {
         this.context = context;
@@ -181,16 +185,16 @@ public class Downloaders {
             downloaders = getDownloaders(date);
         }
 
-        int notifId = 1;
         for (Downloader d : downloaders) {
             d.setContext(context);
 
+            int notifId = nextNotifId.incrementAndGet();
             boolean succeeded = false;
             try {
                 updateDownloadingNotification(not, contentTitle, d.getName());
 
                 if (!suppressMessages && notificationManager != null) {
-                    notificationManager.notify(0, not);
+                    notificationManager.notify(GENERAL_NOTIF_ID, not);
                 }
 
                 String filename = d.getFilename(date);
@@ -228,12 +232,10 @@ public class Downloaders {
             if (!succeeded && !suppressMessages && notificationManager != null) {
                 postDownloadFailedNotification(notifId, d.getName());
             }
-
-            notifId++;
         }
 
         if (notificationManager != null) {
-            notificationManager.cancel(0);
+            notificationManager.cancel(GENERAL_NOTIF_ID);
         }
 
         if (somethingDownloaded) {
@@ -276,7 +278,7 @@ public class Downloaders {
         not.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
 
         if (notificationManager != null) {
-            notificationManager.notify(0, not);
+            notificationManager.notify(GENERAL_NOTIF_ID, not);
         }
     }
 
