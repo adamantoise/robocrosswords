@@ -37,6 +37,7 @@ public class Downloaders {
         this.notificationManager = notificationManager;
         this.prefs = context.getPrefs();
 
+        // BEQ has requested that his puzzles not be automatically downloaded
         //if (prefs.getBoolean("downloadBEQ", true)) {
         //    downloaders.add(new BEQDownloader());
         //}
@@ -113,10 +114,6 @@ public class Downloaders {
             downloaders.add(new ShefferDownloader());
         }
 
-        //if (prefs.getBoolean("downloadThinks", true)) {
-        //    downloaders.add(new ThinksDownloader());
-        //}
-
         if (prefs.getBoolean("downloadUniversal", true)) {
             downloaders.add(new UniversalDownloader());
         }
@@ -135,14 +132,6 @@ public class Downloaders {
 
         if (prefs.getBoolean("downloadWsj", true)) {
             downloaders.add(new WSJDownloader());
-        }
-
-        if (prefs.getBoolean("scrapeCru", false)) {
-            downloaders.add(new CruScraper());
-        }
-
-        if (prefs.getBoolean("scrapeKegler", false)) {
-            downloaders.add(new KeglerScraper());
         }
 
         this.suppressMessages = prefs.getBoolean("suppressMessages", false);

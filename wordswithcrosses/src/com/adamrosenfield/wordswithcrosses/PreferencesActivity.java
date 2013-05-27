@@ -15,48 +15,17 @@ public class PreferencesActivity extends PreferenceActivity {
         super.onCreate(savedInstanceState);
         deprecatedAddPreferencesFromResource(R.xml.preferences);
 
-        Preference release = deprecatedFindPreference("releaseNotes");
-        release.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference arg0) {
-                    Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/release.html"),
-                            PreferencesActivity.this, HTMLActivity.class);
-                    PreferencesActivity.this.startActivity(i);
+        Preference morePuzzleLinks = deprecatedFindPreference("morePuzzleLinks");
+        morePuzzleLinks.setOnPreferenceClickListener(new OpenHTMLClickListener("file:///android_asset/puzzle-links.html"));
 
-                    return true;
-                }
-            });
+        Preference release = deprecatedFindPreference("releaseNotes");
+        release.setOnPreferenceClickListener(new OpenHTMLClickListener("file:///android_asset/release.html"));
 
         Preference license = deprecatedFindPreference("license");
-        license.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference arg0) {
-                    Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/license.html"),
-                            PreferencesActivity.this, HTMLActivity.class);
-                    PreferencesActivity.this.startActivity(i);
-
-                    return true;
-                }
-            });
+        license.setOnPreferenceClickListener(new OpenHTMLClickListener("file:///android_asset/license.html"));
 
         Preference subscribeNyt = deprecatedFindPreference("nytSubscribe");
-        subscribeNyt.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference arg0) {
-                    Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.nytimes.com/puzzle"));
-                    PreferencesActivity.this.startActivity(i);
-
-                    return true;
-                }
-            });
-
-        Preference scrapeInfo = deprecatedFindPreference("aboutScrapes");
-        scrapeInfo.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference arg0) {
-                    Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/scrapes.html"),
-                            PreferencesActivity.this, HTMLActivity.class);
-                    PreferencesActivity.this.startActivity(i);
-
-                    return true;
-                }
-            });
+        subscribeNyt.setOnPreferenceClickListener(new OpenHTMLClickListener("http://www.nytimes.com/puzzle"));
 
         Preference sendDebug = deprecatedFindPreference("sendDebug");
         sendDebug.setOnPreferenceClickListener(new OnPreferenceClickListener(){
@@ -76,5 +45,23 @@ public class PreferencesActivity extends PreferenceActivity {
     @SuppressWarnings("deprecation")
     private Preference deprecatedFindPreference(String preference) {
         return findPreference(preference);
+    }
+
+    private class OpenHTMLClickListener implements OnPreferenceClickListener {
+
+        private String url;
+
+        public OpenHTMLClickListener(String url) {
+            this.url = url;
+        }
+
+        public boolean onPreferenceClick(Preference preference) {
+            Uri uri = Uri.parse(url);
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri,
+                PreferencesActivity.this, HTMLActivity.class);
+            PreferencesActivity.this.startActivity(intent);
+
+            return true;
+        }
     }
 }

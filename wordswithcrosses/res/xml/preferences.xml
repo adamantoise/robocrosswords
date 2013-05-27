@@ -59,12 +59,6 @@
 			android:summary="@string/pref_updates_mon_to_sat"
 			android:defaultValue="true"
 			android:key="downloadSheffer" />
-		<!--
-		<CheckBoxPreference
-			android:title="Thinks.com"
-			android:defaultValue="true"
-			android:key="downloadThinks" />
-		-->
 		<CheckBoxPreference
 			android:title="Universal Crossword"
 			android:defaultValue="true"
@@ -114,7 +108,7 @@
 				android:key="downloadNYTClassic" />
 			<CheckBoxPreference
 				android:title="People Magazine"
-				android:summary="@string/pref_updates_thu"
+				android:summary="@string/pref_people_summary"
 				android:defaultValue="true"
 				android:key="downloadPeople" />
 			<CheckBoxPreference
@@ -131,7 +125,7 @@
 				android:key="downloadCHE" />
             <CheckBoxPreference
                 android:title="Merl Reagle's Crossword"
-                android:summary="@string/pref_updates_sun"
+                android:summary="@string/pref_reagle_summary"
                 android:defaultValue="true"
                 android:key="downloadMerlReagle" />
 		    <CheckBoxPreference
@@ -162,23 +156,9 @@
             android:key="downloadPatrickBlindauer" />
     </PreferenceScreen>
     <PreferenceScreen
-		android:title="Experimental Sources"
-		android:summary="May or may not function correctly."
-		android:key="selectExperimental">
-		<CheckBoxPreference
-			android:title="Cru Puzzle Workshop"
-			android:summary="NYT Cru Cryptic Fan Puzzles\nhttp://web.me.com/joecab/nytcru/\n(Please Read the help item below)"
-			android:defaultValue="false"
-			android:key="scrapeCru" />
-		<CheckBoxPreference
-			android:title="Kegler's Kryptics"
-			android:summary="Ron &quot;Kegler&quot; Sweet's Cryptic Archive\nhttp://www.lafn.org/~keglerron/kegler.html\n(Please Read the help item below)"
-			android:defaultValue="false"
-			android:key="scrapeKegler" />
-		<Preference
-			android:title="About These Sources"
-			android:key="aboutScrapes" />
-	</PreferenceScreen>
+		android:title="@string/pref_more_puzzle_links"
+		android:summary="@string/pref_more_puzzle_links_summary"
+		android:key="morePuzzleLinks" />
 </PreferenceCategory>
 
 <PreferenceCategory
