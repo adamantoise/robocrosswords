@@ -110,29 +110,25 @@ public class HttpDownloadActivity extends WordsWithCrossesActivity {
                 input = getContentResolver().openInputStream(uri);
             } catch (FileNotFoundException e) {
                 notifyDownloadFailed(filenameRef);
+                finish();
                 return;
             }
         }
 
         final InputStream inputRef = input;
 
-        Toast toast = Toast.makeText(
-            this,
-            "Downloading\n" + filenameRef,
-            Toast.LENGTH_SHORT);
-        toast.show();
-
         final ProgressDialog dialog = new ProgressDialog(this);
         dialog.setMessage("Downloading...\n" + filenameRef);
         dialog.setCancelable(false);
+        dialog.show();
 
         new Thread(new Runnable() {
             public void run() {
                 doDownload(uri, filenameRef, inputRef);
+                dialog.dismiss();
+                finish();
             }
         }).start();
-
-        finish();
     }
 
     private String getContentFilename(Uri uri) {

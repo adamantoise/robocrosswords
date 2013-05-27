@@ -38,6 +38,7 @@
         <activity
             android:label="@string/app_name"
             android:name="com.adamrosenfield.wordswithcrosses.HttpDownloadActivity"
+            android:theme="@android:style/Theme.NoDisplay"
             tools:ignore="ExportedActivity">
             <intent-filter >
                 <action android:name="android.intent.action.VIEW" />
