@@ -175,6 +175,8 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
             puz = IO.load(path);
         } catch(IOException e) {
             e.printStackTrace();
+            LOG.warning("Failed to load " + path + ", moving to quarantine");
+            path.renameTo(new File(WordsWithCrossesApplication.QUARANTINE_DIR, path.getName()));
             return;
         }
 
