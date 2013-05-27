@@ -60,6 +60,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
     private String MENU_CLEANUP;
     private String MENU_HELP;
     private String MENU_SETTINGS;
+    private String PREF_SENDDEBUGPACKAGE;
 
     private static final int DOWNLOAD_DIALOG_ID = 0;
     private SortOrder sortOrder = SortOrder.DATE_DESC;
@@ -212,7 +213,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
                  .putInt("sort", sortOrder.ordinal())
                  .commit();
             render();
-        } else if("Send Debug Package".equals(item.getTitle())){
+        } else if (item.getTitle().equals(PREF_SENDDEBUGPACKAGE)){
         	Intent i = WordsWithCrossesApplication.sendDebug(this);
         	if (i != null) {
         		this.startActivity(i);
@@ -252,6 +253,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         MENU_CLEANUP = getResources().getString(R.string.menu_cleanup);
         MENU_HELP = getResources().getString(R.string.menu_help);
         MENU_SETTINGS = getResources().getString(R.string.menu_settings);
+        PREF_SENDDEBUGPACKAGE = getResources().getString(R.string.pref_send_debug_package);
 
         this.setTitle("Puzzles - Words With Crosses");
         setDefaultKeyMode(DEFAULT_KEYS_SHORTCUT);

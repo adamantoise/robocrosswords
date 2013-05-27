@@ -3,11 +3,11 @@
   xmlns:android="http://schemas.android.com/apk/res/android">
 
 <PreferenceCategory
-	android:title="Select Puzzle Sources">
+	android:title="@string/pref_select_puzzle_sources">
 	<!-- Organized alphabetically and by category. -->
 	<PreferenceScreen
-		android:title="Daily Crosswords"
-		android:summary="Puzzles which update daily."
+		android:title="@string/pref_daily_crosswords"
+		android:summary="@string/pref_daily_crosswords_summary"
 		android:key="selectDaily"
 		>
 		<CheckBoxPreference
@@ -16,8 +16,8 @@
 			android:key="downloadWaPo" />
 		<CheckBoxPreference
 			android:title="Joseph Crosswords"
+			android:summary="@string/pref_updates_mon_to_sat"
 			android:defaultValue="true"
-			android:summary="Updates Monday-Saturday"
 			android:key="downloadJoseph" />
 		<CheckBoxPreference
 			android:title="Los Angeles Times"
@@ -25,29 +25,29 @@
 			android:key="downloadLat" />
 		<CheckBoxPreference
 			android:title="Matt Gaffney's Daily Crossword"
+			android:summary="@string/pref_mgdc_summary"
 			android:defaultValue="true"
-			android:summary="Updates Monday-Friday\nhttp://mattgaffneydaily.blogspot.com/"
 			android:key="downloadMGDC" />
 		<PreferenceScreen
 			android:title="New York Times"
-			android:summary="Requires subscription."
+			android:summary="@string/pref_requires_subscription"
 			android:key="selectNYTimes">
 			<CheckBoxPreference
 				android:title="New York Times"
 				android:defaultValue="false"
 				android:key="downloadNYT" />
 			<EditTextPreference
-				android:title="Username"
-				android:summary="NYT Username or Email Address"
+				android:title="@string/pref_username"
+				android:summary="@string/pref_username_summary_nyt"
 				android:key="nytUsername" />
 			<EditTextPreference
-				android:title="Password"
-				android:summary="NYT Password"
+				android:title="@string/pref_password"
+				android:summary="@string/pref_password_summary_nyt"
 				android:key="nytPassword"
 				android:password="true"
 			    android:inputType="textPassword" />
 			<Preference
-				android:title="Get a Subscription"
+				android:title="@string/pref_get_subscription"
 				android:key="nytSubscribe"/>
 		</PreferenceScreen>
 		<CheckBoxPreference
@@ -56,8 +56,8 @@
 			android:key="downloadNewsday" />
 		<CheckBoxPreference
 			android:title="Sheffer Crosswords"
+			android:summary="@string/pref_updates_mon_to_sat"
 			android:defaultValue="true"
-			android:summary="Updates Monday-Saturday"
 			android:key="downloadSheffer" />
 		<!--
 		<CheckBoxPreference
@@ -71,99 +71,94 @@
 			android:key="downloadUniversal" />
 		<CheckBoxPreference
 			android:title="USA Today"
+			android:summary="@string/pref_updates_mon_to_sat"
 			android:defaultValue="true"
-			android:summary="Updates Monday-Saturday"
 			android:key="downloadUSAToday" />
 	</PreferenceScreen>
 	<PreferenceScreen
-		android:title="Weekly Crosswords"
-		android:summary="Puzzles which update weekly."
+		android:title="@string/pref_weekly_crosswords"
+		android:summary="@string/pref_weekly_crosswords_summary"
 		android:key="selectWeekly">
-		<PreferenceCategory android:title="Regular Sized">
+		<PreferenceCategory android:title="@string/pref_regular_sized">
 		    <!--
 			<CheckBoxPreference
 				android:title="Brendan Emmett Quigley"
-				android:defaultValue="true"
 				android:summary="Updates Mondays &amp; Thursdays - brendanemmettquigley.com"
+				android:defaultValue="true"
 				android:key="downloadBEQ" />
 			-->
 			 <CheckBoxPreference
 				android:title="I Swear"
+				android:summary="@string/pref_updates_fri"
 				android:defaultValue="true"
-				android:summary="Updates Fridays"
 				android:key="downloadISwear" />
 			<CheckBoxPreference
 				android:title="Ink Well"
+				android:summary="@string/pref_updates_fri"
 				android:defaultValue="true"
-				android:summary="Updates Fridays"
 				android:key="downloadInkwell" />
 			<CheckBoxPreference
 				android:title="Jonesin' Crosswords"
+				android:summary="@string/pref_updates_thu"
 				android:defaultValue="true"
-				android:summary="Updates Thursdays"
 				android:key="downloadJonesin" />
             <CheckBoxPreference
                 android:title="Matt Gaffney's Weekly Crossword Contest"
+                android:summary="@string/pref_mgwcc_summary"
                 android:defaultValue="true"
-                android:summary="Updates Fridays\nSubmit meta answer online at:\nhttp://xwordcontest.com/"
                 android:key="downloadMGWCC" />
             <CheckBoxPreference
 				android:title="New York Times Classic"
+				android:summary="@string/pref_updates_mon"
 				android:defaultValue="true"
-				android:summary="Updates Mondays"
 				android:key="downloadNYTClassic" />
 			<CheckBoxPreference
 				android:title="People Magazine"
+				android:summary="@string/pref_updates_thu"
 				android:defaultValue="true"
-				android:summary="Updates Thursdays"
 				android:key="downloadPeople" />
 			<CheckBoxPreference
 				android:title="Washington Post Puzzler"
+				android:summary="@string/pref_updates_sun"
 				android:defaultValue="true"
-				android:summary="Updates Sundays"
 				android:key="downloadWaPoPuzzler" />
 		</PreferenceCategory>
-		<PreferenceCategory android:title="Large Sized">
+		<PreferenceCategory android:title="@string/pref_large_sized">
 			<CheckBoxPreference
 				android:title="Chron. of Higher Ed."
+				android:summary="@string/pref_che_summary"
 				android:defaultValue="true"
-				android:summary="Updates Fridays (Currently Biweekly)"
 				android:key="downloadCHE" />
-			<CheckBoxPreference
-				android:title="LAT Sunday Calendar"
-				android:defaultValue="true"
-				android:summary="Updates Sundays"
-				android:key="downloadLACal" />
             <CheckBoxPreference
                 android:title="Merl Reagle's Crossword"
+                android:summary="@string/pref_updates_sun"
                 android:defaultValue="true"
-                android:summary="Updates Sundays"
                 android:key="downloadMerlReagle" />
 		    <CheckBoxPreference
 				android:title="Premier Crosswords"
+				android:summary="@string/pref_updates_sun"
 				android:defaultValue="true"
-				android:summary="Updates Sundays"
 				android:key="downloadPremier" />
 			<CheckBoxPreference
 				android:title="The Wall Street Journal"
+				android:summary="@string/pref_updates_fri"
 				android:defaultValue="true"
-				android:summary="Updates Fridays"
 				android:key="downloadWsj" />
 		</PreferenceCategory>
 	</PreferenceScreen>
     <PreferenceScreen
-        android:title="Monthly Crosswords"
-        android:summary="Puzzles which update monthly."
+        android:title="@string/pref_monthly_crosswords"
+        android:summary="@string/pref_monthly_crosswords_summary"
         android:key="selectMonthly">
         <CheckBoxPreference
             android:title="Muller Monthly Music Meta"
+            android:summary="@string/pref_mmmm_summary"
             android:defaultValue="true"
-            android:summary="Updates first Tuesday of the month\nSubmit meta answer online at:\nhttp://pmxwords.com"
             android:key="downloadMMMM" />
         <CheckBoxPreference
             android:title="Patrick Blindauer Free Monthly Puzzle"
+            android:summary="@string/pref_blindauer_summary"
             android:defaultValue="true"
-            android:summary="Updates on 1st of the month\nhttp://www.patrickblindauer.com"
             android:key="downloadPatrickBlindauer" />
     </PreferenceScreen>
     <PreferenceScreen
@@ -172,13 +167,13 @@
 		android:key="selectExperimental">
 		<CheckBoxPreference
 			android:title="Cru Puzzle Workshop"
-			android:defaultValue="false"
 			android:summary="NYT Cru Cryptic Fan Puzzles\nhttp://web.me.com/joecab/nytcru/\n(Please Read the help item below)"
+			android:defaultValue="false"
 			android:key="scrapeCru" />
 		<CheckBoxPreference
 			android:title="Kegler's Kryptics"
-			android:defaultValue="false"
 			android:summary="Ron &quot;Kegler&quot; Sweet's Cryptic Archive\nhttp://www.lafn.org/~keglerron/kegler.html\n(Please Read the help item below)"
+			android:defaultValue="false"
 			android:key="scrapeKegler" />
 		<Preference
 			android:title="About These Sources"
@@ -187,158 +182,152 @@
 </PreferenceCategory>
 
 <PreferenceCategory
-	android:title="Application Settings">
+	android:title="@string/pref_application_settings">
 	<CheckBoxPreference
-		android:title="Automatic Download"
+		android:title="@string/pref_automatic_download"
+		android:summary="@string/pref_automatic_download_summary"
 		android:defaultValue="true"
-		android:summary="Download today's puzzles when starting the application"
 		android:key="dlOnStartup"
 	/>
 
 	<CheckBoxPreference
-		android:title="No Download Notifications"
+		android:title="@string/pref_no_download_notifications"
+		android:summary="@string/pref_no_download_notifications_summary"
 		android:defaultValue="false"
-		android:summary="Prevents a notification for each puzzle downloaded from appearing in the notifications list."
 		android:key="suppressMessages"
 	/>
 
 	<CheckBoxPreference
-		android:title="No Hint Highlighting"
+		android:title="@string/pref_no_hint_highlighting"
+		android:summary="@string/pref_no_hint_highlighting_summary"
 		android:defaultValue="false"
-		android:summary="Prevents the pink boxes indicating 'hints' in the form of reveals or show errors."
 		android:key="suppressHints"
 	/>
 
 	<CheckBoxPreference
-		android:title="Delete on Cleanup"
+		android:title="@string/pref_delete_on_cleanup"
+		android:summary="@string/pref_delete_on_cleanup_summary"
 		android:defaultValue="false"
-		android:summary="Delete rather than archive old puzzles"
 		android:key="deleteOnCleanup"
 	/>
 
 	<ListPreference
-		android:title="Cleanup Unfinished"
-		android:summary="Determines how old an unfinished puzzle must be before it is archvied/deleted."
+		android:title="@string/pref_cleanup_unfinished"
+		android:summary="@string/pref_cleanup_unfinished_summary"
 		android:key="cleanupAge"
 		android:defaultValue="2"
 		android:entries="@array/cleanupAgeLabels"
 		android:entryValues="@array/cleanupAgeValues" />
 
 	<CheckBoxPreference
-		android:title="Snap to Current Word"
+		android:title="@string/pref_snap_to_current_word"
+		android:summary="@string/pref_snap_to_current_word_summary"
 		android:defaultValue="true"
-		android:summary="Toggles the auto-scrolling of the playboard to the current play position"
 		android:key="ensureVisible"
 	/>
 
 	<CheckBoxPreference
-		android:title="Show Length"
+		android:title="@string/pref_show_length"
+		android:summary="@string/pref_show_length_summary"
 		android:defaultValue="false"
-		android:summary="Shows the number of letters in the answer on the clue line"
 		android:key="showCount"
 	/>
 
 	<CheckBoxPreference
-		android:title="Scroll To Clue"
+		android:title="@string/pref_scroll_to_clue"
+		android:summary="@string/pref_scroll_to_clue_summary"
 		android:defaultValue="false"
-		android:summary="Toggles the auto-scrolling to the selected clue in the clues list mode. (Works like Shortyz 1)"
 		android:key="snapClue"
 	/>
 
 	<ListPreference
-		android:title="Movement Style"
-		android:summary="Select what happens when you type past the end of a word."
+		android:title="@string/pref_movement_style"
+		android:summary="@string/pref_movement_style_summary"
 		android:key="movementStrategy"
 		android:defaultValue="MOVE_NEXT_ON_AXIS"
 		android:entries="@array/movementStrategyLabels"
 		android:entryValues="@array/movementStrategyValues" />
 
 	<CheckBoxPreference
-		android:title="Skip Filled Boxes"
+		android:title="@string/pref_skip_filled_boxes"
+		android:summary="@string/pref_skip_filled_boxes_summary"
 		android:defaultValue="false"
-		android:summary="Toggles the skipping of filled boxes when you enter a new letter."
 		android:key="skipFilled"
 	/>
 
 	<CheckBoxPreference
-		android:title="Space Changes Direction"
+		android:title="@string/pref_space_changes_direction"
+		android:summary="@string/pref_space_changes_direction_summary"
 		android:defaultValue="true"
-		android:summary="Spacebar changed direction rather than blanking the box."
 		android:key="spaceChangesDirection"
 	/>
 
 	<CheckBoxPreference
-		android:title="Enter Changes Direction"
+		android:title="@string/pref_enter_changes_direction"
+		android:summary="@string/pref_enter_changes_direction_summary"
 		android:defaultValue="true"
-		android:summary="Enter changes direction rather than moving to the next clue."
 		android:key="enterChangesDirection"
 	/>
 
 	<CheckBoxPreference
-		android:title="Double Tap Zoom"
+		android:title="@string/pref_double_tap_zoom"
+		android:summary="@string/pref_double_tap_zoom_summary"
 		android:defaultValue="false"
-		android:summary="Double tap toggles between fit to screen, and your default zoom."
 		android:key="doubleTap"
 	/>
 
 	<CheckBoxPreference
-		android:title="Show Timer"
+		android:title="@string/pref_show_timer"
+		android:summary="@string/pref_show_timer_summary"
 		android:defaultValue="false"
-		android:summary="Shows your puzzle time.\nYou must leave and re-enter a puzzle to apply."
 		android:key="showTimer"
 	/>
 
 	<CheckBoxPreference
-		android:title="Full Screen"
+		android:title="@string/pref_full_screen"
+		android:summary="@string/pref_full_screen_summary"
 		android:defaultValue="false"
-		android:summary="Hides the notification bar.\nYou must leave and re-enter a puzzle to apply."
 		android:key="fullScreen"
 	/>
 
 	<ListPreference
-		android:title="Keyboard Style"
-		android:summary="Select soft keyboard layout."
+		android:title="@string/pref_keyboard_style"
+		android:summary="@string/pref_keyboard_style_summary"
 		android:key="keyboardType"
 		android:defaultValue="CONDENSED"
 		android:entries="@array/keyboardTypeLabels"
 		android:entryValues="@array/keyboardTypeValues" />
 
 	<CheckBoxPreference
-		android:title="Force Keyboard"
+		android:title="@string/pref_force_keyboard"
+		android:summary="@string/pref_force_keyboard_summary"
 		android:defaultValue="false"
-		android:summary="Forces the keyboard to always be on screen. \n Good for some generic tablets"
 		android:key="forceKeyboard"
 	/>
 
 	<ListPreference
-		android:title="Orientation Lock"
-		android:summary="Locks the screen location"
+		android:title="@string/pref_orientation_lock"
+		android:summary="@string/pref_orientation_lock_summary"
 		android:key="orientationLock"
 		android:defaultValue="UNLOCKED"
 		android:entries="@array/orientationLockLabels"
 		android:entryValues="@array/orientationLockValues" />
-	<!--  CheckBoxPreference
-		android:title="Full Screen"
-		android:defaultValue="false"
-		android:summary="Play screens run full screen."
-		android:key="fullScreen"
-	/-->
 
  </PreferenceCategory>
 
 	<PreferenceCategory
-		android:title="About Words With Crosses">
+		android:title="@string/pref_about_app">
 
 	<Preference
-		android:title="Release Notes"
+		android:title="@string/pref_release_notes"
 		android:key="releaseNotes"/>
 
 	<Preference
-		android:title="License"
+		android:title="@string/pref_license"
 		android:key="license"/>
 
 	 <Preference
-		android:title="Send Debug Package"
+		android:title="@string/pref_send_debug_package"
 		android:key="sendDebug"/>
 
 	</PreferenceCategory>
