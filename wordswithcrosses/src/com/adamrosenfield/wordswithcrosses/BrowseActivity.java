@@ -485,7 +485,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         List<PuzzleDatabaseHelper.IDAndFilename> dbFileList = dbHelper.getFilenameList();
 
         ArrayList<String> filesToAdd = new ArrayList<String>();
-        ArrayList<Integer> filesToRemove = new ArrayList<Integer>();
+        ArrayList<Long> filesToRemove = new ArrayList<Long>();
 
         // Pseudo-merge the two sorted lists to reconcile them
         int filenameIndex = 0;
@@ -564,7 +564,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         if (deleteOnCleanup) {
             // Get list of puzzles to delete
             List<IDAndFilename> puzzles = dbHelper.getFilenamesToCleanup(maxAge);
-            ArrayList<Integer> ids = new ArrayList<Integer>();
+            ArrayList<Long> ids = new ArrayList<Long>();
 
             // Delete the puzzles from the file system
             for (IDAndFilename idAndFilename : puzzles) {
@@ -606,7 +606,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
         // Delete the puzzle from the database
         PuzzleDatabaseHelper dbHelper = WordsWithCrossesApplication.getDatabaseHelper();
-        ArrayList<Integer> idsToRemove = new ArrayList<Integer>(1);
+        ArrayList<Long> idsToRemove = new ArrayList<Long>(1);
         idsToRemove.add(puzzle.id);
         dbHelper.removePuzzles(idsToRemove);
     }

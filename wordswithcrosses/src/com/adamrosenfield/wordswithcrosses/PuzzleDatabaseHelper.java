@@ -119,13 +119,13 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
 
     public static class IDAndFilename
     {
-        public IDAndFilename(int id, String filename)
+        public IDAndFilename(long id, String filename)
         {
             this.id = id;
             this.filename = filename;
         }
 
-        public int id;
+        public long id;
         public String filename;
     }
 
@@ -150,7 +150,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
         ArrayList<IDAndFilename> filenameList = new ArrayList<IDAndFilename>(cursor.getCount());
         while (cursor.moveToNext())
         {
-            filenameList.add(new IDAndFilename(cursor.getInt(0), cursor.getString(1)));
+            filenameList.add(new IDAndFilename(cursor.getLong(0), cursor.getString(1)));
         }
         cursor.close();
 
@@ -165,8 +165,10 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
      * @param sourceUrl Source URL where the puzzle was downloaded from
      * @param dateMillis Source date of the puzzle, in milliseconds since the
      *        epoch
+     *
+     * @return The puzzle ID of the new puzzle
      */
-    public void addPuzzle(File path, String source, String sourceUrl, long dateMillis)
+    public long addPuzzle(File path, String source, String sourceUrl, long dateMillis)
     {
         LOG.info("Adding puzzle to database: " + path);
 
@@ -177,7 +179,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
             e.printStackTrace();
             LOG.warning("Failed to load " + path + ", moving to quarantine");
             path.renameTo(new File(WordsWithCrossesApplication.QUARANTINE_DIR, path.getName()));
-            return;
+            return -1;
         }
 
         ContentValues values = new ContentValues();
@@ -194,10 +196,14 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
         values.put(COLUMN_CURRENT_ORIENTATION_ACROSS, true);
 
         SQLiteDatabase db = getWritableDatabase();
-        if (db.insert(TABLE_NAME, null, values) == -1)
+        long id = db.insert(TABLE_NAME, null, values);
+
+        if (id == -1)
         {
             LOG.warning("Failed to insert puzzle into database: " + path);
         }
+
+        return id;
     }
 
     /**
@@ -205,7 +211,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
      *
      * @param ids List of puzzle IDs to remove from the database
      */
-    public void removePuzzles(List<Integer> ids)
+    public void removePuzzles(List<Long> ids)
     {
         SQLiteDatabase db = getWritableDatabase();
 
@@ -262,17 +268,17 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
      * @return The ID of the puzzle with the given source URL, or -1 if no such
      *         puzzle exists
      */
-    public int getPuzzleIDForURL(String url)
+    public long getPuzzleIDForURL(String url)
     {
         SQLiteDatabase db = getReadableDatabase();
 
         String query = "SELECT " + COLUMN_ID + " FROM " + TABLE_NAME +
             " WHERE " + COLUMN_SOURCE_URL + "=? LIMIT 1";
         Cursor cursor = db.rawQuery(query,  new String[]{url});
-        int id = -1;
+        long id = -1;
         if (cursor.moveToNext())
         {
-            id = cursor.getInt(0);
+            id = cursor.getLong(0);
         }
         cursor.close();
 
@@ -387,7 +393,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
         while (cursor.moveToNext())
         {
             PuzzleMeta puzzle = new PuzzleMeta();
-            puzzle.id = cursor.getInt(0);
+            puzzle.id = cursor.getLong(0);
             puzzle.filename = cursor.getString(1);
             puzzle.archived = (cursor.getInt(2) != 0);
             puzzle.author = cursor.getString(3);
@@ -431,7 +437,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
         ArrayList<IDAndFilename> filenameList = new ArrayList<IDAndFilename>(cursor.getCount());
         while (cursor.moveToNext())
         {
-            filenameList.add(new IDAndFilename(cursor.getInt(0), cursor.getString(1)));
+            filenameList.add(new IDAndFilename(cursor.getLong(0), cursor.getString(1)));
         }
         cursor.close();
 
@@ -468,7 +474,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
      * @return True if the puzzle was found, or false if no such puzzle was
      *           found
      */
-    public boolean archivePuzzle(int puzzleId, boolean archive)
+    public boolean archivePuzzle(long puzzleId, boolean archive)
     {
         String selection = COLUMN_ID + "=" + puzzleId;
 

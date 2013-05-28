@@ -9,7 +9,7 @@ public class PuzzleMeta implements Serializable {
 
     private static final long serialVersionUID = -3211472808737203931L;
 
-    public int id;
+    public long id;
     public String filename;
     public boolean archived;
 	public String author;
