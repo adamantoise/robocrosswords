@@ -1,15 +1,12 @@
 package com.adamrosenfield.wordswithcrosses.puz;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import android.util.SparseArray;
 
-public class Playboard implements Serializable {
-
-    private static final long serialVersionUID = 6405191453517814859L;
+public class Playboard {
 
     private SparseArray<Position> acrossWordStarts = new SparseArray<Position>();
     private SparseArray<Position> downWordStarts = new SparseArray<Position>();
@@ -628,9 +625,7 @@ public class Playboard implements Serializable {
         this.showErrors = !this.showErrors;
     }
 
-    public static class Clue implements Serializable {
-
-        private static final long serialVersionUID = -1864152109239464267L;
+    public static class Clue {
 
         public String hint;
         public int number;
@@ -669,9 +664,7 @@ public class Playboard implements Serializable {
         }
     }
 
-    public static class Position implements Serializable {
-
-        private static final long serialVersionUID = 2454894630972632348L;
+    public static class Position {
 
         public int across;
         public int down;
@@ -707,9 +700,7 @@ public class Playboard implements Serializable {
         }
     }
 
-    public static class Word implements Serializable {
-
-        private static final long serialVersionUID = 6016784568874558665L;
+    public static class Word {
 
         public Position start;
         public boolean across;

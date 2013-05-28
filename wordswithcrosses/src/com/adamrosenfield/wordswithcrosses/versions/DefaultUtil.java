@@ -14,7 +14,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
@@ -22,7 +21,6 @@ import android.view.Window;
 
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.io.IO;
-import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
 
 public class DefaultUtil implements AndroidVersionUtils {
     public void setContext(Context ctx) {
@@ -71,9 +69,6 @@ public class DefaultUtil implements AndroidVersionUtils {
     }
 
     public void onActionBarWithText(SubMenu reveal) {
-    }
-
-    public void storeMetas(Uri uri, PuzzleMeta meta) {
     }
 
     public View onActionBarCustom(Activity a, int id) {

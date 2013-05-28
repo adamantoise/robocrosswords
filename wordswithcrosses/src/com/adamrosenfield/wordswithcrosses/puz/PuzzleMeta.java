@@ -1,13 +1,10 @@
 package com.adamrosenfield.wordswithcrosses.puz;
 
-import java.io.Serializable;
 import java.util.Calendar;
 
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 
-public class PuzzleMeta implements Serializable {
-
-    private static final long serialVersionUID = -3211472808737203931L;
+public class PuzzleMeta {
 
     public long id;
     public String filename;

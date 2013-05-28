@@ -1,6 +1,5 @@
 package com.adamrosenfield.wordswithcrosses.puz;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.logging.Logger;
@@ -8,9 +7,7 @@ import java.util.logging.Logger;
 import com.adamrosenfield.wordswithcrosses.io.IO;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 
-public class Puzzle implements Serializable {
-
-    private static final long serialVersionUID = -4009551624322300644L;
+public class Puzzle {
 
     private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
 

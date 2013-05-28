@@ -1,16 +1,13 @@
 package com.adamrosenfield.wordswithcrosses.puz;
 
-import java.io.Serializable;
 import java.util.Arrays;
 
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Word;
 
-public interface MovementStrategy extends Serializable {
+public interface MovementStrategy {
 
 	public static final MovementStrategy MOVE_NEXT_ON_AXIS = new MovementStrategy() {
-
-        private static final long serialVersionUID = -5695138709929263396L;
 
         public Word move(Playboard board, boolean skipCompletedLetters) {
 			if (board.isAcross()) {
@@ -30,8 +27,6 @@ public interface MovementStrategy extends Serializable {
 	};
 
 	public static final MovementStrategy STOP_ON_END = new MovementStrategy() {
-
-        private static final long serialVersionUID = -24157874003738103L;
 
         public Word move(Playboard board, boolean skipCompletedLetters) {
 			// This is overly complex, but I am trying to save calls to heavy
@@ -66,8 +61,6 @@ public interface MovementStrategy extends Serializable {
 	};
 
 	public static final MovementStrategy MOVE_NEXT_CLUE = new MovementStrategy() {
-
-        private static final long serialVersionUID = -4114757640814245498L;
 
         /**
 		 * Moves to the word corresponding to the next clue.  If the current word is the last
@@ -198,12 +191,9 @@ public interface MovementStrategy extends Serializable {
 
 	public static final MovementStrategy MOVE_PARALLEL_WORD = new MovementStrategy() {
 
-        private static final long serialVersionUID = 7715528243083560143L;
-
         public Word move(Playboard board, boolean skipCompletedLetters) {
 			Word w = board.getCurrentWord();
 			Position p = board.getHighlightLetter();
-
 
 			if ((w.across && p.across == w.start.across + w.length - 1)
 					|| (!w.across && p.down == w.start.down + w.length - 1)) {

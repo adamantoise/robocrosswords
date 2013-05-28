@@ -1,10 +1,6 @@
 package com.adamrosenfield.wordswithcrosses.puz;
 
-import java.io.Serializable;
-
-public class Box implements Serializable {
-
-    private static final long serialVersionUID = 1549618027569267396L;
+public class Box {
 
     private String responder;
     private boolean across;
