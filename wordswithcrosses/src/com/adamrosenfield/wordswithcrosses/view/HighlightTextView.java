@@ -13,8 +13,10 @@ import android.widget.TextView;
 
 
 public class HighlightTextView extends TextView {
-    Paint blackPaint = new Paint();
-    Paint highlight = new Paint();
+
+    private Paint blackPaint = new Paint();
+    private Paint highlight = new Paint();
+    private Path path = new Path();
     private DisplayMetrics metrics;
 
     {
@@ -42,18 +44,17 @@ public class HighlightTextView extends TextView {
         int center = height / 2;
         int topBreak = center - (int) (metrics.density * 10F);
         int bottomBreak = center + (int) (metrics.density * 10F);
-        Path p = new Path();
-        p.moveTo(width, 0F);
-        p.lineTo(width, topBreak);
-        p.lineTo(width - (metrics.density * 10), center);
-        p.lineTo(width, bottomBreak);
-        p.lineTo(width, height);
-        p.lineTo(width + 1, height);
-        p.lineTo(width + 1, -1);
-        p.lineTo(width, 0);
+        path.moveTo(width, 0F);
+        path.lineTo(width, topBreak);
+        path.lineTo(width - (metrics.density * 10), center);
+        path.lineTo(width, bottomBreak);
+        path.lineTo(width, height);
+        path.lineTo(width + 1, height);
+        path.lineTo(width + 1, -1);
+        path.lineTo(width, 0);
 
         canvas.drawRect(0, 0, width, height, highlight);
-        canvas.drawPath(p, blackPaint);
+        canvas.drawPath(path, blackPaint);
         super.onDraw(canvas);
     }
 }
