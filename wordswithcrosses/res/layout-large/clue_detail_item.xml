@@ -9,7 +9,7 @@
   android:minWidth="250dp">
   
   <TextView android:id="@+id/clueLine"
-  	android:textSize="14dp"
+  	android:textSize="14sp"
   	android:layout_width="fill_parent"
   	android:layout_height="wrap_content"
   	android:layout_marginTop="3dp"
@@ -17,7 +17,7 @@
   	android:textColor="#fff"/>
   
   <TextView android:id="@+id/clueWord"
-  	android:textSize="8dp"
+  	android:textSize="8sp"
   	android:typeface="monospace"
   	android:layout_width="fill_parent"
   	android:layout_height="wrap_content"

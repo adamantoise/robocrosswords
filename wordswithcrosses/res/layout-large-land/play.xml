@@ -3,11 +3,12 @@
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
 	
-	<TextView android:id="@+id/clueLine" 
+	<TextView
+	    android:id="@+id/clueLine" 
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content" 
 		android:text="@string/hello"
-		android:textSize="12dip" 
+		android:textSize="12sp" 
 		android:minLines="2"
 		android:maxLines="4"
 		android:textColor="#FFFFFF"
@@ -15,14 +16,12 @@
 		android:visibility="gone"
 	/>
 	
-	
 	 <android.inputmethodservice.KeyboardView
 		android:id="@+id/playKeyboard"
 		android:layout_alignParentBottom="true"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 	/>
-	
 	
 	<RelativeLayout
 	    android:id="@+id/clues"
@@ -39,10 +38,8 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true" />
     
-     </RelativeLayout>
-     
-	
-	
+    </RelativeLayout>
+
 	<com.adamrosenfield.wordswithcrosses.view.ScrollingImageView
 	    android:id="@+id/board"
 	    android:layout_width="wrap_content"

@@ -23,7 +23,7 @@
                 android:padding="7dp"
                 android:text="@string/completed_in"
                 android:textColor="#fff"
-                android:textSize="16dp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/elapsed"
@@ -32,7 +32,7 @@
                 android:padding="7dp"
                 android:text="XX:XX:XX"
                 android:textColor="#fff"
-                android:textSize="16dp"
+                android:textSize="16sp"
                 tools:ignore="HardcodedText" />
         </TableRow>
 
@@ -47,7 +47,7 @@
                 android:padding="7dp"
                 android:text="@string/total_clues"
                 android:textColor="#fff"
-                android:textSize="16dp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/totalClues"
@@ -56,7 +56,7 @@
                 android:padding="7dp"
                 android:text="XX"
                 android:textColor="#fff"
-                android:textSize="16dp"
+                android:textSize="16sp"
                 tools:ignore="HardcodedText" />
 
         </TableRow>
@@ -72,7 +72,7 @@
                 android:padding="7dp"
                 android:text="@string/total_boxes"
                 android:textColor="#fff"
-                android:textSize="16dp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/totalBoxes"
@@ -81,7 +81,7 @@
                 android:padding="7dp"
                 android:text="XX"
                 android:textColor="#fff"
-                android:textSize="16dp"
+                android:textSize="16sp"
                 tools:ignore="HardcodedText" />
 
         </TableRow>
@@ -97,7 +97,7 @@
                 android:padding="7dp"
                 android:text="@string/hinted_boxes"
                 android:textColor="#fff"
-                android:textSize="16dp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/cheatedBoxes"
@@ -106,7 +106,7 @@
                 android:padding="7dp"
                 android:text="XX (XX%)"
                 android:textColor="#fff"
-                android:textSize="16dp"
+                android:textSize="16sp"
                 tools:ignore="HardcodedText" />
 
         </TableRow>
