@@ -28,7 +28,7 @@ import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
  * ends with a | character.  The charset used is Mac Roman.
  *
  * For an example puzzle in this format, see:
- * src/test/resources/premiere-20100704.txt.
+ * http://joseph.king-online.com/clues/20130528.txt
  */
 public class KingFeaturesPlaintextIO {
     /**
