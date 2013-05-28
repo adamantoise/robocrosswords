@@ -7,4 +7,5 @@
 	android:paddingTop="2dip"
 	android:paddingBottom="2dip"
 	android:paddingLeft="5dip"
+	android:textIsSelectable="false"
 	style="?android:attr/listSeparatorTextViewStyle" />

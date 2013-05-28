@@ -8,6 +8,7 @@
   <TextView
     android:id="@+id/clueLine"
   	android:textSize="14sp"
+  	android:textIsSelectable="true"
   	android:layout_width="fill_parent"
   	android:layout_height="wrap_content"
   	android:layout_marginTop="3dp" />
@@ -16,6 +17,7 @@
     android:id="@+id/clueWord"
   	android:textSize="12sp"
   	android:typeface="monospace"
+    android:textIsSelectable="true"
   	android:layout_width="fill_parent"
   	android:layout_height="wrap_content"
   	android:layout_marginBottom="3dp" />

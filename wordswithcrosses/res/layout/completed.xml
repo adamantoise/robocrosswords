@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:padding="7dp"
                 android:text="@string/completed_in"
-                android:textColor="#fff"
+                android:textColor="#ffffff"
                 android:textSize="16sp" />
 
             <TextView
@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:padding="7dp"
                 android:text="XX:XX:XX"
-                android:textColor="#fff"
+                android:textColor="#ffffff"
                 android:textSize="16sp"
                 tools:ignore="HardcodedText" />
         </TableRow>
@@ -46,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:padding="7dp"
                 android:text="@string/total_clues"
-                android:textColor="#fff"
+                android:textColor="#ffffff"
                 android:textSize="16sp" />
 
             <TextView
@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:padding="7dp"
                 android:text="XX"
-                android:textColor="#fff"
+                android:textColor="#ffffff"
                 android:textSize="16sp"
                 tools:ignore="HardcodedText" />
 
@@ -71,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:padding="7dp"
                 android:text="@string/total_boxes"
-                android:textColor="#fff"
+                android:textColor="#ffffff"
                 android:textSize="16sp" />
 
             <TextView
@@ -80,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:padding="7dp"
                 android:text="XX"
-                android:textColor="#fff"
+                android:textColor="#ffffff"
                 android:textSize="16sp"
                 tools:ignore="HardcodedText" />
 
@@ -96,7 +96,7 @@
                 android:layout_height="wrap_content"
                 android:padding="7dp"
                 android:text="@string/hinted_boxes"
-                android:textColor="#fff"
+                android:textColor="#ffffff"
                 android:textSize="16sp" />
 
             <TextView
@@ -105,7 +105,7 @@
                 android:layout_height="wrap_content"
                 android:padding="7dp"
                 android:text="XX (XX%)"
-                android:textColor="#fff"
+                android:textColor="#ffffff"
                 android:textSize="16sp"
                 tools:ignore="HardcodedText" />
 

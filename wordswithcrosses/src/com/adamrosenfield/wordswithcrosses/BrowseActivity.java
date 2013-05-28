@@ -119,7 +119,13 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
             return;
         }
 
-        contextPuzzle = ((PuzzleMeta)puzzleList.getAdapter().getItem(info.position));
+        // Ignore selection if user selected a separator
+        Object item = puzzleList.getAdapter().getItem(info.position);
+        if (!(item instanceof PuzzleMeta)) {
+            return;
+        }
+
+        contextPuzzle = ((PuzzleMeta)item);
 
         menu.setHeaderTitle(contextPuzzle.title);
 
