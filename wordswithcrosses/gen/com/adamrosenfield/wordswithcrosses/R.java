@@ -92,20 +92,22 @@ public final class R {
         public static final int source_item_highlight=0x7f03000c;
     }
     public static final class string {
+        public static final int across=0x7f06005e;
         public static final int activity_clues=0x7f060002;
         public static final int activity_puzzle_completed=0x7f060003;
         public static final int activity_settings=0x7f060001;
         public static final int app_name=0x7f060000;
-        public static final int completed_in=0x7f06005a;
-        public static final int done=0x7f06005f;
-        public static final int download_failed=0x7f060066;
-        public static final int downloaded_new_puzzles_text=0x7f060064;
-        public static final int downloaded_new_puzzles_title=0x7f060063;
-        public static final int downloaded_puzzle_title=0x7f060065;
-        public static final int downloading_from=0x7f060062;
-        public static final int downloading_puzzles=0x7f060061;
+        public static final int completed_in=0x7f060060;
+        public static final int done=0x7f060065;
+        public static final int down=0x7f06005f;
+        public static final int download_failed=0x7f06006c;
+        public static final int downloaded_new_puzzles_text=0x7f06006a;
+        public static final int downloaded_new_puzzles_title=0x7f060069;
+        public static final int downloaded_puzzle_title=0x7f06006b;
+        public static final int downloading_from=0x7f060068;
+        public static final int downloading_puzzles=0x7f060067;
         public static final int hello=0x7f060004;
-        public static final int hinted_boxes=0x7f06005d;
+        public static final int hinted_boxes=0x7f060063;
         public static final int menu_archive=0x7f060007;
         public static final int menu_archives=0x7f060006;
         public static final int menu_bydate_asc=0x7f06000c;
@@ -191,10 +193,14 @@ public final class R {
         public static final int pref_username_summary_nyt=0x7f06001d;
         public static final int pref_weekly_crosswords=0x7f060015;
         public static final int pref_weekly_crosswords_summary=0x7f060016;
-        public static final int puzzle_select=0x7f060060;
-        public static final int share=0x7f06005e;
-        public static final int total_boxes=0x7f06005c;
-        public static final int total_clues=0x7f06005b;
+        public static final int puzzle_select=0x7f060066;
+        public static final int puzzles=0x7f06005b;
+        public static final int share=0x7f060064;
+        public static final int source_download=0x7f06005c;
+        public static final int source_unknown=0x7f06005d;
+        public static final int sources=0x7f06005a;
+        public static final int total_boxes=0x7f060062;
+        public static final int total_clues=0x7f060061;
     }
     public static final class style {
         public static final int WordsWithCrossesTheme=0x7f070000;

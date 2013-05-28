@@ -95,6 +95,13 @@
     <string name="pref_send_debug_package">Send Debug Package</string>
     <string name="pref_send_debug_package_summary">Emails debugging information about your device to the developer</string>
 
+    <string name="sources">Sources</string>
+    <string name="puzzles">Puzzles</string>
+    <string name="source_download">Downloaded Puzzles</string>
+    <string name="source_unknown">Unknown Source</string>
+
+    <string name="across">Across</string>
+    <string name="down">Down</string>
     <string name="completed_in">Completed In</string>
     <string name="total_clues">Total Clues</string>
     <string name="total_boxes">Total Boxes</string>

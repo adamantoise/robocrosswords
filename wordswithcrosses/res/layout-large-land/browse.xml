@@ -14,7 +14,7 @@
 			android:textSize="18sp"
 			android:textStyle="bold"
 			android:textColor="#FFF"
-			android:text="Sources"
+			android:text="@string/sources"
 			android:background="#313131" />
 		<TextView
 		    android:layout_width="fill_parent"
@@ -23,7 +23,7 @@
 			android:textSize="18sp"
 			android:textStyle="bold"
 			android:textColor="#FFF"
-			android:text="Puzzles"
+			android:text="@string/puzzles"
 			android:background="#313131" />
 	</LinearLayout>
 	<LinearLayout
