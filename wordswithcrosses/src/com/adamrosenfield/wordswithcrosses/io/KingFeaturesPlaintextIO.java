@@ -32,7 +32,7 @@ import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
  */
 public class KingFeaturesPlaintextIO {
     /**
-     * Take an InputStream containing a plaintext puzzle to a DataOutputStream containing
+     * Take an InputStream containing a plaintext puzzle to a OutputStream containing
      * the generated .puz file.  Returns true if the process succeeded, or false if it fails
      * (for example, if the plaintext file is not in a valid format).
      */
