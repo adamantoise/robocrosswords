@@ -14,10 +14,11 @@
         android:layout_width="70dp"
         android:layout_height="fill_parent"
         android:gravity="center_horizontal|center_vertical"
-        android:lines="2"
-        android:paddingLeft="10dp"
-        android:text="Wed\nJan 2, 2001"
-        android:textSize="10sp"
+        android:lines="3"
+        android:singleLine="false"
+        android:paddingLeft="6dp"
+        android:text="Wednesday Jan 2, 2001"
+        android:textSize="12sp"
         tools:ignore="HardcodedText" />
 
     <LinearLayout

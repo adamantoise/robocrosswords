@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:text="(c) 2010"
-        android:textSize="10sp"
+        android:textSize="12sp"
         tools:ignore="HardcodedText" />
 
     <TextView
