@@ -198,7 +198,8 @@ public class HttpDownloadActivity extends WordsWithCrossesActivity {
 
             // Add the puzzle to the database
             PuzzleDatabaseHelper dbHelper = WordsWithCrossesApplication.getDatabaseHelper();
-            dbHelper.addPuzzle(finalDestFile,  "Downloaded puzzles", uriString, System.currentTimeMillis());
+            String source = getResources().getString(R.string.source_download);
+            dbHelper.addPuzzle(finalDestFile, source, uriString, System.currentTimeMillis());
             updateLastDatabaseSyncTime();
 
             // Start playing the puzzle

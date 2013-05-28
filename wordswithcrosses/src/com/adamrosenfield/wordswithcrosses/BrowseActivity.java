@@ -513,9 +513,10 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         }
 
         // Update the database accordingly
+        String source = getResources().getString(R.string.source_unknown);
         for (String filename : filesToAdd) {
             File file = new File(filename);
-            dbHelper.addPuzzle(file, "", "", file.lastModified());
+            dbHelper.addPuzzle(file, source, "", file.lastModified());
         }
 
         dbHelper.removePuzzles(filesToRemove);
