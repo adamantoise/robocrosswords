@@ -15,7 +15,11 @@ public class WaPoDownloader extends AbstractJPZDownloader {
     }
 
     public boolean isPuzzleAvailable(Calendar date) {
-        return true;
+        // Only the most recent 2 weeks of puzzles are available
+        Calendar now = Calendar.getInstance();
+        long millisOld = now.getTimeInMillis() - date.getTimeInMillis();
+        int daysOld = (int)(millisOld / ((long)86400 * 1000));
+        return (daysOld <= 14);
     }
 
     @Override

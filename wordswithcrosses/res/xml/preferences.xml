@@ -12,6 +12,7 @@
 		>
 		<CheckBoxPreference
 			android:title="CrosSynergy/Washington Post"
+			android:summary="@string/pref_wapo_summary"
 			android:defaultValue="true"
 			android:key="downloadWaPo" />
 		<CheckBoxPreference
