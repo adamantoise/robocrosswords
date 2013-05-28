@@ -33,9 +33,9 @@
             android:layout_height="wrap_content"
             android:ellipsize="start"
             android:gravity="center_vertical"
-            android:singleLine="true"
             android:paddingLeft="10dp"
             android:paddingTop="2dp"
+            android:singleLine="true"
             android:text="New York Times"
             android:textColor="#FFFFFF"
             android:textSize="25sp"
@@ -51,19 +51,5 @@
             android:text="Caption text"
             android:textSize="15sp"
             tools:ignore="HardcodedText" />
-
     </LinearLayout>
-
-    <!--
-            ProgressBar
-  		style="?android:attr/progressBarStyleHorizontal"
-  		android:layout_width="fill_parent"
-  		android:layout_height="3dp"
-  		android:max="100"
-  		android:progress="80"
-  		android:id="@+id/puzzle_progress"
-  		
-  		/
-    -->
-
 </LinearLayout>

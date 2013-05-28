@@ -34,8 +34,6 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@id/puzzle_date"
             android:gravity="center_vertical"
             android:orientation="vertical" >
 
@@ -43,8 +41,6 @@
                 android:id="@+id/puzzle_name"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_toLeftOf="@id/puzzle_date"
                 android:ellipsize="start"
                 android:gravity="center_vertical"
                 android:paddingLeft="10dp"
@@ -66,16 +62,5 @@
                 android:textSize="15sp"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
-
-        <!--
-        <ProgressBar
-  		    style="?android:attr/progressBarStyleHorizontal"
-  		    android:layout_width="fill_parent"
-  		    android:layout_height="3dp"
-  		    android:max="100"
-  		    android:progress="80"
-  		    android:id="@+id/puzzle_progress">
-        -->
     </LinearLayout>
-
 </RelativeLayout>
