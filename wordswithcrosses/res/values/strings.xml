@@ -104,8 +104,6 @@
 
     <string name="puzzle_select">Select a puzzle:</string>
 
-    <string name="close_browser">Close Browser</string>
-
     <string name="downloading_puzzles">Downloading Puzzles</string>
     <string name="downloading_from">Downloading from ${SOURCE}</string>
     <string name="downloaded_new_puzzles_title">Downloaded new puzzles!</string>
