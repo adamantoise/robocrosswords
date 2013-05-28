@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import android.app.Dialog;
 import android.app.NotificationManager;
@@ -744,7 +745,8 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         DATE_DESC,
         SOURCE_ASC;
 
-        public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("EEEEEEEEE MMM dd, yyyy");
+        public static final SimpleDateFormat DATE_FORMAT
+            = new SimpleDateFormat("EEEE MMMM dd, yyyy", Locale.getDefault());
 
         /**
          * Gets the "ORDER BY" clause to be used for database queries with this
@@ -782,7 +784,8 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         }
     }
 
-    private static final SimpleDateFormat FILE_ADAPTER_DATE_FORMAT = new SimpleDateFormat("EEEEEEEEE\n MMM dd, yyyy");
+    private static final SimpleDateFormat FILE_ADAPTER_DATE_FORMAT
+        = new SimpleDateFormat("EEEE\nMMM dd, yyyy", Locale.getDefault());
 
     private class FileAdapter extends BaseAdapter {
         private ArrayList<PuzzleMeta> puzzles = new ArrayList<PuzzleMeta>();

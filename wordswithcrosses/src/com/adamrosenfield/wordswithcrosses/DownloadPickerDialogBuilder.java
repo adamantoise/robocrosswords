@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -29,7 +30,7 @@ import com.adamrosenfield.wordswithcrosses.net.DummyDownloader;
  * Custom dialog for choosing puzzles to download.
  */
 public class DownloadPickerDialogBuilder {
-    private static DateFormat df = new SimpleDateFormat("EEEE");
+    private static DateFormat DATE_FORMAT = new SimpleDateFormat("EEEE", Locale.getDefault());
     private Activity mActivity;
     private Dialog mDialog;
     private List<Downloader> mAvailableDownloaders;
@@ -107,7 +108,7 @@ public class DownloadPickerDialogBuilder {
     }
 
     private void updateDateLabel() {
-        mDateLabel.setText(df.format(getCurrentDate().getTime()));
+        mDateLabel.setText(DATE_FORMAT.format(getCurrentDate().getTime()));
     }
 
     private void updatePuzzleSelect(String toSelect) {
