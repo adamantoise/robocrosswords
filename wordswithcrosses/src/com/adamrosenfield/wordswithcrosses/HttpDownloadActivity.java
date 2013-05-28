@@ -90,9 +90,10 @@ public class HttpDownloadActivity extends WordsWithCrossesActivity {
 
         if (!lowercaseExtension.equals(".puz") && !lowercaseExtension.equals(".jpz")) {
             LOG.warning("Unknown file extension: " + filename);
+            String text = getResources().getString(R.string.unknown_extension) + extension;
             Toast toast = Toast.makeText(
                 this,
-                "Unknown file extension: " + extension,
+                text,
                 Toast.LENGTH_SHORT);
             toast.show();
             finish();
@@ -118,7 +119,8 @@ public class HttpDownloadActivity extends WordsWithCrossesActivity {
         final InputStream inputRef = input;
 
         final ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setMessage("Downloading...\n" + filenameRef);
+        String text = getResources().getString(R.string.downloading_newline) + filenameRef;
+        dialog.setMessage(text);
         dialog.setCancelable(false);
         dialog.show();
 
@@ -214,9 +216,10 @@ public class HttpDownloadActivity extends WordsWithCrossesActivity {
     private void notifyDownloadFailed(final String filename) {
         handler.post(new Runnable() {
             public void run() {
+                String text = getResources().getString(R.string.download_failed_newline) + filename;
                 Toast toast = Toast.makeText(
                     HttpDownloadActivity.this,
-                    "Unable to download\n" + filename,
+                    text,
                     Toast.LENGTH_LONG);
                 toast.show();
             }

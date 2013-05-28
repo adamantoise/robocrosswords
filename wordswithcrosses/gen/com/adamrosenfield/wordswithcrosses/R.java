@@ -100,11 +100,13 @@ public final class R {
         public static final int completed_in=0x7f060061;
         public static final int done=0x7f060066;
         public static final int down=0x7f060060;
-        public static final int download_failed=0x7f06006d;
-        public static final int downloaded_new_puzzles_text=0x7f06006b;
-        public static final int downloaded_new_puzzles_title=0x7f06006a;
-        public static final int downloaded_puzzle_title=0x7f06006c;
+        public static final int download_failed=0x7f06006e;
+        public static final int download_failed_newline=0x7f06006f;
+        public static final int downloaded_new_puzzles_text=0x7f06006c;
+        public static final int downloaded_new_puzzles_title=0x7f06006b;
+        public static final int downloaded_puzzle_title=0x7f06006d;
         public static final int downloading_from=0x7f060069;
+        public static final int downloading_newline=0x7f06006a;
         public static final int downloading_puzzles=0x7f060068;
         public static final int hello=0x7f060004;
         public static final int hinted_boxes=0x7f060064;
@@ -202,6 +204,7 @@ public final class R {
         public static final int sources=0x7f06005b;
         public static final int total_boxes=0x7f060063;
         public static final int total_clues=0x7f060062;
+        public static final int unknown_extension=0x7f060070;
     }
     public static final class style {
         public static final int WordsWithCrossesTheme=0x7f070000;

@@ -114,9 +114,12 @@
 
     <string name="downloading_puzzles">Downloading Puzzles</string>
     <string name="downloading_from">Downloading from ${SOURCE}</string>
+    <string name="downloading_newline">Downloading\n</string>
     <string name="downloaded_new_puzzles_title">Downloaded new puzzles!</string>
     <string name="downloaded_new_puzzles_text">New puzzles were downloaded.</string>
     <string name="downloaded_puzzle_title">Downloaded ${SOURCE}</string>
     <string name="download_failed">Download failed: ${SOURCE}</string>
+    <string name="download_failed_newline">Download failed:\n</string>
+    <string name="unknown_extension">Unknown file extension:\u0020</string>
 
 </resources>
