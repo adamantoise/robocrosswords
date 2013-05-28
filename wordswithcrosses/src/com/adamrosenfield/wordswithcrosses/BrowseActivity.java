@@ -19,7 +19,6 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -167,9 +166,9 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         lastOpenedView = v;
         lastOpenedPuzzle = ((PuzzleMeta)v.getTag());
 
-        File puzFile = new File(lastOpenedPuzzle.filename);
-        Intent i = new Intent(Intent.ACTION_EDIT, Uri.fromFile(puzFile), this, PlayActivity.class);
-        this.startActivity(i);
+        Intent intent = new Intent(Intent.ACTION_EDIT, null, this, PlayActivity.class);
+        intent.putExtra(PlayActivity.EXTRA_PUZZLE_ID, lastOpenedPuzzle.id);
+        this.startActivity(intent);
     }
 
     @Override

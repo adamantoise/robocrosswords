@@ -84,14 +84,11 @@ public class IO {
 
 	public static Puzzle load(File file) throws IOException {
 	    FileInputStream fis = new FileInputStream(file);
-	    Puzzle puz;
         try {
-            puz = load(new DataInputStream(fis));
+            return load(new DataInputStream(fis));
         } finally {
             fis.close();
         }
-
-	    return puz;
 	}
 
 	public static Puzzle load(DataInputStream input) throws IOException {

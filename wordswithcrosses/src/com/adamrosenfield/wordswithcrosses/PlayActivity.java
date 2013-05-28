@@ -59,10 +59,15 @@ import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.ScaleListener
 import com.adamrosenfield.wordswithcrosses.view.SeparatedListAdapter;
 
 public class PlayActivity extends WordsWithCrossesActivity {
+
+    /** Extra data tag required by this activity */
+    public static final String EXTRA_PUZZLE_ID = "puzzle_id";
+    public static final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
 	private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
 	private static final int INFO_DIALOG = 0;
 	private static final int REVEAL_PUZZLE_DIALOG = 2;
-	static final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
 	@SuppressWarnings("rawtypes")
 	private AdapterView across;
 	@SuppressWarnings("rawtypes")
@@ -80,6 +85,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 	private KeyboardView keyboardView = null;
 	private MovementStrategy movement = null;
 	private Puzzle puz;
+	private long puzzleId;
 	private ScrollingImageView boardView;
 	private TextView clue;
 	private boolean fitToScreen;
@@ -180,19 +186,21 @@ public class PlayActivity extends WordsWithCrossesActivity {
 					WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		}
 
+		String filename = null;
 		try {
-			Uri u = this.getIntent().getData();
+		    puzzleId = getIntent().getLongExtra(EXTRA_PUZZLE_ID,  -1);
+		    if (puzzleId == -1) {
+		        throw new IOException(EXTRA_PUZZLE_ID + " extra must be specified");
+		    }
 
-			if (u != null) {
-				if (u.getScheme().equals("file")) {
-					baseFile = new File(u.getPath());
-					puz = IO.load(baseFile);
-				}
-			}
+		    PuzzleDatabaseHelper dbHelper = WordsWithCrossesApplication.getDatabaseHelper();
+		    filename = dbHelper.getFilename(puzzleId);
+		    if (filename == null) {
+		        throw new IOException("Invalid puzzle ID: " + puzzleId);
+		    }
 
-			if (puz == null) {
-				throw new IOException();
-			}
+		    baseFile = new File(filename);
+		    puz = IO.load(baseFile);
 
 			BOARD = new Playboard(puz, movement);
 			RENDERER = new PlayboardRenderer(BOARD, metrics.density,
@@ -386,23 +394,15 @@ public class PlayActivity extends WordsWithCrossesActivity {
 				}
 			});
 		} catch (IOException e) {
-			LOG.info("Intent data: " + this.getIntent().getData());
 			e.printStackTrace();
 
-			String filename = null;
-
-			try {
-				filename = this.baseFile.getName();
-			} catch (Exception ee) {
-				e.printStackTrace();
+			String text = getResources().getString(R.string.load_puzzle_failed);
+			if (filename != null) {
+			    text += filename;
 			}
 
-			Toast t = Toast
-					.makeText(
-							this,
-							(("Unable to read file" + filename) != null) ? (" \n" + filename)
-									: "", Toast.LENGTH_SHORT);
-			t.show();
+			Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+			toast.show();
 			this.finish();
 
 			return;
@@ -870,10 +870,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
 			return true;
 		} else if (item.getTitle().equals("Help")) {
-			Intent i = new Intent(Intent.ACTION_VIEW,
-					Uri.parse("file:///android_asset/playscreen.html"), this,
-					HTMLActivity.class);
-			this.startActivity(i);
+		    showHTMLPage("playscreen.html");
 		} else if (item.getTitle().equals("Small")) {
 			this.setClueSize(12);
 		} else if (item.getTitle().equals("Medium")) {
@@ -1211,8 +1208,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 			timer.stop();
 			puz.setTime(timer.getElapsed());
 			this.timer = null;
-			Intent i = new Intent(PlayActivity.this,
-					PuzzleFinishedActivity.class);
+			Intent i = new Intent(PlayActivity.this, PuzzleFinishedActivity.class);
 			this.startActivity(i);
 
 		}

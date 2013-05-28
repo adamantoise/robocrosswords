@@ -13,7 +13,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 
 import com.adamrosenfield.wordswithcrosses.BrowseActivity;
 import com.adamrosenfield.wordswithcrosses.PlayActivity;
@@ -28,6 +27,8 @@ public class Downloaders {
     private List<Downloader> downloaders = new LinkedList<Downloader>();
     private NotificationManager notificationManager;
     private boolean suppressMessages;
+    private Intent browseIntent;
+    private PendingIntent pendingBrowseIntent;
 
     private static final int GENERAL_NOTIF_ID = 0;
     private static AtomicInteger nextNotifId = new AtomicInteger(1);
@@ -36,6 +37,9 @@ public class Downloaders {
         this.context = context;
         this.notificationManager = notificationManager;
         this.prefs = context.getPrefs();
+
+        browseIntent = new Intent(Intent.ACTION_EDIT, null, context, BrowseActivity.class);
+        pendingBrowseIntent = PendingIntent.getActivity(context, 0, browseIntent, 0);
 
         // BEQ has requested that his puzzles not be automatically downloaded
         //if (prefs.getBoolean("downloadBEQ", true)) {
@@ -205,9 +209,9 @@ public class Downloaders {
                 if (d.download(date)) {
                     LOG.info("Downloaded succeeded: " + filename);
                     succeeded = true;
-                    dbHelper.addPuzzle(downloadedFile, d.getName(), d.sourceUrl(date), date.getTimeInMillis());
+                    long id = dbHelper.addPuzzle(downloadedFile, d.getName(), d.sourceUrl(date), date.getTimeInMillis());
                     if (!suppressMessages) {
-                        postDownloadedNotification(notifId, d.getName(), downloadedFile);
+                        postDownloadedNotification(notifId, d.getName(), downloadedFile, id);
                     }
 
                     somethingDownloaded = true;
@@ -247,9 +251,7 @@ public class Downloaders {
     private void updateDownloadingNotification(Notification not, String contentTitle, String source) {
         String contentText = context.getResources().getString(R.string.downloading_from);
         contentText = contentText.replace("${SOURCE}", source);
-        Intent notificationIntent = new Intent(context, PlayActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
-        not.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
+        not.setLatestEventInfo(context, contentTitle, contentText, pendingBrowseIntent);
     }
 
     @SuppressWarnings("deprecation")
@@ -258,13 +260,9 @@ public class Downloaders {
         Notification not = new Notification(
                 android.R.drawable.stat_sys_download_done, contentTitle,
                 System.currentTimeMillis());
-        Intent notificationIntent = new Intent(Intent.ACTION_EDIT, null,
-                context, BrowseActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-                notificationIntent, 0);
 
         String contentText = context.getResources().getString(R.string.downloaded_new_puzzles_text);
-        not.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
+        not.setLatestEventInfo(context, contentTitle, contentText, pendingBrowseIntent);
 
         if (notificationManager != null) {
             notificationManager.notify(GENERAL_NOTIF_ID, not);
@@ -272,18 +270,18 @@ public class Downloaders {
     }
 
     @SuppressWarnings("deprecation")
-    private void postDownloadedNotification(int notifId, String name, File puzFile) {
+    private void postDownloadedNotification(int notifId, String name, File puzFile, long puzzleId) {
         String contentTitle = context.getResources().getString(R.string.downloaded_puzzle_title);
         contentTitle = contentTitle.replace("${SOURCE}", name);
+
         Notification not = new Notification(
                 android.R.drawable.stat_sys_download_done, contentTitle,
                 System.currentTimeMillis());
-        Intent notificationIntent = new Intent(Intent.ACTION_EDIT,
-                Uri.fromFile(puzFile), context, PlayActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-                notificationIntent, 0);
-        not.setLatestEventInfo(context, contentTitle, puzFile.getName(),
-                contentIntent);
+
+        Intent notificationIntent = new Intent(Intent.ACTION_EDIT, null, context, PlayActivity.class);
+        notificationIntent.putExtra(PlayActivity.EXTRA_PUZZLE_ID, puzzleId);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+        not.setLatestEventInfo(context, contentTitle, puzFile.getName(), contentIntent);
 
         if (notificationManager != null) {
             notificationManager.notify(notifId, not);
@@ -297,9 +295,7 @@ public class Downloaders {
         Notification not = new Notification(
                 android.R.drawable.stat_notify_error, contentTitle,
                 System.currentTimeMillis());
-        Intent notificationIntent = new Intent(Intent.ACTION_EDIT, null, context, BrowseActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
-        not.setLatestEventInfo(context, contentTitle, name, contentIntent);
+        not.setLatestEventInfo(context, contentTitle, name, pendingBrowseIntent);
 
         if (this.notificationManager != null) {
             this.notificationManager.notify(notifId, not);

@@ -121,5 +121,6 @@
     <string name="download_failed">Download failed: ${SOURCE}</string>
     <string name="download_failed_newline">Download failed:\n</string>
     <string name="unknown_extension">Unknown file extension:\u0020</string>
+    <string name="load_puzzle_failed">Failed to load puzzle:\n"</string>
 
 </resources>

@@ -110,6 +110,7 @@ public final class R {
         public static final int downloading_puzzles=0x7f060068;
         public static final int hello=0x7f060004;
         public static final int hinted_boxes=0x7f060064;
+        public static final int load_puzzle_failed=0x7f060071;
         public static final int menu_archive=0x7f060007;
         public static final int menu_archives=0x7f060006;
         public static final int menu_bydate_asc=0x7f06000c;

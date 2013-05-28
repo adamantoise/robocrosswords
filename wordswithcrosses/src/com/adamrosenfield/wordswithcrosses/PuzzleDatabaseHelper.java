@@ -298,6 +298,31 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
     }
 
     /**
+     * Gets the filename for the puzzle with the given ID
+     *
+     * @param id ID of the puzzle to query
+     *
+     * @return The filename of the puzzle with the given ID, or null if no such
+     *         puzzle exists
+     */
+    public String getFilename(long id)
+    {
+        SQLiteDatabase db = getReadableDatabase();
+
+        String query = "SELECT " + COLUMN_FILENAME + " FROM " + TABLE_NAME +
+            " WHERE " + COLUMN_ID + "=" + id + " LIMIT 1";
+        Cursor cursor = db.rawQuery(query, null);
+        String filename = null;
+        if (cursor.moveToNext())
+        {
+            filename = cursor.getString(0);
+        }
+        cursor.close();
+
+        return filename;
+    }
+
+    /**
      * Gets the filename for the puzzle with the given URL
      *
      * @param url Source URL of the puzzle to query

@@ -53,10 +53,11 @@ public class HttpDownloadActivity extends WordsWithCrossesActivity {
         // Check if the puzzle is already in the database.  If so, skip the
         // download and start playing it.
         PuzzleDatabaseHelper dbHelper = WordsWithCrossesApplication.getDatabaseHelper();
-        String existingFilename = dbHelper.getFilenameForURL(uriString);
-        if (existingFilename != null) {
-            LOG.info("Skipping download for " + uriString + ", already downloaded at " + existingFilename);
-            Intent intent = new Intent(Intent.ACTION_EDIT, Uri.fromFile(new File(existingFilename)), this, PlayActivity.class);
+        long existingId = dbHelper.getPuzzleIDForURL(uriString);
+        if (existingId != -1) {
+            LOG.info("Skipping download for " + uriString + ", already downloaded with ID=" + existingId);
+            Intent intent = new Intent(Intent.ACTION_EDIT, null, this, PlayActivity.class);
+            intent.putExtra(PlayActivity.EXTRA_PUZZLE_ID, existingId);
             startActivity(intent);
             finish();
             return;
@@ -201,11 +202,12 @@ public class HttpDownloadActivity extends WordsWithCrossesActivity {
             // Add the puzzle to the database
             PuzzleDatabaseHelper dbHelper = WordsWithCrossesApplication.getDatabaseHelper();
             String source = getResources().getString(R.string.source_download);
-            dbHelper.addPuzzle(finalDestFile, source, uriString, System.currentTimeMillis());
+            long id = dbHelper.addPuzzle(finalDestFile, source, uriString, System.currentTimeMillis());
             updateLastDatabaseSyncTime();
 
             // Start playing the puzzle
-            Intent intent = new Intent(Intent.ACTION_EDIT, Uri.fromFile(finalDestFile), this, PlayActivity.class);
+            Intent intent = new Intent(Intent.ACTION_EDIT, null, this, PlayActivity.class);
+            intent.putExtra(PlayActivity.EXTRA_PUZZLE_ID, id);
             startActivity(intent);
         } catch (IOException e) {
             e.printStackTrace();
