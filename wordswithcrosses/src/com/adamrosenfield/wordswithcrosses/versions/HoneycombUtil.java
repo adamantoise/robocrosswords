@@ -15,10 +15,6 @@ import com.adamrosenfield.wordswithcrosses.PuzzleFinishedActivity;
 @TargetApi(11)
 public class HoneycombUtil extends GingerbreadUtil {
 
-    {
-        System.out.println("Honeycomb Utils.");
-    }
-
     @Override
     public void finishOnHomeButton(final Activity a) {
         ActionBar bar = a.getActionBar();
@@ -61,7 +57,6 @@ public class HoneycombUtil extends GingerbreadUtil {
 
     @Override
     public View onActionBarCustom(Activity a, int id) {
-        System.out.println("Setting custom ActionBar view");
         ActionBar bar = a.getActionBar();
         if (bar == null) {
             return null;
@@ -70,7 +65,6 @@ public class HoneycombUtil extends GingerbreadUtil {
         bar.setDisplayShowTitleEnabled(false);
         bar.setDisplayShowHomeEnabled(true);
         bar.setCustomView(id);
-        System.out.println(bar.getCustomView());
         return bar.getCustomView();
     }
 

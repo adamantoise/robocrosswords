@@ -36,7 +36,6 @@ public interface AndroidVersionUtils {
             if (INSTANCE != null){
                 return INSTANCE;
             }
-            System.out.println("Creating utils for version: " + android.os.Build.VERSION.SDK_INT);
 
             try {
                 int version = android.os.Build.VERSION.SDK_INT;

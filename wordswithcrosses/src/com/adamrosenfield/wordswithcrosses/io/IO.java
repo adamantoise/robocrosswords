@@ -15,6 +15,7 @@ import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.logging.Logger;
 
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.puz.Box;
@@ -30,6 +31,8 @@ public class IO {
 
 	// GEXT section bitmasks
 	private static final byte GEXT_SQUARE_CIRCLED = (byte) 0x80;
+
+	private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
 
     /**
      * Copies the data from an InputStream object to an OutputStream object.
@@ -92,6 +95,8 @@ public class IO {
 	}
 
 	public static Puzzle load(DataInputStream input) throws IOException {
+	    long startTime = System.currentTimeMillis();
+
 		Puzzle puz = new Puzzle();
 
 		input.skipBytes(0x18);
@@ -147,8 +152,7 @@ public class IO {
 				} else if (boxes[x][y] != null) {
 					boxes[x][y].setResponse(answer);
 				} else {
-					System.out.println("Unexpected answer: " + x + "," + y
-							+ " " + answer);
+					LOG.warning("IO.load(): Unexpected answer: " + x + "," + y + " " + answer);
 				}
 			}
 		}
@@ -216,6 +220,8 @@ public class IO {
 				eof = true;
 			}
 		}
+
+		LOG.info("Load complete in " + (System.currentTimeMillis() - startTime) + " ms");
 
 		return puz;
 	}
@@ -301,8 +307,7 @@ public class IO {
 		    throw new IOException("Failed to rename " + tempFile + " to " + destFile);
 		}
 
-		System.out.println("Save complete in "
-				+ (System.currentTimeMillis() - incept));
+		LOG.info("Save complete in " + (System.currentTimeMillis() - incept) + " ms");
 	}
 
 	public static void save(Puzzle puz, OutputStream os)

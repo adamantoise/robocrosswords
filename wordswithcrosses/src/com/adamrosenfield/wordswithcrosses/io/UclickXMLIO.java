@@ -63,7 +63,6 @@ public class UclickXMLIO {
 				String tagName, Attributes attributes) throws SAXException {
 			strippedName = strippedName.trim();
 			String name = strippedName.length() == 0 ? tagName.trim() : strippedName;
-			//System.out.println("Start" + name);
 			if (inAcross) {
 				int clueNum = Integer.parseInt(attributes.getValue("cn"));
 				if (clueNum > maxClueNum) {
@@ -90,7 +89,6 @@ public class UclickXMLIO {
 				puz.setAuthor(attributes.getValue("v"));
 			} else if (name.equalsIgnoreCase("width")) {
 				puz.setWidth(Integer.parseInt(attributes.getValue("v")));
-				System.out.println("Width "+attributes.getValue("v"));
 			} else if (name.equalsIgnoreCase("height")) {
 				puz.setHeight(Integer.parseInt(attributes.getValue("v")));
 			} else if (name.equalsIgnoreCase("allanswer")) {
@@ -116,10 +114,8 @@ public class UclickXMLIO {
 		@Override
 		public void endElement(String nsURI, String strippedName,
 				String tagName) throws SAXException {
-			//System.out.println("EndElement " +nsURI+" : "+tagName);
 			strippedName = strippedName.trim();
 			String name = strippedName.length() == 0 ? tagName.trim() : strippedName;
-			//System.out.println("End : "+name);
 
 			if (name.equalsIgnoreCase("across")) {
 				inAcross = false;
@@ -168,7 +164,6 @@ public class UclickXMLIO {
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.err.println("Unable to parse XML file: " + e.getMessage());
 			return false;
 		}
 	}

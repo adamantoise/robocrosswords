@@ -340,7 +340,6 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
             DownloadPickerDialogBuilder.OnDownloadSelectedListener downloadButtonListener = new DownloadPickerDialogBuilder.OnDownloadSelectedListener() {
                     public void onDownloadSelected(Calendar date, List<Downloader> downloaders, int selected) {
                         List<Downloader> toDownload = new LinkedList<Downloader>();
-                        System.out.println(selected + " of " + downloaders.size());
 
                         if (selected == 0) {
                             // Download all available.

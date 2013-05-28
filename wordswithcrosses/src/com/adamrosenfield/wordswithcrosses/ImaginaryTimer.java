@@ -20,15 +20,12 @@ public class ImaginaryTimer {
     }
 
     public void start() {
-        System.out.println("Timer Start!");
         this.incept = System.currentTimeMillis();
         running = true;
     }
 
     public void stop() {
-        System.out.println("Timer Stop!");
         this.elapsed += (System.currentTimeMillis() - this.incept);
-        System.out.println("Elapsed: " + elapsed);
         running = false;
     }
 

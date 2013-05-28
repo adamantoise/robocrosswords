@@ -108,9 +108,6 @@ public class ClueListActivity extends WordsWithCrossesActivity {
 					private long lastSwipe = 0;
 
 					public void onKey(int primaryCode, int[] keyCodes) {
-						System.out.println("Got key " + ((char) primaryCode)
-								+ " " + primaryCode);
-
 						long eventTime = System.currentTimeMillis();
 
 						if ((eventTime - lastSwipe) < 500) {
@@ -159,7 +156,6 @@ public class ClueListActivity extends WordsWithCrossesActivity {
 					}
 
 					public void swipeUp() {
-						// TODO Auto-generated method stub
 					}
 				});
 
@@ -167,7 +163,6 @@ public class ClueListActivity extends WordsWithCrossesActivity {
 
 		this.imageView.setContextMenuListener(new ClickListener() {
 			public void onContextMenu(Point e) {
-				// TODO Auto-generated method stub
 			}
 
 			public void onTap(Point e) {
@@ -307,7 +302,6 @@ public class ClueListActivity extends WordsWithCrossesActivity {
 			return false;
 
 		case KeyEvent.KEYCODE_BACK:
-			System.out.println("BACK!!!");
 			this.setResult(0);
 
 			return true;

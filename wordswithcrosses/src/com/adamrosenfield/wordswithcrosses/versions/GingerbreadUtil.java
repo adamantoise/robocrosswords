@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListMap;
-import java.util.logging.Logger;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -23,8 +22,6 @@ import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 
 @TargetApi(9)
 public class GingerbreadUtil extends DefaultUtil {
-
-    protected static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
 
     protected Context context;
 

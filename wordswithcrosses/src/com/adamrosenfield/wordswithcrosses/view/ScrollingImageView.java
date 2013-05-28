@@ -256,6 +256,7 @@ public class ScrollingImageView extends AbsoluteLayout implements OnGestureListe
         return new Point(x + this.getScrollX(), y + this.getScrollY());
     }
 
+    @Override
     public void scrollBy(int x, int y) {
         int scrollWidth = imageView.getWidth() - this.getWidth();
         int scrollHeight = imageView.getHeight() - this.getHeight();
@@ -272,7 +273,6 @@ public class ScrollingImageView extends AbsoluteLayout implements OnGestureListe
             y = scrollHeight;
         }
 
-        //System.out.println("scrollBy(" + x + "," + y + ")");
         super.scrollTo(this.getScrollX() + x, this.getScrollY() + y);
 
         if (this.getScrollX() < 0) {
@@ -288,6 +288,7 @@ public class ScrollingImageView extends AbsoluteLayout implements OnGestureListe
         }
     }
 
+    @Override
     public void scrollTo(int x, int y) {
         super.scrollTo(x, y);
 

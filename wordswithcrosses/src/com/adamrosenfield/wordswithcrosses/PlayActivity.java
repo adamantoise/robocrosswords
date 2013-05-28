@@ -147,7 +147,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
 		try {
 			if (!prefs.getBoolean("showTimer", false)) {
-				System.out.println("tabletish "+WordsWithCrossesApplication.isTabletish(metrics) );
 				if (WordsWithCrossesApplication.isLandscape(metrics))  {
 					if(WordsWithCrossesApplication.isMiniTabletish(metrics)){
 						utils.hideWindowTitle(this);
@@ -163,7 +162,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
 		utils.holographic(this);
 		utils.finishOnHomeButton(this);
 		if (!prefs.getBoolean("showTimer", false)) {
-			System.out.println("tabletish "+WordsWithCrossesApplication.isTabletish(metrics) );
 			if (WordsWithCrossesApplication.isLandscape(metrics))  {
 				if(WordsWithCrossesApplication.isMiniTabletish(metrics)){
 					utils.hideActionBar(this);
@@ -362,7 +360,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
 					try {
 						if (prefs.getBoolean("doubleTap", false)
 								&& ((System.currentTimeMillis() - lastTap) < 300)) {
-							System.out.println("Doubletap!");
 							if (fitToScreen) {
 								RENDERER.setScale(prefs.getFloat("scale", 1F));
 								BOARD.setHighlightLetter(RENDERER.findBox(e));
@@ -389,7 +386,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 				}
 			});
 		} catch (IOException e) {
-			System.err.println(this.getIntent().getData());
+			LOG.info("Intent data: " + this.getIntent().getData());
 			e.printStackTrace();
 
 			String filename = null;
@@ -536,7 +533,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
 		}
 		this.allClues = (ListView) this.findViewById(R.id.allClues);
 		if (this.allClues != null) {
-			System.out.println("ALL CLUES");
 			this.allCluesAdapter = new SeparatedListAdapter(this);
 			this.allCluesAdapter.addSection(
 					"Across",
@@ -598,7 +594,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
 						handler.postDelayed(this, 100);
 					}
 					float newScale = RENDERER.fitTo(v);
-					System.out.println("SIZE "+v+" SCALE "+newScale);
 
 					prefs.edit().putFloat("scale", newScale).commit();
 					render();
@@ -613,7 +608,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View view,
 			ContextMenuInfo info) {
-		// System.out.println("CCM " + view);
 		if (view == boardView) {
 			Menu clueSize = menu.addSubMenu("Clue Text Size");
 			clueSize.add("Small");
@@ -663,7 +657,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_SEARCH:
-			System.out.println("Next clue.");
 			BOARD.setMovementStrategy(MovementStrategy.MOVE_NEXT_CLUE);
 			previous = BOARD.nextWord();
 			BOARD.setMovementStrategy(this.getMovementStrategy());
@@ -789,8 +782,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
-		System.out.println(item.getTitle());
-
 		if (item.getTitle().equals("Letter")) {
 			BOARD.revealLetter();
 			this.render();
@@ -1024,7 +1015,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
 		} else {
 			String stratName = this.prefs.getString("movementStrategy",
 					"MOVE_NEXT_ON_AXIS");
-			System.out.println("Movement Strategy:" + stratName);
 
 			if (stratName.equals("MOVE_NEXT_ON_AXIS")) {
 				movement = MovementStrategy.MOVE_NEXT_ON_AXIS;

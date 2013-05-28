@@ -28,8 +28,6 @@ public class MultitouchHandler implements OnScaleGestureListener, AuxTouchHandle
     }
 
     public boolean onScaleBegin(ScaleGestureDetector detector) {
-        System.out.println("Begin");
-
         return true;
     }
 
@@ -45,8 +43,6 @@ public class MultitouchHandler implements OnScaleGestureListener, AuxTouchHandle
         if (!result) {
             result = ev.getPointerCount() > 1;
         }
-
-        System.out.println("Result: " + result + " in progress " + scaleDetector.isInProgress());
 
         return result;
 

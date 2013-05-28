@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -23,6 +24,9 @@ import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.io.IO;
 
 public class DefaultUtil implements AndroidVersionUtils {
+
+    protected static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
+
     public void setContext(Context ctx) {
     }
 

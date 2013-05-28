@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 import android.util.SparseArray;
 
@@ -31,6 +32,9 @@ import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
  * http://joseph.king-online.com/clues/20130528.txt
  */
 public class KingFeaturesPlaintextIO {
+
+    private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
+
     /**
      * Take an InputStream containing a plaintext puzzle to a OutputStream containing
      * the generated .puz file.  Returns true if the process succeeded, or false if it fails
@@ -43,13 +47,13 @@ public class KingFeaturesPlaintextIO {
         Scanner scanner = new Scanner(new InputStreamReader(is, new MacRoman()));
 
         if (!scanner.hasNextLine()) {
-            System.err.println("File empty.");
+            LOG.warning("KFIO: File empty.");
             return false;
         }
 
         String line = scanner.nextLine();
         if (!line.startsWith("{") || !scanner.hasNextLine()) {
-            System.err.println("First line format incorrect.");
+            LOG.warning("KFIO: First line format incorrect.");
             return false;
         }
 
@@ -57,7 +61,7 @@ public class KingFeaturesPlaintextIO {
         line = scanner.nextLine();
         while (!line.startsWith("{")) {
             if (!scanner.hasNextLine()) {
-                System.err.println("Unexpected EOF - Grid information.");
+                LOG.warning("KFIO: Unexpected EOF - Grid information.");
                 return false;
             }
             line = scanner.nextLine();
@@ -74,7 +78,7 @@ public class KingFeaturesPlaintextIO {
             }
             rowString = line.split(" ");
             if (rowString.length != width) {
-                System.err.println("Not a square grid.");
+                LOG.warning("KFIO: Not a square grid.");
                 return false;
             }
 
@@ -85,7 +89,7 @@ public class KingFeaturesPlaintextIO {
             solGrid.add(row);
 
             if (!scanner.hasNextLine()) {
-                System.err.println("Unexpected EOF - Solution grid.");
+                LOG.warning("KFIO: Unexpected EOF - Solution grid.");
                 return false;
             }
             line = scanner.nextLine();
@@ -129,7 +133,7 @@ public class KingFeaturesPlaintextIO {
             String clue = line.substring(i+2).trim();
             acrossNumToClueMap.put(clueNum, clue);
             if (!scanner.hasNextLine()) {
-                System.err.println("Unexpected EOF - Across clues.");
+                LOG.warning("KFIO: Unexpected EOF - Across clues.");
                 return false;
             }
             line = scanner.nextLine();
@@ -159,7 +163,7 @@ public class KingFeaturesPlaintextIO {
             downNumToClueMap.put(clueNum, clue);
             if(!finished) {
                 if (!scanner.hasNextLine()) {
-                    System.err.println("Unexpected EOF - Down clues.");
+                    LOG.warning("KFIO: Unexpected EOF - Down clues.");
                     return false;
                 }
                 line = scanner.nextLine();
@@ -197,7 +201,7 @@ public class KingFeaturesPlaintextIO {
         try {
             IO.save(puz, os);
         } catch (IOException e) {
-            System.err.println("Unable to dump puzzle to output stream.");
+            e.printStackTrace();
             return false;
         }
 
