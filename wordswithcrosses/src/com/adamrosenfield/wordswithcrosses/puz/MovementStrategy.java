@@ -70,7 +70,7 @@ public interface MovementStrategy {
 		 */
 		private boolean moveToNextWord(Playboard board, boolean skipCompletedLetters) {
 			Word w = board.getCurrentWord();
-			int currentClueNumber = board.getBoxes()[w.start.across][w.start.down].getClueNumber();
+			int currentClueNumber = board.getBoxes()[w.start.down][w.start.across].getClueNumber();
 			int nextClueIndex;
 			boolean nextClueAcross;
 			Puzzle puz = board.getPuzzle();
@@ -93,7 +93,7 @@ public interface MovementStrategy {
 		 */
 		private void moveToPreviousWord(Playboard board) {
 			Word w = board.getCurrentWord();
-			int currentClueNumber = board.getBoxes()[w.start.across][w.start.down].getClueNumber();
+			int currentClueNumber = board.getBoxes()[w.start.down][w.start.across].getClueNumber();
 			int previousClueIndex;
 			Puzzle puz = board.getPuzzle();
 			Integer[] cluesLookup = w.across ? puz.getAcrossCluesLookup() : puz.getDownCluesLookup();
@@ -201,7 +201,7 @@ public interface MovementStrategy {
 				Word newWord;
 				if (w.across) {
 					board.moveDown();
-					while(board.getClue().hint == null && board.getHighlightLetter().down < board.getBoxes()[0].length){
+					while(board.getClue().hint == null && board.getHighlightLetter().down < board.getBoxes().length){
 						board.moveDown();
 					}
 					if(board.getClue().hint == null){
@@ -210,7 +210,7 @@ public interface MovementStrategy {
 					newWord = board.getCurrentWord();
 				} else {
 					board.moveRight();
-					while(board.getClue().hint == null && board.getHighlightLetter().across < board.getBoxes().length){
+					while(board.getClue().hint == null && board.getHighlightLetter().across < board.getBoxes()[0].length){
 						board.moveRight();
 					}
 					if(board.getClue().hint == null){
@@ -249,7 +249,7 @@ public interface MovementStrategy {
 				Position lastPos = null;
 				if (w.across) {
 					board.moveUp();
-					while(!board.getHighlightLetter().equals(lastPos) && board.getClue().hint == null && board.getHighlightLetter().down < board.getBoxes()[0].length){
+					while(!board.getHighlightLetter().equals(lastPos) && board.getClue().hint == null && board.getHighlightLetter().down < board.getBoxes().length){
 						lastPos = board.getHighlightLetter();
 						board.moveUp();
 
@@ -260,7 +260,7 @@ public interface MovementStrategy {
 					newWord = board.getCurrentWord();
 				} else {
 					board.moveLeft();
-					while(!board.getHighlightLetter().equals(lastPos) && board.getClue().hint == null && board.getHighlightLetter().across < board.getBoxes().length){
+					while(!board.getHighlightLetter().equals(lastPos) && board.getClue().hint == null && board.getHighlightLetter().across < board.getBoxes()[0].length){
 						lastPos = board.getHighlightLetter();
 						board.moveLeft();
 					}

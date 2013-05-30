@@ -348,7 +348,7 @@ public class ClueListActivity extends WordsWithCrossesActivity {
 				Position curr = WordsWithCrossesApplication.BOARD.getHighlightLetter();
 
 				if (!WordsWithCrossesApplication.BOARD.getCurrentWord().equals(w)
-						|| (WordsWithCrossesApplication.BOARD.getBoxes()[curr.across][curr.down] == null)) {
+						|| (WordsWithCrossesApplication.BOARD.getBoxes()[curr.down][curr.across] == null)) {
 					WordsWithCrossesApplication.BOARD.setHighlightLetter(last);
 				}
 
@@ -368,7 +368,7 @@ public class ClueListActivity extends WordsWithCrossesActivity {
 			Position p = WordsWithCrossesApplication.BOARD.getHighlightLetter();
 
 			if (!WordsWithCrossesApplication.BOARD.getCurrentWord().equals(w)
-					|| (WordsWithCrossesApplication.BOARD.getBoxes()[p.across][p.down] == null)) {
+					|| (WordsWithCrossesApplication.BOARD.getBoxes()[p.down][p.across] == null)) {
 				WordsWithCrossesApplication.BOARD.setHighlightLetter(last);
 			}
 

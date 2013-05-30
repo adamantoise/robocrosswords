@@ -28,18 +28,18 @@ public class Playboard {
     public Playboard(Puzzle puzzle) {
         this.puzzle = puzzle;
         this.highlightLetter = new Position(0, 0);
-        this.boxes = new Box[puzzle.getBoxes()[0].length][puzzle.getBoxes().length];
+        this.boxes = new Box[puzzle.getBoxes().length][puzzle.getBoxes()[0].length];
 
         for (int r = 0; r < puzzle.getBoxes().length; r++) {
             for (int c = 0; c < puzzle.getBoxes()[r].length; c++) {
-                boxes[c][r] = puzzle.getBoxes()[r][c];
+                boxes[r][c] = puzzle.getBoxes()[r][c];
 
-                if ((boxes[c][r] != null) && boxes[c][r].isAcross()) {
-                    acrossWordStarts.put(boxes[c][r].getClueNumber(), new Position(c, r));
+                if ((boxes[r][c] != null) && boxes[r][c].isAcross()) {
+                    acrossWordStarts.put(boxes[r][c].getClueNumber(), new Position(c, r));
                 }
 
-                if ((boxes[c][r] != null) && boxes[c][r].isDown()) {
-                    downWordStarts.put(boxes[c][r].getClueNumber(), new Position(c, r));
+                if ((boxes[r][c] != null) && boxes[r][c].isDown()) {
+                    downWordStarts.put(boxes[r][c].getClueNumber(), new Position(c, r));
                 }
             }
         }
@@ -70,16 +70,16 @@ public class Playboard {
     }
 
     public Box[][] getBoxes() {
-        return this.boxes;
+        return boxes;
     }
 
     public Clue getClue() {
         Clue c = new Clue();
 
         try {
-            Position start = this.getCurrentWordStart();
-            c.number = this.getBoxes()[start.across][start.down].getClueNumber();
-            c.hint = this.across ? this.puzzle.findAcrossClue(c.number) : this.puzzle.findDownClue(c.number);
+            Position start = getCurrentWordStart();
+            c.number = boxes[start.down][start.across].getClueNumber();
+            c.hint = this.across ? puzzle.findAcrossClue(c.number) : puzzle.findDownClue(c.number);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -88,7 +88,7 @@ public class Playboard {
     }
 
     public Box getCurrentBox() {
-        return this.boxes[this.highlightLetter.across][this.highlightLetter.down];
+        return boxes[highlightLetter.down][highlightLetter.across];
     }
 
     /** Returns the 0 based index of the current clue based on the current across or down state
@@ -107,15 +107,15 @@ public class Playboard {
 
     public Word getCurrentWord() {
         Word w = new Word();
-        w.start = this.getCurrentWordStart();
-        w.across = this.across;
-        w.length = this.getWordRange();
+        w.start = getCurrentWordStart();
+        w.across = across;
+        w.length = getWordRange();
 
         return w;
     }
 
     public Box[] getCurrentWordBoxes() {
-        Word currentWord = this.getCurrentWord();
+        Word currentWord = getCurrentWord();
         Box[] result = new Box[currentWord.length];
 
         int across = currentWord.start.across;
@@ -131,7 +131,7 @@ public class Playboard {
                 newDown += i;
             }
 
-            result[i] = this.boxes[newAcross][newDown];
+            result[i] = this.boxes[newDown][newAcross];
         }
 
         return result;
@@ -160,19 +160,20 @@ public class Playboard {
     }
 
     public Position getCurrentWordStart() {
-        if (this.isAcross()) {
+        if (isAcross()) {
             int col = this.highlightLetter.across;
             Box b = null;
 
             while (b == null) {
                 try {
-                    if ((boxes[col][this.highlightLetter.down] != null) &&
-                            boxes[col][this.highlightLetter.down].isAcross()) {
-                        b = boxes[col][this.highlightLetter.down];
+                    if ((boxes[highlightLetter.down][col] != null) &&
+                            boxes[highlightLetter.down][col].isAcross()) {
+                        b = boxes[highlightLetter.down][col];
                     } else {
                         col--;
                     }
                 } catch (Exception e) {
+                    e.printStackTrace();
                     break;
                 }
             }
@@ -184,18 +185,19 @@ public class Playboard {
 
             while (b == null) {
                 try {
-                    if ((boxes[this.highlightLetter.across][row] != null) &&
-                            boxes[this.highlightLetter.across][row].isDown()) {
-                        b = boxes[this.highlightLetter.across][row];
+                    if ((boxes[row][highlightLetter.across] != null) &&
+                            boxes[row][highlightLetter.across].isDown()) {
+                        b = boxes[row][highlightLetter.across];
                     } else {
                         row--;
                     }
                 } catch (Exception e) {
+                    e.printStackTrace();
                     break;
                 }
             }
 
-            return new Position(this.highlightLetter.across, row);
+            return new Position(highlightLetter.across, row);
         }
     }
 
@@ -216,12 +218,12 @@ public class Playboard {
         solveState.position = new Position(getHighlightLetter());
         solveState.isOrientationAcross = isAcross();
 
-        solveState.cheated = new boolean[boxes[0].length][boxes.length];
+        solveState.cheated = new boolean[boxes.length][boxes[0].length];
 
-        for (int c = 0; c < boxes.length; c++) {
-            for (int r = 0; r < boxes[c].length; r++) {
-                if (boxes[c][r] != null) {
-                    solveState.cheated[r][c] = boxes[c][r].isCheated();
+        for (int r = 0; r < boxes.length; r++) {
+            for (int c = 0; c < boxes[r].length; c++) {
+                if (boxes[r][c] != null) {
+                    solveState.cheated[r][c] = boxes[r][c].isCheated();
                 }
             }
         }
@@ -233,26 +235,29 @@ public class Playboard {
         setHighlightLetter(solveState.position);
         setAcross(solveState.isOrientationAcross);
 
-        int maxR = Math.min(boxes[0].length, solveState.cheated.length);
+        int maxR = Math.min(boxes.length, solveState.cheated.length);
         for (int r = 0; r < maxR; r++) {
-            int maxC = Math.min(boxes.length, solveState.cheated[r].length);
+            int maxC = Math.min(boxes[r].length, solveState.cheated.length);
             for (int c = 0; c < maxC; c++) {
-                if (boxes[c][r] != null) {
-                    boxes[c][r].setCheated(solveState.cheated[r][c]);
+                if (boxes[r][c] != null) {
+                    boxes[r][c].setCheated(solveState.cheated[r][c]);
                 }
             }
         }
     }
 
     public Word setHighlightLetter(Position highlightLetter) {
-        Word w = this.getCurrentWord();
+        Word w = getCurrentWord();
 
         if (highlightLetter.equals(this.highlightLetter)) {
             this.toggleDirection();
         } else {
-            if ((this.boxes.length > highlightLetter.across) && (highlightLetter.across >= 0) &&
-                    (this.boxes[highlightLetter.across].length > highlightLetter.down) && (highlightLetter.down >= 0) &&
-                    (this.boxes[highlightLetter.across][highlightLetter.down] != null)) {
+            if ((highlightLetter.down >= 0) &&
+                (highlightLetter.down < boxes.length) &&
+                (highlightLetter.across >= 0) &&
+                (highlightLetter.across < boxes[highlightLetter.down].length) &&
+                (boxes[highlightLetter.down][highlightLetter.across] != null))
+            {
                 this.highlightLetter = highlightLetter;
             }
         }
@@ -305,7 +310,7 @@ public class Playboard {
                 newDown += i;
             }
 
-            result[i] = this.boxes[newAcross][newDown];
+            result[i] = boxes[newDown][newAcross];
         }
 
         return result;
@@ -314,43 +319,23 @@ public class Playboard {
     public int getWordRange(Position start, boolean across) {
         if (across) {
             int col = start.across;
-            Box b = null;
-
-            do {
-                b = null;
-
-                int checkCol = col + 1;
-
-                try {
-                    col++;
-                    b = this.getBoxes()[checkCol][start.down];
-                } catch (RuntimeException e) {
-                }
-            } while (b != null);
+            while (col < boxes[start.down].length && boxes[start.down][col] != null) {
+                col++;
+            }
 
             return col - start.across;
         } else {
             int row = start.down;
-            Box b = null;
-
-            do {
-                b = null;
-
-                int checkRow = row + 1;
-
-                try {
-                    row++;
-                    b = this.getBoxes()[start.across][checkRow];
-                } catch (RuntimeException e) {
-                }
-            } while (b != null);
+            while (row < boxes.length && boxes[row][start.across] != null) {
+                row++;
+            }
 
             return row - start.down;
         }
     }
 
     public int getWordRange() {
-        return getWordRange(this.getCurrentWordStart(), this.isAcross());
+        return getWordRange(getCurrentWordStart(), isAcross());
     }
 
     /**
@@ -359,12 +344,12 @@ public class Playboard {
      * -Delete the letter in the current box.
      */
     public Word deleteLetter() {
-        Box currentBox = this.boxes[this.highlightLetter.across][this.highlightLetter.down];
-        Word wordToReturn = this.getCurrentWord();
+        Box currentBox = boxes[highlightLetter.down][highlightLetter.across];
+        Word wordToReturn = getCurrentWord();
 
         if (currentBox.getResponse() == ' ') {
-            wordToReturn = this.previousLetter();
-            currentBox = this.boxes[this.highlightLetter.across][this.highlightLetter.down];
+            wordToReturn = previousLetter();
+            currentBox = boxes[highlightLetter.down][highlightLetter.across];
         }
 
         currentBox.setResponse(' ');
@@ -382,111 +367,76 @@ public class Playboard {
 
             this.across = across;
         } catch (Exception e) {
+            e.printStackTrace();
         }
-    }
-
-    public Word moveDown() {
-        return this.moveDown(false);
-    }
-
-    public Position moveDown(Position original, boolean skipCompleted) {
-        Position next = new Position(original.across, original.down + 1);
-        Box value = this.getBoxes()[next.across][next.down];
-
-        if ((value == null) || skipCurrentBox(value, skipCompleted)) {
-            try {
-                next = moveDown(next, skipCompleted);
-            } catch (ArrayIndexOutOfBoundsException e) {
-            }
-        }
-
-        return next;
-    }
-
-    public Word moveDown(boolean skipCompleted) {
-        Word w = this.getCurrentWord();
-
-        try {
-            Position newPos = this.moveDown(this.getHighlightLetter(), skipCompleted);
-            this.setHighlightLetter(newPos);
-        } catch (ArrayIndexOutOfBoundsException e) {
-        }
-
-        return w;
-    }
-
-    public Position moveLeft(Position original, boolean skipCompleted) {
-        Position next = new Position(original.across - 1, original.down);
-        Box value = this.getBoxes()[next.across][next.down];
-
-        if ((value == null) || skipCurrentBox(value, skipCompleted)) {
-            try {
-                next = moveLeft(next, skipCompleted);
-            } catch (ArrayIndexOutOfBoundsException e) {
-            }
-        }
-
-        return next;
-    }
-
-    public Word moveLeft(boolean skipCompleted) {
-        Word w = this.getCurrentWord();
-
-        try {
-            Position newPos = this.moveLeft(this.getHighlightLetter(), skipCompleted);
-            this.setHighlightLetter(newPos);
-        } catch (ArrayIndexOutOfBoundsException e) {
-        }
-
-        return w;
     }
 
     public Word moveLeft() {
         return moveLeft(false);
     }
 
-    public Word moveRight() {
-        return moveRight(false);
-    }
+    public Word moveLeft(boolean skipCompleted) {
+        Word w = getCurrentWord();
 
-    public Position moveRight(Position original, boolean skipCompleted) {
-        Position next = new Position(original.across + 1, original.down);
-        Box value = this.getBoxes()[next.across][next.down];
-
-        if ((value == null) || skipCurrentBox(value, skipCompleted)) {
-            try {
-                next = moveRight(next, skipCompleted);
-            } catch (ArrayIndexOutOfBoundsException e) {
-            }
-        }
-
-        return next;
-    }
-
-    public Word moveRight(boolean skipCompleted) {
-        Word w = this.getCurrentWord();
-
-        try {
-            Position newPos = this.moveRight(this.getHighlightLetter(), skipCompleted);
-            this.setHighlightLetter(newPos);
-        } catch (ArrayIndexOutOfBoundsException e) {
-        }
+        Position newPos = moveLeft(getHighlightLetter(), skipCompleted);
+        this.setHighlightLetter(newPos);
 
         return w;
     }
 
-    public Position moveUp(Position original, boolean skipCompleted) {
-        Position next = new Position(original.across, original.down - 1);
-        Box value = this.getBoxes()[next.across][next.down];
+    public Position moveLeft(Position original, boolean skipCompleted) {
+        Position lastValid = original;
+        Position current = original;
+        while (true) {
+            if (current.across <= 0) {
+                return lastValid;
+            }
 
-        if ((value == null) || skipCurrentBox(value, skipCompleted)) {
-            try {
-                next = moveUp(next, skipCompleted);
-            } catch (ArrayIndexOutOfBoundsException e) {
+            current = new Position(current.across - 1, current.down);
+            Box box = boxes[current.down][current.across];
+
+            if (box != null) {
+                if (!skipCurrentBox(box, skipCompleted)) {
+                    return current;
+                }
+
+                lastValid = current;
             }
         }
+    }
 
-        return next;
+    public Word moveRight() {
+        return moveRight(false);
+    }
+
+    public Word moveRight(boolean skipCompleted) {
+        Word w = getCurrentWord();
+
+        Position newPos = moveRight(getHighlightLetter(), skipCompleted);
+        setHighlightLetter(newPos);
+
+        return w;
+    }
+
+    public Position moveRight(Position original, boolean skipCompleted) {
+        Position lastValid = original;
+        Position current = original;
+        while (true) {
+            if (current.across >= boxes[current.down].length - 1) {
+                return lastValid;
+            }
+
+            current = new Position(current.across + 1, current.down);
+            Box box = boxes[current.down][current.across];
+
+            if (box != null) {
+                if (!skipCurrentBox(box, skipCompleted)) {
+                    return current;
+                }
+
+                lastValid = current;
+            }
+        }
     }
 
     public Word moveUp() {
@@ -494,29 +444,81 @@ public class Playboard {
     }
 
     public Word moveUp(boolean skipCompleted) {
-        Word w = this.getCurrentWord();
+        Word w = getCurrentWord();
 
-        try {
-            Position newPos = this.moveUp(this.getHighlightLetter(), skipCompleted);
-            this.setHighlightLetter(newPos);
-        } catch (ArrayIndexOutOfBoundsException e) {
-        }
+        Position newPos = moveUp(getHighlightLetter(), skipCompleted);
+        setHighlightLetter(newPos);
 
         return w;
     }
 
+    public Position moveUp(Position original, boolean skipCompleted) {
+        Position lastValid = original;
+        Position current = original;
+        while (true) {
+            if (current.down <= 0) {
+                return lastValid;
+            }
+
+            current = new Position(current.across, current.down - 1);
+            Box box = boxes[current.down][current.across];
+
+            if (box != null) {
+                if (!skipCurrentBox(box, skipCompleted)) {
+                    return current;
+                }
+
+                lastValid = current;
+            }
+        }
+    }
+
+    public Word moveDown() {
+        return moveDown(false);
+    }
+
+    public Word moveDown(boolean skipCompleted) {
+        Word w = getCurrentWord();
+
+        Position newPos = moveDown(getHighlightLetter(), skipCompleted);
+        setHighlightLetter(newPos);
+
+        return w;
+    }
+
+    public Position moveDown(Position original, boolean skipCompleted) {
+        Position lastValid = original;
+        Position current = original;
+        while (true) {
+            if (current.down >= boxes.length - 1) {
+                return lastValid;
+            }
+
+            current = new Position(current.across, current.down + 1);
+            Box box = boxes[current.down][current.across];
+
+            if (box != null) {
+                if (!skipCurrentBox(box, skipCompleted)) {
+                    return current;
+                }
+
+                lastValid = current;
+            }
+        }
+    }
+
     public Word nextLetter(boolean skipCompletedLetters) {
-        return this.movementStrategy.move(this, skipCompletedLetters);
+        return movementStrategy.move(this, skipCompletedLetters);
     }
 
     public Word nextLetter() {
-        return nextLetter(this.skipCompletedLetters);
+        return nextLetter(skipCompletedLetters);
     }
 
     public Word nextWord() {
-        Word previous = this.getCurrentWord();
+        Word previous = getCurrentWord();
 
-        Position p = this.getHighlightLetter();
+        Position p = getHighlightLetter();
 
         int newAcross = p.across;
         int newDown = p.down;
@@ -530,16 +532,16 @@ public class Playboard {
         Position newPos = new Position(newAcross, newDown);
 
         if (!newPos.equals(p)) {
-            this.setHighlightLetter(newPos);
+            setHighlightLetter(newPos);
         }
 
-        this.nextLetter();
+        nextLetter();
 
         return previous;
     }
 
     public Word playLetter(char letter) {
-        Box b = this.boxes[this.highlightLetter.across][this.highlightLetter.down];
+        Box b = boxes[highlightLetter.down][highlightLetter.across];
 
         if (b == null) {
             return null;
@@ -547,17 +549,17 @@ public class Playboard {
 
         b.setResponse(letter);
 
-        return this.nextLetter();
+        return nextLetter();
     }
 
     public Word previousLetter() {
-        return this.movementStrategy.back(this);
+        return movementStrategy.back(this);
     }
 
     public Word previousWord() {
-        Word previous = this.getCurrentWord();
+        Word previous = getCurrentWord();
 
-        Position p = this.getHighlightLetter();
+        Position p = getHighlightLetter();
 
         int newAcross = p.across;
         int newDown = p.down;
@@ -568,23 +570,23 @@ public class Playboard {
             newDown = previous.start.down - 1;
         }
 
-        this.setHighlightLetter(new Position(newAcross, newDown));
-        this.previousLetter();
+        setHighlightLetter(new Position(newAcross, newDown));
+        previousLetter();
 
-        Word current = this.getCurrentWord();
-        this.setHighlightLetter(new Position(current.start.across, current.start.down));
+        Word current = getCurrentWord();
+        setHighlightLetter(new Position(current.start.across, current.start.down));
 
         return previous;
     }
 
     public Position revealLetter() {
-        Box b = this.boxes[this.highlightLetter.across][this.highlightLetter.down];
+        Box b = boxes[highlightLetter.down][highlightLetter.across];
 
         if ((b != null) && (b.getSolution() != b.getResponse())) {
             b.setCheated(true);
             b.setResponse(b.getSolution());
 
-            return this.highlightLetter;
+            return highlightLetter;
         }
 
         return null;
@@ -593,9 +595,9 @@ public class Playboard {
     public List<Position> revealPuzzle() {
         ArrayList<Position> changes = new ArrayList<Position>();
 
-        for (int c = 0; c < this.boxes.length; c++) {
-            for (int r = 0; r < this.boxes[c].length; r++) {
-                Box b = this.boxes[c][r];
+        for (int r = 0; r < boxes.length; r++) {
+            for (int c = 0; c < boxes[r].length; c++) {
+                Box b = boxes[r][c];
 
                 if ((b != null) && (b.getSolution() != b.getResponse())) {
                     b.setCheated(true);
@@ -611,7 +613,7 @@ public class Playboard {
     public List<Position> revealWord() {
         ArrayList<Position> changes = new ArrayList<Position>();
         Position oldHighlight = this.highlightLetter;
-        Word w = this.getCurrentWord();
+        Word w = getCurrentWord();
         this.highlightLetter = w.start;
 
         for (int i = 0; i < w.length; i++) {
@@ -630,19 +632,20 @@ public class Playboard {
     }
 
     public boolean skipCurrentBox(Box b, boolean skipCompleted) {
-        return skipCompleted && (b.getResponse() != ' ') &&
-        (!this.isShowErrors() || (b.getResponse() == b.getSolution()));
+        return skipCompleted &&
+               (b.getResponse() != ' ') &&
+               (!isShowErrors() || b.getResponse() == b.getSolution());
     }
 
     public Word toggleDirection() {
-        Word w = this.getCurrentWord();
-        this.across = !across;
+        Word w = getCurrentWord();
+        across = !across;
 
         return w;
     }
 
     public void toggleShowErrors() {
-        this.showErrors = !this.showErrors;
+        showErrors = !showErrors;
     }
 
     public static class Clue {

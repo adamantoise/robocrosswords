@@ -17,7 +17,6 @@ import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Word;
 import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.Point;
 
-
 public class PlayboardRenderer {
     private static final int BOX_SIZE = 30;
     private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
@@ -124,8 +123,10 @@ public class PlayboardRenderer {
 
             if (bitmap == null) {
                 LOG.warning("New bitmap");
-                bitmap = Bitmap.createBitmap((int) (boxes.length * BOX_SIZE * scale),
-                        (int) (boxes[0].length * BOX_SIZE * scale), Bitmap.Config.RGB_565);
+                bitmap = Bitmap.createBitmap(
+                    (int)(boxes[0].length * BOX_SIZE * scale),
+                    (int)(boxes.length * BOX_SIZE * scale),
+                    Bitmap.Config.RGB_565);
                 bitmap.eraseColor(Color.BLACK);
                 renderAll = true;
             }
@@ -133,11 +134,11 @@ public class PlayboardRenderer {
             Canvas canvas = new Canvas(bitmap);
 
             // board data
-            int boxSize = (int) (BOX_SIZE * scale);
+            int boxSize = (int)(BOX_SIZE * scale);
             Word currentWord = this.board.getCurrentWord();
 
-            for (int col = 0; col < boxes.length; col++) {
-                for (int row = 0; row < boxes[col].length; row++) {
+            for (int row = 0; row < boxes.length; row++) {
+                for (int col = 0; col < boxes[row].length; col++) {
                     if (!renderAll) {
                         if (!currentWord.checkInWord(col, row) && (reset != null) && !reset.checkInWord(col, row)) {
                             continue;
@@ -146,7 +147,7 @@ public class PlayboardRenderer {
 
                     int x = col * boxSize;
                     int y = row * boxSize;
-                    this.drawBox(canvas, x, y, row, col, scale, boxes[col][row], currentWord);
+                    this.drawBox(canvas, x, y, row, col, scale, boxes[row][col], currentWord);
                 }
             }
 
@@ -212,7 +213,7 @@ public class PlayboardRenderer {
     public float fitTo(int shortDimension) {
         this.bitmap = null;
 
-        double newScale = (double) shortDimension / (double) (this.board.getBoxes().length) / (double) BOX_SIZE;
+        double newScale = (double) shortDimension / (double) (this.board.getBoxes()[0].length) / (double) BOX_SIZE;
         this.scale = (float) newScale;
 
         return this.scale;
