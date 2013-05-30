@@ -289,17 +289,29 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
                 downloadStarterPuzzles();
             }
 
+            // Also don't show the the release notes the first time the user
+            // launched the app
+            try {
+                PackageInfo pkgInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+
+                Editor e = prefs.edit();
+                e.putString("welcome_shown_release", pkgInfo.versionName);
+                e.commit();
+            } catch(PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+
             showWelcomePage();
         } else {
             // Look up what the latest version of the app is which has shown
             // the welcome screen
-            boolean showWelcome = false;
+            boolean showReleaseNotes = false;
             try {
                 PackageInfo pkgInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
 
                 String welcomeShownRelease = prefs.getString("welcome_shown_release", "");
                 if (!welcomeShownRelease.equals(pkgInfo.versionName)) {
-                    showWelcome = true;
+                    showReleaseNotes = true;
 
                     Editor e = prefs.edit();
                     e.putString("welcome_shown_release", pkgInfo.versionName);
@@ -309,7 +321,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
                 e.printStackTrace();
             }
 
-            if (showWelcome) {
+            if (showReleaseNotes) {
                 // Show the release notes if this is the first time the user
                 // launched this version of the app
                 showHTMLPage("release.html");
