@@ -34,18 +34,24 @@ public class Playboard {
             for (int c = 0; c < puzzle.getBoxes()[r].length; c++) {
                 boxes[r][c] = puzzle.getBoxes()[r][c];
 
-                if ((boxes[r][c] != null) && boxes[r][c].isAcross()) {
+                if (boxes[r][c] != null &&
+                    boxes[r][c].isAcross() &&
+                    boxes[r][c].getClueNumber() != 0)
+                {
                     acrossWordStarts.put(boxes[r][c].getClueNumber(), new Position(c, r));
                 }
 
-                if ((boxes[r][c] != null) && boxes[r][c].isDown()) {
+                if (boxes[r][c] != null &&
+                    boxes[r][c].isDown() &&
+                    boxes[r][c].getClueNumber() != 0)
+                {
                     downWordStarts.put(boxes[r][c].getClueNumber(), new Position(c, r));
                 }
             }
         }
 
-        if (this.boxes[0][0] == null) {
-            this.moveRight(false);
+        if (boxes[0][0] == null) {
+            moveRight(false);
         }
     }
 
@@ -76,13 +82,13 @@ public class Playboard {
     public Clue getClue() {
         Clue c = new Clue();
 
-        try {
-            Position start = getCurrentWordStart();
-            c.number = boxes[start.down][start.across].getClueNumber();
-            c.hint = this.across ? puzzle.findAcrossClue(c.number) : puzzle.findDownClue(c.number);
-        } catch (Exception e) {
-            e.printStackTrace();
+        Position start = getCurrentWordStart();
+        if (boxes[start.down][start.across] == null) {
+            return c;
         }
+
+        c.number = boxes[start.down][start.across].getClueNumber();
+        c.hint = this.across ? puzzle.findAcrossClue(c.number) : puzzle.findDownClue(c.number);
 
         return c;
     }
@@ -160,44 +166,20 @@ public class Playboard {
     }
 
     public Position getCurrentWordStart() {
+        int row = highlightLetter.down;
+        int col = highlightLetter.across;
         if (isAcross()) {
-            int col = this.highlightLetter.across;
-            Box b = null;
-
-            while (b == null) {
-                try {
-                    if ((boxes[highlightLetter.down][col] != null) &&
-                            boxes[highlightLetter.down][col].isAcross()) {
-                        b = boxes[highlightLetter.down][col];
-                    } else {
-                        col--;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    break;
-                }
+            while (col > 0 && boxes[row][col] != null && boxes[row][col - 1] != null) {
+                col--;
             }
 
-            return new Position(col, this.highlightLetter.down);
+            return new Position(col, row);
         } else {
-            int row = this.highlightLetter.down;
-            Box b = null;
-
-            while (b == null) {
-                try {
-                    if ((boxes[row][highlightLetter.across] != null) &&
-                            boxes[row][highlightLetter.across].isDown()) {
-                        b = boxes[row][highlightLetter.across];
-                    } else {
-                        row--;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    break;
-                }
+            while (row > 0 && boxes[row][col] != null && boxes[row - 1][col] != null) {
+                row--;
             }
 
-            return new Position(highlightLetter.across, row);
+            return new Position(col, row);
         }
     }
 
@@ -358,16 +340,17 @@ public class Playboard {
     }
 
     public void jumpTo(int clueIndex, boolean across) {
-        try {
-            if (across) {
-                this.highlightLetter = (this.acrossWordStarts.get(this.puzzle.getAcrossCluesLookup()[clueIndex]));
-            } else {
-                this.highlightLetter = (this.downWordStarts.get(this.puzzle.getDownCluesLookup()[clueIndex]));
-            }
 
-            this.across = across;
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (across) {
+            if (clueIndex >= 0 && clueIndex < puzzle.getAcrossCluesLookup().length) {
+                highlightLetter = acrossWordStarts.get(puzzle.getAcrossCluesLookup()[clueIndex]);
+                this.across = across;
+            }
+        } else {
+            if (clueIndex >= 0 && clueIndex < puzzle.getDownCluesLookup().length) {
+                highlightLetter = downWordStarts.get(puzzle.getDownCluesLookup()[clueIndex]);
+                this.across = across;
+            }
         }
     }
 
@@ -384,7 +367,7 @@ public class Playboard {
         return w;
     }
 
-    public Position moveLeft(Position original, boolean skipCompleted) {
+    private Position moveLeft(Position original, boolean skipCompleted) {
         Position lastValid = original;
         Position current = original;
         while (true) {
@@ -418,7 +401,7 @@ public class Playboard {
         return w;
     }
 
-    public Position moveRight(Position original, boolean skipCompleted) {
+    private Position moveRight(Position original, boolean skipCompleted) {
         Position lastValid = original;
         Position current = original;
         while (true) {
@@ -452,7 +435,7 @@ public class Playboard {
         return w;
     }
 
-    public Position moveUp(Position original, boolean skipCompleted) {
+    private Position moveUp(Position original, boolean skipCompleted) {
         Position lastValid = original;
         Position current = original;
         while (true) {
@@ -486,7 +469,7 @@ public class Playboard {
         return w;
     }
 
-    public Position moveDown(Position original, boolean skipCompleted) {
+    private Position moveDown(Position original, boolean skipCompleted) {
         Position lastValid = original;
         Position current = original;
         while (true) {

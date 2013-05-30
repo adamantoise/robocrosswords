@@ -2,7 +2,6 @@ package com.adamrosenfield.wordswithcrosses;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.logging.Logger;
@@ -56,16 +55,19 @@ public class WordsWithCrossesApplication extends Application {
         makeDirs();
 
         if (DEBUG_DIR.isDirectory() || DEBUG_DIR.mkdirs()) {
-            File info = new File(DEBUG_DIR, "device");
+            File infoFile = new File(DEBUG_DIR, "device");
             try {
-                PrintWriter writer = new PrintWriter(new FileWriter(info));
-                writer.println("VERSION INT: " + android.os.Build.VERSION.SDK_INT);
-                writer.println("VERSION RELEASE: " + android.os.Build.VERSION.RELEASE);
-                writer.println("MODEL: " + android.os.Build.DEVICE);
-                writer.println("DISPLAY: " + android.os.Build.DISPLAY);
-                writer.println("MANUFACTURER: " + android.os.Build.MANUFACTURER);
-                writer.close();
-            } catch (Exception e) {
+                PrintWriter writer = new PrintWriter(infoFile);
+                try {
+                    writer.println("VERSION INT: " + android.os.Build.VERSION.SDK_INT);
+                    writer.println("VERSION RELEASE: " + android.os.Build.VERSION.RELEASE);
+                    writer.println("MODEL: " + android.os.Build.DEVICE);
+                    writer.println("DISPLAY: " + android.os.Build.DISPLAY);
+                    writer.println("MANUFACTURER: " + android.os.Build.MANUFACTURER);
+                } finally {
+                    writer.close();
+                }
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {

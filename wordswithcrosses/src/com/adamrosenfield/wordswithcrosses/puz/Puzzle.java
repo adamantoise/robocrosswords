@@ -478,13 +478,13 @@ public class Puzzle {
     }
 
     public String findAcrossClue(int clueNumber) {
-        return this.acrossClues[Arrays.binarySearch(this.acrossCluesLookup,
-            clueNumber)];
+        int clueIndex = Arrays.binarySearch(acrossCluesLookup, clueNumber);
+        return (clueIndex >= 0 ? acrossClues[clueIndex] : null);
     }
 
     public String findDownClue(int clueNumber) {
-        return this.downClues[Arrays.binarySearch(this.downCluesLookup,
-            clueNumber)];
+        int clueIndex = Arrays.binarySearch(this.downCluesLookup, clueNumber);
+        return (clueIndex >= 0 ? downClues[clueIndex] : null);
     }
 
     @Override

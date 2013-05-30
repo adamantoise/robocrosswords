@@ -16,7 +16,11 @@ public class DownloadReceiver extends BroadcastReceiver {
                     Class.forName("com.adamrosenfield.wordswithcrosses.net.DownloadReceiverGinger")
                     .newInstance();
                 impl = built;
-            } catch(Exception e) {
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
                 e.printStackTrace();
             }
         }
