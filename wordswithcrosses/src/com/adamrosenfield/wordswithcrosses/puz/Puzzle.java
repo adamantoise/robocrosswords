@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.logging.Logger;
 
 import com.adamrosenfield.wordswithcrosses.io.IO;
-import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 
 public class Puzzle {
 
@@ -33,8 +32,6 @@ public class Puzzle {
     public short solutionChecksum;
     private String version = IO.VERSION_STRING;
     private boolean hasGEXT;
-    private Position position;
-    private boolean across = true;
 
     // Temporary fields used for unscrambling.
     public int[] unscrambleKey;
@@ -70,31 +67,31 @@ public class Puzzle {
 
         int clueCount = 1;
 
-        for (int x = 0; x < boxes.length; x++) {
+        for (int r = 0; r < boxes.length; r++) {
             boolean tickedClue = false;
 
-            for (int y = 0; y < boxes[x].length; y++) {
-                if (boxes[x][y] == null) {
+            for (int c = 0; c < boxes[r].length; c++) {
+                if (boxes[r][c] == null) {
                     continue;
                 }
 
-                if (((x == 0) || (boxes[x - 1][y] == null)) &&
-                        (((x + 1) < boxes.length) && (boxes[x + 1][y] != null))) {
-                    boxes[x][y].setDown(true);
+                if (((r == 0) || (boxes[r - 1][c] == null)) &&
+                        (((r + 1) < boxes.length) && (boxes[r + 1][c] != null))) {
+                    boxes[r][c].setDown(true);
 
-                    if ((x == 0) || (boxes[x - 1][y] == null)) {
-                        boxes[x][y].setClueNumber(clueCount);
+                    if ((r == 0) || (boxes[r - 1][c] == null)) {
+                        boxes[r][c].setClueNumber(clueCount);
                         tickedClue = true;
                     }
                 }
 
-                if (((y == 0) || (boxes[x][y - 1] == null)) &&
-                        (((y + 1) < boxes[x].length) &&
-                        (boxes[x][y + 1] != null))) {
-                    boxes[x][y].setAcross(true);
+                if (((c == 0) || (boxes[r][c - 1] == null)) &&
+                        (((c + 1) < boxes[r].length) &&
+                        (boxes[r][c + 1] != null))) {
+                    boxes[r][c].setAcross(true);
 
-                    if ((y == 0) || (boxes[x][y - 1] == null)) {
-                        boxes[x][y].setClueNumber(clueCount);
+                    if ((c == 0) || (boxes[r][c - 1] == null)) {
+                        boxes[r][c].setClueNumber(clueCount);
                         tickedClue = true;
                     }
                 }
@@ -119,9 +116,9 @@ public class Puzzle {
         Box[] result = new Box[boxes.length * boxes[0].length];
         int i = 0;
 
-        for (int x = 0; x < boxes.length; x++) {
-            for (int y = 0; y < boxes[x].length; y++) {
-                result[i++] = boxes[x][y];
+        for (int r = 0; r < boxes.length; r++) {
+            for (int c = 0; c < boxes[r].length; c++) {
+                result[i++] = boxes[r][c];
             }
         }
 
@@ -143,10 +140,10 @@ public class Puzzle {
 
 	private byte[] getSolutionDown() {
 		StringBuilder ans = new StringBuilder();
-		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < height; y++) {
-				if (boxes[y][x] != null) {
-					ans.append(boxes[y][x].getSolution());
+		for (int c = 0; c < width; c++) {
+			for (int r = 0; r < height; r++) {
+				if (boxes[r][c] != null) {
+					ans.append(boxes[r][c].getSolution());
 				}
 			}
 		}
@@ -155,10 +152,10 @@ public class Puzzle {
 
 	public void setUnscrambledSolution(byte[] solution) {
 		int i = 0;
-		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < height; y++) {
-				if (boxes[y][x] != null) {
-					boxes[y][x].setSolution((char) solution[i++]);
+		for (int c = 0; c < width; c++) {
+			for (int r = 0; r < height; r++) {
+				if (boxes[r][c] != null) {
+					boxes[r][c].setSolution((char) solution[i++]);
 				}
 			}
 		}
@@ -231,12 +228,12 @@ public class Puzzle {
         int total = 0;
         int correct = 0;
 
-        for (int x = 0; x < boxes.length; x++) {
-            for (int y = 0; y < boxes[x].length; y++) {
-                if (boxes[x][y] != null) {
+        for (int r = 0; r < boxes.length; r++) {
+            for (int c = 0; c < boxes[r].length; c++) {
+                if (boxes[r][c] != null) {
                     total++;
 
-                    if (boxes[x][y].getResponse() == boxes[x][y].getSolution()) {
+                    if (boxes[r][c].getResponse() == boxes[r][c].getSolution()) {
                         correct++;
                     }
                 }
@@ -255,12 +252,12 @@ public class Puzzle {
     	int total = 0;
     	int filled = 0;
 
-        for (int x = 0; x < boxes.length; x++) {
-            for (int y = 0; y < boxes[x].length; y++) {
-                if (boxes[x][y] != null) {
+        for (int r = 0; r < boxes.length; r++) {
+            for (int c = 0; c < boxes[r].length; c++) {
+                if (boxes[r][c] != null) {
                     total++;
 
-                    if (boxes[x][y].getResponse() != ' ') {
+                    if (boxes[r][c].getResponse() != ' ') {
                         filled++;
                     }
                 }
@@ -326,22 +323,6 @@ public class Puzzle {
     	return hasGEXT;
     }
 
-    public void setPosition(Position position) {
-    	this.position = position;
-    }
-
-    public Position getPosition() {
-    	return position;
-    }
-
-    public void setAcross(boolean across) {
-    	this.across = across;
-    }
-
-    public boolean getAcross() {
-    	return across;
-    }
-
     public void setScrambled(boolean scrambled) {
     	this.scrambled = scrambled;
     }
@@ -376,9 +357,9 @@ public class Puzzle {
         int i = 0;
         boxes = new Box[this.height][this.width];
 
-        for (int y = 0; y < this.height; y++) {
-            for (int x = 0; x < this.width; x++) {
-                boxes[y][x] = boxesList[i++];
+        for (int r = 0; r < this.height; r++) {
+            for (int c = 0; c < this.width; c++) {
+                boxes[r][c] = boxesList[i++];
             }
         }
 
@@ -421,10 +402,10 @@ public class Puzzle {
         Box[][] b2 = other.boxes;
         boolean boxEq = true;
 
-        for (int x = 0; x < b1.length; x++) {
-            for (int y = 0; y < b1[x].length; y++) {
+        for (int r = 0; r < b1.length; r++) {
+            for (int c = 0; c < b1[r].length; c++) {
                 boxEq = boxEq
-                    ? ((b1[x][y] == b2[x][y]) || b1[x][y].equals(b2[x][y]))
+                    ? ((b1[r][c] == b2[r][c]) || b1[r][c].equals(b2[r][c]))
                     : boxEq;
             }
         }

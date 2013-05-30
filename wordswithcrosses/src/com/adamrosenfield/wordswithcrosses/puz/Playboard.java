@@ -6,6 +6,8 @@ import java.util.List;
 
 import android.util.SparseArray;
 
+import com.adamrosenfield.wordswithcrosses.PuzzleDatabaseHelper.SolveState;
+
 public class Playboard {
 
     private SparseArray<Position> acrossWordStarts = new SparseArray<Position>();
@@ -13,7 +15,6 @@ public class Playboard {
     private MovementStrategy movementStrategy = MovementStrategy.MOVE_NEXT_ON_AXIS;
     private Position highlightLetter = new Position(0, 0);
     private Puzzle puzzle;
-    private String responder;
     private Box[][] boxes;
     private boolean across = true;
     private boolean showErrors;
@@ -29,16 +30,16 @@ public class Playboard {
         this.highlightLetter = new Position(0, 0);
         this.boxes = new Box[puzzle.getBoxes()[0].length][puzzle.getBoxes().length];
 
-        for (int x = 0; x < puzzle.getBoxes().length; x++) {
-            for (int y = 0; y < puzzle.getBoxes()[x].length; y++) {
-                boxes[y][x] = puzzle.getBoxes()[x][y];
+        for (int r = 0; r < puzzle.getBoxes().length; r++) {
+            for (int c = 0; c < puzzle.getBoxes()[r].length; c++) {
+                boxes[c][r] = puzzle.getBoxes()[r][c];
 
-                if ((boxes[y][x] != null) && boxes[y][x].isAcross()) {
-                    acrossWordStarts.put(boxes[y][x].getClueNumber(), new Position(y, x));
+                if ((boxes[c][r] != null) && boxes[c][r].isAcross()) {
+                    acrossWordStarts.put(boxes[c][r].getClueNumber(), new Position(c, r));
                 }
 
-                if ((boxes[y][x] != null) && boxes[y][x].isDown()) {
-                    downWordStarts.put(boxes[y][x].getClueNumber(), new Position(y, x));
+                if ((boxes[c][r] != null) && boxes[c][r].isDown()) {
+                    downWordStarts.put(boxes[c][r].getClueNumber(), new Position(c, r));
                 }
             }
         }
@@ -80,6 +81,7 @@ public class Playboard {
             c.number = this.getBoxes()[start.across][start.down].getClueNumber();
             c.hint = this.across ? this.puzzle.findAcrossClue(c.number) : this.puzzle.findDownClue(c.number);
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return c;
@@ -209,6 +211,39 @@ public class Playboard {
         return clues;
     }
 
+    public SolveState getSolveState() {
+        SolveState solveState = new SolveState();
+        solveState.position = new Position(getHighlightLetter());
+        solveState.isOrientationAcross = isAcross();
+
+        solveState.cheated = new boolean[boxes[0].length][boxes.length];
+
+        for (int c = 0; c < boxes.length; c++) {
+            for (int r = 0; r < boxes[c].length; r++) {
+                if (boxes[c][r] != null) {
+                    solveState.cheated[r][c] = boxes[c][r].isCheated();
+                }
+            }
+        }
+
+        return solveState;
+    }
+
+    public void setSolveState(SolveState solveState) {
+        setHighlightLetter(solveState.position);
+        setAcross(solveState.isOrientationAcross);
+
+        int maxR = Math.min(boxes[0].length, solveState.cheated.length);
+        for (int r = 0; r < maxR; r++) {
+            int maxC = Math.min(boxes.length, solveState.cheated[r].length);
+            for (int c = 0; c < maxC; c++) {
+                if (boxes[c][r] != null) {
+                    boxes[c][r].setCheated(solveState.cheated[r][c]);
+                }
+            }
+        }
+    }
+
     public Word setHighlightLetter(Position highlightLetter) {
         Word w = this.getCurrentWord();
 
@@ -235,20 +270,6 @@ public class Playboard {
 
     public Puzzle getPuzzle() {
         return this.puzzle;
-    }
-
-    /**
-     * @param responder the responder to set
-     */
-    public void setResponder(String responder) {
-        this.responder = responder;
-    }
-
-    /**
-     * @return the responder
-     */
-    public String getResponder() {
-        return responder;
     }
 
     public void setShowErrors(boolean showErrors) {
@@ -525,7 +546,6 @@ public class Playboard {
         }
 
         b.setResponse(letter);
-        b.setResponder(this.responder);
 
         return this.nextLetter();
     }
@@ -573,14 +593,14 @@ public class Playboard {
     public List<Position> revealPuzzle() {
         ArrayList<Position> changes = new ArrayList<Position>();
 
-        for (int across = 0; across < this.boxes.length; across++) {
-            for (int down = 0; down < this.boxes[across].length; down++) {
-                Box b = this.boxes[across][down];
+        for (int c = 0; c < this.boxes.length; c++) {
+            for (int r = 0; r < this.boxes[c].length; r++) {
+                Box b = this.boxes[c][r];
 
                 if ((b != null) && (b.getSolution() != b.getResponse())) {
                     b.setCheated(true);
                     b.setResponse(b.getSolution());
-                    changes.add(new Position(across, down));
+                    changes.add(new Position(c, r));
                 }
             }
         }
@@ -676,6 +696,11 @@ public class Playboard {
         public Position(int across, int down) {
             this.down = down;
             this.across = across;
+        }
+
+        public Position(Position p) {
+            across = p.across;
+            down = p.down;
         }
 
         @Override

@@ -2,8 +2,6 @@ package com.adamrosenfield.wordswithcrosses.puz;
 
 import java.util.Calendar;
 
-import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
-
 public class PuzzleMeta {
 
     public long id;
@@ -15,8 +13,6 @@ public class PuzzleMeta {
 	public Calendar date;
 	public int percentComplete;
 	public String sourceUrl;
-	public Position position;
-	public boolean across;
 
 	@Override
     public String toString(){
@@ -38,10 +34,6 @@ public class PuzzleMeta {
 		.append(date)
 		.append(" percentCompelete: ")
 		.append(percentComplete)
-		.append(" position: ")
-		.append(position)
-		.append(" across: ")
-		.append(across)
 		.toString();
 	}
 }

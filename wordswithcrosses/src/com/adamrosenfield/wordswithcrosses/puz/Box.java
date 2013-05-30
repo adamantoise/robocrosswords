@@ -2,7 +2,6 @@ package com.adamrosenfield.wordswithcrosses.puz;
 
 public class Box {
 
-    private String responder;
     private boolean across;
     private boolean cheated;
     private boolean down;
@@ -47,14 +46,6 @@ public class Box {
         	return false;
         }
 
-        if (getResponder() == null) {
-            if (other.getResponder() != null) {
-                return false;
-            }
-        } else if (!responder.equals(other.responder)) {
-            return false;
-        }
-
         if (getResponse() != other.getResponse()) {
             return false;
         }
@@ -75,8 +66,6 @@ public class Box {
         result = (prime * result) + getClueNumber();
         result = (prime * result) + (isDown() ? 1231 : 1237);
         result = (prime * result) + (isCircled() ? 1231 : 1237);
-        result = (prime * result) +
-            ((getResponder() == null) ? 0 : getResponder().hashCode());
         result = (prime * result) + getResponse();
         result = (prime * result) + getSolution();
 
@@ -86,13 +75,6 @@ public class Box {
     @Override
     public String toString() {
         return this.getClueNumber() + this.getSolution() + " ";
-    }
-
-    /**
-     * @param responder the responder to set
-     */
-    public void setResponder(String responder) {
-        this.responder = responder;
     }
 
     /**
@@ -191,12 +173,5 @@ public class Box {
      */
     public void setClueNumber(int clueNumber) {
         this.clueNumber = clueNumber;
-    }
-
-    /**
-     * @return the responder
-     */
-    public String getResponder() {
-        return responder;
     }
 }

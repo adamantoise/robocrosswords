@@ -44,6 +44,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.adamrosenfield.wordswithcrosses.PuzzleDatabaseHelper.SolveState;
 import com.adamrosenfield.wordswithcrosses.io.IO;
 import com.adamrosenfield.wordswithcrosses.puz.MovementStrategy;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard;
@@ -111,6 +112,8 @@ public class PlayActivity extends WordsWithCrossesActivity {
 	private long lastTap = 0;
 	private long resumedOn;
 
+    private DisplayMetrics metrics;
+
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		this.configuration = newConfig;
@@ -138,8 +141,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
 			this.handler.post(this.updateTimeTask);
 		}
 	}
-
-	DisplayMetrics metrics;
 
 	/** Called when the activity is first created. */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -205,6 +206,11 @@ public class PlayActivity extends WordsWithCrossesActivity {
 			BOARD = new Playboard(puz, movement);
 			RENDERER = new PlayboardRenderer(BOARD, metrics.density,
 					!prefs.getBoolean("suppressHints", false));
+
+            SolveState solveState = dbHelper.getPuzzleSolveState(puzzleId);
+            if (solveState != null) {
+                BOARD.setSolveState(solveState);
+            }
 
 			float scale = prefs.getFloat("scale", metrics.density);
 
@@ -920,6 +926,11 @@ public class PlayActivity extends WordsWithCrossesActivity {
 				}
 
 				IO.save(puz, baseFile);
+
+				PuzzleDatabaseHelper dbHelper = WordsWithCrossesApplication.getDatabaseHelper();
+				dbHelper.updatePercentComplete(puzzleId, puz.getPercentComplete());
+				SolveState solveState = BOARD.getSolveState();
+				dbHelper.updatePuzzleSolveState(puzzleId, solveState);
 			}
 		} catch (IOException ioe) {
 			LOG.log(Level.SEVERE, null, ioe);

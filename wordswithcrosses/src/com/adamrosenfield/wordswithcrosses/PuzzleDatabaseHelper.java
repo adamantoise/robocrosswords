@@ -28,7 +28,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
     public static final String DATABASE_NAME = "crosswords";
     public static final int DATABASE_VERSION = 1;
 
-    public static final String TABLE_NAME = "crosswords";
+    public static final String TABLE_CROSSWORDS = "crosswords";
     public static final String COLUMN_ID = BaseColumns._ID;
     public static final String COLUMN_FILENAME = "filename";
     public static final String COLUMN_ARCHIVED = "archived";
@@ -38,9 +38,14 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
     public static final String COLUMN_SOURCE_URL = "source_url";
     public static final String COLUMN_DATE = "date";
     public static final String COLUMN_PERCENT_COMPLETE = "percent_complete";
+
+    public static final String TABLE_SOLVE_STATE = "solve_state";
+    public static final String COLUMN_WIDTH = "width";
+    public static final String COLUMN_HEIGHT = "height";
     public static final String COLUMN_CURRENT_POSITION_ROW = "current_position_row";
     public static final String COLUMN_CURRENT_POSITION_COL = "current_position_col";
     public static final String COLUMN_CURRENT_ORIENTATION_ACROSS = "current_orientation_across";
+    public static final String COLUMN_CHEATED = "cheated";
 
     private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
 
@@ -55,7 +60,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
         LOG.info("Creating SQLite database");
 
         db.execSQL(
-            "CREATE TABLE " + TABLE_NAME + "(" +
+            "CREATE TABLE " + TABLE_CROSSWORDS + "(" +
             COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             COLUMN_FILENAME + " TEXT UNIQUE NOT NULL, " +
             COLUMN_ARCHIVED + " INTEGER NOT NULL, " +
@@ -64,10 +69,18 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
             COLUMN_SOURCE + " TEXT NOT NULL, " +
             COLUMN_SOURCE_URL + " TEXT NOT NULL, " +
             COLUMN_DATE + " INTEGER NOT NULL, " +
-            COLUMN_PERCENT_COMPLETE + " REAL NOT NULL, " +
+            COLUMN_PERCENT_COMPLETE + " REAL NOT NULL)"
+            );
+
+        db.execSQL(
+            "CREATE TABLE " + TABLE_SOLVE_STATE + "(" +
+            COLUMN_ID + " INTEGER PRIMARY KEY, " +
+            COLUMN_WIDTH + " INTEGER NOT NULL, " +
+            COLUMN_HEIGHT + " INTEGER NOT NULL, " +
             COLUMN_CURRENT_POSITION_ROW + " INTEGER NOT NULL, " +
             COLUMN_CURRENT_POSITION_COL + " INTEGER NOT NULL, " +
-            COLUMN_CURRENT_ORIENTATION_ACROSS + " INTEGER NOT NULL)"
+            COLUMN_CURRENT_ORIENTATION_ACROSS + " INTEGER NOT NULL, " +
+            COLUMN_CHEATED + " BLOB NOT NULL)"
             );
 
         //db.execSQL(
@@ -139,7 +152,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
         SQLiteDatabase db = getReadableDatabase();
 
         Cursor cursor = db.query(
-            TABLE_NAME,
+            TABLE_CROSSWORDS,
             new String[]{COLUMN_ID, COLUMN_FILENAME},  // Columns
             null,             // Selection
             null,             // Selection args
@@ -191,14 +204,28 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
         values.put(COLUMN_SOURCE_URL, sourceUrl);
         values.put(COLUMN_DATE, dateMillis);
         values.put(COLUMN_PERCENT_COMPLETE, -1);
-        values.put(COLUMN_CURRENT_POSITION_ROW, 0);
-        values.put(COLUMN_CURRENT_POSITION_COL, 0);
-        values.put(COLUMN_CURRENT_ORIENTATION_ACROSS, true);
 
         SQLiteDatabase db = getWritableDatabase();
-        long id = db.insert(TABLE_NAME, null, values);
+        long id = db.insert(TABLE_CROSSWORDS, null, values);
 
-        if (id == -1)
+        if (id != -1)
+        {
+            // Set the initial solve state
+            values = new ContentValues();
+            values.put(COLUMN_ID, id);
+            values.put(COLUMN_WIDTH, puz.getWidth());
+            values.put(COLUMN_HEIGHT, puz.getHeight());
+            values.put(COLUMN_CURRENT_POSITION_ROW, 0);
+            values.put(COLUMN_CURRENT_POSITION_COL, 0);
+            values.put(COLUMN_CURRENT_ORIENTATION_ACROSS, true);
+            values.put(COLUMN_CHEATED, new byte[0]);
+
+            if (db.insert(TABLE_SOLVE_STATE, null, values) != id)
+            {
+                LOG.warning("Failed to insert initial solve state for puzzle: " + path);
+            }
+        }
+        else
         {
             LOG.warning("Failed to insert puzzle into database: " + path);
         }
@@ -217,7 +244,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
 
         String whereClause = COLUMN_ID + " in (?)";
         String arg = TextUtils.join(",", ids);
-        int rowsDeleted = db.delete(TABLE_NAME, whereClause, new String[]{arg});
+        int rowsDeleted = db.delete(TABLE_CROSSWORDS, whereClause, new String[]{arg});
 
         LOG.info("Deleted " + rowsDeleted + " puzzles from the database (attempted to delete " + ids.size() + " rows)");
     }
@@ -231,7 +258,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
     {
         SQLiteDatabase db = getReadableDatabase();
 
-        String query = "SELECT 1 FROM " + TABLE_NAME + " LIMIT 1";
+        String query = "SELECT 1 FROM " + TABLE_CROSSWORDS + " LIMIT 1";
         Cursor cursor = db.rawQuery(query, null);
         boolean result = (cursor.getCount() > 0);
         cursor.close();
@@ -250,7 +277,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
     {
         SQLiteDatabase db = getReadableDatabase();
 
-        String query = "SELECT 1 FROM " + TABLE_NAME +
+        String query = "SELECT 1 FROM " + TABLE_CROSSWORDS +
             " WHERE " + COLUMN_FILENAME + "=? LIMIT 1";
         Cursor cursor = db.rawQuery(query,  new String[]{filename});
         boolean result = (cursor.getCount() > 0);
@@ -272,7 +299,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
     {
         SQLiteDatabase db = getReadableDatabase();
 
-        String query = "SELECT " + COLUMN_ID + " FROM " + TABLE_NAME +
+        String query = "SELECT " + COLUMN_ID + " FROM " + TABLE_CROSSWORDS +
             " WHERE " + COLUMN_SOURCE_URL + "=? LIMIT 1";
         Cursor cursor = db.rawQuery(query,  new String[]{url});
         long id = -1;
@@ -309,7 +336,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
     {
         SQLiteDatabase db = getReadableDatabase();
 
-        String query = "SELECT " + COLUMN_FILENAME + " FROM " + TABLE_NAME +
+        String query = "SELECT " + COLUMN_FILENAME + " FROM " + TABLE_CROSSWORDS +
             " WHERE " + COLUMN_ID + "=" + id + " LIMIT 1";
         Cursor cursor = db.rawQuery(query, null);
         String filename = null;
@@ -334,7 +361,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
     {
         SQLiteDatabase db = getReadableDatabase();
 
-        String query = "SELECT " + COLUMN_FILENAME + " FROM " + TABLE_NAME +
+        String query = "SELECT " + COLUMN_FILENAME + " FROM " + TABLE_CROSSWORDS +
             " WHERE " + COLUMN_SOURCE_URL + "=? LIMIT 1";
         Cursor cursor = db.rawQuery(query,  new String[]{url});
         String filename = null;
@@ -358,7 +385,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
 
         ArrayList<String> sourceList = new ArrayList<String>();
         Cursor cursor = db.query(
-            TABLE_NAME,
+            TABLE_CROSSWORDS,
             new String[]{COLUMN_SOURCE}, // Columns
             null,           // Selection
             null,           // Selection args
@@ -402,12 +429,10 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
         String[] columns = new String[] {
             COLUMN_ID, COLUMN_FILENAME, COLUMN_ARCHIVED, COLUMN_AUTHOR,
             COLUMN_TITLE, COLUMN_SOURCE, COLUMN_DATE,
-            COLUMN_PERCENT_COMPLETE, COLUMN_SOURCE_URL,
-            COLUMN_CURRENT_POSITION_ROW, COLUMN_CURRENT_POSITION_COL,
-            COLUMN_CURRENT_ORIENTATION_ACROSS
+            COLUMN_PERCENT_COMPLETE, COLUMN_SOURCE_URL
         };
         Cursor cursor = db.query(
-            TABLE_NAME,
+            TABLE_CROSSWORDS,
             columns,   // Columns
             selection, // Selection
             args,      // Selection args
@@ -428,8 +453,6 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
             puzzle.date.setTimeInMillis(cursor.getLong(6));
             puzzle.percentComplete = cursor.getInt(7);
             puzzle.sourceUrl = cursor.getString(8);
-            puzzle.position = new Position(cursor.getInt(9), cursor.getInt(10));
-            puzzle.across = (cursor.getInt(11) != 0);
             puzzles.add(puzzle);
         }
 
@@ -452,7 +475,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
         SQLiteDatabase db = getReadableDatabase();
 
         Cursor cursor = db.query(
-            TABLE_NAME,
+            TABLE_CROSSWORDS,
             new String[]{COLUMN_ID, COLUMN_FILENAME},
             getCleanupSelectionQuery(olderThanDateMillis),
             null,  // Selection args
@@ -484,7 +507,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
 
         SQLiteDatabase db = getWritableDatabase();
         return db.update(
-            TABLE_NAME,
+            TABLE_CROSSWORDS,
             values,
             getCleanupSelectionQuery(olderThanDateMillis),  // Selection
             null);  // Selection args
@@ -508,10 +531,158 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
 
         SQLiteDatabase db = getWritableDatabase();
         return db.update(
-            TABLE_NAME,
+            TABLE_CROSSWORDS,
             values,
             selection,
             null) > 0;
+    }
+
+    /**
+     * Object representing current solve state of a puzzle which can't be
+     * stored directly in the puzzle file format
+     */
+    public static class SolveState
+    {
+        public Position position;
+        public boolean isOrientationAcross;
+        public boolean[][] cheated = new boolean[0][0];
+
+        public void setCheated(int width, int height, byte[] blob)
+        {
+            cheated = new boolean[height][width];
+
+            int maxI = Math.min(width * height, blob.length * 8);
+            for (int i = 0; i < maxI; i++)
+            {
+                int r = (i / width);
+                int c = (i % width);
+                cheated[r][c] = ((blob[i >> 3] & (1 << (i & 7))) != 0);
+            }
+        }
+
+        byte[] getCheatedBlob()
+        {
+            byte[] blob = new byte[(cheated.length * cheated[0].length + 7) / 8];
+
+            int i = 0;
+            for (int r = 0; r < cheated.length; r++)
+            {
+                for (int c = 0; c < cheated[r].length; c++)
+                {
+                    if (cheated[r][c])
+                    {
+                        blob[i >> 3] |= (1 << (i & 7));
+                    }
+
+                    i++;
+                }
+            }
+
+            return blob;
+        }
+    }
+
+    /**
+     * Gets any relevant current solve state of a puzzle that's not stored
+     * directly in the puzzle file
+     *
+     * @param puzzleId Puzzle ID to get the solve state of
+     *
+     * @return True if the given puzzle ID was found, or false otherwise
+     */
+    public SolveState getPuzzleSolveState(long puzzleId)
+    {
+        String[] columns = new String[]
+        {
+            COLUMN_WIDTH,
+            COLUMN_HEIGHT,
+            COLUMN_CURRENT_POSITION_ROW,
+            COLUMN_CURRENT_POSITION_COL,
+            COLUMN_CURRENT_ORIENTATION_ACROSS,
+            COLUMN_CHEATED
+        };
+
+        String selection = COLUMN_ID + "=" + puzzleId;
+
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(
+            TABLE_SOLVE_STATE,
+            columns,   // Columns
+            selection, // Selection
+            null,      // Selection args
+            null,      // Group by
+            null,      // Having
+            null);     // Order by
+
+        if (cursor.moveToNext())
+        {
+            SolveState solveState = new SolveState();
+            int width = cursor.getInt(0);
+            int height = cursor.getInt(1);
+            int row = cursor.getInt(2);
+            int col = cursor.getInt(3);
+            solveState.position = new Position(col, row);
+            solveState.isOrientationAcross = (cursor.getInt(4) != 0);
+            byte[] cheatedBlob = cursor.getBlob(5);
+            cursor.close();
+
+            solveState.setCheated(width, height, cheatedBlob);
+
+            return solveState;
+        }
+        else
+        {
+            LOG.warning("getPuzzleSolveState: No such puzzle: " + puzzleId);
+            return null;
+        }
+    }
+
+    /**
+     * Updates any relevant current solve state about the given puzzle which
+     * can't be stored directly in the puzzle file.
+     *
+     * @param puzzleId Puzzle ID to update
+     * @param solveState New solve state to store
+     */
+    public void updatePuzzleSolveState(long puzzleId, SolveState solveState)
+    {
+        String selection = COLUMN_ID + "=" + puzzleId;
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_CURRENT_POSITION_ROW, solveState.position.down);
+        values.put(COLUMN_CURRENT_POSITION_COL, solveState.position.across);
+        values.put(COLUMN_CURRENT_ORIENTATION_ACROSS, solveState.isOrientationAcross);
+        values.put(COLUMN_CHEATED, solveState.getCheatedBlob());
+
+        SQLiteDatabase db = getWritableDatabase();
+        if (db.update(TABLE_SOLVE_STATE, values, selection, null) == 1)
+        {
+            LOG.info("Updated puzzle solve state");
+        }
+        else
+        {
+            LOG.warning("updatePuzzleSolveState: No such puzzle: " + puzzleId);
+        }
+    }
+
+    /**
+     * Updates the percentage complete of the given puzzle
+     *
+     * @param puzzleId Puzzle ID to update
+     * @param percentComplete New percentage complete
+     */
+    public void updatePercentComplete(long puzzleId, int percentComplete)
+    {
+        String selection = COLUMN_ID + "=" + puzzleId;
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_PERCENT_COMPLETE, percentComplete);
+
+        SQLiteDatabase db = getWritableDatabase();
+        if (db.update(TABLE_CROSSWORDS, values, selection, null) < 1)
+        {
+            LOG.warning("updatePercentCompletee: No such puzzle: " + puzzleId);
+        }
     }
 
     /**
