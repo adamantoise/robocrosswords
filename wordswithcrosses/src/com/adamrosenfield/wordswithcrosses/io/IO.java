@@ -122,22 +122,22 @@ public class IO {
 		Box[][] boxes = new Box[puz.getHeight()][puz.getWidth()];
 		byte[] answerByte = new byte[1];
 
-		for (int x = 0; x < boxes.length; x++) {
-			for (int y = 0; y < boxes[x].length; y++) {
+		for (int r = 0; r < boxes.length; r++) {
+			for (int c = 0; c < boxes[r].length; c++) {
 				answerByte[0] = input.readByte();
 
 				char solution = new String(answerByte, CHARSET.name())
 						.charAt(0);
 
 				if (solution != '.') {
-					boxes[x][y] = new Box();
-					boxes[x][y].setSolution((char) solution);
+					boxes[r][c] = new Box();
+					boxes[r][c].setSolution((char) solution);
 				}
 			}
 		}
 
-		for (int x = 0; x < boxes.length; x++) {
-			for (int y = 0; y < boxes[x].length; y++) {
+		for (int r = 0; r < boxes.length; r++) {
+			for (int c = 0; c < boxes[r].length; c++) {
 				answerByte[0] = input.readByte();
 
 				char answer = new String(answerByte, CHARSET.name()).charAt(0);
@@ -145,11 +145,11 @@ public class IO {
 				if (answer == '.') {
 					continue;
 				} else if (answer == '-') {
-					boxes[x][y].setResponse(' ');
-				} else if (boxes[x][y] != null) {
-					boxes[x][y].setResponse(answer);
+					boxes[r][c].setResponse(' ');
+				} else if (boxes[r][c] != null) {
+					boxes[r][c].setResponse(answer);
 				} else {
-					LOG.warning("IO.load(): Unexpected answer: " + x + "," + y + " " + answer);
+					LOG.warning("IO.load(): Unexpected answer: " + r + "," + c + " " + answer);
 				}
 			}
 		}
@@ -166,24 +166,24 @@ public class IO {
 		ArrayList<String> downClues = new ArrayList<String>();
 		ArrayList<String> rawClues = new ArrayList<String>();
 
-		for (int x = 0; x < boxes.length; x++) {
-			for (int y = 0; y < boxes[x].length; y++) {
-				if (boxes[x][y] == null) {
+		for (int r = 0; r < boxes.length; r++) {
+			for (int c = 0; c < boxes[r].length; c++) {
+				if (boxes[r][c] == null) {
 					continue;
 				}
 
-				if (boxes[x][y].isAcross()
-						&& (boxes[x][y].getClueNumber() != 0)) {
+				if (boxes[r][c].isAcross()
+						&& (boxes[r][c].getClueNumber() != 0)) {
 					String value = readNullTerminatedString(input);
 
-					acrossCluesLookup.add(boxes[x][y].getClueNumber());
+					acrossCluesLookup.add(boxes[r][c].getClueNumber());
 					acrossClues.add(value);
 					rawClues.add(value);
 				}
 
-				if (boxes[x][y].isDown() && (boxes[x][y].getClueNumber() != 0)) {
+				if (boxes[r][c].isDown() && (boxes[r][c].getClueNumber() != 0)) {
 					String value = readNullTerminatedString(input);
-					downCluesLookup.add(boxes[x][y].getClueNumber());
+					downCluesLookup.add(boxes[r][c].getClueNumber());
 					downClues.add(value);
 					rawClues.add(value);
 				}
@@ -247,13 +247,13 @@ public class IO {
 
 		Box[][] boxes = puz.getBoxes();
 
-		for (int x = 0; x < boxes.length; x++) {
-			for (int y = 0; y < boxes[x].length; y++) {
+		for (int r = 0; r < boxes.length; r++) {
+			for (int c = 0; c < boxes[r].length; c++) {
 				byte gextInfo = input.readByte();
 
 				if ((gextInfo & GEXT_SQUARE_CIRCLED) != 0) {
-					if (boxes[x][y] != null) {
-						boxes[x][y].setCircled(true);
+					if (boxes[r][c] != null) {
+						boxes[r][c].setCircled(true);
 					}
 				}
 			}
@@ -355,15 +355,15 @@ public class IO {
 			gextSection = new byte[numberOfBoxes];
 		}
 
-		for (int x = 0; x < boxes.length; x++) {
-			for (int y = 0; y < boxes[x].length; y++) {
-				if (boxes[x][y] == null) {
+		for (int r = 0; r < boxes.length; r++) {
+			for (int c = 0; c < boxes[r].length; c++) {
+				if (boxes[r][c] == null) {
 					tmpDos.writeByte('.');
 				} else {
-					byte val = (byte) boxes[x][y].getSolution(); // Character.toString().getBytes("Cp1252")[0];
+					byte val = (byte) boxes[r][c].getSolution(); // Character.toString().getBytes("Cp1252")[0];
 
-					if (puz.getGEXT() && boxes[x][y].isCircled()) {
-						gextSection[(width * x) + y] = GEXT_SQUARE_CIRCLED;
+					if (puz.getGEXT() && boxes[r][c].isCircled()) {
+						gextSection[(width * r) + c] = GEXT_SQUARE_CIRCLED;
 					}
 
 					tmpDos.writeByte(val);
@@ -371,13 +371,13 @@ public class IO {
 			}
 		}
 
-		for (int x = 0; x < boxes.length; x++) {
-			for (int y = 0; y < boxes[x].length; y++) {
-				if (boxes[x][y] == null) {
+		for (int r = 0; r < boxes.length; r++) {
+			for (int c = 0; c < boxes[r].length; c++) {
+				if (boxes[r][c] == null) {
 					tmpDos.writeByte('.');
 				} else {
-					byte val = (byte) boxes[x][y].getResponse(); // Character.toString().getBytes("Cp1252")[0];
-					tmpDos.writeByte((boxes[x][y].getResponse() == ' ') ? '-'
+					byte val = (byte) boxes[r][c].getResponse(); // Character.toString().getBytes("Cp1252")[0];
+					tmpDos.writeByte((boxes[r][c].getResponse() == ' ') ? '-'
 							: val);
 				}
 			}
