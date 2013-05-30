@@ -100,13 +100,13 @@ public class KingFeaturesPlaintextIO {
         puz.setWidth(width);
         puz.setHeight(height);
         Box[][] boxes = new Box[height][width];
-        for (int x = 0; x < height; x++) {
-            char[] row = solGrid.get(x);
-            for (int y = 0; y < width; y++) {
-                if (row[y] != '#') {
-                    boxes[x][y] = new Box();
-                    boxes[x][y].setSolution(row[y]);
-                    boxes[x][y].setResponse(' ');
+        for (int r = 0; r < height; r++) {
+            char[] row = solGrid.get(r);
+            for (int c = 0; c < width; c++) {
+                if (row[c] != '#') {
+                    boxes[r][c] = new Box();
+                    boxes[r][c].setSolution(row[c]);
+                    boxes[r][c].setResponse(' ');
                 }
             }
         }
