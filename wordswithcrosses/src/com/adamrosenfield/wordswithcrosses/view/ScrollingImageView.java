@@ -40,13 +40,10 @@ public class ScrollingImageView extends AbsoluteLayout implements OnGestureListe
                                              .newInstance();
                 aux.init(this);
             } catch (IllegalAccessException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (InstantiationException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -163,7 +160,6 @@ public class ScrollingImageView extends AbsoluteLayout implements OnGestureListe
     }
 
     public boolean onDown(MotionEvent e) {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -291,14 +287,6 @@ public class ScrollingImageView extends AbsoluteLayout implements OnGestureListe
     @Override
     public void scrollTo(int x, int y) {
         super.scrollTo(x, y);
-
-        //    	if(x ==0 && y ==0 ){
-        //    		try{
-        //    			throw new RuntimeException();
-        //    		} catch(Exception e){
-        //    			e.printStackTrace();
-        //    		}
-        //    	}
     }
 
     public void zoom(float scale, int x, int y) {
