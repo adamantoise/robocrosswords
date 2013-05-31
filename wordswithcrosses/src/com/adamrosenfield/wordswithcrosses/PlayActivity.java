@@ -5,6 +5,7 @@ import static com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication.RE
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -29,6 +30,7 @@ import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
@@ -68,6 +70,9 @@ public class PlayActivity extends WordsWithCrossesActivity {
 	private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
 	private static final int INFO_DIALOG = 0;
 	private static final int REVEAL_PUZZLE_DIALOG = 2;
+
+	/** Clue font sizes, in sp */
+	private static final int CLUE_SIZES[] = {12, 14, 16};
 
 	@SuppressWarnings("rawtypes")
 	private AdapterView across;
@@ -581,7 +586,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
 		}
 
-		this.setClueSize(prefs.getInt("clueSize", 12));
+		this.setClueSize(prefs.getInt("clueSize", CLUE_SIZES[0]));
 		setTitle("Words With Crosses - " + puz.getTitle() + " - " + puz.getAuthor()
 				+ " - 	" + puz.getCopyright());
 		this.showCount = prefs.getBoolean("showCount", false);
@@ -609,18 +614,18 @@ public class PlayActivity extends WordsWithCrossesActivity {
 	}
 
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View view,
-			ContextMenuInfo info) {
-		if (view == boardView) {
-			Menu clueSize = menu.addSubMenu("Clue Text Size");
-			clueSize.add("Small");
-			clueSize.add("Medium");
-			clueSize.add("Large");
+	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo info) {
+        super.onCreateContextMenu(menu, view, info);
 
-			menu.add("Zoom In");
-			menu.add("Zoom Out");
-			menu.add("Fit to Screen");
-			menu.add("Zoom Reset");
+        if (view == boardView) {
+		    MenuInflater inflater = getMenuInflater();
+		    inflater.inflate(R.menu.playactivity_context_menu, menu);
+
+		    int clueSize = prefs.getInt("clueSize", CLUE_SIZES[0]);
+		    int clueSizeIndex = Arrays.binarySearch(CLUE_SIZES, clueSize);
+		    if (clueSizeIndex >= 0) {
+		        menu.getItem(0).getSubMenu().getItem(clueSizeIndex).setChecked(true);
+		    }
 		}
 	}
 
@@ -813,7 +818,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 			this.startActivity(i);
 
 			return true;
-		} else if (item.getTitle().equals("Zoom In")) {
+		} else if (item.getItemId() == R.id.context_zoom_in) {
 			this.boardView.scrollTo(0, 0);
 
 			float newScale = RENDERER.zoomIn();
@@ -822,7 +827,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 			this.render();
 
 			return true;
-		} else if (item.getTitle().equals("Zoom Out")) {
+		} else if (item.getItemId() == R.id.context_zoom_out) {
 			this.boardView.scrollTo(0, 0);
 
 			float newScale = RENDERER.zoomOut();
@@ -831,7 +836,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 			this.render();
 
 			return true;
-		} else if (item.getTitle().equals("Fit to Screen")) {
+		} else if (item.getItemId() == R.id.context_fit_to_screen) {
 			this.boardView.scrollTo(0, 0);
 
 			int v = (this.boardView.getWidth() < this.boardView.getHeight()) ? this.boardView
@@ -841,7 +846,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 			this.render();
 
 			return true;
-		} else if (item.getTitle().equals("Zoom Reset")) {
+		} else if (item.getItemId() == R.id.context_zoom_reset) {
 			float newScale = RENDERER.zoomReset();
 			this.prefs.edit().putFloat("scale", newScale).commit();
 			this.render();
@@ -874,12 +879,12 @@ public class PlayActivity extends WordsWithCrossesActivity {
 			return true;
 		} else if (item.getTitle().equals("Help")) {
 		    showHTMLPage("playscreen.html");
-		} else if (item.getTitle().equals("Small")) {
-			this.setClueSize(12);
-		} else if (item.getTitle().equals("Medium")) {
-			this.setClueSize(14);
-		} else if (item.getTitle().equals("Large")) {
-			this.setClueSize(16);
+		} else if (item.getItemId() == R.id.context_clue_text_size_small) {
+			setClueSize(CLUE_SIZES[0]);
+		} else if (item.getItemId() == R.id.context_clue_text_size_medium) {
+			setClueSize(CLUE_SIZES[1]);
+		} else if (item.getItemId() == R.id.context_clue_text_size_large) {
+			setClueSize(CLUE_SIZES[2]);
 		}
 
 		return false;
@@ -1009,7 +1014,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 			downAdapter.notifyDataSetInvalidated();
 		}
 
-		if (prefs.getInt("clueSize", 12) != dps) {
+		if (prefs.getInt("clueSize", CLUE_SIZES[0]) != dps) {
 			this.prefs.edit().putInt("clueSize", dps).commit();
 		}
 	}

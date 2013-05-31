@@ -123,4 +123,13 @@
     <string name="unknown_extension">Unknown file extension:\u0020</string>
     <string name="load_puzzle_failed">Failed to load puzzle:\n"</string>
 
+    <string name="clue_text_size">Clue Text Size</string>
+    <string name="clue_text_size_small">Small</string>
+    <string name="clue_text_size_medium">Medium</string>
+    <string name="clue_text_size_large">Large</string>
+    <string name="zoom_in">Zoom In</string>
+    <string name="zoom_out">Zoom Out</string>
+    <string name="fit_to_screen">Fit to Screen</string>
+    <string name="zoom_reset">Zoom Reset</string>
+
 </resources>
