@@ -84,7 +84,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
 	private Handler handler = new Handler();
 	private ImaginaryTimer timer;
 	private KeyboardView keyboardView = null;
-	private MovementStrategy movement = null;
 	private Puzzle puz;
 	private long puzzleId;
 	private ScrollingImageView boardView;
@@ -180,8 +179,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
 		this.showErrors = this.prefs.getBoolean("showErrors", false);
 		setDefaultKeyMode(Activity.DEFAULT_KEYS_DISABLE);
 
-		MovementStrategy movement = this.getMovementStrategy();
-
 		if (prefs.getBoolean("fullScreen", false)) {
 			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 					WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -203,7 +200,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 		    baseFile = new File(filename);
 		    puz = IO.load(baseFile);
 
-			BOARD = new Playboard(puz, movement);
+			BOARD = new Playboard(puz, getMovementStrategy());
 			RENDERER = new PlayboardRenderer(BOARD, metrics.density,
 					!prefs.getBoolean("suppressHints", false));
 
@@ -962,7 +959,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 		this.resumedOn = System.currentTimeMillis();
 		BOARD.setSkipCompletedLetters(this.prefs
 				.getBoolean("skipFilled", false));
-		BOARD.setMovementStrategy(this.getMovementStrategy());
+		BOARD.setMovementStrategy(getMovementStrategy());
 
 		int keyboardType = "CONDENSED_ARROWS".equals(prefs.getString(
 				"keyboardType", "")) ? R.xml.keyboard_dpad : R.xml.keyboard;
@@ -1018,23 +1015,19 @@ public class PlayActivity extends WordsWithCrossesActivity {
 	}
 
 	private MovementStrategy getMovementStrategy() {
-		if (movement != null) {
-			return movement;
+		String stratName = prefs.getString("movementStrategy", "MOVE_NEXT_ON_AXIS");
+
+		if (stratName.equals("MOVE_NEXT_ON_AXIS")) {
+			return MovementStrategy.MOVE_NEXT_ON_AXIS;
+		} else if (stratName.equals("STOP_ON_END")) {
+			return MovementStrategy.STOP_ON_END;
+		} else if (stratName.equals("MOVE_NEXT_CLUE")) {
+			return MovementStrategy.MOVE_NEXT_CLUE;
+		} else if (stratName.equals("MOVE_PARALLEL_WORD")) {
+			return MovementStrategy.MOVE_PARALLEL_WORD;
 		} else {
-			String stratName = this.prefs.getString("movementStrategy",
-					"MOVE_NEXT_ON_AXIS");
-
-			if (stratName.equals("MOVE_NEXT_ON_AXIS")) {
-				movement = MovementStrategy.MOVE_NEXT_ON_AXIS;
-			} else if (stratName.equals("STOP_ON_END")) {
-				movement = MovementStrategy.STOP_ON_END;
-			} else if (stratName.equals("MOVE_NEXT_CLUE")) {
-				movement = MovementStrategy.MOVE_NEXT_CLUE;
-			} else if (stratName.equals("MOVE_PARALLEL_WORD")) {
-				movement = MovementStrategy.MOVE_PARALLEL_WORD;
-			}
-
-			return movement;
+		    LOG.warning("Invalid movement strategy: " + stratName);
+		    return MovementStrategy.MOVE_NEXT_ON_AXIS;
 		}
 	}
 

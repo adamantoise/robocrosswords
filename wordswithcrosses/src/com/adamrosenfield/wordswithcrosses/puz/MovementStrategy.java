@@ -9,6 +9,11 @@ public interface MovementStrategy {
 
 	public static final MovementStrategy MOVE_NEXT_ON_AXIS = new MovementStrategy() {
 
+	    @Override
+        public String toString() {
+	        return "MOVE_NEXT_ON_AXIS";
+	    }
+
         public Word move(Playboard board, boolean skipCompletedLetters) {
 			if (board.isAcross()) {
 				return board.moveRight(skipCompletedLetters);
@@ -27,6 +32,11 @@ public interface MovementStrategy {
 	};
 
 	public static final MovementStrategy STOP_ON_END = new MovementStrategy() {
+
+        @Override
+        public String toString() {
+            return "STOP_ON_END";
+        }
 
         public Word move(Playboard board, boolean skipCompletedLetters) {
 			// This is overly complex, but I am trying to save calls to heavy
@@ -61,6 +71,11 @@ public interface MovementStrategy {
 	};
 
 	public static final MovementStrategy MOVE_NEXT_CLUE = new MovementStrategy() {
+
+        @Override
+        public String toString() {
+            return "MOVE_NEXT_CLUE";
+        }
 
         /**
 		 * Moves to the word corresponding to the next clue.  If the current word is the last
@@ -190,6 +205,11 @@ public interface MovementStrategy {
 	};
 
 	public static final MovementStrategy MOVE_PARALLEL_WORD = new MovementStrategy() {
+
+        @Override
+        public String toString() {
+            return "MOVE_PARALLEL_WORD";
+        }
 
         public Word move(Playboard board, boolean skipCompletedLetters) {
 			Word w = board.getCurrentWord();
