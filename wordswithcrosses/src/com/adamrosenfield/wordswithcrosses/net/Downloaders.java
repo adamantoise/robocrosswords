@@ -249,8 +249,7 @@ public class Downloaders {
 
     @SuppressWarnings("deprecation")
     private void updateDownloadingNotification(Notification not, String contentTitle, String source) {
-        String contentText = context.getResources().getString(R.string.downloading_from);
-        contentText = contentText.replace("${SOURCE}", source);
+        String contentText = context.getResources().getString(R.string.downloading_from, source);
         not.setLatestEventInfo(context, contentTitle, contentText, pendingBrowseIntent);
     }
 
@@ -271,8 +270,7 @@ public class Downloaders {
 
     @SuppressWarnings("deprecation")
     private void postDownloadedNotification(int notifId, String name, File puzFile, long puzzleId) {
-        String contentTitle = context.getResources().getString(R.string.downloaded_puzzle_title);
-        contentTitle = contentTitle.replace("${SOURCE}", name);
+        String contentTitle = context.getResources().getString(R.string.downloaded_puzzle_title, name);
 
         Notification not = new Notification(
                 android.R.drawable.stat_sys_download_done, contentTitle,
@@ -290,8 +288,7 @@ public class Downloaders {
 
     @SuppressWarnings("deprecation")
     private void postDownloadFailedNotification(int notifId, String name) {
-        String contentTitle = context.getResources().getString(R.string.download_failed);
-        contentTitle = contentTitle.replace("${SOURCE}", name);
+        String contentTitle = context.getResources().getString(R.string.download_failed, name);
         Notification not = new Notification(
                 android.R.drawable.stat_notify_error, contentTitle,
                 System.currentTimeMillis());
