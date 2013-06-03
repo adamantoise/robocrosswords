@@ -20,8 +20,6 @@ public class Puzzle {
     private Integer[] downCluesLookup;
     private int numberOfClues;
     private Calendar pubdate = Calendar.getInstance();
-    private String source = "";
-    private String sourceUrl = "";
     private Box[][] boxes;
     private Box[] boxesList;
     private String[] rawClues;
@@ -273,22 +271,6 @@ public class Puzzle {
 
     public String[] getRawClues() {
         return rawClues;
-    }
-
-    public void setSource(String source) {
-        this.source = source;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public void setSourceUrl(String sourceUrl) {
-        this.sourceUrl = sourceUrl;
-    }
-
-    public String getSourceUrl() {
-        return sourceUrl;
     }
 
     public void setTime(long time) {

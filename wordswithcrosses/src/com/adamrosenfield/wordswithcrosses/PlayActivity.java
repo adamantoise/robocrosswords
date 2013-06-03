@@ -205,7 +205,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 		    baseFile = new File(filename);
 		    puz = IO.load(baseFile);
 
-			BOARD = new Playboard(puz, getMovementStrategy());
+			BOARD = new Playboard(puz, puzzleId, getMovementStrategy());
 			RENDERER = new PlayboardRenderer(BOARD, metrics.density,
 					!prefs.getBoolean("suppressHints", false));
 
@@ -590,6 +590,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 		setTitle("Words With Crosses - " + puz.getTitle() + " - " + puz.getAuthor()
 				+ " - 	" + puz.getCopyright());
 		this.showCount = prefs.getBoolean("showCount", false);
+		//*
 		if(android.os.Build.VERSION.SDK_INT > 11 && !WordsWithCrossesApplication.isTabletish(metrics)){
 			this.handler.postDelayed(new Runnable(){
 
@@ -610,7 +611,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 			}, 100);
 
 		}
-
+//*/
 	}
 
 	@Override

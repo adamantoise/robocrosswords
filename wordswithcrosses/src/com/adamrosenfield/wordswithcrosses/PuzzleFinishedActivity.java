@@ -28,6 +28,7 @@ public class PuzzleFinishedActivity extends WordsWithCrossesActivity{
         setContentView(R.layout.completed);
         this.getWindow().setLayout(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 
+        long puzzleId = WordsWithCrossesApplication.BOARD.getPuzzleID();
         Puzzle puz = WordsWithCrossesApplication.BOARD.getPuzzle();
 
         two_int.setMinimumIntegerDigits(2);
@@ -49,42 +50,45 @@ public class PuzzleFinishedActivity extends WordsWithCrossesActivity{
         int totalClues = puz.getAcrossClues().length + puz.getDownClues().length;
         int totalBoxes = 0;
         int cheatedBoxes = 0;
-        for(Box b : puz.getBoxesList()){
-        	if(b == null){
+        for (Box b : puz.getBoxesList()) {
+        	if (b == null) {
         		continue;
         	}
-        	if(b.isCheated()){
+        	if(b.isCheated()) {
         		cheatedBoxes++;
         	}
         	totalBoxes++;
         }
 
-        String cheatedString = cheatedBoxes +" ("+
-        two_int.format( (double) cheatedBoxes  * 100D / (double) totalBoxes)+"%)";
+        String cheatedStr = (int)Math.ceil((double)cheatedBoxes * 100D / (double)totalBoxes) + "%";
+        String fullCheatedStr = cheatedBoxes + " (" + cheatedStr + ")";
+
+        PuzzleDatabaseHelper dbHelper = WordsWithCrossesApplication.getDatabaseHelper();
+        String source = dbHelper.getPuzzleSource(puzzleId);
+        String dateStr = df.format(puz.getDate().getTime());
 
         final String shareMessage;
-        if(puz.getSource() != null && puz.getDate() != null){
-            shareMessage = "I finished the "+puz.getSource()+" crossword for "+ df.format(puz.getDate().getTime()) +" in "+
-                elapsedString +(cheatedBoxes > 0 ? " but got "+cheatedBoxes+ " hints" : "")+" in #WordsWithCrosses!";
+        if (cheatedBoxes == 0) {
+            shareMessage = getResources().getString(R.string.share_text, source, dateStr, elapsedString);
         } else {
-            shareMessage = "I finished "+puz.getSource()+" in "+
-                elapsedString +(cheatedBoxes > 0 ? "but got "+cheatedBoxes +" hints" : "")+" with #WordsWithCrosses!";
+            shareMessage = getResources().getQuantityString(
+                R.plurals.share_text_hinted, cheatedBoxes, source, dateStr, elapsedString, cheatedBoxes, cheatedStr);
         }
 
-        TextView elapsedTime = (TextView) this.findViewById(R.id.elapsed);
+        TextView elapsedTime = (TextView)this.findViewById(R.id.elapsed);
         elapsedTime.setText(elapsedString);
 
-        TextView totalCluesView = (TextView) this.findViewById(R.id.totalClues);
+        TextView totalCluesView = (TextView)this.findViewById(R.id.totalClues);
         totalCluesView.setText(Integer.toString(totalClues));
 
-        TextView totalBoxesView = (TextView) this.findViewById(R.id.totalBoxes);
+        TextView totalBoxesView = (TextView)this.findViewById(R.id.totalBoxes);
         totalBoxesView.setText(Integer.toString(totalBoxes));
 
-        TextView cheatedBoxesView = (TextView) this.findViewById(R.id.cheatedBoxes);
-        cheatedBoxesView.setText(cheatedString);
+        TextView cheatedBoxesView = (TextView)this.findViewById(R.id.cheatedBoxes);
+        cheatedBoxesView.setText(fullCheatedStr);
 
         Button share = (Button) this.findViewById(R.id.share);
-        share.setOnClickListener(new OnClickListener(){
+        share.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
 				Intent sendIntent = new Intent(Intent.ACTION_SEND);

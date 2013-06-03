@@ -15,18 +15,20 @@ public class Playboard {
     private MovementStrategy movementStrategy = MovementStrategy.MOVE_NEXT_ON_AXIS;
     private Position highlightLetter = new Position(0, 0);
     private Puzzle puzzle;
+    private long puzzleId = -1;
     private Box[][] boxes;
     private boolean across = true;
     private boolean showErrors;
     private boolean skipCompletedLetters;
 
-    public Playboard(Puzzle puzzle, MovementStrategy movementStrategy) {
-        this(puzzle);
+    public Playboard(Puzzle puzzle, long puzzleId, MovementStrategy movementStrategy) {
+        this(puzzle, puzzleId);
         this.movementStrategy = movementStrategy;
     }
 
-    public Playboard(Puzzle puzzle) {
+    public Playboard(Puzzle puzzle, long puzzleId) {
         this.puzzle = puzzle;
+        this.puzzleId = puzzleId;
         this.highlightLetter = new Position(0, 0);
         this.boxes = new Box[puzzle.getBoxes().length][puzzle.getBoxes()[0].length];
 
@@ -257,6 +259,10 @@ public class Playboard {
 
     public Puzzle getPuzzle() {
         return this.puzzle;
+    }
+
+    public long getPuzzleID() {
+        return puzzleId;
     }
 
     public void setShowErrors(boolean showErrors) {

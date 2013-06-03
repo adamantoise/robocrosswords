@@ -1,4 +1,4 @@
-package com.adamrosenfield.wordswithcrosses;
+    package com.adamrosenfield.wordswithcrosses;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -347,6 +347,31 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
         cursor.close();
 
         return filename;
+    }
+
+    /**
+     * Gets the puzzle source name for the puzzle with the given ID
+     *
+     * @param id Puzzle ID to query
+     *
+     * @return The puzzle source of the given puzzle, or null if no such puzzle
+     *         exists
+     */
+    public String getPuzzleSource(long id)
+    {
+        SQLiteDatabase db = getReadableDatabase();
+
+        String query = "SELECT " + COLUMN_SOURCE + " FROM " + TABLE_CROSSWORDS +
+            " WHERE " + COLUMN_ID + "=" + id + " LIMIT 1";
+        Cursor cursor = db.rawQuery(query, null);
+        String source = null;
+        if (cursor.moveToNext())
+        {
+            source = cursor.getString(0);
+        }
+        cursor.close();
+
+        return source;
     }
 
     /**
