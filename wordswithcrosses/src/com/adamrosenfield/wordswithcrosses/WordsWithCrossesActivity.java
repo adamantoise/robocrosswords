@@ -48,9 +48,9 @@ public abstract class WordsWithCrossesActivity extends Activity {
 
 		StatFs stats = new StatFs(Environment.getExternalStorageDirectory().getAbsolutePath());
 		long bytesFree = (long)stats.getAvailableBlocks() * (long)stats.getBlockSize();
-		LOG.info("Avail blocks: " + stats.getAvailableBlocks());
-		LOG.info("Block size: " + stats.getBlockSize());
-		LOG.info("Bytes free: " + bytesFree);
+		//LOG.info("Avail blocks: " + stats.getAvailableBlocks());
+		//LOG.info("Block size: " + stats.getBlockSize());
+		//LOG.info("Bytes free: " + bytesFree);
 
 		if (bytesFree < 1024L * 1024L) {
 			showSDCardFull();
