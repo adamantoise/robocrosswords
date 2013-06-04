@@ -102,11 +102,6 @@
                 android:summary="@string/pref_mgwcc_summary"
                 android:defaultValue="true"
                 android:key="downloadMGWCC" />
-            <CheckBoxPreference
-				android:title="New York Times Classic"
-				android:summary="@string/pref_updates_mon"
-				android:defaultValue="true"
-				android:key="downloadNYTClassic" />
 			<CheckBoxPreference
 				android:title="People Magazine"
 				android:summary="@string/pref_people_summary"

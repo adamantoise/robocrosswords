@@ -94,9 +94,10 @@ public class Downloaders {
                 prefs.getString("nytPassword", "")));
         }
 
-        if (prefs.getBoolean("downloadNYTClassic", true)) {
-            downloaders.add(new NYTClassicDownloader());
-        }
+        // NYT classic is no longer updating with new puzzles
+        //if (prefs.getBoolean("downloadNYTClassic", true)) {
+        //    downloaders.add(new NYTClassicDownloader());
+        //}
 
         if (prefs.getBoolean("downloadNewsday", true)) {
             downloaders.add(new NewsdayDownloader());
