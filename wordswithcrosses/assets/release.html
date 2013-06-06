@@ -10,19 +10,14 @@ body { background: black; height: 100%;}
 </head>
 <body>
 
-<!--
-<form action="https://www.paypal.com/cgi-bin/webscr" method="get" target="_blank">
-<input type="hidden" name="cmd" value="_xclick">
-<input type="hidden" name="business" value="kebernet@gmail.com">
-<input type="hidden" name="no_shipping" value="2">
-<input type="hidden" name="no_note" value="1">
-<input type="hidden" name="currency_code" value="USD">
-<input type="hidden" name="tax" value="0">
-<input type="hidden" name="bn" value="PP-DonationsBF">
-<input style="float: right;" type="image" src="donate.gif" border="0" name="submit" alt="Make payments with PayPal - it's fast, free and secure!">
+<!-- begin Paypal -->
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
+">
+<input type="image" src="btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!" style="float: right;">
 </form>
-<a style="font-size:10px; float:right; clear:right; width:60px; text-align: center" href="#donations">Huh?</a>
--->
+<!-- end Paypal -->
 
 <h2><em>Words With Crosses</em> v1.0.0</h2>
 
@@ -32,7 +27,7 @@ body { background: black; height: 100%;}
 
 <p>For the previous release notes of <em>Shortyz</em>, see <a href="http://shortyz.googlecode.com/hg-history/0aa74b9d2bef0715182aa19ac62b361bec1fab81/shortyz/assets/release.html">this page</a>.  You may also make a donation to Robert Cooper there if you so choose.</p>
 
-<p><em>Words With Crosses</em> is free and will always remain free.  It is a side project of mine done in my spare time.  If you'd like to make a donation to help further the development, please email me at &lt;<a href="mailto:wordswithcrosses@adamrosenfield.com">wordswithcrosses@adamrosenfield.com</a>&gt;, and I'll set up a PayPal donation link.</p>
+<p><em>Words With Crosses</em> is free and will always remain free.  It is a side project of mine done in my spare time.  If you'd like to make a donation to help further the development, please tap the "Donate" link above.</p>
 
 </body>
 </html>
