@@ -3,6 +3,7 @@
  * By: Michael Ortiz
  * Updated By: Patrick Lackemacher
  * Updated By: Babay88
+ * Updated By: Adam Rosenfield
  * -------------------
  * Extends Android ImageView to include pinch zooming and panning.
  *
@@ -34,12 +35,12 @@
 
 package com.adamrosenfield.wordswithcrosses.view;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -47,32 +48,30 @@ import android.widget.ImageView;
 
 public class TouchImageView extends ImageView {
 
-    Matrix matrix;
+    private Matrix matrix;
 
     // We can be in one of these 3 states
-    static final int NONE = 0;
-    static final int DRAG = 1;
-    static final int ZOOM = 2;
-    int mode = NONE;
+    private enum Mode
+    {
+        NONE, DRAG, ZOOM
+    }
+
+    private Mode mode = Mode.NONE;
 
     // Remember some things for zooming
-    PointF last = new PointF();
-    PointF start = new PointF();
-    float minScale = 1f;
-    float maxScale = 3f;
-    float[] m;
+    private PointF last = new PointF();
+    private PointF start = new PointF();
+    private float minScale = 1f;
+    private float maxScale = 3f;
+    private float[] m;
 
-
-    int viewWidth, viewHeight;
-    static final int CLICK = 3;
-    float saveScale = 1f;
+    private int viewWidth, viewHeight;
+    private static final int CLICK = 3;
+    private float saveScale = 1f;
     protected float origWidth, origHeight;
-    int oldMeasuredWidth, oldMeasuredHeight;
+    private int oldMeasuredWidth, oldMeasuredHeight;
 
-
-    ScaleGestureDetector mScaleDetector;
-
-    Context context;
+    private ScaleGestureDetectorProxy mScaleDetector;
 
     public TouchImageView(Context context) {
         super(context);
@@ -83,11 +82,10 @@ public class TouchImageView extends ImageView {
         super(context, attrs);
         sharedConstructing(context);
     }
-    
+
     private void sharedConstructing(Context context) {
         super.setClickable(true);
-        this.context = context;
-        mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
+        mScaleDetector = ScaleGestureDetectorProxy.create(context, this);
         matrix = new Matrix();
         m = new float[9];
         setImageMatrix(matrix);
@@ -95,7 +93,6 @@ public class TouchImageView extends ImageView {
 
         setOnTouchListener(new OnTouchListener() {
 
-            @Override
             public boolean onTouch(View v, MotionEvent event) {
                 mScaleDetector.onTouchEvent(event);
                 PointF curr = new PointF(event.getX(), event.getY());
@@ -104,11 +101,11 @@ public class TouchImageView extends ImageView {
                     case MotionEvent.ACTION_DOWN:
                     	last.set(curr);
                         start.set(last);
-                        mode = DRAG;
+                        mode = Mode.DRAG;
                         break;
-                        
+
                     case MotionEvent.ACTION_MOVE:
-                        if (mode == DRAG) {
+                        if (mode == Mode.DRAG) {
                             float deltaX = curr.x - last.x;
                             float deltaY = curr.y - last.y;
                             float fixTransX = getFixDragTrans(deltaX, viewWidth, origWidth * saveScale);
@@ -120,7 +117,7 @@ public class TouchImageView extends ImageView {
                         break;
 
                     case MotionEvent.ACTION_UP:
-                        mode = NONE;
+                        mode = Mode.NONE;
                         int xDiff = (int) Math.abs(curr.x - start.x);
                         int yDiff = (int) Math.abs(curr.y - start.y);
                         if (xDiff < CLICK && yDiff < CLICK)
@@ -128,10 +125,10 @@ public class TouchImageView extends ImageView {
                         break;
 
                     case MotionEvent.ACTION_POINTER_UP:
-                        mode = NONE;
+                        mode = Mode.NONE;
                         break;
                 }
-                
+
                 setImageMatrix(matrix);
                 invalidate();
                 return true; // indicate event was handled
@@ -144,10 +141,11 @@ public class TouchImageView extends ImageView {
         maxScale = x;
     }
 
-    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+    @TargetApi(8)
+    class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
-            mode = ZOOM;
+            mode = Mode.ZOOM;
             return true;
         }
 
@@ -178,7 +176,7 @@ public class TouchImageView extends ImageView {
         matrix.getValues(m);
         float transX = m[Matrix.MTRANS_X];
         float transY = m[Matrix.MTRANS_Y];
-        
+
         float fixTransX = getFixTrans(transX, viewWidth, origWidth * saveScale);
         float fixTransY = getFixTrans(transY, viewHeight, origHeight * saveScale);
 
@@ -203,7 +201,7 @@ public class TouchImageView extends ImageView {
             return -trans + maxTrans;
         return 0;
     }
-    
+
     float getFixDragTrans(float delta, float viewSize, float contentSize) {
         if (contentSize <= viewSize) {
             return 0;
@@ -216,11 +214,11 @@ public class TouchImageView extends ImageView {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         viewWidth = MeasureSpec.getSize(widthMeasureSpec);
         viewHeight = MeasureSpec.getSize(heightMeasureSpec);
-        
+
         //
         // Rescales image on rotation
         //
-        if (oldMeasuredHeight == viewWidth && oldMeasuredHeight == viewHeight
+        if (oldMeasuredWidth == viewWidth && oldMeasuredHeight == viewHeight
                 || viewWidth == 0 || viewHeight == 0)
             return;
         oldMeasuredHeight = viewHeight;
@@ -235,8 +233,8 @@ public class TouchImageView extends ImageView {
                 return;
             int bmWidth = drawable.getIntrinsicWidth();
             int bmHeight = drawable.getIntrinsicHeight();
-            
-            Log.d("bmSize", "bmWidth: " + bmWidth + " bmHeight : " + bmHeight);
+
+            //Log.d("bmSize", "bmWidth: " + bmWidth + " bmHeight : " + bmHeight);
 
             float scaleX = (float) viewWidth / (float) bmWidth;
             float scaleY = (float) viewHeight / (float) bmHeight;
