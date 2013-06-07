@@ -1,13 +1,15 @@
-/*
+/**
  * TouchImageView.java
  * By: Michael Ortiz
  * Updated By: Patrick Lackemacher
  * Updated By: Babay88
  * -------------------
  * Extends Android ImageView to include pinch zooming and panning.
+ *
+ * Source: https://github.com/MikeOrtiz/TouchImageView
  */
 
-package com.example.touch;
+package com.adamrosenfield.wordswithcrosses.view;
 
 import android.content.Context;
 import android.graphics.Matrix;
