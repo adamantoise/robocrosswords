@@ -69,10 +69,6 @@ public class HoneycombUtil extends GingerbreadUtil {
     }
 
     @Override
-    public void hideWindowTitle(Activity a) {
-    }
-
-    @Override
     public void hideActionBar(Activity a) {
         ActionBar ab = a.getActionBar();
         if (ab == null) {

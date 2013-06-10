@@ -18,7 +18,6 @@ import android.content.Context;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
-import android.view.Window;
 
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.io.IO;
@@ -80,7 +79,6 @@ public class DefaultUtil implements AndroidVersionUtils {
     }
 
     public void hideWindowTitle(Activity a) {
-        a.requestWindowFeature(Window.FEATURE_NO_TITLE);
     }
 
     public void hideActionBar(Activity a) {

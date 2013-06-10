@@ -9,14 +9,10 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.DownloadManager;
 import android.app.DownloadManager.Request;
 import android.content.Context;
 import android.net.Uri;
-import android.view.MenuItem;
-import android.view.SubMenu;
-import android.view.Window;
 
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 
@@ -120,31 +116,6 @@ public class GingerbreadUtil extends DefaultUtil {
                 completedDownloads.put(idObj, succeeded);
             }
         }
-    }
-
-    @Override
-    public void finishOnHomeButton(Activity a) {
-    }
-
-    @Override
-    public void holographic(Activity playActivity) {
-    }
-
-    @Override
-    public void onActionBarWithText(MenuItem a) {
-    }
-
-    @Override
-    public void onActionBarWithText(SubMenu reveal) {
-    }
-
-    @Override
-    public void hideWindowTitle(Activity a) {
-        a.requestWindowFeature(Window.FEATURE_NO_TITLE);
-    }
-
-    @Override
-    public void hideActionBar(Activity a) {
     }
 
     protected void setNotificationVisibility(Request reqest, boolean notification) {

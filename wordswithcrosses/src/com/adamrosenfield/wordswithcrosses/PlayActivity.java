@@ -164,26 +164,23 @@ public class PlayActivity extends WordsWithCrossesActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.play);
-
 		metrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		this.configuration = getBaseContext().getResources().getConfiguration();
 
-		try {
-			if (!prefs.getBoolean("showTimer", false)) {
-				if (WordsWithCrossesApplication.isLandscape(metrics))  {
-					if(WordsWithCrossesApplication.isMiniTabletish(metrics)){
-						utils.hideWindowTitle(this);
-					}
-
-				}
-			} else {
-				requestWindowFeature(Window.FEATURE_PROGRESS);
+		if (!prefs.getBoolean("showTimer", false)) {
+			if (WordsWithCrossesApplication.isLandscape(metrics) &&
+			   !WordsWithCrossesApplication.isTabletish(metrics))
+			{
+			    requestWindowFeature(Window.FEATURE_NO_TITLE);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} else {
+			requestWindowFeature(Window.FEATURE_PROGRESS);
 		}
+
+		// Must happen after all calls to requestWindowFeature()
+        setContentView(R.layout.play);
+
 		utils.holographic(this);
 		utils.finishOnHomeButton(this);
 		if (!prefs.getBoolean("showTimer", false)) {
