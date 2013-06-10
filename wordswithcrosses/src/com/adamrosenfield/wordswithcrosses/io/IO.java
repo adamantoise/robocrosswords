@@ -422,16 +422,16 @@ public class IO {
 		bb.order(ByteOrder.LITTLE_ENDIAN);
 
 		// Calculate checksums and write to byte array.
-		int c_cib = cksum_cib(puzByteArray, 0);
+		int c_cib = checksumCIB(puzByteArray, 0);
 		bb.putShort(0x0E, (short) c_cib);
 
-		int c_primary = cksum_primary_board(puzByteArray, numberOfBoxes,
+		int c_primary = checksumPrimaryBoard(puzByteArray, numberOfBoxes,
 				numberOfClues, c_cib);
 		bb.putShort(0, (short) c_primary);
 
-		int c_sol = cksum_solution(puzByteArray, numberOfBoxes, 0);
-		int c_grid = cksum_grid(puzByteArray, numberOfBoxes, 0);
-		int c_part = cksum_partial_board(puzByteArray, numberOfBoxes,
+		int c_sol = checksumSolution(puzByteArray, numberOfBoxes, 0);
+		int c_grid = checksumGrid(puzByteArray, numberOfBoxes, 0);
+		int c_part = checksumPartialBoard(puzByteArray, numberOfBoxes,
 				numberOfClues, 0);
 
 		bb.position(0x10);
@@ -454,7 +454,7 @@ public class IO {
 
         // Calculate checksum here so we don't need to find this place in
         // the file later.
-        int cksum = cksum_region(data);
+        int cksum = checksumRegion(data);
         dos.writeShort(Short.reverseBytes((short)cksum));
         dos.write(data);
         dos.writeByte(0);
@@ -488,7 +488,7 @@ public class IO {
 			}
 		}
 
-		if (p.solutionChecksum == (short)IO.cksum_region(solution)) {
+		if (p.solutionChecksum == (short)IO.checksumRegion(solution)) {
 			int s = 0;
 			for (int i = 0; i < p.getBoxesList().length; i++) {
 				Box b = p.getBoxesList()[i];
@@ -502,7 +502,7 @@ public class IO {
 	}
 
 	// TODO: Call this somewhere?
-	public static boolean crack(Puzzle puz) {
+	public static boolean crackPuzzle(Puzzle puz) {
 		for (int a = 0; a < 10000; a++) {
 			if (tryUnscramble(puz, a, puz.initializeUnscrambleData())) {
 				return true;
@@ -539,15 +539,15 @@ public class IO {
 		System.arraycopy(p.unscrambleTmp, 0, str, 0, keynum);
 	}
 
-	private static int cksum_cib(byte[] puzByteArray, int cksum) {
-		return cksum_region(puzByteArray, 0x2C, 8, cksum);
+	private static int checksumCIB(byte[] puzByteArray, int cksum) {
+		return checksumRegion(puzByteArray, 0x2C, 8, cksum);
 	}
 
-	private static int cksum_grid(byte[] puzByteArray, int numberOfBoxes, int cksum) {
-		return cksum_region(puzByteArray, 0x34 + numberOfBoxes, numberOfBoxes, cksum);
+	private static int checksumGrid(byte[] puzByteArray, int numberOfBoxes, int cksum) {
+		return checksumRegion(puzByteArray, 0x34 + numberOfBoxes, numberOfBoxes, cksum);
 	}
 
-	private static int cksum_partial_board(byte[] puzByteArray, int numberOfBoxes, int numberOfClues, int cksum) {
+	private static int checksumPartialBoard(byte[] puzByteArray, int numberOfBoxes, int numberOfClues, int cksum) {
 		int offset = 0x34 + (2 * numberOfBoxes);
 
 		for (int i = 0; i < (4 + numberOfClues); i++) {
@@ -560,9 +560,9 @@ public class IO {
 			int length = offset - startOffset;
 
 			if ((i > 2) && (i < (3 + numberOfClues))) {
-				cksum = cksum_region(puzByteArray, startOffset, length, cksum);
+				cksum = checksumRegion(puzByteArray, startOffset, length, cksum);
 			} else if (length > 0) {
-				cksum = cksum_region(puzByteArray, startOffset, length + 1, cksum);
+				cksum = checksumRegion(puzByteArray, startOffset, length + 1, cksum);
 			}
 
 			offset++;
@@ -571,29 +571,29 @@ public class IO {
 		return cksum;
 	}
 
-	private static int cksum_primary_board(byte[] puzByteArray,
+	private static int checksumPrimaryBoard(byte[] puzByteArray,
 			int numberOfBoxes, int numberOfClues, int cksum) {
-		cksum = cksum_solution(puzByteArray, numberOfBoxes, cksum);
-		cksum = cksum_grid(puzByteArray, numberOfBoxes, cksum);
-		cksum = cksum_partial_board(puzByteArray, numberOfBoxes, numberOfClues,
+		cksum = checksumSolution(puzByteArray, numberOfBoxes, cksum);
+		cksum = checksumGrid(puzByteArray, numberOfBoxes, cksum);
+		cksum = checksumPartialBoard(puzByteArray, numberOfBoxes, numberOfClues,
 				cksum);
 
 		return cksum;
 	}
 
-	private static int cksum_solution(byte[] puzByteArray, int numberOfBoxes, int cksum) {
-		return cksum_region(puzByteArray, 0x34, numberOfBoxes, cksum);
+	private static int checksumSolution(byte[] puzByteArray, int numberOfBoxes, int cksum) {
+		return checksumRegion(puzByteArray, 0x34, numberOfBoxes, cksum);
 	}
 
-	private static int cksum_region(byte[] data) {
-	    return cksum_region(data, 0);
+	private static int checksumRegion(byte[] data) {
+	    return checksumRegion(data, 0);
 	}
 
-	private static int cksum_region(byte[] data, int cksum) {
-	    return cksum_region(data, 0, data.length, cksum);
+	private static int checksumRegion(byte[] data, int cksum) {
+	    return checksumRegion(data, 0, data.length, cksum);
 	}
 
-	private static int cksum_region(byte[] data, int offset, int length, int cksum) {
+	private static int checksumRegion(byte[] data, int offset, int length, int cksum) {
         for (int i = offset; i < (offset + length); i++) {
             if ((cksum & 0x1) != 0) {
                 cksum = (cksum >> 1) + 0x8000;
