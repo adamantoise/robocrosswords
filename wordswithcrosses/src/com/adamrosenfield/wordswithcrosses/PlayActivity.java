@@ -92,19 +92,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 	private TextView clue;
 	private boolean runTimer = false;
 
-	private Runnable updateTimeTask = new Runnable() {
-		public void run() {
-			if (timer != null) {
-				getWindow().setTitle(timer.time());
-				getWindow().setFeatureInt(Window.FEATURE_PROGRESS,
-						puz.getPercentComplete() * 100);
-			}
-
-			if (runTimer) {
-				handler.postDelayed(this, 1000);
-			}
-		}
-	};
+	private UpdateTimeTask updateTimeTask = new UpdateTimeTask();
 
 	private boolean showCount = false;
 	private boolean showErrors = false;
@@ -154,7 +142,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 		this.runTimer = prefs.getBoolean("runTimer", false);
 
 		if (runTimer) {
-			this.handler.post(this.updateTimeTask);
+			updateTimeTask.updateTime();
 		}
 	}
 
@@ -168,13 +156,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		this.configuration = getBaseContext().getResources().getConfiguration();
 
-		if (!prefs.getBoolean("showTimer", false)) {
-			if (WordsWithCrossesApplication.isLandscape(metrics) &&
-			   !WordsWithCrossesApplication.isTabletish(metrics))
-			{
-			    requestWindowFeature(Window.FEATURE_NO_TITLE);
-			}
-		} else {
+		if (prefs.getBoolean("showTimer", false)) {
 			requestWindowFeature(Window.FEATURE_PROGRESS);
 		}
 
@@ -183,14 +165,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
 		utils.holographic(this);
 		utils.finishOnHomeButton(this);
-		if (!prefs.getBoolean("showTimer", false)) {
-			if (WordsWithCrossesApplication.isLandscape(metrics))  {
-				if(WordsWithCrossesApplication.isMiniTabletish(metrics)){
-					utils.hideActionBar(this);
-				}
-
-			}
-		}
 
 		this.showErrors = this.prefs.getBoolean("showErrors", false);
 		setDefaultKeyMode(Activity.DEFAULT_KEYS_DISABLE);
@@ -225,16 +199,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
             }
 
 			BOARD.setSkipCompletedLetters(this.prefs.getBoolean("skipFilled", false));
-
-			if (puz.getPercentComplete() != 100) {
-				this.timer = new ImaginaryTimer(puz.getTime());
-				this.timer.start();
-				this.runTimer = prefs.getBoolean("showTimer", false);
-
-				if (runTimer) {
-					this.handler.post(this.updateTimeTask);
-				}
-			}
 
 			int keyboardType = "CONDENSED_ARROWS".equals(prefs.getString(
 					"keyboardType", "")) ? R.xml.keyboard_dpad : R.xml.keyboard;
@@ -328,18 +292,18 @@ public class PlayActivity extends WordsWithCrossesActivity {
 						}
 					});
 
-			this.clue = (TextView) this.findViewById(R.id.clueLine);
-			if (clue.getVisibility() != View.GONE
-					&& android.os.Build.VERSION.SDK_INT >= 14) {
+			clue = (TextView)this.findViewById(R.id.clueLine);
+			if (clue.getVisibility() != View.GONE && android.os.Build.VERSION.SDK_INT >= 14) {
 				clue.setVisibility(View.GONE);
-				clue = (TextView) utils.onActionBarCustom(this,
-						R.layout.clue_line_only).findViewById(R.id.clueLine);
+				View clueLine = utils.onActionBarCustom(this, R.layout.clue_line_only);
+				if (clueLine != null) {
+				    clue = (TextView)clueLine.findViewById(R.id.clueLine);
+				}
 			}
-			this.clue.setClickable(true);
-			this.clue.setOnClickListener(new OnClickListener() {
+			clue.setClickable(true);
+			clue.setOnClickListener(new OnClickListener() {
 				public void onClick(View arg0) {
-					Intent i = new Intent(PlayActivity.this,
-							ClueListActivity.class);
+					Intent i = new Intent(PlayActivity.this, ClueListActivity.class);
 					i.setData(Uri.fromFile(baseFile));
 					PlayActivity.this.startActivityForResult(i, 0);
 				}
@@ -918,14 +882,14 @@ public class PlayActivity extends WordsWithCrossesActivity {
 		this.onConfigurationChanged(this.configuration);
 
 		if (puz.getPercentComplete() != 100) {
-			timer = new ImaginaryTimer(this.puz.getTime());
+			timer = new ImaginaryTimer(puz.getTime());
 			timer.start();
 		}
 
-		this.runTimer = prefs.getBoolean("showTimer", false);
+		runTimer = prefs.getBoolean("showTimer", false);
 
 		if (runTimer) {
-			this.handler.post(this.updateTimeTask);
+			updateTimeTask.updateTime();
 		}
 
 		render();
@@ -1129,5 +1093,26 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
 		}
 		this.clue.requestFocus();
+	}
+
+	private class UpdateTimeTask implements Runnable {
+        private boolean isScheduled = false;
+
+        public void run() {
+            isScheduled = false;
+            updateTime();
+        }
+
+        public void updateTime() {
+            if (timer != null) {
+                getWindow().setTitle(timer.time());
+                getWindow().setFeatureInt(Window.FEATURE_PROGRESS, puz.getPercentComplete() * 100);
+            }
+
+            if (runTimer && !isScheduled) {
+                isScheduled = true;
+                handler.postDelayed(this, 1000);
+            }
+        }
 	}
 }
