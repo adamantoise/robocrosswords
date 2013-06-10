@@ -67,6 +67,8 @@ public class TouchImageView extends ImageView {
     private PointF last = new PointF();
     private PointF start = new PointF();
 
+    private boolean canScale = true;
+
     private float scale = 1f;
     private float minScale = 1f;
     private float maxScale = 3f;
@@ -203,6 +205,14 @@ public class TouchImageView extends ImageView {
         onMatrixChanged();
     }
 
+    public void setTranslate(float x, float y) {
+        setScaleAndTranslate(scale, x, y);
+    }
+
+    public void setCanScale(boolean canScale) {
+        this.canScale = canScale;
+    }
+
     public void setMinScale(float minScale) {
         this.minScale = minScale;
     }
@@ -225,6 +235,9 @@ public class TouchImageView extends ImageView {
     @TargetApi(8)
     public class ScaleListener implements ScaleGestureDetector.OnScaleGestureListener {
         public boolean onScaleBegin(ScaleGestureDetector detector) {
+            if (!canScale) {
+                return false;
+            }
             mode = Mode.ZOOM;
             endLongClickDetection();
             return true;

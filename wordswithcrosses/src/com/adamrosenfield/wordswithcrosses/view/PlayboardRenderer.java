@@ -129,20 +129,20 @@ public class PlayboardRenderer {
         }
     }
 
-    public Bitmap drawWord() {
+    public Bitmap drawWord(float scale) {
         LOG.warning("New bitmap (drawWord)");
-        Position[] word = this.board.getCurrentWordPositions();
-        Box[] boxes = this.board.getCurrentWordBoxes();
-        int boxSize = (int) (BOX_SIZE * this.logicalDensity);
-        Bitmap bitmap = Bitmap.createBitmap((int) (word.length * boxSize), (int) (boxSize), Bitmap.Config.RGB_565);
+        Position[] word = board.getCurrentWordPositions();
+        Box[] boxes = board.getCurrentWordBoxes();
+        int boxSize = (int)(BOX_SIZE * scale);
+        Bitmap bitmap = Bitmap.createBitmap((int)(word.length * boxSize), (int)(boxSize), Bitmap.Config.RGB_565);
         bitmap.eraseColor(Color.BLACK);
 
         Canvas canvas = new Canvas(bitmap);
 
         for (int i = 0; i < word.length; i++) {
-            int x = (int) (i * boxSize);
+            int x = (int)(i * boxSize);
             int y = 0;
-            this.drawBox(canvas, x, y, word[i].down, word[i].across, this.logicalDensity, boxes[i], null);
+            drawBox(canvas, x, y, word[i].down, word[i].across, scale, boxes[i], null);
         }
 
         return bitmap;
@@ -155,9 +155,9 @@ public class PlayboardRenderer {
     }
 
     private void drawBox(Canvas canvas, int x, int y, int row, int col, float scale, Box box, Word currentWord) {
-        int boxSize = (int) (BOX_SIZE * scale);
-        int numberTextSize = (int) (scale * 8F);
-        int letterTextSize = (int) (scale * 20);
+        int boxSize = (int)(BOX_SIZE * scale);
+        int numberTextSize = (int)(scale * 8F);
+        int letterTextSize = (int)(scale * 20);
 
         // scale paints
         numberText.setTextSize(scale * 8F);

@@ -28,9 +28,8 @@ import com.adamrosenfield.wordswithcrosses.puz.Playboard.Clue;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Word;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
-import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView;
-import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.ClickListener;
-import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.Point;
+import com.adamrosenfield.wordswithcrosses.view.ClueImageView;
+import com.adamrosenfield.wordswithcrosses.view.CrosswordImageView.ClickListener;
 
 public class ClueListActivity extends WordsWithCrossesActivity {
 	private Configuration configuration;
@@ -40,9 +39,10 @@ public class ClueListActivity extends WordsWithCrossesActivity {
 	private ListView across;
 	private ListView down;
 	private Puzzle puz;
-	private ScrollingImageView imageView;
+	private ClueImageView imageView;
 	private TabHost tabHost;
 	private boolean useNativeKeyboard = false;
+	private boolean hasSetInitialZoom = false;
 
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
@@ -159,37 +159,46 @@ public class ClueListActivity extends WordsWithCrossesActivity {
 					}
 				});
 
-		this.imageView = (ScrollingImageView) this.findViewById(R.id.miniboard);
+		imageView = (ClueImageView)this.findViewById(R.id.miniboard);
 
-		this.imageView.setContextMenuListener(new ClickListener() {
-			public void onContextMenu(Point e) {
-			}
+		imageView.setClickListener(new ClickListener() {
+            public void onClick(Position pos) {
+                if (pos == null) {
+                    return;
+                }
+                Word current = WordsWithCrossesApplication.BOARD.getCurrentWord();
+                int newAcross = current.start.across;
+                int newDown = current.start.down;
+                int box = pos.across;
 
-			public void onTap(Point e) {
-				Word current = WordsWithCrossesApplication.BOARD.getCurrentWord();
-				int newAcross = current.start.across;
-				int newDown = current.start.down;
-				int box = WordsWithCrossesApplication.RENDERER.findBoxNoScale(e);
+                if (box >= current.length) {
+                    return;
+                }
 
-				if (box < current.length) {
-					if (tabHost.getCurrentTab() == 0) {
-						newAcross += box;
-					} else {
-						newDown += box;
-					}
-				}
+                if (tabHost.getCurrentTab() == 0) {
+                    newAcross += box;
+                } else {
+                    newDown += box;
+                }
 
-				Position newPos = new Position(newAcross, newDown);
+                Position newPos = new Position(newAcross, newDown);
 
-				if (!newPos.equals(WordsWithCrossesApplication.BOARD
-						.getHighlightLetter())) {
-					WordsWithCrossesApplication.BOARD.setHighlightLetter(newPos);
-					ClueListActivity.this.render();
-				}
-			}
+                if (!newPos.equals(WordsWithCrossesApplication.BOARD.getHighlightLetter())) {
+                    WordsWithCrossesApplication.BOARD.setHighlightLetter(newPos);
+                    render();
+                }
+            }
+
+            public void onDoubleClick(Position pos) {
+                // No-op
+            }
+
+            public void onLongClick(Position pos) {
+                // No-op
+            }
 		});
 
-		this.tabHost = (TabHost) this.findViewById(R.id.tabhost);
+		this.tabHost = (TabHost)this.findViewById(R.id.tabhost);
 		this.tabHost.setup();
 
 		TabSpec ts = tabHost.newTabSpec("TAB1");
@@ -226,7 +235,7 @@ public class ClueListActivity extends WordsWithCrossesActivity {
 					long arg3) {
 				arg0.setSelected(true);
 				WordsWithCrossesApplication.BOARD.jumpTo(arg2, true);
-				imageView.scrollTo(0, 0);
+				imageView.setTranslate(0.0f, 0.0f);
 				render();
 
 				if (prefs.getBoolean("snapClue", false)) {
@@ -241,7 +250,7 @@ public class ClueListActivity extends WordsWithCrossesActivity {
 				if (!WordsWithCrossesApplication.BOARD.isAcross()
 						|| (WordsWithCrossesApplication.BOARD.getCurrentClueIndex() != arg2)) {
 					WordsWithCrossesApplication.BOARD.jumpTo(arg2, true);
-					imageView.scrollTo(0, 0);
+					imageView.setTranslate(0.0f, 0.0f);
 					render();
 
 					if (prefs.getBoolean("snapClue", false)) {
@@ -258,7 +267,7 @@ public class ClueListActivity extends WordsWithCrossesActivity {
 			public void onItemClick(AdapterView<?> arg0, View arg1,
 					final int arg2, long arg3) {
 				WordsWithCrossesApplication.BOARD.jumpTo(arg2, false);
-				imageView.scrollTo(0, 0);
+				imageView.setTranslate(0.0f, 0.0f);
 				render();
 
 				if (prefs.getBoolean("snapClue", false)) {
@@ -274,7 +283,7 @@ public class ClueListActivity extends WordsWithCrossesActivity {
 				if (WordsWithCrossesApplication.BOARD.isAcross()
 						|| (WordsWithCrossesApplication.BOARD.getCurrentClueIndex() != arg2)) {
 					WordsWithCrossesApplication.BOARD.jumpTo(arg2, false);
-					imageView.scrollTo(0, 0);
+					imageView.setTranslate(0.0f, 0.0f);
 					render();
 
 					if (prefs.getBoolean("snapClue", false)) {
@@ -289,6 +298,14 @@ public class ClueListActivity extends WordsWithCrossesActivity {
 		});
 		this.render();
 	}
+
+	@Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        if (!hasSetInitialZoom) {
+            imageView.fitToHeight();
+            hasSetInitialZoom = true;
+        }
+    }
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -443,6 +460,6 @@ public class ClueListActivity extends WordsWithCrossesActivity {
 			this.keyboardView.setVisibility(View.GONE);
 		}
 
-		this.imageView.setBitmap(WordsWithCrossesApplication.RENDERER.drawWord());
+		imageView.render();
 	}
 }
