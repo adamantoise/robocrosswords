@@ -136,4 +136,18 @@
     <string name="zoom_out">Zoom Out</string>
     <string name="fit_to_screen">Fit to Screen</string>
 
+    <string name="menu_show_errors">Show Errors</string>
+    <string name="menu_hide_errors">Hide Errors</string>
+    <string name="menu_reveal">Reveal</string>
+    <string name="menu_reveal_letter">Letter</string>
+    <string name="menu_reveal_word">Word</string>
+    <string name="menu_reveal_puzzle">Puzzle</string>
+    <string name="menu_clues">Clues</string>
+    <string name="menu_info">Info</string>
+
+    <string name="reveal_puzzle_title">Reveal Entire Puzzle</string>
+    <string name="reveal_puzzle_body">Are you sure?</string>
+    <string name="reveal_puzzle_ok">OK</string>
+    <string name="reveal_puzzle_cancel">Cancel</string>
+
 </resources>

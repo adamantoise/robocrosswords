@@ -120,6 +120,16 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
     private boolean hasSetInitialZoom = false;
 
+    private static final int MENU_ID_SHOW_ERRORS = 1;
+    private static final int MENU_ID_REVEAL = 2;
+    private static final int MENU_ID_REVEAL_LETTER = 3;
+    private static final int MENU_ID_REVEAL_WORD = 4;
+    private static final int MENU_ID_REVEAL_PUZZLE = 5;
+    private static final int MENU_ID_CLUES = 6;
+    private static final int MENU_ID_INFO = 7;
+    private static final int MENU_ID_HELP = 8;
+    private static final int MENU_ID_SETTINGS = 9;
+
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		this.configuration = newConfig;
@@ -406,12 +416,12 @@ public class PlayActivity extends WordsWithCrossesActivity {
 		}
 
 		revealPuzzleDialog = new AlertDialog.Builder(this).create();
-		revealPuzzleDialog.setTitle("Reveal Entire Puzzle");
-		revealPuzzleDialog.setMessage("Are you sure?");
+		revealPuzzleDialog.setTitle(getResources().getString(R.string.reveal_puzzle_title));
+		revealPuzzleDialog.setMessage(getResources().getString(R.string.reveal_puzzle_body));
 
 		revealPuzzleDialog.setButton(
 				DialogInterface.BUTTON_POSITIVE,
-				"OK",
+				getResources().getString(R.string.reveal_puzzle_ok),
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						BOARD.revealPuzzle();
@@ -420,7 +430,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 				});
 		revealPuzzleDialog.setButton(
 				DialogInterface.BUTTON_NEGATIVE,
-				"Cancel",
+				getResources().getString(R.string.reveal_puzzle_cancel),
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						dialog.dismiss();
@@ -495,11 +505,11 @@ public class PlayActivity extends WordsWithCrossesActivity {
 		if (this.allClues != null) {
 			this.allCluesAdapter = new SeparatedListAdapter(this);
 			this.allCluesAdapter.addSection(
-					"Across",
+					getResources().getString(R.string.across),
 					this.acrossAdapter = new ClueListAdapter(this, BOARD
 							.getAcrossClues(), true));
 			this.allCluesAdapter.addSection(
-					"Down",
+			        getResources().getString(R.string.down),
 					this.downAdapter = new ClueListAdapter(this, BOARD
 							.getDownClues(), false));
 			allClues.setAdapter(this.allCluesAdapter);
@@ -571,26 +581,29 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuItem showItem = menu.add(
-				this.showErrors ? "Hide Errors" : "Show Errors").setIcon(
-				android.R.drawable.ic_menu_view);
-		if (WordsWithCrossesApplication.isTabletish(metrics)) {
-			utils.onActionBarWithText(showItem);
-		}
+	    int showItemStr = (showErrors ? R.string.menu_hide_errors : R.string.menu_show_errors);
+		MenuItem showItem = menu.add(Menu.NONE, MENU_ID_SHOW_ERRORS, Menu.NONE, showItemStr)
+		    .setIcon(android.R.drawable.ic_menu_view);
 
-		SubMenu reveal = menu.addSubMenu("Reveal").setIcon(
-				android.R.drawable.ic_menu_view);
-		reveal.add("Letter");
-		reveal.add("Word");
-		reveal.add("Puzzle");
-		if (WordsWithCrossesApplication.isTabletish(metrics)) {
-			utils.onActionBarWithText(reveal);
-		}
+		SubMenu reveal = menu.addSubMenu(Menu.NONE, MENU_ID_REVEAL, Menu.NONE, R.string.menu_reveal)
+		    .setIcon(android.R.drawable.ic_menu_view);
+		reveal.add(Menu.NONE, MENU_ID_REVEAL_LETTER, Menu.NONE, R.string.menu_reveal_letter);
+		reveal.add(Menu.NONE, MENU_ID_REVEAL_WORD,   Menu.NONE, R.string.menu_reveal_word);
+		reveal.add(Menu.NONE, MENU_ID_REVEAL_PUZZLE, Menu.NONE, R.string.menu_reveal_puzzle);
 
-		menu.add("Clues").setIcon(android.R.drawable.ic_menu_agenda);
-		menu.add("Info").setIcon(android.R.drawable.ic_menu_info_details);
-		menu.add("Help").setIcon(android.R.drawable.ic_menu_help);
-		menu.add("Settings").setIcon(android.R.drawable.ic_menu_preferences);
+		menu.add(Menu.NONE, MENU_ID_CLUES, Menu.NONE, R.string.menu_clues)
+		    .setIcon(android.R.drawable.ic_menu_agenda);
+		menu.add(Menu.NONE, MENU_ID_INFO, Menu.NONE, R.string.menu_info)
+		    .setIcon(android.R.drawable.ic_menu_info_details);
+		menu.add(Menu.NONE, MENU_ID_HELP, Menu.NONE, R.string.menu_help)
+		    .setIcon(android.R.drawable.ic_menu_help);
+		menu.add(Menu.NONE, MENU_ID_SETTINGS, Menu.NONE, R.string.menu_settings)
+		    .setIcon(android.R.drawable.ic_menu_preferences);
+
+		if (WordsWithCrossesApplication.isTabletish(metrics)) {
+            utils.onActionBarWithText(showItem);
+            utils.onActionBarWithText(reveal);
+        }
 
 		return true;
 	}
@@ -730,88 +743,98 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
-		if (item.getTitle().equals("Letter")) {
+	    switch (item.getItemId())
+	    {
+	    case MENU_ID_REVEAL_LETTER:
 			BOARD.revealLetter();
-			this.render();
-
+			render();
 			return true;
-		} else if (item.getTitle().equals("Word")) {
+
+	    case MENU_ID_REVEAL_WORD:
 			BOARD.revealWord();
-			this.render();
-
+			render();
 			return true;
-		} else if (item.getTitle().equals("Puzzle")) {
+
+	    case MENU_ID_REVEAL_PUZZLE:
 			deprecatedShowDialog(REVEAL_PUZZLE_DIALOG);
-
 			return true;
-		} else if (item.getTitle().equals("Show Errors")
-				|| item.getTitle().equals("Hide Errors")) {
+
+	    case MENU_ID_SHOW_ERRORS:
 			BOARD.toggleShowErrors();
-			item.setTitle(BOARD.isShowErrors() ? "Hide Errors" : "Show Errors");
-			this.prefs.edit().putBoolean("showErrors", BOARD.isShowErrors())
-					.commit();
-			this.render();
-
-			return true;
-		} else if (item.getTitle().equals("Settings")) {
-			Intent i = new Intent(this, PreferencesActivity.class);
-			this.startActivity(i);
-
-			return true;
-		} else if (item.getItemId() == R.id.context_zoom_in) {
-			boardView.zoomIn();
-			fitToScreen = false;
+			int showErrorsStr = (BOARD.isShowErrors() ? R.string.menu_hide_errors : R.string.menu_show_errors);
+			item.setTitle(showErrorsStr);
+			prefs.edit().putBoolean("showErrors", BOARD.isShowErrors()).commit();
 			render();
-
 			return true;
-		} else if (item.getItemId() == R.id.context_zoom_out) {
-			boardView.zoomOut();
-			fitToScreen = false;
-			render();
 
+	    case MENU_ID_SETTINGS:
+			Intent intent = new Intent(this, PreferencesActivity.class);
+			startActivity(intent);
 			return true;
-		} else if (item.getItemId() == R.id.context_fit_to_screen) {
-			lastBoardScale = boardView.getRenderScale();
-			boardView.fitToScreen();
-            fitToScreen = true;
-			this.render();
 
-			return true;
-		} else if (item.getTitle().equals("Info")) {
+	    case MENU_ID_INFO:
 			if (dialog != null) {
-				TextView view = (TextView) dialog
-						.findViewById(R.id.puzzle_info_time);
+				TextView view = (TextView)dialog.findViewById(R.id.puzzle_info_time);
 
 				if (timer != null) {
-					this.timer.stop();
+					timer.stop();
 					view.setText("Elapsed Time: " + this.timer.time());
-					this.timer.start();
+					timer.start();
 				} else {
-					view.setText("Elapsed Time: "
-							+ new ImaginaryTimer(puz.getTime()).time());
+					view.setText("Elapsed Time: " + new ImaginaryTimer(puz.getTime()).time());
 				}
 			}
 
 			deprecatedShowDialog(INFO_DIALOG);
 
 			return true;
-		} else if (item.getTitle().equals("Clues")) {
-			Intent i = new Intent(PlayActivity.this, ClueListActivity.class);
-			i.setData(Uri.fromFile(baseFile));
-			PlayActivity.this.startActivityForResult(i, 0);
+
+	    case MENU_ID_CLUES:
+			intent = new Intent(PlayActivity.this, ClueListActivity.class);
+			intent.setData(Uri.fromFile(baseFile));
+			PlayActivity.this.startActivityForResult(intent, 0);
 
 			return true;
-		} else if (item.getTitle().equals("Help")) {
-		    showHTMLPage("playscreen.html");
-		} else if (item.getItemId() == R.id.context_clue_text_size_small) {
-			setClueSize(CLUE_SIZES[0]);
-		} else if (item.getItemId() == R.id.context_clue_text_size_medium) {
-			setClueSize(CLUE_SIZES[1]);
-		} else if (item.getItemId() == R.id.context_clue_text_size_large) {
-			setClueSize(CLUE_SIZES[2]);
-		}
 
-		return false;
+	    case MENU_ID_HELP:
+		    showHTMLPage("playscreen.html");
+		    return true;
+
+        case R.id.context_zoom_in:
+            boardView.zoomIn();
+            fitToScreen = false;
+            render();
+            return true;
+
+        case R.id.context_zoom_out:
+            boardView.zoomOut();
+            fitToScreen = false;
+            render();
+            return true;
+
+        case R.id.context_fit_to_screen:
+            lastBoardScale = boardView.getRenderScale();
+            boardView.fitToScreen();
+            fitToScreen = true;
+            this.render();
+
+            return true;
+
+	    case R.id.context_clue_text_size_small:
+			setClueSize(CLUE_SIZES[0]);
+			return true;
+
+	    case R.id.context_clue_text_size_medium:
+			setClueSize(CLUE_SIZES[1]);
+			return true;
+
+	    case R.id.context_clue_text_size_large:
+			setClueSize(CLUE_SIZES[2]);
+			return true;
+
+	    default:
+	        return false;
+		}
 	}
 
 	@SuppressWarnings("deprecation")
@@ -828,7 +851,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
     protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case INFO_DIALOG:
-
 			// This is weird. I don't know why a rotate resets the dialog.
 			// Whatevs.
 			return createInfoDialog();
