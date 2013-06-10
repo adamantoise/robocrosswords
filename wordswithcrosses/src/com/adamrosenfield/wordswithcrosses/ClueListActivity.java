@@ -69,10 +69,10 @@ public class ClueListActivity extends WordsWithCrossesActivity {
 		utils.holographic(this);
 		utils.finishOnHomeButton(this);
 		try {
-			this.configuration = getBaseContext().getResources()
-					.getConfiguration();
+			configuration = getBaseContext().getResources().getConfiguration();
 		} catch (Exception e) {
-			Toast.makeText(this, "Unable to read device configuration.",
+		    e.printStackTrace();
+			Toast.makeText(this, getResources().getString(R.string.device_configuration_error),
 					Toast.LENGTH_LONG).show();
 			finish();
 		}
@@ -203,8 +203,8 @@ public class ClueListActivity extends WordsWithCrossesActivity {
 
 		TabSpec ts = tabHost.newTabSpec("TAB1");
 
-		ts.setIndicator("Across",
-				this.getResources().getDrawable(R.drawable.across));
+		ts.setIndicator(getResources().getString(R.string.across),
+		    getResources().getDrawable(R.drawable.across));
 
 		ts.setContent(R.id.acrossList);
 
@@ -212,8 +212,8 @@ public class ClueListActivity extends WordsWithCrossesActivity {
 
 		ts = this.tabHost.newTabSpec("TAB2");
 
-		ts.setIndicator("Down", this.getResources()
-				.getDrawable(R.drawable.down));
+		ts.setIndicator(getResources().getString(R.string.down),
+		    getResources().getDrawable(R.drawable.down));
 
 		ts.setContent(R.id.downList);
 		this.tabHost.addTab(ts);
