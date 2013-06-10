@@ -14,7 +14,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.logging.Logger;
 
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
@@ -27,7 +26,13 @@ public class IO {
 	private static final Charset CHARSET = Charset.forName("Cp1252");
 
 	// Extra Section IDs
-	private static final int GEXT = 0;
+	private enum ExtraSection
+	{
+	    GEXT,
+	    LTIM,
+	    Unknown,
+	}
+	// TODO: Support GRBS, RTBL, and RUSR sections for rebus puzzles
 
 	// GEXT section bitmasks
 	private static final byte GEXT_SQUARE_CIRCLED = (byte) 0x80;
@@ -65,22 +70,6 @@ public class IO {
 
         return totalBytes;
     }
-
-	public static int cksum_region(byte[] data, int offset, int length,
-			int cksum) {
-		for (int i = offset; i < (offset + length); i++) {
-			if ((cksum & 0x1) != 0) {
-				cksum = (cksum >> 1) + 0x8000;
-			} else {
-				cksum = cksum >> 1;
-			}
-
-			cksum += (0xFF & data[i]);
-			cksum = cksum & 0xFFFF;
-		}
-
-		return cksum;
-	}
 
 	public static Puzzle load(File file) throws IOException {
 	    FileInputStream fis = new FileInputStream(file);
@@ -207,8 +196,11 @@ public class IO {
 				switch (readExtraSectionType(input)) {
 				case GEXT:
 					readGextSection(input, puz);
-
 					break;
+
+				case LTIM:
+				    readLtimSection(input, puz);
+				    break;
 
 				default:
 					skipExtraSection(input);
@@ -223,7 +215,7 @@ public class IO {
 		return puz;
 	}
 
-	public static int readExtraSectionType(DataInputStream input)
+	private static ExtraSection readExtraSectionType(DataInputStream input)
 			throws IOException {
 		byte[] title = new byte[4];
 
@@ -234,13 +226,15 @@ public class IO {
 		String section = new String(title);
 
 		if ("GEXT".equals(section)) {
-			return GEXT;
+			return ExtraSection.GEXT;
+		} else if ("LTIM".equals(section)) {
+		    return ExtraSection.LTIM;
+		} else {
+		    return ExtraSection.Unknown;
 		}
-
-		return -1;
 	}
 
-	public static void readGextSection(DataInputStream input, Puzzle puz)
+	private static void readGextSection(DataInputStream input, Puzzle puz)
 			throws IOException {
 		puz.setGEXT(true);
 		input.skipBytes(4);
@@ -262,12 +256,39 @@ public class IO {
 		input.skipBytes(1);
 	}
 
-	public static String readNullTerminatedString(InputStream is)
+	private static void readLtimSection(DataInputStream input, Puzzle puz) throws IOException {
+	    short numBytes = Short.reverseBytes(input.readShort());
+	    input.skipBytes(2); // checksum
+	    byte[] ltimBytes = new byte[numBytes + 1];
+	    input.readFully(ltimBytes);
+
+	    String ltimStr = new String(ltimBytes);
+	    String[] ltimParts = ltimStr.split(",");
+	    if (ltimParts.length != 2) {
+	        LOG.warning("Bad LTIM section: " + ltimStr);
+	        return;
+	    }
+
+	    try {
+	        int secondsElapsed = Math.max(Integer.parseInt(ltimParts[0]), 0);
+	        puz.setTime(secondsElapsed * 1000);
+	    } catch (NumberFormatException e) {
+	        LOG.warning("Bad LTIM section: " + ltimStr);
+	    }
+	}
+
+   private static void skipExtraSection(DataInputStream input) throws IOException {
+        short numBytes = Short.reverseBytes(input.readShort());
+        input.skipBytes(2); // checksum
+        input.skipBytes(numBytes); // data
+        input.skipBytes(1); // null terminator
+    }
+
+	private static String readNullTerminatedString(InputStream is)
 			throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream(128);
 
-		for (byte nextByte = (byte) is.read(); nextByte != 0x0; nextByte = (byte) is
-				.read()) {
+		for (byte nextByte = (byte)is.read(); nextByte != 0x0; nextByte = (byte)is.read()) {
 			if (nextByte != 0x0) {
 				baos.write(nextByte);
 			}
@@ -277,15 +298,7 @@ public class IO {
 			}
 		}
 
-		return (baos.size() == 0) ? null : new String(baos.toByteArray(),
-				CHARSET.name());
-	}
-
-	public static Calendar readDate(DataInputStream dis)
-	    throws IOException {
-	    Calendar date = Calendar.getInstance();
-	    date.setTimeInMillis(dis.readLong());
-	    return date;
+		return (baos.size() == 0) ? null : new String(baos.toByteArray(), CHARSET.name());
 	}
 
 	public static void save(Puzzle puzzle, File destFile) throws IOException {
@@ -393,16 +406,15 @@ public class IO {
 
 		writeNullTerminatedString(tmpDos, puz.getNotes());
 
-		if (puz.getGEXT()) {
-			tmpDos.writeBytes("GEXT");
-			tmpDos.writeShort(Short.reverseBytes((short) numberOfBoxes));
+		if (puz.getTime() > 0) {
+		    int secondsElapsed = (int)(puz.getTime() / 1000);
+		    String ltimStr = secondsElapsed + ",0";
+		    byte[] ltimBytes = ltimStr.getBytes();
+		    writeExtraSection(tmpDos, "LTIM", ltimBytes);
+		}
 
-			// Calculate checksum here so we don't need to find this place in
-			// the file later.
-			int c_gext = cksum_region(gextSection, 0, numberOfBoxes, 0);
-			tmpDos.writeShort(Short.reverseBytes((short) c_gext));
-			tmpDos.write(gextSection);
-			tmpDos.writeByte(0);
+		if (puz.getGEXT()) {
+		    writeExtraSection(tmpDos, "GEXT", gextSection);
 		}
 
 		byte[] puzByteArray = tmp.toByteArray();
@@ -436,12 +448,16 @@ public class IO {
 		os.write(puzByteArray);
 	}
 
-	public static void skipExtraSection(DataInputStream input)
-			throws IOException {
-		short numBytes = Short.reverseBytes(input.readShort());
-		input.skipBytes(2); // checksum
-		input.skipBytes(numBytes); // data
-		input.skipBytes(1); // null terminator
+	private static void writeExtraSection(DataOutputStream dos, String sectionName, byte[] data) throws IOException {
+        dos.writeBytes(sectionName);
+        dos.writeShort(Short.reverseBytes((short)data.length));
+
+        // Calculate checksum here so we don't need to find this place in
+        // the file later.
+        int cksum = cksum_region(data);
+        dos.writeShort(Short.reverseBytes((short)cksum));
+        dos.write(data);
+        dos.writeByte(0);
 	}
 
 	/**
@@ -449,7 +465,7 @@ public class IO {
 	 * the solution array occur in place. If true, the unscrambled solution
 	 * checksum is valid.
 	 */
-	public static boolean tryUnscramble(Puzzle p, int key_int, byte[] solution) {
+	private static boolean tryUnscramble(Puzzle p, int key_int, byte[] solution) {
 		p.unscrambleKey[0] = (key_int / 1000) % 10;
 		p.unscrambleKey[1] = (key_int / 100) % 10;
 		p.unscrambleKey[2] = (key_int / 10) % 10;
@@ -468,17 +484,16 @@ public class IO {
 					letter += 26;
 				}
 
-				solution[j] = (byte) letter;
+				solution[j] = (byte)letter;
 			}
 		}
 
-		if (p.solutionChecksum == (short) IO.cksum_region(solution, 0,
-				solution.length, 0)) {
+		if (p.solutionChecksum == (short)IO.cksum_region(solution)) {
 			int s = 0;
 			for (int i = 0; i < p.getBoxesList().length; i++) {
 				Box b = p.getBoxesList()[i];
 				if (b != null) {
-					b.setSolution((char) solution[s++]);
+					b.setSolution((char)solution[s++]);
 				}
 			}
 			return true;
@@ -486,6 +501,7 @@ public class IO {
 		return false;
 	}
 
+	// TODO: Call this somewhere?
 	public static boolean crack(Puzzle puz) {
 		for (int a = 0; a < 10000; a++) {
 			if (tryUnscramble(puz, a, puz.initializeUnscrambleData())) {
@@ -495,7 +511,7 @@ public class IO {
 		return false;
 	}
 
-	public static void writeNullTerminatedString(OutputStream os, String value)
+	private static void writeNullTerminatedString(OutputStream os, String value)
 			throws IOException {
 		value = (value == null) ? "" : value;
 
@@ -504,12 +520,7 @@ public class IO {
 		os.write(0);
 	}
 
-	public static void writeDate(DataOutputStream dos, Calendar date)
-	    throws IOException {
-	    dos.writeLong(date != null ? date.getTimeInMillis() : 0);
-	}
-
-	public static void unscrambleString(Puzzle p, byte[] str) {
+	private static void unscrambleString(Puzzle p, byte[] str) {
 		int oddIndex = 0;
 		int evenIndex = str.length / 2;
 
@@ -522,7 +533,7 @@ public class IO {
 		}
 	}
 
-	public static void unshiftString(Puzzle p, byte[] str, int keynum) {
+	private static void unshiftString(Puzzle p, byte[] str, int keynum) {
 		System.arraycopy(str, str.length - keynum, p.unscrambleTmp, 0, keynum);
 		System.arraycopy(str, 0, str, keynum, str.length - keynum);
 		System.arraycopy(p.unscrambleTmp, 0, str, 0, keynum);
@@ -532,14 +543,11 @@ public class IO {
 		return cksum_region(puzByteArray, 0x2C, 8, cksum);
 	}
 
-	private static int cksum_grid(byte[] puzByteArray, int numberOfBoxes,
-			int cksum) {
-		return cksum_region(puzByteArray, 0x34 + numberOfBoxes, numberOfBoxes,
-				cksum);
+	private static int cksum_grid(byte[] puzByteArray, int numberOfBoxes, int cksum) {
+		return cksum_region(puzByteArray, 0x34 + numberOfBoxes, numberOfBoxes, cksum);
 	}
 
-	private static int cksum_partial_board(byte[] puzByteArray,
-			int numberOfBoxes, int numberOfClues, int cksum) {
+	private static int cksum_partial_board(byte[] puzByteArray, int numberOfBoxes, int numberOfClues, int cksum) {
 		int offset = 0x34 + (2 * numberOfBoxes);
 
 		for (int i = 0; i < (4 + numberOfClues); i++) {
@@ -554,8 +562,7 @@ public class IO {
 			if ((i > 2) && (i < (3 + numberOfClues))) {
 				cksum = cksum_region(puzByteArray, startOffset, length, cksum);
 			} else if (length > 0) {
-				cksum = cksum_region(puzByteArray, startOffset, length + 1,
-						cksum);
+				cksum = cksum_region(puzByteArray, startOffset, length + 1, cksum);
 			}
 
 			offset++;
@@ -574,8 +581,30 @@ public class IO {
 		return cksum;
 	}
 
-	private static int cksum_solution(byte[] puzByteArray, int numberOfBoxes,
-			int cksum) {
+	private static int cksum_solution(byte[] puzByteArray, int numberOfBoxes, int cksum) {
 		return cksum_region(puzByteArray, 0x34, numberOfBoxes, cksum);
 	}
+
+	private static int cksum_region(byte[] data) {
+	    return cksum_region(data, 0);
+	}
+
+	private static int cksum_region(byte[] data, int cksum) {
+	    return cksum_region(data, 0, data.length, cksum);
+	}
+
+	private static int cksum_region(byte[] data, int offset, int length, int cksum) {
+        for (int i = offset; i < (offset + length); i++) {
+            if ((cksum & 0x1) != 0) {
+                cksum = (cksum >> 1) + 0x8000;
+            } else {
+                cksum = cksum >> 1;
+            }
+
+            cksum += (0xFF & data[i]);
+            cksum = cksum & 0xFFFF;
+        }
+
+        return cksum;
+    }
 }
