@@ -35,7 +35,7 @@
 			android:layout_height="wrap_content"
 			android:text="@string/across"
 			android:textStyle="bold"
-			android:textSize="16sp" 
+			android:textSize="16sp"
 			android:gravity="center_horizontal"/>
 		<Gallery
 		    android:id="@+id/acrossListGal"
@@ -48,7 +48,7 @@
 			android:layout_height="wrap_content"
 			android:text="@string/down"
 			android:textStyle="bold"
-			android:textSize="16sp" 
+			android:textSize="16sp"
 			android:gravity="center_horizontal"/>
 		<Gallery
 		    android:id="@+id/downListGal"
@@ -57,8 +57,8 @@
 			android:layout_height="wrap_content" />
 	</LinearLayout>
 
-	<com.adamrosenfield.wordswithcrosses.view.ScrollingImageView
-		android:id="@+id/board" 
+	<com.adamrosenfield.wordswithcrosses.view.CrosswordImageView
+		android:id="@+id/board"
 		android:layout_alignParentTop="true"
 		android:layout_alignParentRight="true"
 		android:layout_alignParentLeft="true"
@@ -68,4 +68,4 @@
 		android:scrollbars="horizontal|vertical"
 		android:layout_marginBottom="5dp" />
 
-</RelativeLayout>	
+</RelativeLayout>

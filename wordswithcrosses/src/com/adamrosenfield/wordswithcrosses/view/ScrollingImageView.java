@@ -135,7 +135,6 @@ public class ScrollingImageView extends AbsoluteLayout implements OnGestureListe
         int maxScrollX = this.getMaxScrollX();
         int x = p.x;
         int maxScrollY = this.getMaxScrollY();
-        ;
 
         int y = p.y;
 
@@ -286,10 +285,12 @@ public class ScrollingImageView extends AbsoluteLayout implements OnGestureListe
 
     @Override
     public void scrollTo(int x, int y) {
+        LOG.info("scrollTo(x=" + x + " y=" + y + ")");
         super.scrollTo(x, y);
     }
 
     public void zoom(float scale, int x, int y) {
+        LOG.info("zoom(scale=" + scale + " x=" + x + " y=" + y + ")");
         if (this.scaleScrollLocation == null) {
             this.scaleScrollLocation = new ScrollLocation(this.resolveToImagePoint(x, y), this.imageView);
         }
@@ -313,9 +314,12 @@ public class ScrollingImageView extends AbsoluteLayout implements OnGestureListe
     }
 
     public void zoomEnd() {
-        if ((this.scaleListener != null) && (this.scaleScrollLocation != null)) {
-            scaleListener.onScale(runningScale,
-                this.scaleScrollLocation.findNewPoint(imageView.getWidth(), imageView.getHeight()));
+        LOG.info("zoomEnd()");
+        if (this.scaleScrollLocation != null) {
+            if (scaleListener != null) {
+                scaleListener.onScale(runningScale,
+                    this.scaleScrollLocation.findNewPoint(imageView.getWidth(), imageView.getHeight()));
+            }
             this.scaleScrollLocation.fixScroll(imageView.getWidth(), imageView.getHeight(), true);
 
             Point origin = this.resolveToImagePoint(0, 0);
@@ -363,10 +367,8 @@ public class ScrollingImageView extends AbsoluteLayout implements OnGestureListe
         public Point() {
         }
 
-        public int distance(Point p) {
-            double d = Math.sqrt(((double) this.x - (double) p.x) + ((double) this.y - (double) p.y));
-
-            return (int) Math.round(d);
+        public double distance(Point p) {
+            return Math.hypot(x - p.x, y - p.y);
         }
     }
 

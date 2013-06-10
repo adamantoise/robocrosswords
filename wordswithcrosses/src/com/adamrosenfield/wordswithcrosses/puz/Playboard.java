@@ -57,6 +57,14 @@ public class Playboard {
         }
     }
 
+    public int getWidth() {
+        return puzzle.getWidth();
+    }
+
+    public int getHeight() {
+        return puzzle.getHeight();
+    }
+
     public void setAcross(boolean across) {
         this.across = across;
     }

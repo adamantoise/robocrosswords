@@ -6,8 +6,6 @@ import static com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication.RE
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -54,11 +52,10 @@ import com.adamrosenfield.wordswithcrosses.puz.Playboard.Clue;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Word;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
+import com.adamrosenfield.wordswithcrosses.view.CrosswordImageView;
+import com.adamrosenfield.wordswithcrosses.view.CrosswordImageView.ClickListener;
+import com.adamrosenfield.wordswithcrosses.view.CrosswordImageView.RenderScaleListener;
 import com.adamrosenfield.wordswithcrosses.view.PlayboardRenderer;
-import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView;
-import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.ClickListener;
-import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.Point;
-import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.ScaleListener;
 import com.adamrosenfield.wordswithcrosses.view.SeparatedListAdapter;
 
 public class PlayActivity extends WordsWithCrossesActivity {
@@ -91,10 +88,10 @@ public class PlayActivity extends WordsWithCrossesActivity {
 	private KeyboardView keyboardView = null;
 	private Puzzle puz;
 	private long puzzleId;
-	private ScrollingImageView boardView;
+	private CrosswordImageView boardView;
 	private TextView clue;
-	private boolean fitToScreen;
 	private boolean runTimer = false;
+
 	private Runnable updateTimeTask = new Runnable() {
 		public void run() {
 			if (timer != null) {
@@ -113,10 +110,15 @@ public class PlayActivity extends WordsWithCrossesActivity {
 	private boolean showErrors = false;
 	private boolean useNativeKeyboard = false;
 	private long lastKey;
-	private long lastTap = 0;
 	private long resumedOn;
 
     private DisplayMetrics metrics;
+
+    // Saved scale from before we fit to screen
+    private float lastBoardScale = 1.0f;
+    private boolean fitToScreen = false;
+
+    private boolean hasSetInitialZoom = false;
 
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
@@ -151,6 +153,8 @@ public class PlayActivity extends WordsWithCrossesActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.play);
 
 		metrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -214,23 +218,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
                 BOARD.setSolveState(solveState);
             }
 
-			float scale = prefs.getFloat("scale", metrics.density);
-
-			if (scale > 2.5f) {
-				scale = 2.5f;
-				prefs.edit().putFloat("scale", 2.5f).commit();
-			} else if (scale < .5f) {
-				scale = .25f;
-				prefs.edit().putFloat("scale", .25f).commit();
-			} else if (scale == Float.NaN) {
-				scale = 1f;
-				prefs.edit().putFloat("scale", 1f).commit();
-			}
-
-			RENDERER.setScale(scale);
-
-			BOARD.setSkipCompletedLetters(this.prefs.getBoolean("skipFilled",
-					false));
+			BOARD.setSkipCompletedLetters(this.prefs.getBoolean("skipFilled", false));
 
 			if (puz.getPercentComplete() != 100) {
 				this.timer = new ImaginaryTimer(puz.getTime());
@@ -241,8 +229,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
 					this.handler.post(this.updateTimeTask);
 				}
 			}
-
-			setContentView(R.layout.play);
 
 			int keyboardType = "CONDENSED_ARROWS".equals(prefs.getString(
 					"keyboardType", "")) ? R.xml.keyboard_dpad : R.xml.keyboard;
@@ -353,54 +339,58 @@ public class PlayActivity extends WordsWithCrossesActivity {
 				}
 			});
 
-			boardView = (ScrollingImageView) this.findViewById(R.id.board);
+			boardView = (CrosswordImageView)findViewById(R.id.board);
+			boardView.setBoard(BOARD, metrics);
 
 			this.registerForContextMenu(boardView);
-			boardView.setContextMenuListener(new ClickListener() {
-				public void onContextMenu(final Point e) {
-					handler.post(new Runnable() {
-						public void run() {
-							try {
-								Position p = RENDERER.findBox(e);
-								Word w = BOARD.setHighlightLetter(p);
-								RENDERER.draw(w);
-								PlayActivity.this.openContextMenu(boardView);
-							} catch (Exception ex) {
-								ex.printStackTrace();
-							}
-						}
-					});
-				}
 
-				public void onTap(Point e) {
-					try {
-						if (prefs.getBoolean("doubleTap", false)
-								&& ((System.currentTimeMillis() - lastTap) < 300)) {
-							if (fitToScreen) {
-								RENDERER.setScale(prefs.getFloat("scale", 1F));
-								BOARD.setHighlightLetter(RENDERER.findBox(e));
-								render();
-							} else {
-								int w = boardView.getWidth();
-								int h = boardView.getHeight();
-								RENDERER.fitTo((w < h) ? w : h);
-								render();
-								boardView.scrollTo(0, 0);
-							}
+			boardView.setClickListener(new ClickListener() {
+			    public void onClick(Position pos) {
+			        Word prevWord = null;
+                    if (pos != null) {
+                        prevWord = BOARD.setHighlightLetter(pos);
+                    }
+                    render(prevWord);
+			    }
 
-							fitToScreen = !fitToScreen;
-						} else {
-							Position p = RENDERER.findBox(e);
-							Word old = BOARD.setHighlightLetter(p);
-							PlayActivity.this.render(old);
-						}
+			    public void onDoubleClick(Position pos) {
+			        if (prefs.getBoolean("doubleTap",  false)) {
+			            if (fitToScreen) {
+			                boardView.setRenderScale(lastBoardScale);
 
-						lastTap = System.currentTimeMillis();
-					} catch (Exception ex) {
-						ex.printStackTrace();
-					}
-				}
+			                Word prevWord = null;
+                            if (pos != null) {
+                                prevWord = BOARD.setHighlightLetter(pos);
+                            }
+                            render(prevWord);
+			            } else {
+			                lastBoardScale = boardView.getRenderScale();
+			                boardView.fitToScreen();
+			                render();
+			            }
+
+			            fitToScreen = !fitToScreen;
+			        } else {
+			            onClick(pos);
+			        }
+			    }
+
+			    public void onLongClick(Position pos) {
+			        Word prevWord = null;
+			        if (pos != null) {
+			            prevWord = BOARD.setHighlightLetter(pos);
+			        }
+			        boardView.render(prevWord);
+			        openContextMenu(boardView);
+			    }
 			});
+
+			boardView.setRenderScaleListener(new RenderScaleListener() {
+			    public void onRenderScaleChanged(float renderScale) {
+			        fitToScreen = false;
+			    }
+			});
+
 		} catch (IOException e) {
 			e.printStackTrace();
 
@@ -438,46 +428,9 @@ public class PlayActivity extends WordsWithCrossesActivity {
 					}
 				});
 
-		this.boardView.setScaleListener(new ScaleListener() {
-			TimerTask t;
-			Timer renderTimer = new Timer();
-
-			public void onScale(float newScale, final Point center) {
-				//fitToScreen = false;
-
-				if (t != null) {
-					t.cancel();
-				}
-
-				renderTimer.purge();
-				t = new TimerTask() {
-					@Override
-					public void run() {
-						handler.post(new Runnable() {
-							public void run() {
-								int w = boardView.getImageView().getWidth();
-								int h = boardView.getImageView().getHeight();
-								prefs.edit()
-										.putFloat("scale",
-												RENDERER.fitTo((w < h) ? w : h))
-										.commit();
-								BOARD.setHighlightLetter(RENDERER
-										.findBox(center));
-
-								render(false);
-							}
-						});
-					}
-				};
-				renderTimer.schedule(t, 500);
-				lastTap = System.currentTimeMillis();
-			}
-		});
-
 		if (BOARD.isShowErrors() != this.showErrors) {
 			BOARD.toggleShowErrors();
 		}
-
 
 		this.render();
 
@@ -590,28 +543,15 @@ public class PlayActivity extends WordsWithCrossesActivity {
 		setTitle("Words With Crosses - " + puz.getTitle() + " - " + puz.getAuthor()
 				+ " - 	" + puz.getCopyright());
 		this.showCount = prefs.getBoolean("showCount", false);
-		//*
-		if(android.os.Build.VERSION.SDK_INT > 11 && !WordsWithCrossesApplication.isTabletish(metrics)){
-			this.handler.postDelayed(new Runnable(){
+	}
 
-				public void run() {
-					boardView.scrollTo(0, 0);
-
-					int v = (boardView.getWidth() < boardView.getHeight()) ? boardView
-							.getWidth() : boardView.getHeight();
-					if( v == 0){
-						handler.postDelayed(this, 100);
-					}
-					float newScale = RENDERER.fitTo(v);
-
-					prefs.edit().putFloat("scale", newScale).commit();
-					render();
-				}
-
-			}, 100);
-
-		}
-//*/
+	@Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+	    if (!hasSetInitialZoom) {
+	        boardView.fitToScreen();
+	        hasSetInitialZoom = true;
+	        render();
+	    }
 	}
 
 	@Override
@@ -820,38 +760,22 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
 			return true;
 		} else if (item.getItemId() == R.id.context_zoom_in) {
-			this.boardView.scrollTo(0, 0);
-
-			float newScale = RENDERER.zoomIn();
-			this.prefs.edit().putFloat("scale", newScale).commit();
-			this.fitToScreen = false;
-			this.render();
+			boardView.zoomIn();
+			fitToScreen = false;
+			render();
 
 			return true;
 		} else if (item.getItemId() == R.id.context_zoom_out) {
-			this.boardView.scrollTo(0, 0);
-
-			float newScale = RENDERER.zoomOut();
-			this.prefs.edit().putFloat("scale", newScale).commit();
-			this.fitToScreen = false;
-			this.render();
+			boardView.zoomOut();
+			fitToScreen = false;
+			render();
 
 			return true;
 		} else if (item.getItemId() == R.id.context_fit_to_screen) {
-			this.boardView.scrollTo(0, 0);
-
-			int v = (this.boardView.getWidth() < this.boardView.getHeight()) ? this.boardView
-					.getWidth() : this.boardView.getHeight();
-			float newScale = RENDERER.fitTo(v);
-			this.prefs.edit().putFloat("scale", newScale).commit();
+			lastBoardScale = boardView.getRenderScale();
+			boardView.fitToScreen();
+            fitToScreen = true;
 			this.render();
-
-			return true;
-		} else if (item.getItemId() == R.id.context_zoom_reset) {
-			float newScale = RENDERER.zoomReset();
-			this.prefs.edit().putFloat("scale", newScale).commit();
-			this.render();
-			this.boardView.scrollTo(0, 0);
 
 			return true;
 		} else if (item.getTitle().equals("Info")) {
@@ -1073,15 +997,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 		render(null);
 	}
 
-	private void render(boolean rescale) {
-		this.render(null, rescale);
-	}
-
 	private void render(Word previous) {
-		this.render(previous, true);
-	}
-
-	private void render(Word previous, boolean rescale) {
 		if (this.prefs.getBoolean("forceKeyboard", false)
 				|| (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
 				|| (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
@@ -1104,49 +1020,18 @@ public class PlayActivity extends WordsWithCrossesActivity {
 			c = BOARD.getClue();
 		}
 
-		this.boardView.setBitmap(RENDERER.draw(previous), rescale);
+		this.boardView.render(previous);
 		this.boardView.requestFocus();
-		/*
-		 * If we jumped to a new word, ensure the first letter is visible.
-		 * Otherwise, insure that the current letter is visible. Only necessary
-		 * if the cursor is currently off screen.
-		 */
-		if (rescale && this.prefs.getBoolean("ensureVisible", true)) {
-			Point topLeft;
-			Point bottomRight;
-			Point cursorTopLeft;
-			Point cursorBottomRight;
-			cursorTopLeft = RENDERER.findPointTopLeft(BOARD
-					.getHighlightLetter());
-			cursorBottomRight = RENDERER.findPointBottomRight(BOARD
-					.getHighlightLetter());
 
+		// If we jumped to a new word, ensure the first letter is visible.
+		// Otherwise, insure that the current letter is visible. Only necessary
+		// if the cursor is currently off screen.
+		if (this.prefs.getBoolean("ensureVisible", true)) {
 			if ((previous != null) && previous.equals(BOARD.getCurrentWord())) {
-				topLeft = cursorTopLeft;
-				bottomRight = cursorBottomRight;
+			    boardView.ensureVisible(BOARD.getHighlightLetter());
 			} else {
-				topLeft = RENDERER
-						.findPointTopLeft(BOARD.getCurrentWordStart());
-				bottomRight = RENDERER.findPointBottomRight(BOARD
-						.getCurrentWordStart());
+			    boardView.ensureVisible(BOARD.getCurrentWordStart());
 			}
-
-			int tlDistance = cursorTopLeft.distance(topLeft);
-			int brDistance = cursorBottomRight.distance(bottomRight);
-
-			if (!this.boardView.isVisible(topLeft) && (tlDistance < brDistance)) {
-				this.boardView.ensureVisible(topLeft);
-			}
-
-			if (!this.boardView.isVisible(bottomRight)
-					&& (brDistance < tlDistance)) {
-				this.boardView.ensureVisible(bottomRight);
-			}
-
-			// ensure the cursor is always on the screen.
-			this.boardView.ensureVisible(cursorBottomRight);
-			this.boardView.ensureVisible(cursorTopLeft);
-
 		}
 
 		this.clue

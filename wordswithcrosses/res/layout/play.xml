@@ -2,13 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
-	
+
 	<TextView
-	    android:id="@+id/clueLine" 
+	    android:id="@+id/clueLine"
 		android:layout_width="fill_parent"
-		android:layout_height="wrap_content" 
+		android:layout_height="wrap_content"
 		android:text="@string/hello"
-		android:textSize="12sp" 
+		android:textSize="12sp"
 		android:minLines="2"
 		android:maxLines="4"
 		android:textColor="#FFFFFF"
@@ -20,8 +20,8 @@
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 	/>
-	
-	<com.adamrosenfield.wordswithcrosses.view.ScrollingImageView
+
+	<com.adamrosenfield.wordswithcrosses.view.CrosswordImageView
 		android:id="@+id/board"
 		android:layout_below="@id/clueLine"
 		android:layout_above="@id/playKeyboard"
@@ -29,5 +29,5 @@
 		android:layout_height="fill_parent"
 		android:scrollbars="horizontal|vertical"
 	/>
-	
-</RelativeLayout>	
+
+</RelativeLayout>

@@ -2,45 +2,45 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
-	
+
 	<TextView
-	    android:id="@+id/clueLine" 
+	    android:id="@+id/clueLine"
 		android:layout_width="fill_parent"
-		android:layout_height="wrap_content" 
+		android:layout_height="wrap_content"
 		android:text="@string/hello"
-		android:textSize="12sp" 
+		android:textSize="12sp"
 		android:minLines="2"
 		android:maxLines="4"
 		android:textColor="#FFFFFF"
 		android:background="#2C2C2C"
 		android:visibility="gone"
 	/>
-	
+
 	 <android.inputmethodservice.KeyboardView
 		android:id="@+id/playKeyboard"
 		android:layout_alignParentBottom="true"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 	/>
-	
+
 	<RelativeLayout
 	    android:id="@+id/clues"
 	    android:layout_width="325dp"
 	    android:layout_height="wrap_content"
 	    android:layout_alignParentRight="true"
-	    android:layout_alignParentTop="true" 
+	    android:layout_alignParentTop="true"
 	    android:layout_above="@id/playKeyboard">
-				
+
             <ListView
                 android:id="@+id/allClues"
                 android:layout_width="325dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true" />
-    
+
     </RelativeLayout>
 
-	<com.adamrosenfield.wordswithcrosses.view.ScrollingImageView
+	<com.adamrosenfield.wordswithcrosses.view.CrosswordImageView
 	    android:id="@+id/board"
 	    android:layout_width="wrap_content"
 	    android:layout_height="fill_parent"
@@ -49,5 +49,5 @@
 	    android:layout_alignParentLeft="true"
 	    android:layout_alignParentTop="true"
 	    android:scrollbars="horizontal|vertical" />
-	
-</RelativeLayout>	
+
+</RelativeLayout>

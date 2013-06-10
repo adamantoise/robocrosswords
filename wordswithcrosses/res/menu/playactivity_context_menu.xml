@@ -28,7 +28,4 @@
   <item
       android:id="@+id/context_fit_to_screen"
       android:title="@string/fit_to_screen" />
-  <item
-      android:id="@+id/context_zoom_reset"
-      android:title="@string/zoom_reset" />
 </menu>

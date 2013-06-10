@@ -71,9 +71,9 @@ public abstract class ScaleGestureDetectorProxy
     {
         private ScaleGestureDetector mDetector;
 
-        public ScaleGestureDetectorProxyFroyo(Context context, Object listener)
+        public ScaleGestureDetectorProxyFroyo(Context context, ScaleGestureDetector.OnScaleGestureListener listener)
         {
-            mDetector = new ScaleGestureDetector(context, (ScaleGestureDetector.OnScaleGestureListener)listener);
+            mDetector = new ScaleGestureDetector(context, listener);
         }
 
         @Override
