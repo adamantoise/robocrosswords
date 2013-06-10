@@ -775,14 +775,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 	    case MENU_ID_INFO:
 			if (dialog != null) {
 				TextView view = (TextView)dialog.findViewById(R.id.puzzle_info_time);
-
-				if (timer != null) {
-					timer.stop();
-					view.setText("Elapsed Time: " + this.timer.time());
-					timer.start();
-				} else {
-					view.setText("Elapsed Time: " + new ImaginaryTimer(puz.getTime()).time());
-				}
+				updateElapsedTime(view);
 			}
 
 			deprecatedShowDialog(INFO_DIALOG);
@@ -998,20 +991,24 @@ public class PlayActivity extends WordsWithCrossesActivity {
 		view.setText(this.puz.getCopyright());
 		view = (TextView) dialog.findViewById(R.id.puzzle_info_time);
 
-		if (timer != null) {
-			this.timer.stop();
-			view.setText("Elapsed Time: " + this.timer.time());
-			this.timer.start();
-		} else {
-			view.setText("Elapsed Time: "
-					+ new ImaginaryTimer(puz.getTime()).time());
-		}
+		updateElapsedTime(view);
 
 		ProgressBar progress = (ProgressBar) dialog
 				.findViewById(R.id.puzzle_info_progress);
 		progress.setProgress(this.puz.getPercentComplete());
 
 		return dialog;
+	}
+
+	private void updateElapsedTime(TextView view) {
+	    String elapsedStr = getResources().getString(R.string.elapsed_time);
+       if (timer != null) {
+            timer.stop();
+            view.setText(elapsedStr + " " + timer.time());
+            timer.start();
+        } else {
+            view.setText(elapsedStr + " " + new ImaginaryTimer(puz.getTime()).time());
+        }
 	}
 
 	private void render() {
@@ -1055,15 +1052,21 @@ public class PlayActivity extends WordsWithCrossesActivity {
 			}
 		}
 
-		this.clue
-				.setText("("
-						+ (BOARD.isAcross() ? "across" : "down")
-						+ ") "
-						+ c.number
-						+ ". "
-						+ c.hint
-						+ (this.showCount ? ("  ["
-								+ BOARD.getCurrentWord().length + "]") : ""));
+		String dirStr = getResources().getString(BOARD.isAcross() ? R.string.across : R.string.down);
+		StringBuilder clueText = new StringBuilder();
+		clueText.append("(")
+		        .append(dirStr)
+		        .append(") ")
+		        .append(c.number)
+		        .append(". ")
+		        .append(c.hint);
+
+		if (showCount) {
+		    clueText.append(" [")
+		            .append(BOARD.getCurrentWord().length)
+		            .append("]");
+		}
+		clue.setText(clueText.toString());
 
 		if (this.allClues != null) {
 			if (BOARD.isAcross()) {
