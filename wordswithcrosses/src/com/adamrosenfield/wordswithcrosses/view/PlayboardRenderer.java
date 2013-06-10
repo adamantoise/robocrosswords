@@ -15,7 +15,6 @@ import com.adamrosenfield.wordswithcrosses.puz.Box;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Word;
-import com.adamrosenfield.wordswithcrosses.view.ScrollingImageView.Point;
 
 public class PlayboardRenderer {
     public static final int BOX_SIZE = 30;
@@ -37,13 +36,11 @@ public class PlayboardRenderer {
 
     private Bitmap bitmap;
     private Playboard board;
-    private float logicalDensity;
     private float lastScale = -1.0f;
 
     private boolean hintHighlight;
 
-    public PlayboardRenderer(Playboard board, float logicalDensity, boolean hintHighlight) {
-        this.logicalDensity = logicalDensity;
+    public PlayboardRenderer(Playboard board, boolean hintHighlight) {
         this.board = board;
         this.hintHighlight = hintHighlight;
 
@@ -146,12 +143,6 @@ public class PlayboardRenderer {
         }
 
         return bitmap;
-    }
-
-    public int findBoxNoScale(Point p) {
-        int boxSize = (int) (BOX_SIZE * this.logicalDensity);
-
-        return p.x / boxSize;
     }
 
     private void drawBox(Canvas canvas, int x, int y, int row, int col, float scale, Box box, Word currentWord) {

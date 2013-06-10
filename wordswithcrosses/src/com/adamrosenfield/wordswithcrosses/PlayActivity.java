@@ -210,8 +210,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 		    puz = IO.load(baseFile);
 
 			BOARD = new Playboard(puz, puzzleId, getMovementStrategy());
-			RENDERER = new PlayboardRenderer(BOARD, metrics.density,
-					!prefs.getBoolean("suppressHints", false));
+			RENDERER = new PlayboardRenderer(BOARD, !prefs.getBoolean("suppressHints", false));
 
             SolveState solveState = dbHelper.getPuzzleSolveState(puzzleId);
             if (solveState != null) {
