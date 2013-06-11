@@ -223,6 +223,10 @@ public class Puzzle {
     }
 
     public int getPercentComplete() {
+        return (int)(100 * getFractionComplete());
+    }
+
+    public double getFractionComplete() {
         int total = 0;
         int correct = 0;
 
@@ -239,11 +243,25 @@ public class Puzzle {
         }
 
         if (total > 0) {
-            return (correct * 100) / (total);
+            return (double)correct / total;
         } else {
-            LOG.warning("getPercentComplete(): Puzzle is empty?");
+            LOG.warning("getFractionComplete(): Puzzle is empty?");
             return -1;
         }
+    }
+
+    public boolean isSolved() {
+        for (int r = 0; r < boxes.length; r++) {
+            for (int c = 0; c < boxes[r].length; c++) {
+                if (boxes[r][c] != null) {
+                    if (boxes[r][c].getResponse() != boxes[r][c].getSolution()) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
     public int getPercentFilled() {

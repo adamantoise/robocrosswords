@@ -162,7 +162,7 @@ public interface MovementStrategy {
 			Word w = board.getCurrentWord();
 
 			if((!board.isShowErrors() && board.getPuzzle().getPercentFilled() == 100) ||
-					board.getPuzzle().getPercentComplete() == 100) {
+					board.getPuzzle().isSolved()) {
 				// Puzzle complete - don't move.
 				return w;
 			}

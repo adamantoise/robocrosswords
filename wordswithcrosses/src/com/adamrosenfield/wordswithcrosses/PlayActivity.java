@@ -49,6 +49,7 @@ import com.adamrosenfield.wordswithcrosses.io.IO;
 import com.adamrosenfield.wordswithcrosses.puz.MovementStrategy;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Clue;
+import com.adamrosenfield.wordswithcrosses.puz.Playboard.OnBoardChangedListener;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Word;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
@@ -91,6 +92,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 	private CrosswordImageView boardView;
 	private TextView clue;
 	private boolean runTimer = false;
+	private boolean showingProgressBar = false;
 
 	private UpdateTimeTask updateTimeTask = new UpdateTimeTask();
 
@@ -156,8 +158,9 @@ public class PlayActivity extends WordsWithCrossesActivity {
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		this.configuration = getBaseContext().getResources().getConfiguration();
 
-		if (prefs.getBoolean("showTimer", false)) {
+		if (prefs.getBoolean("showProgressBar", false)) {
 			requestWindowFeature(Window.FEATURE_PROGRESS);
+			showingProgressBar = true;
 		}
 
 		// Must happen after all calls to requestWindowFeature()
@@ -199,6 +202,12 @@ public class PlayActivity extends WordsWithCrossesActivity {
             }
 
 			BOARD.setSkipCompletedLetters(this.prefs.getBoolean("skipFilled", false));
+
+			BOARD.setOnBoardChangedListener(new OnBoardChangedListener() {
+			    public void onBoardChanged() {
+			        updateProgressBar();
+			    }
+			});
 
 			int keyboardType = "CONDENSED_ARROWS".equals(prefs.getString(
 					"keyboardType", "")) ? R.xml.keyboard_dpad : R.xml.keyboard;
@@ -802,7 +811,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 	}
 
 	@Override
-    protected Dialog onCreateDialog(int id) {
+    protected Dialog onCreateDialog(int id, Bundle args) {
 		switch (id) {
 		case INFO_DIALOG:
 			// This is weird. I don't know why a rotate resets the dialog.
@@ -818,10 +827,21 @@ public class PlayActivity extends WordsWithCrossesActivity {
 	}
 
 	@Override
+    protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
+	    if (id == INFO_DIALOG) {
+	        TextView timeText = (TextView)dialog.findViewById(R.id.puzzle_info_time);
+	        updateElapsedTime(timeText);
+
+	        ProgressBar progress = (ProgressBar)dialog.findViewById(R.id.puzzle_info_progress);
+	        progress.setProgress((int)(puz.getFractionComplete() * 10000));
+	    }
+	}
+
+	@Override
 	protected void onPause() {
 		try {
 			if ((puz != null) && (baseFile != null)) {
-				if ((puz.getPercentComplete() != 100) && (this.timer != null)) {
+				if (!puz.isSolved() && (this.timer != null)) {
 					this.timer.stop();
 					puz.setTime(timer.getElapsed());
 					this.timer = null;
@@ -881,7 +901,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 		this.showCount = prefs.getBoolean("showCount", false);
 		this.onConfigurationChanged(this.configuration);
 
-		if (puz.getPercentComplete() != 100) {
+		if (!puz.isSolved()) {
 			timer = new ImaginaryTimer(puz.getTime());
 			timer.start();
 		}
@@ -892,6 +912,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 			updateTimeTask.updateTime();
 		}
 
+		updateProgressBar();
 		render();
 	}
 
@@ -950,13 +971,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
 		view.setText(this.puz.getAuthor());
 		view = (TextView) dialog.findViewById(R.id.puzzle_info_copyright);
 		view.setText(this.puz.getCopyright());
-		view = (TextView) dialog.findViewById(R.id.puzzle_info_time);
-
-		updateElapsedTime(view);
-
-		ProgressBar progress = (ProgressBar) dialog
-				.findViewById(R.id.puzzle_info_progress);
-		progress.setProgress(this.puz.getPercentComplete());
 
 		return dialog;
 	}
@@ -1084,7 +1098,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 			}
 		}
 
-		if ((puz.getPercentComplete() == 100) && (timer != null)) {
+		if (puz.isSolved() && (timer != null)) {
 			timer.stop();
 			puz.setTime(timer.getElapsed());
 			this.timer = null;
@@ -1093,6 +1107,12 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
 		}
 		this.clue.requestFocus();
+	}
+
+	private void updateProgressBar() {
+	    if (showingProgressBar) {
+            getWindow().setFeatureInt(Window.FEATURE_PROGRESS, (int)(puz.getFractionComplete() * 10000));
+	    }
 	}
 
 	private class UpdateTimeTask implements Runnable {
@@ -1105,8 +1125,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
         public void updateTime() {
             if (timer != null) {
-                getWindow().setTitle(timer.time());
-                getWindow().setFeatureInt(Window.FEATURE_PROGRESS, puz.getPercentComplete() * 100);
+                setTitle(timer.time());
             }
 
             if (runTimer && !isScheduled) {

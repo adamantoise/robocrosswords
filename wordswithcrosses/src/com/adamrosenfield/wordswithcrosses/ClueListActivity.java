@@ -391,7 +391,7 @@ public class ClueListActivity extends WordsWithCrossesActivity {
 
 			this.render();
 
-			if ((puz.getPercentComplete() == 100) && (timer != null)) {
+			if (puz.isSolved() && (timer != null)) {
 	            timer.stop();
 	            puz.setTime(timer.getElapsed());
 	            this.timer = null;
@@ -424,7 +424,7 @@ public class ClueListActivity extends WordsWithCrossesActivity {
 
 		try {
 			if ((puz != null) && (baseFile != null)) {
-				if ((timer != null) && (puz.getPercentComplete() != 100)) {
+				if ((timer != null) && !puz.isSolved()) {
 					this.timer.stop();
 					puz.setTime(timer.getElapsed());
 					this.timer = null;

@@ -20,6 +20,7 @@ public class Playboard {
     private boolean across = true;
     private boolean showErrors;
     private boolean skipCompletedLetters;
+    private OnBoardChangedListener onBoardChangedListener;
 
     public Playboard(Puzzle puzzle, long puzzleId, MovementStrategy movementStrategy) {
         this(puzzle, puzzleId);
@@ -289,6 +290,10 @@ public class Playboard {
         return skipCompletedLetters;
     }
 
+    public void setOnBoardChangedListener(OnBoardChangedListener listener) {
+        onBoardChangedListener = listener;
+    }
+
     public Box[] getWordBoxes(int number, boolean isAcross) {
         Position start = isAcross ? this.acrossWordStarts.get(number) : this.downWordStarts.get(number);
         int range = this.getWordRange(start, isAcross);
@@ -349,6 +354,7 @@ public class Playboard {
         }
 
         currentBox.setResponse(' ');
+        onBoardChanged();
 
         return wordToReturn;
     }
@@ -545,6 +551,7 @@ public class Playboard {
         }
 
         b.setResponse(letter);
+        onBoardChanged();
 
         return nextLetter();
     }
@@ -582,6 +589,7 @@ public class Playboard {
         if ((b != null) && (b.getSolution() != b.getResponse())) {
             b.setCheated(true);
             b.setResponse(b.getSolution());
+            onBoardChanged();
 
             return highlightLetter;
         }
@@ -604,6 +612,8 @@ public class Playboard {
             }
         }
 
+        onBoardChanged();
+
         return changes;
     }
 
@@ -625,6 +635,8 @@ public class Playboard {
 
         this.highlightLetter = oldHighlight;
 
+        onBoardChanged();
+
         return changes;
     }
 
@@ -643,6 +655,12 @@ public class Playboard {
 
     public void toggleShowErrors() {
         showErrors = !showErrors;
+    }
+
+    private void onBoardChanged() {
+        if (onBoardChangedListener != null) {
+            onBoardChangedListener.onBoardChanged();
+        }
     }
 
     public static class Clue {
@@ -760,5 +778,9 @@ public class Playboard {
 
             return hash;
         }
+    }
+
+    public interface OnBoardChangedListener {
+        public void onBoardChanged();
     }
 }

@@ -47,7 +47,7 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="fill_parent"
         android:layout_height="5dp"
-        android:max="100"
-        android:progress="80" />
+        android:max="10000"
+        android:progress="8000" />
 
 </LinearLayout>
