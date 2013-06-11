@@ -86,12 +86,13 @@ public class PlayboardRenderer {
             Box[][] boxes = this.board.getBoxes();
             boolean renderAll = (reset == null);
 
+            int boxSize = (int)(BOX_SIZE * scale);
             if (bitmap == null || scale != lastScale) {
-                LOG.info("New bitmap");
                 bitmap = Bitmap.createBitmap(
-                    (int)(boxes[0].length * BOX_SIZE * scale),
-                    (int)(boxes.length * BOX_SIZE * scale),
+                    boxes[0].length * boxSize,
+                    boxes.length * boxSize,
                     Bitmap.Config.RGB_565);
+                LOG.info("New bitmap: " + bitmap.getWidth() + "x" + bitmap.getHeight());
                 bitmap.eraseColor(Color.BLACK);
                 renderAll = true;
                 lastScale = scale;
@@ -100,7 +101,6 @@ public class PlayboardRenderer {
             Canvas canvas = new Canvas(bitmap);
 
             // board data
-            int boxSize = (int)(BOX_SIZE * scale);
             Word currentWord = this.board.getCurrentWord();
 
             for (int row = 0; row < boxes.length; row++) {
