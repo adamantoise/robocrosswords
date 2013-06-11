@@ -91,7 +91,8 @@ public class PlayActivity extends WordsWithCrossesActivity {
 	private long puzzleId;
 	private CrosswordImageView boardView;
 	private TextView clue;
-	private boolean runTimer = false;
+	private TextView timerText;
+	private boolean showTimer = false;
 	private boolean showingProgressBar = false;
 
 	private UpdateTimeTask updateTimeTask = new UpdateTimeTask();
@@ -141,11 +142,8 @@ public class PlayActivity extends WordsWithCrossesActivity {
 			this.keyboardView.setVisibility(View.GONE);
 		}
 
-		this.runTimer = prefs.getBoolean("runTimer", false);
-
-		if (runTimer) {
-			updateTimeTask.updateTime();
-		}
+		showTimer = prefs.getBoolean("showTimer", false);
+		updateTimeTask.updateTime();
 	}
 
 	/** Called when the activity is first created. */
@@ -307,6 +305,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 				View clueLine = utils.onActionBarCustom(this, R.layout.clue_line_only);
 				if (clueLine != null) {
 				    clue = (TextView)clueLine.findViewById(R.id.clueLine);
+				    timerText = (TextView)clueLine.findViewById(R.id.timerText);
 				}
 			}
 			clue.setClickable(true);
@@ -841,10 +840,10 @@ public class PlayActivity extends WordsWithCrossesActivity {
 	protected void onPause() {
 		try {
 			if ((puz != null) && (baseFile != null)) {
-				if (!puz.isSolved() && (this.timer != null)) {
-					this.timer.stop();
+				if (!puz.isSolved() && (timer != null)) {
+					timer.stop();
 					puz.setTime(timer.getElapsed());
-					this.timer = null;
+					timer = null;
 				}
 
 				IO.save(puz, baseFile);
@@ -858,7 +857,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 			LOG.log(Level.SEVERE, null, ioe);
 		}
 
-		this.timer = null;
+		timer = null;
 
 		if ((this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
 				|| (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
@@ -873,8 +872,8 @@ public class PlayActivity extends WordsWithCrossesActivity {
 	protected void onRestart() {
 		super.onRestart();
 
-		if (this.timer != null) {
-			this.timer.start();
+		if (timer != null) {
+			timer.start();
 		}
 	}
 
@@ -906,11 +905,8 @@ public class PlayActivity extends WordsWithCrossesActivity {
 			timer.start();
 		}
 
-		runTimer = prefs.getBoolean("showTimer", false);
-
-		if (runTimer) {
-			updateTimeTask.updateTime();
-		}
+		showTimer = prefs.getBoolean("showTimer", false);
+		updateTimeTask.updateTime();
 
 		updateProgressBar();
 		render();
@@ -920,8 +916,8 @@ public class PlayActivity extends WordsWithCrossesActivity {
 	protected void onStop() {
 		super.onStop();
 
-		if (this.timer != null) {
-			this.timer.stop();
+		if (timer != null) {
+			timer.stop();
 		}
 	}
 
@@ -978,9 +974,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 	private void updateElapsedTime(TextView view) {
 	    String elapsedStr = getResources().getString(R.string.elapsed_time);
        if (timer != null) {
-            timer.stop();
             view.setText(elapsedStr + " " + timer.time());
-            timer.start();
         } else {
             view.setText(elapsedStr + " " + new ImaginaryTimer(puz.getTime()).time());
         }
@@ -1101,9 +1095,10 @@ public class PlayActivity extends WordsWithCrossesActivity {
 		if (puz.isSolved() && (timer != null)) {
 			timer.stop();
 			puz.setTime(timer.getElapsed());
-			this.timer = null;
-			Intent i = new Intent(PlayActivity.this, PuzzleFinishedActivity.class);
-			this.startActivity(i);
+			timer = null;
+
+			Intent intent = new Intent(PlayActivity.this, PuzzleFinishedActivity.class);
+			startActivity(intent);
 
 		}
 		this.clue.requestFocus();
@@ -1124,11 +1119,20 @@ public class PlayActivity extends WordsWithCrossesActivity {
         }
 
         public void updateTime() {
+            String timeElapsed;
             if (timer != null) {
-                setTitle(timer.time());
+                timeElapsed = timer.time();
+            } else {
+                timeElapsed = new ImaginaryTimer(puz.getTime()).time();
             }
 
-            if (runTimer && !isScheduled) {
+            if (timerText != null) {
+                timerText.setText(timeElapsed);
+            } else {
+                setTitle(timeElapsed);
+            }
+
+            if (showTimer && !isScheduled) {
                 isScheduled = true;
                 handler.postDelayed(this, 1000);
             }
