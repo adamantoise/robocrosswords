@@ -88,8 +88,10 @@ public class PlayboardRenderer {
 
             int boxSize = (int)(BOX_SIZE * scale);
             if (bitmap == null || scale != lastScale) {
+                int width = boxes[0].length * boxSize;
+                width += 3 - (width + 3) % 4;
                 bitmap = Bitmap.createBitmap(
-                    boxes[0].length * boxSize,
+                    width,
                     boxes.length * boxSize,
                     Bitmap.Config.RGB_565);
                 LOG.info("New bitmap: " + bitmap.getWidth() + "x" + bitmap.getHeight());
