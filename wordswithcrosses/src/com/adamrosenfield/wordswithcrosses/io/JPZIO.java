@@ -94,7 +94,7 @@ public class JPZIO {
 
         Scanner in = new Scanner(is);
         ByteArrayOutputStream replaced = new ByteArrayOutputStream();
-        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(replaced));
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(replaced), 8192);
         while (in.hasNextLine()) {
             String line = in.nextLine();
             line = line.replaceAll("&nbsp;", " ");
