@@ -80,7 +80,7 @@
     <string name="pref_double_tap_zoom_summary">Double tap toggles between fit to screen, and your default zoom</string>
     <string name="pref_show_timer">Show Timer</string>
     <string name="pref_show_timer_summary">Shows your puzzle time</string>
-    <string name="pref_show_progress_bar">Show ProgressBar</string>
+    <string name="pref_show_progress_bar">Show Progress Bar</string>
     <string name="pref_show_progress_bar_summary">Shows your puzzle progress at the top of the screen.\nYou must leave and re-enter a puzzle to apply.</string>
     <string name="pref_full_screen">Full Screen</string>
     <string name="pref_full_screen_summary">Hides the notification bar.\nYou must leave and re-enter a puzzle to apply.</string>
