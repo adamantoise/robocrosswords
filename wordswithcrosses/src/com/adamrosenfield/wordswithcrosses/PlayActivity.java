@@ -1119,22 +1119,31 @@ public class PlayActivity extends WordsWithCrossesActivity {
         }
 
         public void updateTime() {
-            String timeElapsed;
-            if (timer != null) {
-                timeElapsed = timer.time();
-            } else {
-                timeElapsed = new ImaginaryTimer(puz.getTime()).time();
-            }
+            if (showTimer) {
+                String timeElapsed;
+                if (timer != null) {
+                    timeElapsed = timer.time();
+                } else {
+                    timeElapsed = new ImaginaryTimer(puz.getTime()).time();
+                }
 
-            if (timerText != null) {
-                timerText.setText(timeElapsed);
-            } else {
-                setTitle(timeElapsed);
-            }
+                if (timerText != null) {
+                    timerText.setVisibility(View.VISIBLE);
+                    timerText.setText(timeElapsed);
+                } else {
+                    setTitle(timeElapsed);
+                }
 
-            if (showTimer && !isScheduled) {
-                isScheduled = true;
-                handler.postDelayed(this, 1000);
+                if (!isScheduled) {
+                    isScheduled = true;
+                    handler.postDelayed(this, 1000);
+                }
+            } else {
+                if (timerText != null) {
+                    timerText.setVisibility(View.GONE);
+                } else {
+                    setTitle(getResources().getString(R.string.app_name));
+                }
             }
         }
 	}
