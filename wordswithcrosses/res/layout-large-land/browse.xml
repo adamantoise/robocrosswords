@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
 	android:orientation="vertical"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
+
 	<LinearLayout
 	    android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
@@ -26,19 +29,23 @@
 			android:text="@string/puzzles"
 			android:background="#313131" />
 	</LinearLayout>
+
 	<LinearLayout
 	    android:orientation="horizontal"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent">
 
-		<ListView android:id="@+id/sourceList"
+		<ListView
+            android:id="@+id/sourceList"
 		    android:layout_width="350dp"
 			android:layout_height="fill_parent"
 			android:background="#313131"
-			android:layout_marginRight="5dp" 
-			android:cacheColorHint="#0000"/>
+			android:layout_marginRight="5dp"
+			android:cacheColorHint="#0000"
+            tools:ignore="InconsistentLayout"/>
 
-		<ListView android:id="@+id/puzzleList"
+		<ListView
+            android:id="@+id/puzzleList"
 		    android:layout_width="fill_parent"
 			android:layout_height="fill_parent"/>
 

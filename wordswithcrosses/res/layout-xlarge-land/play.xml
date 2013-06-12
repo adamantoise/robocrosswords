@@ -1,85 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
-	<TextView
-	    android:id="@+id/clueLine"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:text="@string/hello"
-		android:textSize="12sp"
-		android:minLines="2"
-		android:maxLines="4"
-		android:textColor="#FFFFFF"
-		android:background="#2C2C2C"
-		android:visibility="gone"
-	/>
+    <TextView
+        android:id="@+id/clueLine"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/hello"
+        android:textSize="12sp"
+        android:minLines="2"
+        android:maxLines="4"
+        android:textColor="#FFFFFF"
+        android:background="#2C2C2C"
+        android:visibility="gone"
+    />
 
-	<android.inputmethodservice.KeyboardView
-		android:id="@+id/playKeyboard"
-		android:layout_alignParentBottom="true"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-	/>
+    <android.inputmethodservice.KeyboardView
+        android:id="@+id/playKeyboard"
+        android:layout_alignParentBottom="true"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+    />
 
-	<RelativeLayout
-		android:id="@+id/clues"
-		android:layout_alignParentTop="true"
-		android:layout_alignParentRight="true"
-		android:layout_above="@id/playKeyboard"
-		android:layout_width="650dp"
-		android:layout_height="wrap_content">
+    <RelativeLayout
+        android:id="@+id/clues"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_above="@id/playKeyboard"
+        android:layout_width="650dp"
+        android:layout_height="wrap_content">
 
-			<TextView android:id="@+id/downLabel"
-				android:layout_alignParentTop="true"
-				android:layout_alignParentRight="true"
-				android:layout_width="325dp"
-				android:layout_height="wrap_content"
-				android:text="@string/down"
-				android:textStyle="bold"
-				android:textSize="16sp"
-				/>
+        <TextView
+            android:id="@+id/downLabel"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="325dp"
+            android:layout_height="wrap_content"
+            android:text="@string/down"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            />
 
-            <ListView
-                android:id="@+id/downList"
-         	android:layout_width="325dp"
+        <ListView
+            android:id="@+id/downList"
+            android:layout_width="325dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/downLabel"
-			android:layout_alignParentBottom="true"
-			android:layout_alignParentRight="true"
-			/>
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            tools:ignore="InconsistentLayout"
+            />
 
-			<TextView
-			    android:id="@+id/acrossLabel"
-				android:layout_alignParentTop="true"
-				android:layout_alignParentLeft="true"
-				android:layout_width="325dp"
-				android:layout_height="wrap_content"
-				android:text="@string/across"
-				android:textStyle="bold"
-				android:textSize="16sp"
-				/>
-         	<ListView
-         	    android:id="@+id/acrossList"
-         	    android:layout_width="325dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/acrossLabel"
-			    android:layout_alignParentBottom="true"
-			    android:layout_toLeftOf="@id/downList"
-         	/>
+        <TextView
+            android:id="@+id/acrossLabel"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_width="325dp"
+            android:layout_height="wrap_content"
+            android:text="@string/across"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            />
+
+        <ListView
+            android:id="@+id/acrossList"
+            android:layout_width="325dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/acrossLabel"
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@id/downList"
+            tools:ignore="InconsistentLayout"
+            />
      </RelativeLayout>
 
-	<com.adamrosenfield.wordswithcrosses.view.CrosswordImageView
-		android:id="@+id/board"
-		android:layout_alignParentTop="true"
-		android:layout_alignParentLeft="true"
-		android:layout_above="@id/playKeyboard"
-		android:layout_toLeftOf="@id/clues"
-		android:layout_width="wrap_content"
-		android:layout_height="fill_parent"
-		android:scrollbars="horizontal|vertical"
-		android:layout_marginRight="5dp"
-	/>
+    <com.adamrosenfield.wordswithcrosses.view.CrosswordImageView
+        android:id="@+id/board"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_above="@id/playKeyboard"
+        android:layout_toLeftOf="@id/clues"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:scrollbars="horizontal|vertical"
+        android:layout_marginRight="5dp"
+    />
 
 </RelativeLayout>
