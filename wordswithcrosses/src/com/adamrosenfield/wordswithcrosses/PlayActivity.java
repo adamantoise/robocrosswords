@@ -742,11 +742,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
 			return true;
 
 	    case MENU_ID_INFO:
-			if (dialog != null) {
-				TextView view = (TextView)dialog.findViewById(R.id.puzzle_info_time);
-				updateElapsedTime(view);
-			}
-
 			deprecatedShowDialog(INFO_DIALOG);
 
 			return true;
@@ -828,11 +823,22 @@ public class PlayActivity extends WordsWithCrossesActivity {
 	@Override
     protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
 	    if (id == INFO_DIALOG) {
+	        if (timer != null) {
+	            timer.stop();
+	        }
 	        TextView timeText = (TextView)dialog.findViewById(R.id.puzzle_info_time);
 	        updateElapsedTime(timeText);
 
 	        ProgressBar progress = (ProgressBar)dialog.findViewById(R.id.puzzle_info_progress);
 	        progress.setProgress((int)(puz.getFractionComplete() * 10000));
+
+	        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+	            public void onDismiss(DialogInterface dialogInterface) {
+	                if (timer != null) {
+	                    timer.start();
+	                }
+	            }
+	        });
 	    }
 	}
 
@@ -973,7 +979,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
 	private void updateElapsedTime(TextView view) {
 	    String elapsedStr = getResources().getString(R.string.elapsed_time);
-       if (timer != null) {
+	    if (timer != null) {
             view.setText(elapsedStr + " " + timer.time());
         } else {
             view.setText(elapsedStr + " " + new ImaginaryTimer(puz.getTime()).time());
