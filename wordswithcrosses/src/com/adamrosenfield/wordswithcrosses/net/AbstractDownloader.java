@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.util.Calendar;
@@ -110,4 +111,15 @@ public abstract class AbstractDownloader implements Downloader {
 
         return new String(baos.toByteArray());
     }
+
+    /**
+     * If relativeUrl is an absolute URL, then it is returned unchanged.
+     * Otherwise, this resolves relativeUrl against baseUrl and returns the
+     * resulting absolute URL.
+     */
+    public static String resolveUrl(String baseUrl, String relativeUrl) throws MalformedURLException
+    {
+        return new URL(new URL(baseUrl), relativeUrl).toString();
+    }
+
 }

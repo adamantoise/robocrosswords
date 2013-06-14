@@ -23,7 +23,7 @@
 		<CheckBoxPreference
 			android:title="Los Angeles Times"
 			android:defaultValue="true"
-			android:key="downloadLat" />
+			android:key="downloadLAT" />
 		<CheckBoxPreference
 			android:title="Matt Gaffney's Daily Crossword"
 			android:summary="@string/pref_mgdc_summary"
@@ -102,6 +102,11 @@
                 android:summary="@string/pref_mgwcc_summary"
                 android:defaultValue="true"
                 android:key="downloadMGWCC" />
+            <CheckBoxPreference
+                android:title="Neville Fogarty"
+                android:summary="@string/pref_nevillefogarty_summary"
+                android:defaultValue="true"
+                android:key="downloadNevilleFogarty" />
 			<CheckBoxPreference
 				android:title="People Magazine"
 				android:summary="@string/pref_people_summary"

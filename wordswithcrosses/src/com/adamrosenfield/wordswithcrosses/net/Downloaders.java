@@ -66,7 +66,7 @@ public class Downloaders {
             downloaders.add(new JosephDownloader());
         }
 
-        if (prefs.getBoolean("downloadLat", true)) {
+        if (prefs.getBoolean("downloadLAT", true)) {
             downloaders.add(new LATimesDownloader());
         }
 
@@ -84,6 +84,10 @@ public class Downloaders {
 
         if (prefs.getBoolean("downloadMMMM",  true)) {
             downloaders.add(new MMMMDownloader());
+        }
+
+        if (prefs.getBoolean("downloadNevilleFogarty",  true)) {
+            downloaders.add(new NevilleFogartyDownloader());
         }
 
         if (prefs.getBoolean("downloadNYT", false)) {

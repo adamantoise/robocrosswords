@@ -1,11 +1,15 @@
 package com.adamrosenfield.wordswithcrosses.net;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Muller's Monthly Music Meta
+ * URL: http://pmxwords.com/
+ * Date: First Tuesday of each month
+ */
 public class MMMMDownloader extends AbstractDownloader
 {
     private static final String NAME = "Muller Monthly Music Meta";
@@ -46,7 +50,7 @@ public class MMMMDownloader extends AbstractDownloader
             // If we found a match, convert the relative URL into an absolute
             // one and download it
             String puzzleUrl = matcher.group(1);
-            String fullUrl = new URL(new URL(scrapeUrl), puzzleUrl).toString();
+            String fullUrl = resolveUrl(scrapeUrl, puzzleUrl);
             return super.download(date, fullUrl);
         }
         else
