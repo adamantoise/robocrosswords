@@ -2,5 +2,6 @@
 /puzlib/target/
 /web/target/
 /test/bin/
+/scratch
 .DS_Store
 .metadata
