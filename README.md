@@ -3,7 +3,13 @@ Words With Crosses
 
 *Words With Crosses* is a free, open-source crossword puzzle app for Android.  It was forked from [*Shortyz Crosswords*](http://code.google.com/p/shortyz/) by Robert Cooper.
 
-Features include:
+*Words With Crosses* is licensed under the GNU General Public License, Version 3.  See the file `COPYING.html` for the license text.
+
+If you'd like to support the continued development of *Words With Crosses*, [please donate](http://adamrosenfield.com/donate).  This is a side project of mine done in my spare time, outside of my day job.
+
+Features
+--------
+
 - Automatic download of over 20 different daily, weekly, and monthly puzzles
 - Download .puz and .jpz files from the web or from your email
 - Supports circled letters appearing in some puzzles
@@ -11,7 +17,9 @@ Features include:
 - Optional hinting feature to reveal letters, words, or the whole puzzle
 - Supports phones and tablets running Android 1.6 and higher
 
-Puzzles sources available:
+Puzzle sources
+--------------
+
 - Chronicle of Higher Education
 - Daily Record
 - Ink Well Xwords
@@ -34,7 +42,3 @@ Puzzles sources available:
 - Wall Street Journal
 - Washington Post (aka CrosSynergy)
 - Washington Post Puzzler
-
-*Words With Crosses* is licensed under the GNU General Public License, Version 3.  See the file `COPYING.html` for the license text.
-
-If you'd like to support the continued development of *Words With Crosses*, [please donate](http://adamrosenfield.com/donate).  This is a side project of mine done in my spare time, outside of my day job.
