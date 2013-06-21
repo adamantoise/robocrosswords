@@ -57,14 +57,9 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
     public static final String COLUMN_SOURCE_URL = "source_url";
     public static final String COLUMN_DATE = "date";
     public static final String COLUMN_PERCENT_COMPLETE = "percent_complete";
-
-    public static final String TABLE_SOLVE_STATE = "solve_state";
-    public static final String COLUMN_WIDTH = "width";
-    public static final String COLUMN_HEIGHT = "height";
     public static final String COLUMN_CURRENT_POSITION_ROW = "current_position_row";
     public static final String COLUMN_CURRENT_POSITION_COL = "current_position_col";
     public static final String COLUMN_CURRENT_ORIENTATION_ACROSS = "current_orientation_across";
-    public static final String COLUMN_CHEATED = "cheated";
 
     private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
 
@@ -88,18 +83,10 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
             COLUMN_SOURCE + " TEXT NOT NULL, " +
             COLUMN_SOURCE_URL + " TEXT NOT NULL, " +
             COLUMN_DATE + " INTEGER NOT NULL, " +
-            COLUMN_PERCENT_COMPLETE + " REAL NOT NULL)"
-            );
-
-        db.execSQL(
-            "CREATE TABLE " + TABLE_SOLVE_STATE + "(" +
-            COLUMN_ID + " INTEGER PRIMARY KEY, " +
-            COLUMN_WIDTH + " INTEGER NOT NULL, " +
-            COLUMN_HEIGHT + " INTEGER NOT NULL, " +
+            COLUMN_PERCENT_COMPLETE + " REAL NOT NULL, " +
             COLUMN_CURRENT_POSITION_ROW + " INTEGER NOT NULL, " +
             COLUMN_CURRENT_POSITION_COL + " INTEGER NOT NULL, " +
-            COLUMN_CURRENT_ORIENTATION_ACROSS + " INTEGER NOT NULL, " +
-            COLUMN_CHEATED + " BLOB NOT NULL)"
+            COLUMN_CURRENT_ORIENTATION_ACROSS + " INTEGER NOT NULL)"
             );
 
         //db.execSQL(
@@ -223,28 +210,14 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
         values.put(COLUMN_SOURCE_URL, sourceUrl);
         values.put(COLUMN_DATE, dateMillis);
         values.put(COLUMN_PERCENT_COMPLETE, -1);
+        values.put(COLUMN_CURRENT_POSITION_ROW, 0);
+        values.put(COLUMN_CURRENT_POSITION_COL, 0);
+        values.put(COLUMN_CURRENT_ORIENTATION_ACROSS, true);
 
         SQLiteDatabase db = getWritableDatabase();
         long id = db.insert(TABLE_CROSSWORDS, null, values);
 
-        if (id != -1)
-        {
-            // Set the initial solve state
-            values = new ContentValues();
-            values.put(COLUMN_ID, id);
-            values.put(COLUMN_WIDTH, puz.getWidth());
-            values.put(COLUMN_HEIGHT, puz.getHeight());
-            values.put(COLUMN_CURRENT_POSITION_ROW, 0);
-            values.put(COLUMN_CURRENT_POSITION_COL, 0);
-            values.put(COLUMN_CURRENT_ORIENTATION_ACROSS, true);
-            values.put(COLUMN_CHEATED, new byte[0]);
-
-            if (db.insert(TABLE_SOLVE_STATE, null, values) != id)
-            {
-                LOG.warning("Failed to insert initial solve state for puzzle: " + path);
-            }
-        }
-        else
+        if (id == -1)
         {
             LOG.warning("Failed to insert puzzle into database: " + path);
         }
@@ -589,41 +562,6 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
     {
         public Position position;
         public boolean isOrientationAcross;
-        public boolean[][] cheated = new boolean[0][0];
-
-        public void setCheated(int width, int height, byte[] blob)
-        {
-            cheated = new boolean[height][width];
-
-            int maxI = Math.min(width * height, blob.length * 8);
-            for (int i = 0; i < maxI; i++)
-            {
-                int r = (i / width);
-                int c = (i % width);
-                cheated[r][c] = ((blob[i >> 3] & (1 << (i & 7))) != 0);
-            }
-        }
-
-        byte[] getCheatedBlob()
-        {
-            byte[] blob = new byte[(cheated.length * cheated[0].length + 7) / 8];
-
-            int i = 0;
-            for (int r = 0; r < cheated.length; r++)
-            {
-                for (int c = 0; c < cheated[r].length; c++)
-                {
-                    if (cheated[r][c])
-                    {
-                        blob[i >> 3] |= (1 << (i & 7));
-                    }
-
-                    i++;
-                }
-            }
-
-            return blob;
-        }
     }
 
     /**
@@ -638,19 +576,16 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
     {
         String[] columns = new String[]
         {
-            COLUMN_WIDTH,
-            COLUMN_HEIGHT,
             COLUMN_CURRENT_POSITION_ROW,
             COLUMN_CURRENT_POSITION_COL,
             COLUMN_CURRENT_ORIENTATION_ACROSS,
-            COLUMN_CHEATED
         };
 
         String selection = COLUMN_ID + "=" + puzzleId;
 
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(
-            TABLE_SOLVE_STATE,
+            TABLE_CROSSWORDS,
             columns,   // Columns
             selection, // Selection
             null,      // Selection args
@@ -661,16 +596,11 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
         if (cursor.moveToNext())
         {
             SolveState solveState = new SolveState();
-            int width = cursor.getInt(0);
-            int height = cursor.getInt(1);
-            int row = cursor.getInt(2);
-            int col = cursor.getInt(3);
+            int row = cursor.getInt(0);
+            int col = cursor.getInt(1);
             solveState.position = new Position(col, row);
-            solveState.isOrientationAcross = (cursor.getInt(4) != 0);
-            byte[] cheatedBlob = cursor.getBlob(5);
+            solveState.isOrientationAcross = (cursor.getInt(2) != 0);
             cursor.close();
-
-            solveState.setCheated(width, height, cheatedBlob);
 
             return solveState;
         }
@@ -696,10 +626,9 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
         values.put(COLUMN_CURRENT_POSITION_ROW, solveState.position.down);
         values.put(COLUMN_CURRENT_POSITION_COL, solveState.position.across);
         values.put(COLUMN_CURRENT_ORIENTATION_ACROSS, solveState.isOrientationAcross);
-        values.put(COLUMN_CHEATED, solveState.getCheatedBlob());
 
         SQLiteDatabase db = getWritableDatabase();
-        if (db.update(TABLE_SOLVE_STATE, values, selection, null) == 1)
+        if (db.update(TABLE_CROSSWORDS, values, selection, null) == 1)
         {
             LOG.info("Updated puzzle solve state");
         }

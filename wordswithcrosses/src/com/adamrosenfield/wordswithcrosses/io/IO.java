@@ -55,7 +55,9 @@ public class IO {
 	// TODO: Support GRBS, RTBL, and RUSR sections for rebus puzzles
 
 	// GEXT section bitmasks
-	private static final byte GEXT_SQUARE_CIRCLED = (byte) 0x80;
+	private static final byte GEXT_WAS_INCORRECT  = (byte)0x10;
+	private static final byte GEXT_IS_INCORRECT   = (byte)0x20;
+	private static final byte GEXT_SQUARE_CIRCLED = (byte)0x80;
 
 	private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
 
@@ -256,7 +258,6 @@ public class IO {
 
 	private static void readGextSection(DataInputStream input, Puzzle puz)
 			throws IOException {
-		puz.setGEXT(true);
 		input.skipBytes(4);
 
 		Box[][] boxes = puz.getBoxes();
@@ -265,6 +266,11 @@ public class IO {
 			for (int c = 0; c < boxes[r].length; c++) {
 				byte gextInfo = input.readByte();
 
+				if ((gextInfo & (GEXT_WAS_INCORRECT | GEXT_IS_INCORRECT)) != 0) {
+				    if (boxes[r][c] != null) {
+				        boxes[r][c].setCheated(true);
+				    }
+				}
 				if ((gextInfo & GEXT_SQUARE_CIRCLED) != 0) {
 					if (boxes[r][c] != null) {
 						boxes[r][c].setCircled(true);
@@ -382,24 +388,24 @@ public class IO {
 		tmpDos.writeShort(Short.reverseBytes(scrambled));
 
 		Box[][] boxes = puz.getBoxes();
-		byte[] gextSection = null;
-
-		if (puz.getGEXT()) {
-			gextSection = new byte[numberOfBoxes];
-		}
+		byte[] gextSection = new byte[numberOfBoxes];
 
 		for (int r = 0; r < boxes.length; r++) {
 			for (int c = 0; c < boxes[r].length; c++) {
 				if (boxes[r][c] == null) {
 					tmpDos.writeByte('.');
 				} else {
-					byte val = (byte) boxes[r][c].getSolution(); // Character.toString().getBytes("Cp1252")[0];
+					byte val = (byte)boxes[r][c].getSolution(); // Character.toString().getBytes("Cp1252")[0];
+                    tmpDos.writeByte(val);
 
-					if (puz.getGEXT() && boxes[r][c].isCircled()) {
-						gextSection[(width * r) + c] = GEXT_SQUARE_CIRCLED;
+					byte gextVal = 0;
+					if (boxes[r][c].isCheated()) {
+					    gextVal |= GEXT_WAS_INCORRECT;
 					}
-
-					tmpDos.writeByte(val);
+					if (boxes[r][c].isCircled()) {
+						gextVal |= GEXT_SQUARE_CIRCLED;
+					}
+					gextSection[width * r + c] = gextVal;
 				}
 			}
 		}
@@ -433,9 +439,7 @@ public class IO {
 		    writeExtraSection(tmpDos, "LTIM", ltimBytes);
 		}
 
-		if (puz.getGEXT()) {
-		    writeExtraSection(tmpDos, "GEXT", gextSection);
-		}
+		writeExtraSection(tmpDos, "GEXT", gextSection);
 
 		byte[] puzByteArray = tmp.toByteArray();
 		ByteBuffer bb = ByteBuffer.wrap(puzByteArray);

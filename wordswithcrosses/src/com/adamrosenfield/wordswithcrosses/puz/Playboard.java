@@ -231,32 +231,12 @@ public class Playboard {
         solveState.position = new Position(getHighlightLetter());
         solveState.isOrientationAcross = isAcross();
 
-        solveState.cheated = new boolean[boxes.length][boxes[0].length];
-
-        for (int r = 0; r < boxes.length; r++) {
-            for (int c = 0; c < boxes[r].length; c++) {
-                if (boxes[r][c] != null) {
-                    solveState.cheated[r][c] = boxes[r][c].isCheated();
-                }
-            }
-        }
-
         return solveState;
     }
 
     public void setSolveState(SolveState solveState) {
         setHighlightLetter(solveState.position);
         setAcross(solveState.isOrientationAcross);
-
-        int maxR = Math.min(boxes.length, solveState.cheated.length);
-        for (int r = 0; r < maxR; r++) {
-            int maxC = Math.min(boxes[r].length, solveState.cheated.length);
-            for (int c = 0; c < maxC; c++) {
-                if (boxes[r][c] != null) {
-                    boxes[r][c].setCheated(solveState.cheated[r][c]);
-                }
-            }
-        }
     }
 
     public Word setHighlightLetter(Position highlightLetter) {

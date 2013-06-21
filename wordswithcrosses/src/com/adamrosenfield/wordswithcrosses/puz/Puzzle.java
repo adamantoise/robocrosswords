@@ -49,7 +49,6 @@ public class Puzzle {
     private boolean scrambled;
     public short solutionChecksum;
     private String version = IO.VERSION_STRING;
-    private boolean hasGEXT;
 
     // Temporary fields used for unscrambling.
     public int[] unscrambleKey;
@@ -334,14 +333,6 @@ public class Puzzle {
      public String getVersion() {
     	 return version;
      }
-
-    public void setGEXT(boolean hasGEXT) {
-    	this.hasGEXT = hasGEXT;
-    }
-
-    public boolean getGEXT() {
-    	return hasGEXT;
-    }
 
     public void setScrambled(boolean scrambled) {
     	this.scrambled = scrambled;

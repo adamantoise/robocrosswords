@@ -364,9 +364,7 @@ public class JPZIO {
                         boxes[y][x].setSolution('Z');
                     }
 
-                    if ("circle".equalsIgnoreCase(attributes
-                            .getValue("background-shape"))) {
-                        puz.setGEXT(true);
+                    if ("circle".equalsIgnoreCase(attributes.getValue("background-shape"))) {
                         boxes[y][x].setCircled(true);
                     }
 
