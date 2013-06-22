@@ -22,7 +22,7 @@ package com.adamrosenfield.wordswithcrosses.net;
 import java.util.Calendar;
 
 /**
- * Patrick Blindauer Free Monthly Puzzle
+ * Patrick Blindauer's Free Monthly Puzzle
  * URL: http://www.patrickblindauer.com/Free_Monthly_Puzzles/Mmm_YYYY/[puzzle-name].puz
  * Date: Monday, Thursday
  */

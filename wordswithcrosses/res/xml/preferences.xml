@@ -151,7 +151,7 @@
             android:defaultValue="true"
             android:key="downloadMMMM" />
         <CheckBoxPreference
-            android:title="Patrick Blindauer Free Monthly Puzzle"
+            android:title="Patrick Blindauer's Free Monthly Puzzle"
             android:summary="@string/pref_blindauer_summary"
             android:defaultValue="true"
             android:key="downloadPatrickBlindauer" />
