@@ -32,7 +32,7 @@ import android.database.Cursor;
 
 import com.adamrosenfield.wordswithcrosses.versions.AndroidVersionUtils;
 
-@TargetApi(11)
+@TargetApi(9)
 public class DownloadReceiverGinger extends BroadcastReceiver {
 
     protected static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
@@ -60,15 +60,12 @@ public class DownloadReceiverGinger extends BroadcastReceiver {
 
         LOG.info("Download completed: status=" + status + " reason=" + reason + " mediaType=" + mediaType);
 
-        boolean succeeded = (status == DownloadManager.STATUS_SUCCESSFUL);
-        if (android.os.Build.VERSION.SDK_INT >= 11) {
-            String mimeType = mgr.getMimeTypeForDownloadedFile(id);
-            if (!"application/x-crossword".equals(mimeType)) {
-                LOG.warning("Bad mime type for downloaded file: " + mimeType);
-                succeeded = false;
-            }
-        }
+        boolean succeeded = (status == DownloadManager.STATUS_SUCCESSFUL) && isMimeTypeXCrossword(mgr, id);
 
         AndroidVersionUtils.Factory.getInstance().onFileDownloaded(id, succeeded);
+    }
+
+    protected boolean isMimeTypeXCrossword(DownloadManager manager, long downloadId) {
+        return true;
     }
 }

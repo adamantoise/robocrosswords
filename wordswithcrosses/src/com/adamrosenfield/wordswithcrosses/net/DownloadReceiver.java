@@ -30,12 +30,13 @@ public class DownloadReceiver extends BroadcastReceiver {
 
     public DownloadReceiver()
     {
-        if (android.os.Build.VERSION.SDK_INT >= 9) {
+        int version = android.os.Build.VERSION.SDK_INT;
+        if (version >= 9) {
+            String receiverClass = (version >= 11 ? "DownloadReceiverHoneycomb" : "DownloadReceiverGinger");
             try {
-                BroadcastReceiver built = (BroadcastReceiver)
-                    Class.forName("com.adamrosenfield.wordswithcrosses.net.DownloadReceiverGinger")
+                impl = (BroadcastReceiver)
+                    Class.forName("com.adamrosenfield.wordswithcrosses.net." + receiverClass)
                     .newInstance();
-                impl = built;
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             } catch (IllegalAccessException e) {

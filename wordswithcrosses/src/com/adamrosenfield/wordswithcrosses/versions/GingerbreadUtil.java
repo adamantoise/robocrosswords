@@ -21,6 +21,7 @@
 package com.adamrosenfield.wordswithcrosses.versions;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,7 +59,12 @@ public class GingerbreadUtil extends DefaultUtil {
 
     @Override
     public boolean downloadFile(URL url, Map<String, String> headers, File destination, boolean notification,
-        String title) {
+        String title) throws IOException {
+        // Pre-ICS download managers don't support HTTPS
+        if ("https".equals(url.getProtocol()) && android.os.Build.VERSION.SDK_INT < 15) {
+            LOG.info("HTTPS not supported, not using DownloadManager");
+            return super.downloadFile(url,  headers,  destination,  notification,  title);
+        }
         DownloadManager mgr = (DownloadManager)context.getSystemService(Context.DOWNLOAD_SERVICE);
 
         Request request = new Request(Uri.parse(url.toString()));
