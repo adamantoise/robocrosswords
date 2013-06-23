@@ -28,7 +28,6 @@ Puzzle sources
 - Los Angeles Times
 - Matt Gaffney's Daily Crossword
 - Matt Gaffney's Weekly Crossword Contest
-- Merl Reagle
 - Muller Monthly Music Meta
 - Neville Fogarty
 - New York Times (paid subscription required)
