@@ -98,9 +98,10 @@ public class Downloaders {
             downloaders.add(new MGWCCDownloader());
         }
 
-        if (prefs.getBoolean("downloadMerlReagle", true)) {
-            downloaders.add(new MerlReagleDownloader());
-        }
+        // Merl Reagle has requested this his puzzles be removed
+        //if (prefs.getBoolean("downloadMerlReagle", true)) {
+        //    downloaders.add(new MerlReagleDownloader());
+        //}
 
         if (prefs.getBoolean("downloadMMMM",  true)) {
             downloaders.add(new MMMMDownloader());
