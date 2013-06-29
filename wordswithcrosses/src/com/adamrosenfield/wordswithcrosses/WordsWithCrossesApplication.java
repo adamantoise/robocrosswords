@@ -22,6 +22,7 @@ package com.adamrosenfield.wordswithcrosses;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.logging.Logger;
@@ -36,6 +37,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 
+import com.adamrosenfield.wordswithcrosses.io.IO;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard;
 import com.adamrosenfield.wordswithcrosses.view.PlayboardRenderer;
 
@@ -75,7 +77,7 @@ public class WordsWithCrossesApplication extends Application {
         makeDirs();
 
         if (DEBUG_DIR.isDirectory() || DEBUG_DIR.mkdirs()) {
-            File infoFile = new File(DEBUG_DIR, "device");
+            File infoFile = new File(DEBUG_DIR, "device.txt");
             try {
                 PrintWriter writer = new PrintWriter(infoFile);
                 try {
@@ -125,6 +127,8 @@ public class WordsWithCrossesApplication extends Application {
             return null;
         }
 
+        saveLogFile();
+
         try {
             ZipOutputStream zos = new ZipOutputStream(
                 context.openFileOutput(filename, MODE_WORLD_READABLE));
@@ -133,12 +137,11 @@ public class WordsWithCrossesApplication extends Application {
             } finally {
                 zos.close();
             }
+
             Intent sendIntent = new Intent(Intent.ACTION_SEND);
             sendIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            sendIntent.putExtra(android.content.Intent.EXTRA_EMAIL,
-                    new String[] { DEVELOPER_EMAIL });
-            sendIntent.putExtra(Intent.EXTRA_SUBJECT,
-                    "Words With Crosses Debug Package");
+            sendIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[] { DEVELOPER_EMAIL });
+            sendIntent.putExtra(Intent.EXTRA_SUBJECT, "Words With Crosses Debug Package");
             Uri uri = Uri.fromFile(zipFile);
             sendIntent.putExtra(Intent.EXTRA_STREAM, uri);
             LOG.info("Sending debug info: " + uri);
@@ -147,6 +150,25 @@ public class WordsWithCrossesApplication extends Application {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    private static void saveLogFile() {
+        try {
+            // Use logcat to copy the log file into the debug directory
+            File logFile = new File(DEBUG_DIR, "wordswithcrosses.log");
+            FileOutputStream fos = new FileOutputStream(logFile);
+            try {
+                Process process = Runtime.getRuntime().exec("logcat -d wordswithcrosses:I *:S");
+                IO.copyStream(process.getInputStream(), fos);
+                process.waitFor();
+            } finally {
+                fos.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
