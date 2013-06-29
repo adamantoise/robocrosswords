@@ -32,7 +32,7 @@ public class DownloadReceiver extends BroadcastReceiver {
     {
         int version = android.os.Build.VERSION.SDK_INT;
         if (version >= 9) {
-            String receiverClass = (version >= 11 ? "DownloadReceiverHoneycomb" : "DownloadReceiverGinger");
+            String receiverClass = "DownloadReceiverGinger";
             try {
                 impl = (BroadcastReceiver)
                     Class.forName("com.adamrosenfield.wordswithcrosses.net." + receiverClass)

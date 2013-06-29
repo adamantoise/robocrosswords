@@ -60,12 +60,8 @@ public class DownloadReceiverGinger extends BroadcastReceiver {
 
         LOG.info("Download completed: status=" + status + " reason=" + reason + " mediaType=" + mediaType);
 
-        boolean succeeded = (status == DownloadManager.STATUS_SUCCESSFUL) && isMimeTypeXCrossword(mgr, id);
+        boolean succeeded = (status == DownloadManager.STATUS_SUCCESSFUL);
 
         AndroidVersionUtils.Factory.getInstance().onFileDownloaded(id, succeeded);
-    }
-
-    protected boolean isMimeTypeXCrossword(DownloadManager manager, long downloadId) {
-        return true;
     }
 }

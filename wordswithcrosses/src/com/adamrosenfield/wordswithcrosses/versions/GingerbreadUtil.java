@@ -65,6 +65,7 @@ public class GingerbreadUtil extends DefaultUtil {
             LOG.info("HTTPS not supported, not using DownloadManager");
             return super.downloadFile(url,  headers,  destination,  notification,  title);
         }
+
         DownloadManager mgr = (DownloadManager)context.getSystemService(Context.DOWNLOAD_SERVICE);
 
         Request request = new Request(Uri.parse(url.toString()));
