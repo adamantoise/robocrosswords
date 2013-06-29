@@ -34,6 +34,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
@@ -41,7 +42,11 @@ import com.adamrosenfield.wordswithcrosses.puz.Box;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 
 public class IO {
-	public static final String FILE_MAGIC = "ACROSS&DOWN";
+	public static final byte[] FILE_MAGIC = new byte[] {
+	    (byte)'A', (byte)'C', (byte)'R', (byte)'O', (byte)'S', (byte)'S',
+	    (byte)'&', (byte)'D', (byte)'O', (byte)'W', (byte)'N', (byte)0
+	};
+
 	public static final String VERSION_STRING = "1.2";
 	private static final Charset CHARSET = Charset.forName("Cp1252");
 
@@ -107,7 +112,15 @@ public class IO {
 
 		Puzzle puz = new Puzzle();
 
-		input.skipBytes(0x18);
+		input.skipBytes(2);
+
+		byte[] magic = new byte[12];
+		input.readFully(magic);
+		if (!Arrays.equals(magic, FILE_MAGIC)) {
+		    throw new IOException("Invalid/missing magic");
+		}
+
+		input.skipBytes(10);
 
 		byte[] versionString = new byte[3];
 
@@ -358,8 +371,7 @@ public class IO {
 
 		tmpDos.writeShort(0);
 
-		tmpDos.writeBytes(FILE_MAGIC);
-		tmpDos.writeByte(0);
+		tmpDos.write(FILE_MAGIC);
 
 		tmpDos.write(new byte[10]);
 
