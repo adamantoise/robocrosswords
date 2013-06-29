@@ -131,7 +131,7 @@ public class DownloadPickerDialogBuilder {
         mDateLabel.setText(DATE_FORMAT.format(getCurrentDate().getTime()));
     }
 
-    private void updatePuzzleSelect(String toSelect) {
+    public void updatePuzzleSelect(String toSelect) {
         mAvailableDownloaders = mDownloaders.get().getDownloaders(getCurrentDate());
         mAvailableDownloaders.add(0, new DummyDownloader());
 

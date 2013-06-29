@@ -84,6 +84,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
     private static final int DOWNLOAD_DIALOG_ID = 0;
     private SortOrder sortOrder = SortOrder.DATE_DESC;
     private BaseAdapter currentAdapter = null;
+    private DownloadPickerDialogBuilder downloadPickerDialogBuilder;
     private Dialog mDownloadDialog;
 
     /** Puzzle for which a context menu is currently open */
@@ -387,7 +388,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
             Calendar now = Calendar.getInstance();
 
-            DownloadPickerDialogBuilder dpd = new DownloadPickerDialogBuilder(this, downloadButtonListener,
+            downloadPickerDialogBuilder = new DownloadPickerDialogBuilder(this, downloadButtonListener,
                     now.get(Calendar.YEAR),
                     now.get(Calendar.MONTH),
                     now.get(Calendar.DAY_OF_MONTH),
@@ -397,12 +398,21 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
                         }
                     });
 
-            mDownloadDialog = dpd.getInstance();
+            mDownloadDialog = downloadPickerDialogBuilder.getInstance();
 
             return mDownloadDialog;
         }
 
         return null;
+    }
+
+    @Override
+    protected void onPrepareDialog(int id, Dialog dialog) {
+        switch (id) {
+        case DOWNLOAD_DIALOG_ID:
+            downloadPickerDialogBuilder.updatePuzzleSelect(null);
+            break;
+        }
     }
 
     @Override
