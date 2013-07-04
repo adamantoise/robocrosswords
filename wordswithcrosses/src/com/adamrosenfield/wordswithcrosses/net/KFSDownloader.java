@@ -34,7 +34,7 @@ import com.adamrosenfield.wordswithcrosses.io.KingFeaturesPlaintextIO;
 
 /**
  * King Features Syndicate Puzzles
- * URL: http://[puzzle].king-online.com/clues/YYYYMMDD.txt
+ * URL: http://puzzles.kingdigital.com/javacontent/clues/[puzzle]/YYYYMMDD.txt
  * premier = Sunday
  * joseph = Monday-Saturday
  * sheffer = Monday-Saturday
@@ -45,7 +45,7 @@ public abstract class KFSDownloader extends AbstractDownloader {
     private String fullName;
 
     public KFSDownloader(String shortName, String fullName, String author) {
-        super("http://" + shortName + ".king-online.com/clues/", fullName);
+        super("http://puzzles.kingdigital.com/javacontent/clues/" + shortName + "/", fullName);
         this.fullName = fullName;
         this.author = author;
     }
