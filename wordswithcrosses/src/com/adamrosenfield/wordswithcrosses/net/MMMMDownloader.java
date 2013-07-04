@@ -41,9 +41,13 @@ public class MMMMDownloader extends AbstractDownloader
 
     public boolean isPuzzleAvailable(Calendar date)
     {
-        // Puzzles are available on the first Tuesday of each month
-        return (date.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY &&
-                date.get(Calendar.DATE) <= 7);
+        // Puzzles are available on the first Tuesday of each month, starting
+        // from April 2012.
+        return
+            (date.get(Calendar.YEAR) == 2012 && date.get(Calendar.MONTH) >= Calendar.APRIL ||
+             date.get(Calendar.YEAR) > 2012) &&
+            (date.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY &&
+             date.get(Calendar.DATE) <= 7);
     }
 
     @Override
@@ -55,13 +59,22 @@ public class MMMMDownloader extends AbstractDownloader
     @Override
     public boolean download(Calendar date) throws IOException
     {
-        String scrapeUrl = BASE_URL + date.get(Calendar.YEAR) + "puzzles/";
+        String scrapeUrl = BASE_URL;
+        if (date.get(Calendar.YEAR) != 2012)
+        {
+            scrapeUrl += date.get(Calendar.YEAR);
+        }
+        scrapeUrl += "puzzles/";
+
         String scrapedData = downloadUrlToString(scrapeUrl);
 
-        // Look for this month's puzzle in the directory listing.
+        // Look for this month's puzzle in the directory listing.  Also look
+        // at the last 10 days from the previous month, since sometimes that's
+        // when the timestamps are.
         // TODO: Use the JPZ instead of the PUZ
         String month = SHORT_MONTHS[date.get(Calendar.MONTH)];
-        Pattern puzzlePattern = Pattern.compile("<a href=\"([^\"]*\\.puz)\">[^<]*</a>\\s*\\d\\d-" + month);
+        String prevMonth = SHORT_MONTHS[(date.get(Calendar.MONTH) + 11) % 12];
+        Pattern puzzlePattern = Pattern.compile("<a href=\"([^\"]*\\.puz)\">[^<]*</a>\\s*([01]\\d-" + month + "|[23]\\d-" + prevMonth + ")-" + date.get(Calendar.YEAR));
         Matcher matcher = puzzlePattern.matcher(scrapedData);
 
         if (matcher.find())
