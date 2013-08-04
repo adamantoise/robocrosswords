@@ -43,6 +43,8 @@
     <string name="pref_updates_sun">Updates Sundays</string>
     <string name="pref_wapo_summary">Only most recent two weeks of puzzles available</string>
     <string name="pref_mgdc_summary">Updates Monday-Friday\nhttp://mattgaffneydaily.blogspot.com/</string>
+    <string name="pref_andykravis_summary">Updates Saturdays\nhttp://cruciverbalistatlaw.blogspot.com/</string>
+    <string name="pref_erikagard_summary">Updates Wednesdays\nhttp://gluttonforpun.blogspot.com/</string>
     <string name="pref_mgwcc_summary">Updates Fridays\nSubmit meta answer online at:\nhttp://xwordcontest.com/</string>
     <string name="pref_nevillefogarty_summary">Updates Fridays\nhttp://nevillefogarty.wordpress.com/</string>
     <string name="pref_people_summary">Updates Fridays\nNo archives available</string>
@@ -50,6 +52,8 @@
     <!-- <string name="pref_reagle_summary">Updates Sundays\nOnly the 4 most recent puzzles available</string> -->
     <string name="pref_mmmm_summary">Updates first Tuesday of the month\nSubmit meta answer online at:\nhttp://pmxwords.com</string>
     <string name="pref_blindauer_summary">Updates on 1st of the month\nhttp://www.patrickblindauer.com</string>
+    <string name="pref_about_puzzles">About Puzzles</string>
+    <string name="pref_about_puzzles_summary">Links to home pages of puzzles included with Words With Crosses</string>
     <string name="pref_more_puzzle_links">More Puzzle Links</string>
     <string name="pref_more_puzzle_links_summary">Links to more puzzles not included with Words With Crosses</string>
     <string name="pref_application_settings">Application Settings</string>

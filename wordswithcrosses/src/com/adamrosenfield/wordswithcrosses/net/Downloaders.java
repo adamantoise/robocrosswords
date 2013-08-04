@@ -66,8 +66,16 @@ public class Downloaders {
         //    downloaders.add(new BEQDownloader());
         //}
 
+        if (prefs.getBoolean("downloadAndyKravis", true)) {
+            downloaders.add(new AndyKravisDownloader());
+        }
+
         if (prefs.getBoolean("downloadCHE", true)) {
             downloaders.add(new CHEDownloader());
+        }
+
+        if (prefs.getBoolean("downloadErikAgard", true)) {
+            downloaders.add(new ErikAgardDownloader());
         }
 
         if (prefs.getBoolean("downloadISwear", true)) {
@@ -152,16 +160,16 @@ public class Downloaders {
             downloaders.add(new USATodayDownloader());
         }
 
+        if (prefs.getBoolean("downloadWsj", true)) {
+            downloaders.add(new WSJDownloader());
+        }
+
         if (prefs.getBoolean("downloadWaPo", true)) {
             downloaders.add(new WaPoDownloader());
         }
 
         if (prefs.getBoolean("downloadWaPoPuzzler", true)) {
             downloaders.add(new WaPoPuzzlerDownloader());
-        }
-
-        if (prefs.getBoolean("downloadWsj", true)) {
-            downloaders.add(new WSJDownloader());
         }
 
         this.suppressMessages = prefs.getBoolean("suppressMessages", false);

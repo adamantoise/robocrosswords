@@ -40,6 +40,7 @@
 			<EditTextPreference
 				android:title="@string/pref_username"
 				android:summary="@string/pref_username_summary_nyt"
+                android:inputType="textEmailAddress"
 				android:key="nytUsername" />
 			<EditTextPreference
 				android:title="@string/pref_password"
@@ -75,6 +76,11 @@
 		android:summary="@string/pref_weekly_crosswords_summary"
 		android:key="selectWeekly">
 		<PreferenceCategory android:title="@string/pref_regular_sized">
+			 <CheckBoxPreference
+				android:title="Andy Kravis"
+				android:summary="@string/pref_andykravis_summary"
+				android:defaultValue="true"
+				android:key="downloadAndyKravis" />
 		    <!--
 			<CheckBoxPreference
 				android:title="Brendan Emmett Quigley"
@@ -82,6 +88,11 @@
 				android:defaultValue="true"
 				android:key="downloadBEQ" />
 			-->
+			 <CheckBoxPreference
+				android:title="Erik Agard"
+				android:summary="@string/pref_erikagard_summary"
+				android:defaultValue="true"
+				android:key="downloadErikAgard" />
 			 <CheckBoxPreference
 				android:title="I Swear"
 				android:summary="@string/pref_updates_fri"
@@ -158,6 +169,10 @@
             android:defaultValue="true"
             android:key="downloadPatrickBlindauer" />
     </PreferenceScreen>
+    <PreferenceScreen
+		android:title="@string/pref_about_puzzles"
+		android:summary="@string/pref_about_puzzles_summary"
+		android:key="morePuzzleLinks" />
     <PreferenceScreen
 		android:title="@string/pref_more_puzzle_links"
 		android:summary="@string/pref_more_puzzle_links_summary"
