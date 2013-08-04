@@ -54,6 +54,7 @@ public class VerticalProgressBar extends View {
 
     public void setPercentComplete(int percentComplete) {
         this.percentComplete = percentComplete;
+        invalidate();
     }
 
     public int getPercentComplete() {

@@ -1127,7 +1127,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 			startActivity(intent);
 
 		}
-		this.clue.requestFocus();
+		this.boardView.requestFocus();
 	}
 
 	private void updateProgressBar() {
