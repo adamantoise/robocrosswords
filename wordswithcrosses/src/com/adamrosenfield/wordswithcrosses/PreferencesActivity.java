@@ -21,7 +21,10 @@
 package com.adamrosenfield.wordswithcrosses;
 
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
+import android.preference.EditTextPreference;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 
@@ -30,6 +33,11 @@ public class PreferencesActivity extends PreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         deprecatedAddPreferencesFromResource(R.xml.preferences);
+
+        setUsernameAndPasswordChangeListeners("nytUsername", "nytPassword", "downloadNYT");
+        setUsernameAndPasswordChangeListeners("avxwUsername", "avxwPassword", "downloadAVXW");
+        setUsernameAndPasswordChangeListeners("crookedUsername", "crookedPassword", "downloadCrooked");
+        setUsernameAndPasswordChangeListeners("crosswordNationUsername", "crosswordNationPassword", "downloadCrosswordNation");
 
         Preference sendDebug = deprecatedFindPreference("sendDebug");
         sendDebug.setOnPreferenceClickListener(new OnPreferenceClickListener(){
@@ -49,5 +57,28 @@ public class PreferencesActivity extends PreferenceActivity {
     @SuppressWarnings("deprecation")
     private Preference deprecatedFindPreference(String preference) {
         return findPreference(preference);
+    }
+
+    private void setUsernameAndPasswordChangeListeners(String usernamePrefKey, String passwordPrefKey, String downloadPrefKey) {
+        setUsernameOrPasswordChangeListener(usernamePrefKey, passwordPrefKey, downloadPrefKey);
+        setUsernameOrPasswordChangeListener(passwordPrefKey, usernamePrefKey, downloadPrefKey);
+    }
+
+    private void setUsernameOrPasswordChangeListener(String prefKey, String otherPrefKey, String downloadPrefKey) {
+        Preference pref = deprecatedFindPreference(prefKey);
+        final EditTextPreference otherPref = (EditTextPreference)deprecatedFindPreference(otherPrefKey);
+        final CheckBoxPreference downloadPref = (CheckBoxPreference)deprecatedFindPreference(downloadPrefKey);
+
+        pref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                if (newValue instanceof String) {
+                    String strValue = (String)newValue;
+                    String otherValue = otherPref.getText();
+                    downloadPref.setChecked(!strValue.isEmpty() && !otherValue.isEmpty());
+                }
+
+                return true;
+            }
+        });
     }
 }
