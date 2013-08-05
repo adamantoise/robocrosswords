@@ -31,6 +31,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import android.content.Context;
 
@@ -57,6 +58,9 @@ public abstract class AbstractDownloader implements Downloader {
     protected static final NumberFormat DEFAULT_NF;
 
     protected static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:22.0) Gecko/20100101 Firefox/22.0";
+
+    private static final String SCRUB_URL_REGEX = "\\b(username|password)=[^&]*";
+    private static final Pattern SCRUB_URL_PATTERN = Pattern.compile(SCRUB_URL_REGEX);
 
     static {
         NumberFormat nf = NumberFormat.getInstance();
@@ -112,7 +116,7 @@ public abstract class AbstractDownloader implements Downloader {
             throws IOException {
         URL url = new URL(this.baseUrl + urlSuffix);
 
-        LOG.info("Downloading " + url);
+        LOG.info("Downloading " + scrubUrl(url));
 
         String filename = getFilename(date);
         File destFile = new File(WordsWithCrossesApplication.CROSSWORDS_DIR, filename);
@@ -144,4 +148,13 @@ public abstract class AbstractDownloader implements Downloader {
         return new URL(new URL(baseUrl), relativeUrl).toString();
     }
 
+    public static String scrubUrl(String url)
+    {
+        return SCRUB_URL_PATTERN.matcher(url).replaceAll("$1=[redacted]");
+    }
+
+    public static String scrubUrl(URL url)
+    {
+        return scrubUrl(url.toString());
+    }
 }

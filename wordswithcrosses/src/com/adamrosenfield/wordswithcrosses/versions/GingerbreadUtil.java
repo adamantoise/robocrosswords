@@ -36,6 +36,7 @@ import android.content.Context;
 import android.net.Uri;
 
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
+import com.adamrosenfield.wordswithcrosses.net.AbstractDownloader;
 
 @TargetApi(9)
 public class GingerbreadUtil extends DefaultUtil {
@@ -72,7 +73,8 @@ public class GingerbreadUtil extends DefaultUtil {
         File tempFile = new File(WordsWithCrossesApplication.TEMP_DIR, destination.getName());
 
         request.setDestinationUri(Uri.fromFile(tempFile));
-        LOG.info("Downloading " + url + " ==> " + tempFile);
+        String scrubbedUrl = AbstractDownloader.scrubUrl(url);
+        LOG.info("Downloading " + scrubbedUrl + " ==> " + tempFile);
 
         for (Entry<String, String> entry : headers.entrySet()) {
             request.addRequestHeader(entry.getKey(), entry.getValue());
@@ -110,12 +112,12 @@ public class GingerbreadUtil extends DefaultUtil {
                     succeeded = downloadingFile.succeeded;
                 }
             } catch (InterruptedException e) {
-                LOG.warning("Download interrupted: " + url);
+                LOG.warning("Download interrupted: " + scrubbedUrl);
                 return false;
             }
         }
 
-        LOG.info("Download " + (succeeded ? "succeeded" : "failed") + ": " + url);
+        LOG.info("Download " + (succeeded ? "succeeded" : "failed") + ": " + scrubbedUrl);
 
         if (succeeded) {
             if (!destination.equals(tempFile) && !tempFile.renameTo(destination)) {
