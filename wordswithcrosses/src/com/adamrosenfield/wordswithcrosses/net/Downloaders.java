@@ -66,12 +66,24 @@ public class Downloaders {
         //    downloaders.add(new BEQDownloader());
         //}
 
+        if (prefs.getBoolean("downloadAVXW", true)) {
+            downloaders.add(new AVXWDownloader(prefs.getString("avxwUsername", ""), prefs.getString("avxwPassword", "")));
+        }
+
         if (prefs.getBoolean("downloadAndyKravis", true)) {
             downloaders.add(new AndyKravisDownloader());
         }
 
         if (prefs.getBoolean("downloadCHE", true)) {
             downloaders.add(new CHEDownloader());
+        }
+
+        if (prefs.getBoolean("downloadCrooked", true)) {
+            downloaders.add(new CrookedDownloader(prefs.getString("crookedUsername", ""), prefs.getString("crookedPassword", "")));
+        }
+
+        if (prefs.getBoolean("downloadCrosswordNation", true)) {
+            downloaders.add(new CrosswordNationDownloader(prefs.getString("crosswordNationUsername", ""), prefs.getString("crosswordNationPassword", "")));
         }
 
         if (prefs.getBoolean("downloadErikAgard", true)) {

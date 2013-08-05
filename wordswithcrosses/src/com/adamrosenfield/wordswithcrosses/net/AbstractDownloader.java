@@ -56,6 +56,8 @@ public abstract class AbstractDownloader implements Downloader {
 
     protected static final NumberFormat DEFAULT_NF;
 
+    protected static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:22.0) Gecko/20100101 Firefox/22.0";
+
     static {
         NumberFormat nf = NumberFormat.getInstance();
         nf.setMinimumIntegerDigits(2);

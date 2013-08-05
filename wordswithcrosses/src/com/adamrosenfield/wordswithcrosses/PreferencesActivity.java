@@ -33,8 +33,10 @@ public class PreferencesActivity extends PreferenceActivity {
         super.onCreate(savedInstanceState);
         deprecatedAddPreferencesFromResource(R.xml.preferences);
 
-        Preference subscribeNyt = deprecatedFindPreference("nytSubscribe");
-        subscribeNyt.setOnPreferenceClickListener(new OpenHTMLClickListener("http://www.nytimes.com/puzzle"));
+        setOnPreferenceClickURL("nytSubscribe", "http://www.nytimes.com/puzzle");
+        setOnPreferenceClickURL("avxwSubscribe", "http://www.avxword.com/");
+        setOnPreferenceClickURL("crookedSubscribe", "http://www.crookedcrosswords.com/");
+        setOnPreferenceClickURL("crosswordNationSubscribe", "http://www.xwordnation.com/");
 
         Preference morePuzzleLinks = deprecatedFindPreference("morePuzzleLinks");
         morePuzzleLinks.setOnPreferenceClickListener(new OpenHTMLClickListener("file:///android_asset/puzzle-links.html"));
@@ -51,10 +53,10 @@ public class PreferencesActivity extends PreferenceActivity {
         Preference sendDebug = deprecatedFindPreference("sendDebug");
         sendDebug.setOnPreferenceClickListener(new OnPreferenceClickListener(){
 
-			public boolean onPreferenceClick(Preference preference) {
-				startActivity(WordsWithCrossesApplication.sendDebug(PreferencesActivity.this));
-				return true;
-			}
+            public boolean onPreferenceClick(Preference preference) {
+                startActivity(WordsWithCrossesApplication.sendDebug(PreferencesActivity.this));
+                return true;
+            }
         });
     }
 
@@ -66,6 +68,11 @@ public class PreferencesActivity extends PreferenceActivity {
     @SuppressWarnings("deprecation")
     private Preference deprecatedFindPreference(String preference) {
         return findPreference(preference);
+    }
+
+    private void setOnPreferenceClickURL(String prefName, String url) {
+        Preference pref = deprecatedFindPreference(prefName);
+        pref.setOnPreferenceClickListener(new OpenHTMLClickListener(url));
     }
 
     private class OpenHTMLClickListener implements OnPreferenceClickListener {
