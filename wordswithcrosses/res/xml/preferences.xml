@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
-  xmlns:android="http://schemas.android.com/apk/res/android">
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:custom="http://schemas.android.com/apk/res/com.adamrosenfield.wordswithcrosses">
 
 <PreferenceCategory
     android:title="@string/pref_select_puzzle_sources">
@@ -48,9 +49,9 @@
                 android:key="nytPassword"
                 android:password="true"
                 android:inputType="textPassword" />
-            <Preference
+            <com.adamrosenfield.wordswithcrosses.OpenURLPreference
                 android:title="@string/pref_get_subscription"
-                android:key="nytSubscribe"/>
+                custom:url="http://www.nytimes.com/puzzle"/>
         </PreferenceScreen>
         <CheckBoxPreference
             android:title="Newsday"
@@ -94,9 +95,9 @@
                 android:key="avxwPassword"
                 android:password="true"
                 android:inputType="textPassword" />
-            <Preference
+            <com.adamrosenfield.wordswithcrosses.OpenURLPreference
                 android:title="@string/pref_get_subscription"
-                android:key="avxwSubscribe"/>
+                custom:url="http://www.avxword.com/"/>
         </PreferenceScreen>
         <CheckBoxPreference
             android:title="Andy Kravis"
@@ -134,9 +135,9 @@
                 android:key="crookedPassword"
                 android:password="true"
                 android:inputType="textPassword" />
-            <Preference
+            <com.adamrosenfield.wordswithcrosses.OpenURLPreference
                 android:title="@string/pref_get_subscription"
-                android:key="crookedSubscribe"/>
+                custom:url="http://www.crookedcrosswords.com/"/>
         </PreferenceScreen>
         <PreferenceScreen
             android:title="Crossword Nation"
@@ -157,9 +158,9 @@
                 android:key="crosswordNationPassword"
                 android:password="true"
                 android:inputType="textPassword" />
-            <Preference
+            <com.adamrosenfield.wordswithcrosses.OpenURLPreference
                 android:title="@string/pref_get_subscription"
-                android:key="crosswordNationSubscribe"/>
+                custom:url="http://www.xwordnation.com/"/>
         </PreferenceScreen>
         <CheckBoxPreference
             android:title="Erik Agard"
@@ -234,14 +235,14 @@
             android:defaultValue="true"
             android:key="downloadPatrickBlindauer" />
     </PreferenceScreen>
-    <PreferenceScreen
+    <com.adamrosenfield.wordswithcrosses.OpenURLPreference
         android:title="@string/pref_about_puzzles"
         android:summary="@string/pref_about_puzzles_summary"
-        android:key="morePuzzleLinks" />
-    <PreferenceScreen
+        custom:url="file:///android_asset/about-puzzles.html" />
+    <com.adamrosenfield.wordswithcrosses.OpenURLPreference
         android:title="@string/pref_more_puzzle_links"
         android:summary="@string/pref_more_puzzle_links_summary"
-        android:key="morePuzzleLinks" />
+        custom:url="file:///android_asset/puzzle-links.html" />
 </PreferenceCategory>
 
 <PreferenceCategory
@@ -385,20 +386,22 @@
 
  </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="@string/pref_about_app">
+ <PreferenceCategory
+     android:title="@string/pref_about_app">
 
-    <Preference
+    <com.adamrosenfield.wordswithcrosses.OpenURLPreference
         android:title="@string/pref_release_notes"
-        android:key="releaseNotes"/>
+        custom:url="file:///android_asset/release.html" />
 
-    <Preference
+    <com.adamrosenfield.wordswithcrosses.OpenURLPreference
         android:title="@string/pref_license"
-        android:key="license"/>
+        android:key="license"
+        custom:url="file:///android_asset/license.html" />
 
-    <Preference
+    <com.adamrosenfield.wordswithcrosses.OpenURLPreference
         android:title="@string/pref_source_code"
-        android:key="sourceCode"/>
+        android:key="sourceCode"
+        custom:url="http://github.com/adamantoise/wordswithcrosses" />
 
      <Preference
         android:title="@string/pref_send_debug_package"

@@ -19,6 +19,14 @@ public final class R {
         public static final int orientationLockValues=0x7f050007;
     }
     public static final class attr {
+        /** <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int url=0x7f010000;
     }
     public static final class drawable {
         public static final int across=0x7f020000;
@@ -266,4 +274,33 @@ public final class R {
         public static final int keyboard_dpad=0x7f040001;
         public static final int preferences=0x7f040002;
     }
+    public static final class styleable {
+        /** Attributes that can be used with a OpenURLPreference.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #OpenURLPreference_url com.adamrosenfield.wordswithcrosses:url}</code></td><td></td></tr>
+           </table>
+           @see #OpenURLPreference_url
+         */
+        public static final int[] OpenURLPreference = {
+            0x7f010000
+        };
+        /**
+          <p>This symbol is the offset where the {@link com.adamrosenfield.wordswithcrosses.R.attr#url}
+          attribute's value can be found in the {@link #OpenURLPreference} array.
+
+
+          <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:url
+        */
+        public static final int OpenURLPreference_url = 0;
+    };
 }

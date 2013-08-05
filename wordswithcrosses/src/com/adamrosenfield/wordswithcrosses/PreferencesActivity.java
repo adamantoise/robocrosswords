@@ -20,8 +20,6 @@
 
 package com.adamrosenfield.wordswithcrosses;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
@@ -32,23 +30,6 @@ public class PreferencesActivity extends PreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         deprecatedAddPreferencesFromResource(R.xml.preferences);
-
-        setOnPreferenceClickURL("nytSubscribe", "http://www.nytimes.com/puzzle");
-        setOnPreferenceClickURL("avxwSubscribe", "http://www.avxword.com/");
-        setOnPreferenceClickURL("crookedSubscribe", "http://www.crookedcrosswords.com/");
-        setOnPreferenceClickURL("crosswordNationSubscribe", "http://www.xwordnation.com/");
-
-        Preference morePuzzleLinks = deprecatedFindPreference("morePuzzleLinks");
-        morePuzzleLinks.setOnPreferenceClickListener(new OpenHTMLClickListener("file:///android_asset/puzzle-links.html"));
-
-        Preference release = deprecatedFindPreference("releaseNotes");
-        release.setOnPreferenceClickListener(new OpenHTMLClickListener("file:///android_asset/release.html"));
-
-        Preference license = deprecatedFindPreference("license");
-        license.setOnPreferenceClickListener(new OpenHTMLClickListener("file:///android_asset/license.html"));
-
-        Preference sourceCode = deprecatedFindPreference("sourceCode");
-        sourceCode.setOnPreferenceClickListener(new OpenHTMLClickListener("http://github.com/adamantoise/wordswithcrosses"));
 
         Preference sendDebug = deprecatedFindPreference("sendDebug");
         sendDebug.setOnPreferenceClickListener(new OnPreferenceClickListener(){
@@ -68,36 +49,5 @@ public class PreferencesActivity extends PreferenceActivity {
     @SuppressWarnings("deprecation")
     private Preference deprecatedFindPreference(String preference) {
         return findPreference(preference);
-    }
-
-    private void setOnPreferenceClickURL(String prefName, String url) {
-        Preference pref = deprecatedFindPreference(prefName);
-        pref.setOnPreferenceClickListener(new OpenHTMLClickListener(url));
-    }
-
-    private class OpenHTMLClickListener implements OnPreferenceClickListener {
-
-        private String url;
-
-        public OpenHTMLClickListener(String url) {
-            this.url = url;
-        }
-
-        public boolean onPreferenceClick(Preference preference) {
-            Uri uri = Uri.parse(url);
-            Intent intent;
-
-            // Open the URI in either our HTML activity for local files, or in
-            // the user's browser for other URL schemes
-            if (uri.getScheme().equals("file")) {
-                intent = new Intent(Intent.ACTION_VIEW, uri, PreferencesActivity.this, HTMLActivity.class);
-            } else {
-                intent = new Intent(Intent.ACTION_VIEW, uri);
-            }
-
-            PreferencesActivity.this.startActivity(intent);
-
-            return true;
-        }
     }
 }
