@@ -21,6 +21,8 @@ package com.adamrosenfield.wordswithcrosses.net;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -160,10 +162,13 @@ public class MGWCCDownloader extends AbstractDownloader
                     return false;
                 }
 
+                Map<String, String> headers = new HashMap<String, String>();
+                headers.put("User-Agent", USER_AGENT);
+
                 String id = matcher.group(1);
                 String url = "http://icrossword.com/publish/server/puzzle/index.php?id=" + id;
 
-                return super.download(date, url);
+                return super.download(date, url, headers);
             }
             else
             {

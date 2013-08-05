@@ -54,11 +54,6 @@ public class DefaultUtil implements AndroidVersionUtils {
             throws IOException {
 
         DefaultHttpClient httpclient = new DefaultHttpClient();
-        httpclient
-                .getParams()
-                .setParameter(
-                        "User-Agent",
-                        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:20.0) Gecko/20100101 Firefox/20.0");
 
         HttpGet httpget = new HttpGet(url.toString());
         for (Entry<String, String> e : headers.entrySet()) {

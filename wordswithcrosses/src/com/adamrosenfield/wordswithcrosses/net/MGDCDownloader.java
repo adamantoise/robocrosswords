@@ -21,6 +21,8 @@ package com.adamrosenfield.wordswithcrosses.net;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -67,7 +69,7 @@ public class MGDCDownloader extends AbstractDownloader
     {
         Calendar startDate = Calendar.getInstance();
         startDate.clear();
-        startDate.set(2011, 8, 21);  // 2011-9-21 (months start at 0 for Calendar!)
+        startDate.set(2011, 8, 21);  // 2011-09-21 (months start at 0 for Calendar!)
         START_DATE = startDate;
     }
 
@@ -125,10 +127,13 @@ public class MGDCDownloader extends AbstractDownloader
             return false;
         }
 
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("User-Agent", USER_AGENT);
+
         String id = matcher.group(1);
         String url = "http://icrossword.com/publish/server/puzzle/index.php?id=" + id;
 
-        return super.download(date, url);
+        return super.download(date, url, headers);
     }
 
 	@Override
