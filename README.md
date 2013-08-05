@@ -20,8 +20,13 @@ Features
 Puzzle sources
 --------------
 
+- American Values Club xword
+- Andy Kravis, Cruciverbalist at Law
 - Chronicle of Higher Education
+- CRooked Crosswords
+- Crossword Nation
 - Daily Record
+- Erik Agard
 - Ink Well Xwords
 - Jonesin' Crosswords
 - Joseph Crosswords
