@@ -29,8 +29,6 @@
     <string name="pref_weekly_crosswords_summary">Puzzles which update weekly</string>
     <string name="pref_monthly_crosswords">Monthly Crosswords</string>
     <string name="pref_monthly_crosswords_summary">Puzzles which update monthly</string>
-    <string name="pref_regular_sized">Regular Sized</string>
-    <string name="pref_large_sized">Large Sized</string>
     <string name="pref_requires_subscription">Requires subscription</string>
     <string name="pref_username">Username</string>
     <string name="pref_username_summary_nyt">NYT Username or Email Address</string>

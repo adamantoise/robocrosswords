@@ -75,153 +75,149 @@
         android:title="@string/pref_weekly_crosswords"
         android:summary="@string/pref_weekly_crosswords_summary"
         android:key="selectWeekly">
-        <PreferenceCategory android:title="@string/pref_regular_sized">
-            <PreferenceScreen
+        <PreferenceScreen
+            android:title="American Values Club xword"
+            android:summary="@string/pref_avxw_summary"
+            android:key="selectAVXW">
+            <CheckBoxPreference
                 android:title="American Values Club xword"
-                android:summary="@string/pref_avxw_summary"
-                android:key="selectAVXW">
-                <CheckBoxPreference
-                    android:title="American Values Club xword"
-                    android:defaultValue="false"
-                    android:key="downloadAVXW" />
-                <EditTextPreference
-                    android:title="@string/pref_username"
-                    android:summary="@string/pref_username_summary_avxw"
-                    android:inputType="textEmailAddress"
-                    android:key="avxwUsername" />
-                <EditTextPreference
-                    android:title="@string/pref_password"
-                    android:summary="@string/pref_password_summary_avxw"
-                    android:key="avxwPassword"
-                    android:password="true"
-                    android:inputType="textPassword" />
-                <Preference
-                    android:title="@string/pref_get_subscription"
-                    android:key="avxwSubscribe"/>
-            </PreferenceScreen>
-             <CheckBoxPreference
-                android:title="Andy Kravis"
-                android:summary="@string/pref_andykravis_summary"
-                android:defaultValue="true"
-                android:key="downloadAndyKravis" />
-            <!--
+                android:defaultValue="false"
+                android:key="downloadAVXW" />
+            <EditTextPreference
+                android:title="@string/pref_username"
+                android:summary="@string/pref_username_summary_avxw"
+                android:inputType="textEmailAddress"
+                android:key="avxwUsername" />
+            <EditTextPreference
+                android:title="@string/pref_password"
+                android:summary="@string/pref_password_summary_avxw"
+                android:key="avxwPassword"
+                android:password="true"
+                android:inputType="textPassword" />
+            <Preference
+                android:title="@string/pref_get_subscription"
+                android:key="avxwSubscribe"/>
+        </PreferenceScreen>
+        <CheckBoxPreference
+            android:title="Andy Kravis"
+            android:summary="@string/pref_andykravis_summary"
+            android:defaultValue="true"
+            android:key="downloadAndyKravis" />
+        <!--
+        <CheckBoxPreference
+            android:title="Brendan Emmett Quigley"
+            android:summary="Updates Mondays &amp; Thursdays - brendanemmettquigley.com"
+            android:defaultValue="true"
+            android:key="downloadBEQ" />
+        -->
+        <CheckBoxPreference
+            android:title="Chronicle of Higher Education"
+            android:summary="@string/pref_che_summary"
+            android:defaultValue="true"
+            android:key="downloadCHE" />
+        <PreferenceScreen
+            android:title="CRooked Crosswords"
+            android:summary="@string/pref_crooked_summary"
+            android:key="selectCrooked">
             <CheckBoxPreference
-                android:title="Brendan Emmett Quigley"
-                android:summary="Updates Mondays &amp; Thursdays - brendanemmettquigley.com"
-                android:defaultValue="true"
-                android:key="downloadBEQ" />
-            -->
-            <PreferenceScreen
                 android:title="CRooked Crosswords"
-                android:summary="@string/pref_crooked_summary"
-                android:key="selectCrooked">
-                <CheckBoxPreference
-                    android:title="CRooked Crosswords"
-                    android:defaultValue="false"
-                    android:key="downloadCrooked" />
-                <EditTextPreference
-                    android:title="@string/pref_username"
-                    android:summary="@string/pref_username_summary_crooked"
-                    android:inputType="textEmailAddress"
-                    android:key="crookedUsername" />
-                <EditTextPreference
-                    android:title="@string/pref_password"
-                    android:summary="@string/pref_password_summary_crooked"
-                    android:key="crookedPassword"
-                    android:password="true"
-                    android:inputType="textPassword" />
-                <Preference
-                    android:title="@string/pref_get_subscription"
-                    android:key="crookedSubscribe"/>
-            </PreferenceScreen>
-            <PreferenceScreen
+                android:defaultValue="false"
+                android:key="downloadCrooked" />
+            <EditTextPreference
+                android:title="@string/pref_username"
+                android:summary="@string/pref_username_summary_crooked"
+                android:inputType="textEmailAddress"
+                android:key="crookedUsername" />
+            <EditTextPreference
+                android:title="@string/pref_password"
+                android:summary="@string/pref_password_summary_crooked"
+                android:key="crookedPassword"
+                android:password="true"
+                android:inputType="textPassword" />
+            <Preference
+                android:title="@string/pref_get_subscription"
+                android:key="crookedSubscribe"/>
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:title="Crossword Nation"
+            android:summary="@string/pref_crossword_nation_summary"
+            android:key="selectCrosswordNation">
+            <CheckBoxPreference
                 android:title="Crossword Nation"
-                android:summary="@string/pref_crossword_nation_summary"
-                android:key="selectCrosswordNation">
-                <CheckBoxPreference
-                    android:title="Crossword Nation"
-                    android:defaultValue="false"
-                    android:key="downloadCrosswordNation" />
-                <EditTextPreference
-                    android:title="@string/pref_username"
-                    android:summary="@string/pref_username_summary_crossword_nation"
-                    android:inputType="textEmailAddress"
-                    android:key="crosswordNationUsername" />
-                <EditTextPreference
-                    android:title="@string/pref_password"
-                    android:summary="@string/pref_password_summary_crossword_nation"
-                    android:key="crosswordNationPassword"
-                    android:password="true"
-                    android:inputType="textPassword" />
-                <Preference
-                    android:title="@string/pref_get_subscription"
-                    android:key="crosswordNationSubscribe"/>
-            </PreferenceScreen>
-             <CheckBoxPreference
-                android:title="Erik Agard"
-                android:summary="@string/pref_erikagard_summary"
-                android:defaultValue="true"
-                android:key="downloadErikAgard" />
-             <CheckBoxPreference
-                android:title="I Swear"
-                android:summary="@string/pref_updates_fri"
-                android:defaultValue="true"
-                android:key="downloadISwear" />
-            <CheckBoxPreference
-                android:title="Ink Well"
-                android:summary="@string/pref_updates_fri"
-                android:defaultValue="true"
-                android:key="downloadInkwell" />
-            <CheckBoxPreference
-                android:title="Jonesin' Crosswords"
-                android:summary="@string/pref_updates_thu"
-                android:defaultValue="true"
-                android:key="downloadJonesin" />
-            <CheckBoxPreference
-                android:title="Matt Gaffney's Weekly Crossword Contest"
-                android:summary="@string/pref_mgwcc_summary"
-                android:defaultValue="true"
-                android:key="downloadMGWCC" />
-            <CheckBoxPreference
-                android:title="Neville Fogarty"
-                android:summary="@string/pref_nevillefogarty_summary"
-                android:defaultValue="true"
-                android:key="downloadNevilleFogarty" />
-            <CheckBoxPreference
-                android:title="People Magazine"
-                android:summary="@string/pref_people_summary"
-                android:defaultValue="true"
-                android:key="downloadPeople" />
-            <CheckBoxPreference
-                android:title="Washington Post Puzzler"
-                android:summary="@string/pref_updates_sun"
-                android:defaultValue="true"
-                android:key="downloadWaPoPuzzler" />
-        </PreferenceCategory>
-        <PreferenceCategory android:title="@string/pref_large_sized">
-            <CheckBoxPreference
-                android:title="Chron. of Higher Ed."
-                android:summary="@string/pref_che_summary"
-                android:defaultValue="true"
-                android:key="downloadCHE" />
-            <!-- Merl Reagle's puzzle removed at the request of Merl Reagle
-            <CheckBoxPreference
-                android:title="Merl Reagle's Crossword"
-                android:summary="@string/pref_reagle_summary"
-                android:defaultValue="true"
-                android:key="downloadMerlReagle" />
-            -->
-            <CheckBoxPreference
-                android:title="Premier Crosswords"
-                android:summary="@string/pref_updates_sun"
-                android:defaultValue="true"
-                android:key="downloadPremier" />
-            <CheckBoxPreference
-                android:title="The Wall Street Journal"
-                android:summary="@string/pref_updates_fri"
-                android:defaultValue="true"
-                android:key="downloadWsj" />
-        </PreferenceCategory>
+                android:defaultValue="false"
+                android:key="downloadCrosswordNation" />
+            <EditTextPreference
+                android:title="@string/pref_username"
+                android:summary="@string/pref_username_summary_crossword_nation"
+                android:inputType="textEmailAddress"
+                android:key="crosswordNationUsername" />
+            <EditTextPreference
+                android:title="@string/pref_password"
+                android:summary="@string/pref_password_summary_crossword_nation"
+                android:key="crosswordNationPassword"
+                android:password="true"
+                android:inputType="textPassword" />
+            <Preference
+                android:title="@string/pref_get_subscription"
+                android:key="crosswordNationSubscribe"/>
+        </PreferenceScreen>
+        <CheckBoxPreference
+            android:title="Erik Agard"
+            android:summary="@string/pref_erikagard_summary"
+            android:defaultValue="true"
+            android:key="downloadErikAgard" />
+        <CheckBoxPreference
+            android:title="I Swear"
+            android:summary="@string/pref_updates_fri"
+            android:defaultValue="true"
+            android:key="downloadISwear" />
+        <CheckBoxPreference
+            android:title="Ink Well"
+            android:summary="@string/pref_updates_fri"
+            android:defaultValue="true"
+            android:key="downloadInkwell" />
+        <CheckBoxPreference
+            android:title="Jonesin' Crosswords"
+            android:summary="@string/pref_updates_thu"
+            android:defaultValue="true"
+            android:key="downloadJonesin" />
+        <CheckBoxPreference
+            android:title="Matt Gaffney's Weekly Crossword Contest"
+            android:summary="@string/pref_mgwcc_summary"
+            android:defaultValue="true"
+            android:key="downloadMGWCC" />
+        <!-- Merl Reagle's puzzle removed at the request of Merl Reagle
+        <CheckBoxPreference
+            android:title="Merl Reagle's Crossword"
+            android:summary="@string/pref_reagle_summary"
+            android:defaultValue="true"
+            android:key="downloadMerlReagle" />
+        -->
+        <CheckBoxPreference
+            android:title="Neville Fogarty"
+            android:summary="@string/pref_nevillefogarty_summary"
+            android:defaultValue="true"
+            android:key="downloadNevilleFogarty" />
+        <CheckBoxPreference
+            android:title="People Magazine"
+            android:summary="@string/pref_people_summary"
+            android:defaultValue="true"
+            android:key="downloadPeople" />
+        <CheckBoxPreference
+            android:title="Premier Crosswords"
+            android:summary="@string/pref_updates_sun"
+            android:defaultValue="true"
+            android:key="downloadPremier" />
+        <CheckBoxPreference
+            android:title="The Wall Street Journal"
+            android:summary="@string/pref_updates_fri"
+            android:defaultValue="true"
+            android:key="downloadWsj" />
+        <CheckBoxPreference
+            android:title="Washington Post Puzzler"
+            android:summary="@string/pref_updates_sun"
+            android:defaultValue="true"
+            android:key="downloadWaPoPuzzler" />
     </PreferenceScreen>
     <PreferenceScreen
         android:title="@string/pref_monthly_crosswords"
