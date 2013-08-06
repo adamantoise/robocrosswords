@@ -27,6 +27,7 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
+import android.text.TextUtils;
 
 public class PreferencesActivity extends PreferenceActivity {
     @Override
@@ -74,7 +75,7 @@ public class PreferencesActivity extends PreferenceActivity {
                 if (newValue instanceof String) {
                     String strValue = (String)newValue;
                     String otherValue = otherPref.getText();
-                    downloadPref.setChecked(!strValue.isEmpty() && !otherValue.isEmpty());
+                    downloadPref.setChecked(!strValue.isEmpty() && !TextUtils.isEmpty(otherValue));
                 }
 
                 return true;
