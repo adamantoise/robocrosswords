@@ -22,6 +22,7 @@ package com.adamrosenfield.wordswithcrosses;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import android.content.Context;
 import android.content.Intent;
@@ -64,6 +65,8 @@ public class ClueListActivity extends WordsWithCrossesActivity {
 	private boolean useNativeKeyboard = false;
 	private boolean hasSetInitialZoom = false;
 
+    private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
+
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		this.configuration = newConfig;
@@ -96,6 +99,14 @@ public class ClueListActivity extends WordsWithCrossesActivity {
 					Toast.LENGTH_LONG).show();
 			finish();
 		}
+
+        // Not sure how this can happen, but it's happened at least once
+        if (WordsWithCrossesApplication.BOARD == null) {
+            LOG.warning("ClueListActivity: BOARD is null!");
+            finish();
+            return;
+        }
+
 		this.timer = new ImaginaryTimer(WordsWithCrossesApplication.BOARD.getPuzzle()
 				.getTime());
 
