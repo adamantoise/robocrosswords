@@ -61,6 +61,7 @@ import com.adamrosenfield.wordswithcrosses.PuzzleDatabaseHelper.IDAndFilename;
 import com.adamrosenfield.wordswithcrosses.net.Downloader;
 import com.adamrosenfield.wordswithcrosses.net.Downloaders;
 import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
+import com.adamrosenfield.wordswithcrosses.view.CustomFastScrollView;
 import com.adamrosenfield.wordswithcrosses.view.SeparatedListAdapter;
 import com.adamrosenfield.wordswithcrosses.view.VerticalProgressBar;
 
@@ -95,6 +96,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
     private Handler handler = new Handler();
     private List<String> sourceList = new ArrayList<String>();
+    private CustomFastScrollView fastScrollView;
     private ListView puzzleList;
     private ListView sources;
     private MenuItem archiveMenuItem;
@@ -284,6 +286,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         this.setTitle("Puzzles - Words With Crosses");
         setDefaultKeyMode(DEFAULT_KEYS_SHORTCUT);
         this.setContentView(R.layout.browse);
+        this.fastScrollView = (CustomFastScrollView)this.findViewById(R.id.fastScrollView);
         this.puzzleList = (ListView)this.findViewById(R.id.puzzleList);
         this.puzzleList.setOnCreateContextMenuListener(this);
         this.puzzleList.setOnItemClickListener(this);
@@ -736,7 +739,8 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
                 });
         }
 
-        this.puzzleList.setAdapter(this.buildList());
+        puzzleList.setAdapter(buildList());
+        fastScrollView.listItemsChanged();
     }
 
     /**

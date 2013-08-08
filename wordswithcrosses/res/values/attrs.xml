@@ -3,4 +3,11 @@
     <declare-styleable name="OpenURLPreference">
         <attr name="url" format="string" />
     </declare-styleable>
+
+    <declare-styleable name="CustomFastScrollView">
+        <attr name="overlayWidth" format="dimension" />
+        <attr name="overlayHeight" format="dimension" />
+        <attr name="overlayTextSize" format="dimension" />
+        <attr name="overlayScrollThumbWidth" format="dimension" />
+    </declare-styleable>
 </resources>

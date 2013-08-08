@@ -28,12 +28,14 @@ import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.SectionIndexer;
 
 import com.adamrosenfield.wordswithcrosses.R;
 
-public class SeparatedListAdapter extends BaseAdapter {
+public class SeparatedListAdapter extends BaseAdapter implements SectionIndexer {
     private static final int TYPE_SECTION_HEADER = 0;
     private final ArrayAdapter<String> headers;
+    private final ArrayList<String> headerLabels = new ArrayList<String>();
     public final ArrayList<Adapter> sections = new ArrayList<Adapter>();
 
     public SeparatedListAdapter(Context context) {
@@ -139,11 +141,47 @@ public class SeparatedListAdapter extends BaseAdapter {
     }
 
     public void addSection(String section, Adapter adapter) {
-        this.headers.add(section);
-        this.sections.add(adapter);
+        headers.add(section);
+        headerLabels.add(section);
+        sections.add(adapter);
     }
 
     public boolean areAllItemsSelectable() {
         return false;
+    }
+
+    public int getPositionForSection(int section) {
+        if (section <= 0) {
+            return 0;
+        } else if (section >= sections.size()) {
+            return (getCount() - 1);
+        }
+
+        int itemCount = 0;
+        for (int i = 0; i < section; i++) {
+            itemCount += (sections.get(i).getCount() + 1);
+        }
+
+        return itemCount;
+    }
+
+    public int getSectionForPosition(int position) {
+        if (position <= 0) {
+            return 0;
+        }
+
+        int itemCount = 0;
+        for (int i = 0; i < sections.size(); i++) {
+            itemCount += (sections.get(i).getCount() + 1);
+            if (itemCount >= position) {
+                return i;
+            }
+        }
+
+        return (sections.size() - 1);
+    }
+
+    public Object[] getSections() {
+        return headerLabels.toArray();
     }
 }

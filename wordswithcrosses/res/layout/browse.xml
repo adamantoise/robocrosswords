@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="fill_parent"
-  android:layout_height="fill_parent">
-  <ListView
-  		android:id="@+id/puzzleList"	
-  		android:layout_width="fill_parent"
-  		android:layout_height="fill_parent"
-  	/>
-  
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:custom="http://schemas.android.com/apk/res/com.adamrosenfield.wordswithcrosses">
+
+    <com.adamrosenfield.wordswithcrosses.view.CustomFastScrollView
+        android:id="@+id/fastScrollView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        custom:overlayWidth="360dp"
+        custom:overlayHeight="70dp"
+        custom:overlayTextSize="20dp"
+        custom:overlayScrollThumbWidth="60dp">
+
+        <ListView
+            android:id="@+id/puzzleList"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            />
+    </com.adamrosenfield.wordswithcrosses.view.CustomFastScrollView>
 </LinearLayout>

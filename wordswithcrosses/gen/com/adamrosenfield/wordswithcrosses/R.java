@@ -19,6 +19,46 @@ public final class R {
         public static final int orientationLockValues=0x7f050007;
     }
     public static final class attr {
+        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int overlayHeight=0x7f010002;
+        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int overlayScrollThumbWidth=0x7f010004;
+        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int overlayTextSize=0x7f010003;
+        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int overlayWidth=0x7f010001;
         /** <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
 <p>This may also be a reference to a resource (in the form
 "<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
@@ -37,61 +77,63 @@ containing a value of this type.
         public static final int iconleft=0x7f020005;
         public static final int iconright=0x7f020006;
         public static final int iconup=0x7f020007;
-        public static final int space=0x7f020008;
+        public static final int scrollbar_handle_accelerated_anim2=0x7f020008;
+        public static final int space=0x7f020009;
     }
     public static final class id {
-        public static final int acrossLabel=0x7f0a001c;
-        public static final int acrossList=0x7f0a0009;
-        public static final int acrossListGal=0x7f0a001d;
-        public static final int allClues=0x7f0a0021;
-        public static final int board=0x7f0a001a;
-        public static final int buttons=0x7f0a0016;
-        public static final int cheatedBoxes=0x7f0a000f;
-        public static final int closeButton=0x7f0a0017;
-        public static final int clueKeyboard=0x7f0a0006;
-        public static final int clueLine=0x7f0a0002;
-        public static final int clueWord=0x7f0a0003;
-        public static final int clues=0x7f0a0020;
-        public static final int cluesLinear=0x7f0a001b;
-        public static final int context_clue_text_size=0x7f0a002c;
-        public static final int context_clue_text_size_large=0x7f0a0030;
-        public static final int context_clue_text_size_medium=0x7f0a002f;
-        public static final int context_clue_text_size_small=0x7f0a002e;
-        public static final int context_fit_to_screen=0x7f0a0033;
-        public static final int context_group_clue_text_size=0x7f0a002d;
-        public static final int context_zoom_in=0x7f0a0031;
-        public static final int context_zoom_out=0x7f0a0032;
-        public static final int dateLabel=0x7f0a0013;
-        public static final int datePicker=0x7f0a0014;
-        public static final int done=0x7f0a0011;
-        public static final int downLabel=0x7f0a001e;
-        public static final int downList=0x7f0a0008;
-        public static final int downListGal=0x7f0a001f;
-        public static final int download_root=0x7f0a0012;
-        public static final int elapsed=0x7f0a000c;
-        public static final int finished=0x7f0a000a;
-        public static final int list_header_title=0x7f0a0027;
-        public static final int miniboard=0x7f0a0007;
-        public static final int playKeyboard=0x7f0a0019;
-        public static final int puzzleList=0x7f0a0000;
-        public static final int puzzleSelect=0x7f0a0015;
-        public static final int puzzle_caption=0x7f0a002b;
-        public static final int puzzle_date=0x7f0a0029;
-        public static final int puzzle_info_author=0x7f0a0023;
-        public static final int puzzle_info_copyright=0x7f0a0024;
-        public static final int puzzle_info_progress=0x7f0a0026;
-        public static final int puzzle_info_time=0x7f0a0025;
-        public static final int puzzle_info_title=0x7f0a0022;
-        public static final int puzzle_name=0x7f0a002a;
-        public static final int puzzle_progress=0x7f0a0028;
-        public static final int share=0x7f0a0010;
-        public static final int sourceList=0x7f0a0001;
-        public static final int tabhost=0x7f0a0005;
-        public static final int tableLayout1=0x7f0a000b;
-        public static final int timerText=0x7f0a0004;
-        public static final int totalBoxes=0x7f0a000e;
-        public static final int totalClues=0x7f0a000d;
-        public static final int webkit=0x7f0a0018;
+        public static final int acrossLabel=0x7f0a001d;
+        public static final int acrossList=0x7f0a000a;
+        public static final int acrossListGal=0x7f0a001e;
+        public static final int allClues=0x7f0a0022;
+        public static final int board=0x7f0a001b;
+        public static final int buttons=0x7f0a0017;
+        public static final int cheatedBoxes=0x7f0a0010;
+        public static final int closeButton=0x7f0a0018;
+        public static final int clueKeyboard=0x7f0a0007;
+        public static final int clueLine=0x7f0a0003;
+        public static final int clueWord=0x7f0a0004;
+        public static final int clues=0x7f0a0021;
+        public static final int cluesLinear=0x7f0a001c;
+        public static final int context_clue_text_size=0x7f0a002d;
+        public static final int context_clue_text_size_large=0x7f0a0031;
+        public static final int context_clue_text_size_medium=0x7f0a0030;
+        public static final int context_clue_text_size_small=0x7f0a002f;
+        public static final int context_fit_to_screen=0x7f0a0034;
+        public static final int context_group_clue_text_size=0x7f0a002e;
+        public static final int context_zoom_in=0x7f0a0032;
+        public static final int context_zoom_out=0x7f0a0033;
+        public static final int dateLabel=0x7f0a0014;
+        public static final int datePicker=0x7f0a0015;
+        public static final int done=0x7f0a0012;
+        public static final int downLabel=0x7f0a001f;
+        public static final int downList=0x7f0a0009;
+        public static final int downListGal=0x7f0a0020;
+        public static final int download_root=0x7f0a0013;
+        public static final int elapsed=0x7f0a000d;
+        public static final int fastScrollView=0x7f0a0000;
+        public static final int finished=0x7f0a000b;
+        public static final int list_header_title=0x7f0a0028;
+        public static final int miniboard=0x7f0a0008;
+        public static final int playKeyboard=0x7f0a001a;
+        public static final int puzzleList=0x7f0a0001;
+        public static final int puzzleSelect=0x7f0a0016;
+        public static final int puzzle_caption=0x7f0a002c;
+        public static final int puzzle_date=0x7f0a002a;
+        public static final int puzzle_info_author=0x7f0a0024;
+        public static final int puzzle_info_copyright=0x7f0a0025;
+        public static final int puzzle_info_progress=0x7f0a0027;
+        public static final int puzzle_info_time=0x7f0a0026;
+        public static final int puzzle_info_title=0x7f0a0023;
+        public static final int puzzle_name=0x7f0a002b;
+        public static final int puzzle_progress=0x7f0a0029;
+        public static final int share=0x7f0a0011;
+        public static final int sourceList=0x7f0a0002;
+        public static final int tabhost=0x7f0a0006;
+        public static final int tableLayout1=0x7f0a000c;
+        public static final int timerText=0x7f0a0005;
+        public static final int totalBoxes=0x7f0a000f;
+        public static final int totalClues=0x7f0a000e;
+        public static final int webkit=0x7f0a0019;
     }
     public static final class layout {
         public static final int browse=0x7f030000;
@@ -275,6 +317,89 @@ containing a value of this type.
         public static final int preferences=0x7f040002;
     }
     public static final class styleable {
+        /** Attributes that can be used with a CustomFastScrollView.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #CustomFastScrollView_overlayHeight com.adamrosenfield.wordswithcrosses:overlayHeight}</code></td><td></td></tr>
+           <tr><td><code>{@link #CustomFastScrollView_overlayScrollThumbWidth com.adamrosenfield.wordswithcrosses:overlayScrollThumbWidth}</code></td><td></td></tr>
+           <tr><td><code>{@link #CustomFastScrollView_overlayTextSize com.adamrosenfield.wordswithcrosses:overlayTextSize}</code></td><td></td></tr>
+           <tr><td><code>{@link #CustomFastScrollView_overlayWidth com.adamrosenfield.wordswithcrosses:overlayWidth}</code></td><td></td></tr>
+           </table>
+           @see #CustomFastScrollView_overlayHeight
+           @see #CustomFastScrollView_overlayScrollThumbWidth
+           @see #CustomFastScrollView_overlayTextSize
+           @see #CustomFastScrollView_overlayWidth
+         */
+        public static final int[] CustomFastScrollView = {
+            0x7f010001, 0x7f010002, 0x7f010003, 0x7f010004
+        };
+        /**
+          <p>This symbol is the offset where the {@link com.adamrosenfield.wordswithcrosses.R.attr#overlayHeight}
+          attribute's value can be found in the {@link #CustomFastScrollView} array.
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:overlayHeight
+        */
+        public static final int CustomFastScrollView_overlayHeight = 1;
+        /**
+          <p>This symbol is the offset where the {@link com.adamrosenfield.wordswithcrosses.R.attr#overlayScrollThumbWidth}
+          attribute's value can be found in the {@link #CustomFastScrollView} array.
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:overlayScrollThumbWidth
+        */
+        public static final int CustomFastScrollView_overlayScrollThumbWidth = 3;
+        /**
+          <p>This symbol is the offset where the {@link com.adamrosenfield.wordswithcrosses.R.attr#overlayTextSize}
+          attribute's value can be found in the {@link #CustomFastScrollView} array.
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:overlayTextSize
+        */
+        public static final int CustomFastScrollView_overlayTextSize = 2;
+        /**
+          <p>This symbol is the offset where the {@link com.adamrosenfield.wordswithcrosses.R.attr#overlayWidth}
+          attribute's value can be found in the {@link #CustomFastScrollView} array.
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:overlayWidth
+        */
+        public static final int CustomFastScrollView_overlayWidth = 0;
         /** Attributes that can be used with a OpenURLPreference.
            <p>Includes the following attributes:</p>
            <table>

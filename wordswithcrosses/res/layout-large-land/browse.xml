@@ -2,52 +2,64 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-	android:orientation="vertical"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
+    xmlns:custom="http://schemas.android.com/apk/res/com.adamrosenfield.wordswithcrosses"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
-	<LinearLayout
-	    android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:orientation="horizontal">
-		<TextView
-		    android:layout_width="350dp"
-		    android:layout_height="wrap_content"
-			android:gravity="center"
-			android:textSize="18sp"
-			android:textStyle="bold"
-			android:textColor="#FFF"
-			android:text="@string/sources"
-			android:background="#313131" />
-		<TextView
-		    android:layout_width="fill_parent"
-			android:gravity="center"
-			android:layout_height="wrap_content"
-			android:textSize="18sp"
-			android:textStyle="bold"
-			android:textColor="#FFF"
-			android:text="@string/puzzles"
-			android:background="#313131" />
-	</LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#FFF"
+            android:text="@string/sources"
+            android:background="#313131" />
+        <TextView
+            android:layout_width="fill_parent"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#FFF"
+            android:text="@string/puzzles"
+            android:background="#313131" />
+    </LinearLayout>
 
-	<LinearLayout
-	    android:orientation="horizontal"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
 
-		<ListView
+        <ListView
             android:id="@+id/sourceList"
-		    android:layout_width="350dp"
-			android:layout_height="fill_parent"
-			android:background="#313131"
-			android:layout_marginRight="5dp"
-			android:cacheColorHint="#0000"
+            android:layout_width="350dp"
+            android:layout_height="fill_parent"
+            android:background="#313131"
+            android:layout_marginRight="5dp"
+            android:cacheColorHint="#0000"
             tools:ignore="InconsistentLayout"/>
 
-		<ListView
-            android:id="@+id/puzzleList"
-		    android:layout_width="fill_parent"
-			android:layout_height="fill_parent"/>
+        <com.adamrosenfield.wordswithcrosses.view.CustomFastScrollView
+            android:id="@+id/fastScrollView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            custom:overlayWidth="360dp"
+            custom:overlayHeight="70dp"
+            custom:overlayTextSize="20dp"
+            custom:overlayScrollThumbWidth="60dp">
 
-	</LinearLayout>
+            <ListView
+                android:id="@+id/puzzleList"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                />
+        </com.adamrosenfield.wordswithcrosses.view.CustomFastScrollView>
+
+    </LinearLayout>
 </LinearLayout>
