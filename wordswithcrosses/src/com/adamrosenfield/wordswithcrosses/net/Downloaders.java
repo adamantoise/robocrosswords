@@ -66,7 +66,7 @@ public class Downloaders {
         //    downloaders.add(new BEQDownloader());
         //}
 
-        if (prefs.getBoolean("downloadAVXW", true)) {
+        if (prefs.getBoolean("downloadAVXW", false)) {
             downloaders.add(new AVXWDownloader(prefs.getString("avxwUsername", ""), prefs.getString("avxwPassword", "")));
         }
 
@@ -78,11 +78,11 @@ public class Downloaders {
             downloaders.add(new CHEDownloader());
         }
 
-        if (prefs.getBoolean("downloadCrooked", true)) {
+        if (prefs.getBoolean("downloadCrooked", false)) {
             downloaders.add(new CrookedDownloader(prefs.getString("crookedUsername", ""), prefs.getString("crookedPassword", "")));
         }
 
-        if (prefs.getBoolean("downloadCrosswordNation", true)) {
+        if (prefs.getBoolean("downloadCrosswordNation", false)) {
             downloaders.add(new CrosswordNationDownloader(prefs.getString("crosswordNationUsername", ""), prefs.getString("crosswordNationPassword", "")));
         }
 
