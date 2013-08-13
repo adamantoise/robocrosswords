@@ -21,39 +21,59 @@
 package com.adamrosenfield.wordswithcrosses.puz;
 
 import java.util.Calendar;
+import java.util.Locale;
 
 public class PuzzleMeta {
 
     public long id;
     public String filename;
     public boolean archived;
-	public String author;
-	public String title;
-	public String source;
-	public Calendar date;
-	public int percentComplete;
-	public String sourceUrl;
+    public String author;
+    public String canonicalAuthor;
+    public String title;
+    public String source;
+    public Calendar date;
+    public int percentComplete;
+    public String sourceUrl;
 
-	@Override
-    public String toString(){
-		return new StringBuilder("id: ")
-		.append(id)
-		.append(" filename: ")
-		.append(filename)
-		.append(" archived: ")
-		.append(archived)
-		.append("author: ")
-		.append(author)
-		.append(" title: ")
-		.append(title)
-		.append(" source: ")
-		.append(source)
-		.append(" sourceUrl: ")
-		.append(sourceUrl)
-		.append(" date: " )
-		.append(date)
-		.append(" percentCompelete: ")
-		.append(percentComplete)
-		.toString();
-	}
+    @Override
+    public String toString() {
+        return new StringBuilder("id: ")
+        .append(id)
+        .append(" filename: ")
+        .append(filename)
+        .append(" archived: ")
+        .append(archived)
+        .append(" author: ")
+        .append(author)
+        .append(" title: ")
+        .append(title)
+        .append(" source: ")
+        .append(source)
+        .append(" sourceUrl: ")
+        .append(sourceUrl)
+        .append(" date: " )
+        .append(date)
+        .append(" percentCompelete: ")
+        .append(percentComplete)
+        .toString();
+    }
+
+    /**
+     * Initializes the canonicalAuthor field with a canonicalized version of
+     * the author field:
+     *
+     * - Any leading and trailing spaces are removed
+     * - Any leading "By " is removed
+     * - Initial character is capitalized
+     */
+    public void canonicalizeAuthor() {
+        canonicalAuthor = author.trim();
+
+        if (canonicalAuthor.substring(0, 3).compareToIgnoreCase("by ") == 0) {
+            canonicalAuthor = canonicalAuthor.substring(3);
+        }
+
+        canonicalAuthor = canonicalAuthor.substring(0, 1).toUpperCase(Locale.US) + canonicalAuthor.substring(1);
+    }
 }

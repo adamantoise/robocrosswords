@@ -479,6 +479,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
 
         cursor.close();
 
+        sortOrder.sort(puzzles);
         return puzzles;
     }
 

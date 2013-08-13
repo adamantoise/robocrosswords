@@ -77,6 +77,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
     private String MENU_BYDATE_ASCENDING;
     private String MENU_BYDATE_DESCENDING;
     private String MENU_BYSOURCE;
+    private String MENU_BYAUTHOR;
     private String MENU_CLEANUP;
     private String MENU_HELP;
     private String MENU_SETTINGS;
@@ -172,6 +173,8 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
                 .setIcon(android.R.drawable.ic_menu_day);
         sortMenu.add(MENU_BYSOURCE)
                 .setIcon(android.R.drawable.ic_menu_upload);
+        sortMenu.add(MENU_BYAUTHOR)
+                .setIcon(android.R.drawable.ic_menu_edit);
         utils.onActionBarWithText(sortMenu);
 
         menu.add(MENU_CLEANUP)
@@ -229,6 +232,12 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
                  .putInt("sort", sortOrder.ordinal())
                  .commit();
             render();
+        } else if (item.getTitle().equals(MENU_BYAUTHOR)) {
+            sortOrder = SortOrder.AUTHOR_ASC;
+            prefs.edit()
+                 .putInt("sort", sortOrder.ordinal())
+                 .commit();
+            render();
         } else if (item.getTitle().equals(MENU_BYDATE_ASCENDING)) {
             sortOrder = SortOrder.DATE_ASC;
             prefs.edit()
@@ -242,10 +251,10 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
                  .commit();
             render();
         } else if (item.getTitle().equals(PREF_SENDDEBUGPACKAGE)){
-        	Intent i = WordsWithCrossesApplication.sendDebug(this);
-        	if (i != null) {
-        		this.startActivity(i);
-        	}
+            Intent i = WordsWithCrossesApplication.sendDebug(this);
+            if (i != null) {
+                this.startActivity(i);
+            }
         }
 
         return false;
@@ -278,6 +287,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         MENU_BYDATE_ASCENDING = getResources().getString(R.string.menu_bydate_asc);
         MENU_BYDATE_DESCENDING = getResources().getString(R.string.menu_bydate_desc);
         MENU_BYSOURCE = getResources().getString(R.string.menu_bysource);
+        MENU_BYAUTHOR = getResources().getString(R.string.menu_byauthor);
         MENU_CLEANUP = getResources().getString(R.string.menu_cleanup);
         MENU_HELP = getResources().getString(R.string.menu_help);
         MENU_SETTINGS = getResources().getString(R.string.menu_settings);
@@ -468,10 +478,10 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
             this.sourceList.clear();
             this.sourceList.addAll(newSourceList);
 
-            this.handler.post(new Runnable(){
-            	public void run(){
-            		((SourceListAdapter)sources.getAdapter()).notifyDataSetInvalidated();
-            	}
+            this.handler.post(new Runnable() {
+                public void run(){
+                    ((SourceListAdapter)sources.getAdapter()).notifyDataSetInvalidated();
+                }
             });
         }
 
@@ -785,9 +795,36 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
      * Enumeration of supported puzzle sort orders
      */
     public static enum SortOrder {
+        // Do not reorder these, otherwise preference values (stored as the
+        // enum's ordinal values) will be wrong
         DATE_ASC,
         DATE_DESC,
-        SOURCE_ASC;
+        SOURCE_ASC,
+
+        AUTHOR_ASC {
+            @Override
+            public void sort(List<PuzzleMeta> puzzles) {
+                for (PuzzleMeta puzzle : puzzles) {
+                    puzzle.canonicalizeAuthor();
+                }
+
+                Collections.sort(puzzles, new Comparator<PuzzleMeta>() {
+                    public int compare(PuzzleMeta puzzle1, PuzzleMeta puzzle2) {
+                        int result = puzzle1.canonicalAuthor.compareToIgnoreCase(puzzle2.canonicalAuthor);
+                        if (result != 0) {
+                            return result;
+                        }
+
+                        result = puzzle1.date.compareTo(puzzle2.date);
+                        if (result != 0) {
+                            return result;
+                        }
+
+                        return puzzle1.source.compareTo(puzzle2.source);
+                    }
+                });
+            }
+        };
 
         public static final SimpleDateFormat DATE_FORMAT
             = new SimpleDateFormat("EEEE MMMM dd, yyyy", Locale.getDefault());
@@ -807,8 +844,12 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
                 return PuzzleDatabaseHelper.COLUMN_DATE + " DESC," + PuzzleDatabaseHelper.COLUMN_SOURCE + " ASC";
             case SOURCE_ASC:
                 return PuzzleDatabaseHelper.COLUMN_SOURCE + " ASC," + PuzzleDatabaseHelper.COLUMN_DATE + " ASC";
-             default:
-                 throw new IllegalArgumentException("Invalid sort order: " + this);
+            case AUTHOR_ASC:
+                // Author sorting is more complicated, so it's done in code
+                // instead of in SQL
+                return null;
+            default:
+                throw new IllegalArgumentException("Invalid sort order: " + this);
             }
         }
 
@@ -820,11 +861,29 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
          * @return Group under which the given puzzle should be sorted
          */
         public String getGroup(PuzzleMeta puzzle) {
-            if (this == SOURCE_ASC) {
-                return puzzle.source;
-            } else {
+            switch (this)
+            {
+            case DATE_ASC:
+            case DATE_DESC:
                 return DATE_FORMAT.format(puzzle.date.getTime());
+
+            case SOURCE_ASC:
+                return puzzle.source;
+
+            case AUTHOR_ASC:
+                return puzzle.canonicalAuthor;
+
+            default:
+                throw new IllegalArgumentException("Invalid sort order: " + this);
             }
+        }
+
+        /**
+         * For SortOrders which cannot by sorted by an "ORDER BY" clause in
+         * SQL, this Sorts the given list of puzzles according to this
+         * SortOrder.  Otherwise, this does nothing.
+         */
+        public void sort(List<PuzzleMeta> puzzles) {
         }
     }
 
@@ -863,10 +922,11 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
             date.setText(FILE_ADAPTER_DATE_FORMAT.format(puzzle.date.getTime()));
 
-            if (sortOrder == SortOrder.SOURCE_ASC) {
-                date.setVisibility(View.VISIBLE);
-            } else {
+            if (sortOrder == SortOrder.DATE_ASC ||
+                sortOrder == SortOrder.DATE_DESC) {
                 date.setVisibility(View.GONE);
+            } else {
+                date.setVisibility(View.VISIBLE);
             }
 
             TextView title = (TextView)view.findViewById(R.id.puzzle_name);
