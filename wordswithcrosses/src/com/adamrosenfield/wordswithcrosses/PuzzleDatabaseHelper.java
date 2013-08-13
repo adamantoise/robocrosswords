@@ -232,6 +232,11 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
      */
     public void removePuzzles(List<Long> ids)
     {
+        if (ids.isEmpty())
+        {
+            return;
+        }
+
         SQLiteDatabase db = getWritableDatabase();
 
         String whereClause = COLUMN_ID + " in (" + TextUtils.join(",", ids) + ")";
