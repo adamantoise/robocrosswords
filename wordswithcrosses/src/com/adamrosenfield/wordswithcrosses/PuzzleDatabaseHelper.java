@@ -234,9 +234,8 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
     {
         SQLiteDatabase db = getWritableDatabase();
 
-        String whereClause = COLUMN_ID + " in (?)";
-        String arg = TextUtils.join(",", ids);
-        int rowsDeleted = db.delete(TABLE_CROSSWORDS, whereClause, new String[]{arg});
+        String whereClause = COLUMN_ID + " in (" + TextUtils.join(",", ids) + ")";
+        int rowsDeleted = db.delete(TABLE_CROSSWORDS, whereClause, null);
 
         LOG.info("Deleted " + rowsDeleted + " puzzles from the database (attempted to delete " + ids.size() + " rows)");
     }
