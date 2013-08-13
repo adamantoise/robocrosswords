@@ -24,11 +24,15 @@
      <string-array name="cleanupAgeLabels">
        <item>Two Days</item>
        <item>One Week</item>
+       <item>Two Weeks</item>
+       <item>One Month</item>
        <item>Never</item>
      </string-array>
      <string-array name="cleanupAgeValues">
        <item>2</item>
        <item>7</item>
+       <item>14</item>
+       <item>31</item>
        <item>-1</item>
      </string-array>
      <string-array name="orientationLockLabels">
