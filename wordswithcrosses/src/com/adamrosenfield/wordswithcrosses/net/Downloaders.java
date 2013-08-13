@@ -261,6 +261,8 @@ public class Downloaders {
                     }
 
                     somethingDownloaded = true;
+
+                    context.postRenderMessage();
                 } else {
                     LOG.warning("Download failed: " + filename);
                 }
@@ -280,8 +282,6 @@ public class Downloaders {
         if (somethingDownloaded) {
             postDownloadedGeneral();
         }
-
-        context.postRenderMessage();
     }
 
     public void suppressMessages(boolean b) {
