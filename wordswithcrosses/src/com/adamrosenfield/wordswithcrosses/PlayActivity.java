@@ -546,7 +546,20 @@ public class PlayActivity extends WordsWithCrossesActivity {
 	@Override
     public void onWindowFocusChanged(boolean hasFocus) {
 	    if (!hasSetInitialZoom) {
-	        boardView.fitToScreen();
+            float zoom;
+            String zoomStr = prefs.getString("initialZoom", "0");
+            try {
+                zoom = Float.parseFloat(zoomStr);
+            } catch (NumberFormatException e) {
+                zoom = 0.0f;
+            }
+
+            if (Math.abs(zoom) < 0.01f) {
+                boardView.fitToScreen();
+            } else {
+                boardView.setRenderScale(zoom);
+            }
+
 	        hasSetInitialZoom = true;
 	        render();
 	    }

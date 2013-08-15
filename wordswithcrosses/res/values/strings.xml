@@ -87,6 +87,8 @@
     <string name="pref_space_changes_direction_summary">Spacebar changed direction rather than blanking the box</string>
     <string name="pref_enter_changes_direction">Enter Changes Direction</string>
     <string name="pref_enter_changes_direction_summary">Enter changes direction rather than moving to the next clue</string>
+    <string name="pref_initial_zoom">Initial Zoom</string>
+    <string name="pref_initial_zoom_summary">Sets the initial zoom when opening a puzzle</string>
     <string name="pref_double_tap_zoom">Double Tap Zoom</string>
     <string name="pref_double_tap_zoom_summary">Double tap toggles between fit to screen, and your default zoom</string>
     <string name="pref_show_timer">Show Timer</string>

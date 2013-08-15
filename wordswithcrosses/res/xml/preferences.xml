@@ -326,6 +326,14 @@
         android:key="enterChangesDirection"
     />
 
+    <ListPreference
+        android:title="@string/pref_initial_zoom"
+        android:summary="@string/pref_initial_zoom_summary"
+        android:key="initialZoom"
+        android:defaultValue="0"
+        android:entries="@array/initialZoomLabels"
+        android:entryValues="@array/initialZoomValues" />
+
     <CheckBoxPreference
         android:title="@string/pref_double_tap_zoom"
         android:summary="@string/pref_double_tap_zoom_summary"
