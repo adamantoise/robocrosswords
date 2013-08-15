@@ -272,7 +272,7 @@ public class Downloaders {
                 e.printStackTrace();
             }
 
-            if (!succeeded && !enableIndividualDownloadNotifications && notificationManager != null) {
+            if (!succeeded && enableIndividualDownloadNotifications && notificationManager != null) {
                 postDownloadFailedNotification(notifId, d.getName());
             }
         }
