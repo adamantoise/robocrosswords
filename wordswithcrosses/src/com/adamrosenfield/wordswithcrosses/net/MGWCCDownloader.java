@@ -99,7 +99,7 @@ public class MGWCCDownloader extends AbstractDownloader
             date.get(Calendar.YEAR) +
             "/" +
             DEFAULT_NF.format(date.get(Calendar.MONTH) + 1) +
-            "/mgwcc-[0-9]+-friday-" +
+            "/mgwcc-[0-9]+-(?:friday-)?" +
             MONTH_NAMES[date.get(Calendar.MONTH)] +
             "-([0-9]+)[a-z][a-z]-" +
             date.get(Calendar.YEAR) +
