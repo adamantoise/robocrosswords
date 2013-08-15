@@ -46,7 +46,8 @@ public class Downloaders {
     private SharedPreferences prefs;
     private List<Downloader> downloaders = new LinkedList<Downloader>();
     private NotificationManager notificationManager;
-    private boolean suppressMessages;
+    private boolean enableNotifications;
+    private boolean enableIndividualDownloadNotifications;
     private Intent browseIntent;
     private PendingIntent pendingBrowseIntent;
 
@@ -184,7 +185,8 @@ public class Downloaders {
             downloaders.add(new WaPoPuzzlerDownloader());
         }
 
-        this.suppressMessages = prefs.getBoolean("suppressMessages", false);
+        enableNotifications = prefs.getBoolean("enableNotifications", true);
+        enableIndividualDownloadNotifications = enableNotifications && prefs.getBoolean("enableIndividualDownloadNotifications", true);
     }
 
     public List<Downloader> getDownloaders(Calendar date) {
@@ -211,7 +213,7 @@ public class Downloaders {
         date.set(Calendar.MILLISECOND, 0);
 
         String contentTitle = context.getResources().getString(R.string.downloading_puzzles);
-        Notification not = createDownloadingNotification(contentTitle);
+        Notification not = enableNotifications ? createDownloadingNotification(contentTitle) : null;
         boolean somethingDownloaded = false;
 
         if (!WordsWithCrossesApplication.makeDirs()) {
@@ -232,7 +234,7 @@ public class Downloaders {
             try {
                 updateDownloadingNotification(not, contentTitle, d.getName());
 
-                if (!suppressMessages && notificationManager != null) {
+                if (enableNotifications && notificationManager != null) {
                     notificationManager.notify(GENERAL_NOTIF_ID, not);
                 }
 
@@ -256,7 +258,7 @@ public class Downloaders {
                     LOG.info("Downloaded succeeded: " + filename);
                     succeeded = true;
                     long id = dbHelper.addPuzzle(downloadedFile, d.getName(), d.sourceUrl(date), date.getTimeInMillis());
-                    if (!suppressMessages) {
+                    if (enableIndividualDownloadNotifications) {
                         postDownloadedNotification(notifId, d.getName(), downloadedFile, id);
                     }
 
@@ -270,22 +272,22 @@ public class Downloaders {
                 e.printStackTrace();
             }
 
-            if (!succeeded && !suppressMessages && notificationManager != null) {
+            if (!succeeded && !enableIndividualDownloadNotifications && notificationManager != null) {
                 postDownloadFailedNotification(notifId, d.getName());
             }
         }
 
-        if (notificationManager != null) {
+        if (notificationManager != null && not != null) {
             notificationManager.cancel(GENERAL_NOTIF_ID);
         }
 
-        if (somethingDownloaded) {
+        if (somethingDownloaded && enableNotifications) {
             postDownloadedGeneral();
         }
     }
 
-    public void suppressMessages(boolean b) {
-        this.suppressMessages = b;
+    public void enableIndividualDownloadNotifications(boolean enable) {
+        this.enableIndividualDownloadNotifications = enable;
     }
 
     @SuppressWarnings("deprecation")
@@ -295,8 +297,10 @@ public class Downloaders {
 
     @SuppressWarnings("deprecation")
     private void updateDownloadingNotification(Notification not, String contentTitle, String source) {
-        String contentText = context.getResources().getString(R.string.downloading_from, source);
-        not.setLatestEventInfo(context, contentTitle, contentText, pendingBrowseIntent);
+        if (not != null) {
+            String contentText = context.getResources().getString(R.string.downloading_from, source);
+            not.setLatestEventInfo(context, contentTitle, contentText, pendingBrowseIntent);
+        }
     }
 
     @SuppressWarnings("deprecation")

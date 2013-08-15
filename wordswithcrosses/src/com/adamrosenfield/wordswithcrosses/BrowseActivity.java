@@ -714,7 +714,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         }
 
         Downloaders dls = new Downloaders(this, nm);
-        dls.suppressMessages(true);
+        dls.enableIndividualDownloadNotifications(false);
 
         Calendar now = Calendar.getInstance();
 

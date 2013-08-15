@@ -67,8 +67,6 @@
     <string name="pref_application_settings">Application Settings</string>
     <string name="pref_automatic_download">Automatic Download</string>
     <string name="pref_automatic_download_summary">Download today\'s puzzles when starting the application</string>
-    <string name="pref_no_download_notifications">No Download Notifications</string>
-    <string name="pref_no_download_notifications_summary">Prevents a notification for each puzzle downloaded from appearing in the notifications list</string>
     <string name="pref_no_hint_highlighting">No Hint Highlighting</string>
     <string name="pref_no_hint_highlighting_summary">Prevents the pink boxes indicating \'hints\' in the form of reveals or show errors</string>
     <string name="pref_delete_on_cleanup">Delete on Cleanup</string>
@@ -103,6 +101,11 @@
     <string name="pref_force_keyboard_summary">Forces the keyboard to always be on screen.\nGood for some generic tablets.</string>
     <string name="pref_orientation_lock">Orientation Lock</string>
     <string name="pref_orientation_lock_summary">Locks the screen location</string>
+    <string name="pref_category_notifications">Notification Settings</string>
+    <string name="pref_enable_notifications">Enable Notifications</string>
+    <string name="pref_enable_notifications_summary">Enables general puzzle download notifications</string>
+    <string name="pref_individual_download_notifications">Individual Puzzle Notifications</string>
+    <string name="pref_individual_download_notifications_summary">Enables a notification for each puzzle downloaded</string>
     <string name="pref_about_app">About Words With Crosses</string>
     <string name="pref_release_notes">Release Notes</string>
     <string name="pref_license">License</string>

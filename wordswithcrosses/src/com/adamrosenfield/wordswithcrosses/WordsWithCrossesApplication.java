@@ -33,8 +33,10 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 
 import com.adamrosenfield.wordswithcrosses.io.IO;
@@ -54,6 +56,9 @@ public class WordsWithCrossesApplication extends Application {
 
     public static final String DEVELOPER_EMAIL = "wordswithcrosses@adamrosenfield.com";
 
+    private static final String PREFERENCES_VERSION_PREF = "preferencesVersion";
+    private static final int PREFERENCES_VERSION = 1;
+
     public static Playboard BOARD;
     public static PlayboardRenderer RENDERER;
 
@@ -62,6 +67,13 @@ public class WordsWithCrossesApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        // Check preferences version and perform any upgrades if necessary
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        int prefsVersion = prefs.getInt(PREFERENCES_VERSION_PREF, 0);
+        if (prefsVersion != PREFERENCES_VERSION) {
+            migratePreferences(prefs, prefsVersion);
+        }
 
         File externalStorageDir = new File(
             Environment.getExternalStorageDirectory(),
@@ -97,6 +109,24 @@ public class WordsWithCrossesApplication extends Application {
         }
 
         dbHelper = new PuzzleDatabaseHelper(this);
+    }
+
+    private void migratePreferences(SharedPreferences prefs, int prefsVersion) {
+        LOG.info("Upgrading preferences from version " + prefsVersion + " to to version " + PREFERENCES_VERSION);
+
+        SharedPreferences.Editor editor = prefs.edit();
+
+        switch (prefsVersion) {
+        case 0:
+            editor.putBoolean("enableIndividualDownloadNotifications", !prefs.getBoolean("suppressMessages", false));
+            break;
+
+        default:
+            break;
+        }
+
+        editor.putInt(PREFERENCES_VERSION_PREF, PREFERENCES_VERSION);
+        editor.commit();
     }
 
     public static boolean makeDirs() {

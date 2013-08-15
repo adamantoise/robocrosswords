@@ -64,7 +64,7 @@ public class GingerbreadUtil extends DefaultUtil {
         // Pre-ICS download managers don't support HTTPS
         if ("https".equals(url.getProtocol()) && android.os.Build.VERSION.SDK_INT < 15) {
             LOG.info("HTTPS not supported, not using DownloadManager");
-            return super.downloadFile(url,  headers,  destination,  notification,  title);
+            return super.downloadFile(url, headers, destination, notification, title);
         }
 
         DownloadManager mgr = (DownloadManager)context.getSystemService(Context.DOWNLOAD_SERVICE);

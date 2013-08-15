@@ -243,22 +243,15 @@
         android:title="@string/pref_more_puzzle_links"
         android:summary="@string/pref_more_puzzle_links_summary"
         custom:url="file:///android_asset/puzzle-links.html" />
-</PreferenceCategory>
+  </PreferenceCategory>
 
-<PreferenceCategory
-    android:title="@string/pref_application_settings">
+  <PreferenceCategory
+      android:title="@string/pref_application_settings">
     <CheckBoxPreference
         android:title="@string/pref_automatic_download"
         android:summary="@string/pref_automatic_download_summary"
         android:defaultValue="true"
         android:key="dlOnStartup"
-    />
-
-    <CheckBoxPreference
-        android:title="@string/pref_no_download_notifications"
-        android:summary="@string/pref_no_download_notifications_summary"
-        android:defaultValue="false"
-        android:key="suppressMessages"
     />
 
     <CheckBoxPreference
@@ -387,6 +380,25 @@
  </PreferenceCategory>
 
  <PreferenceCategory
+     android:title="@string/pref_category_notifications">
+
+    <CheckBoxPreference
+        android:title="@string/pref_enable_notifications"
+        android:summary="@string/pref_enable_notifications_summary"
+        android:defaultValue="true"
+        android:key="enableNotifications"
+    />
+
+    <CheckBoxPreference
+        android:title="@string/pref_individual_download_notifications"
+        android:summary="@string/pref_individual_download_notifications_summary"
+        android:defaultValue="true"
+        android:key="enableIndividualDownloadNotifications"
+        android:dependency="enableNotifications"
+    />
+ </PreferenceCategory>
+
+ <PreferenceCategory
      android:title="@string/pref_about_app">
 
     <com.adamrosenfield.wordswithcrosses.OpenURLPreference
@@ -408,5 +420,5 @@
         android:summary="@string/pref_send_debug_package_summary"
         android:key="sendDebug"/>
 
-    </PreferenceCategory>
+ </PreferenceCategory>
 </PreferenceScreen>
