@@ -924,6 +924,14 @@ public class PlayActivity extends WordsWithCrossesActivity {
 				.getBoolean("skipFilled", false));
 		BOARD.setMovementStrategy(getMovementStrategy());
 
+        String clickSlopStr = prefs.getString("touchSensitivity", "3");
+        try {
+            int clickSlop = Integer.parseInt(clickSlopStr);
+            boardView.setClickSlop(clickSlop);
+        } catch (NumberFormatException e) {
+            // Ignore
+        }
+
 		int keyboardType = "CONDENSED_ARROWS".equals(prefs.getString(
 				"keyboardType", "")) ? R.xml.keyboard_dpad : R.xml.keyboard;
 		Keyboard keyboard = new Keyboard(this, keyboardType);

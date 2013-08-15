@@ -341,6 +341,14 @@
         android:key="doubleTap"
     />
 
+    <ListPreference
+        android:title="@string/pref_touch_sensitivity"
+        android:summary="@string/pref_touch_sensitivity_summary"
+        android:key="touchSensitivity"
+        android:defaultValue="3"
+        android:entries="@array/touchSensitivityLabels"
+        android:entryValues="@array/touchSensitivityValues" />
+
     <CheckBoxPreference
         android:title="@string/pref_show_timer"
         android:summary="@string/pref_show_timer_summary"

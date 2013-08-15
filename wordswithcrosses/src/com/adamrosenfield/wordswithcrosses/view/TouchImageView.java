@@ -76,7 +76,7 @@ public class TouchImageView extends ImageView {
     private float[] m;
 
     private int viewWidth, viewHeight;
-    private static final int CLICK_SLOP = 3;
+    private int clickSlop = 3;
     protected float origWidth, origHeight;
     private int oldMeasuredWidth, oldMeasuredHeight;
 
@@ -129,15 +129,17 @@ public class TouchImageView extends ImageView {
                             float deltaY = curr.y - last.y;
 
                             if (couldBeLongClick &&
-                                ((int)Math.abs(curr.x - last.x) > CLICK_SLOP ||
-                                 (int)Math.abs(curr.y - last.y) > CLICK_SLOP))
+                                ((int)Math.abs(curr.x - last.x) > clickSlop ||
+                                 (int)Math.abs(curr.y - last.y) > clickSlop))
                             {
                                 endLongClickDetection();
                             }
 
-                            last.set(curr.x, curr.y);
+                            if (!couldBeLongClick) {
+                                last.set(curr.x, curr.y);
 
-                            translate(deltaX, deltaY);
+                                translate(deltaX, deltaY);
+                            }
                         }
                         break;
 
@@ -149,7 +151,7 @@ public class TouchImageView extends ImageView {
                         mode = Mode.NONE;
                         int xDiff = (int) Math.abs(curr.x - start.x);
                         int yDiff = (int) Math.abs(curr.y - start.y);
-                        if (xDiff <= CLICK_SLOP && yDiff <= CLICK_SLOP) {
+                        if (xDiff <= clickSlop && yDiff <= clickSlop) {
                             long now = System.currentTimeMillis();
                             if (now - lastClickTime < ViewConfiguration.getDoubleTapTimeout()) {
                                 onDoubleClick(pixelToBitmapPos(curr.x, curr.y));
@@ -219,6 +221,10 @@ public class TouchImageView extends ImageView {
 
     public void setMaxScale(float maxScale) {
         this.maxScale = maxScale;
+    }
+
+    public void setClickSlop(int clickSlop) {
+        this.clickSlop = clickSlop;
     }
 
     public void setScaleAndTranslate(float newScale, float tx, float ty) {
