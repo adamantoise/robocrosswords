@@ -137,21 +137,30 @@ public class KingFeaturesPlaintextIO {
         SparseArray<String> acrossNumToClueMap = new SparseArray<String>();
         line = line.substring(1);
         int clueNum;
+        int lastClueNum = 0;
         do {
             if (line.endsWith(" |")) {
                 line = line.substring(0, line.length()-2);
             }
             clueNum = 0;
             int i = 0;
-            while (line.charAt(i) != '.') {
+            while (i < line.length() && line.charAt(i) != '.') {
                 if (clueNum != 0) {
                     clueNum *= 10;
                 }
                 clueNum += line.charAt(i) - '0';
                 i++;
             }
-            String clue = line.substring(i+2).trim();
-            acrossNumToClueMap.put(clueNum, clue);
+
+            if (i < line.length()) {
+                lastClueNum = clueNum;
+                String clue = line.substring(i+2).trim();
+                acrossNumToClueMap.put(clueNum, clue);
+            } else {
+                // Shouldn't happen.  If it does, we're probably in trouble.
+                LOG.warning("KFIO: Failed to parse across clue number in line: \"" + line + "\"");
+            }
+
             if (!scanner.hasNextLine()) {
                 LOG.warning("KFIO: Unexpected EOF - Across clues.");
                 return false;
@@ -159,7 +168,7 @@ public class KingFeaturesPlaintextIO {
             line = scanner.nextLine();
         } while (!line.startsWith("{"));
 
-        int maxClueNum = clueNum;
+        int maxClueNum = lastClueNum;
 
         SparseArray<String> downNumToClueMap = new SparseArray<String>();
         line = line.substring(1);
@@ -172,16 +181,25 @@ public class KingFeaturesPlaintextIO {
             }
             clueNum = 0;
             int i = 0;
-            while (line.charAt(i) != '.') {
+            while (i < line.length() && line.charAt(i) != '.') {
                 if (clueNum != 0) {
                     clueNum *= 10;
                 }
                 clueNum += line.charAt(i) - '0';
                 i++;
             }
-            String clue = line.substring(i+2).trim();
-            downNumToClueMap.put(clueNum, clue);
-            if(!finished) {
+
+            if (i < line.length()) {
+                lastClueNum = clueNum;
+                String clue = line.substring(i+2).trim();
+                downNumToClueMap.put(clueNum, clue);
+            } else {
+                // Ignore malformed lines -- this has happened at least once,
+                // on the 8/16/13 Sheffer puzzle
+                LOG.warning("KFIO: Failed to parse down clue number in line: \"" + line + "\"");
+            }
+
+            if (!finished) {
                 if (!scanner.hasNextLine()) {
                     LOG.warning("KFIO: Unexpected EOF - Down clues.");
                     return false;
@@ -190,7 +208,7 @@ public class KingFeaturesPlaintextIO {
             }
         } while (!finished);
 
-        maxClueNum = clueNum > maxClueNum ? clueNum : maxClueNum;
+        maxClueNum = Math.max(maxClueNum, lastClueNum);
 
         // Convert clues into raw clues format.
         int numberOfClues = acrossNumToClueMap.size() + downNumToClueMap.size();
