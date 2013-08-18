@@ -52,12 +52,12 @@ import com.adamrosenfield.wordswithcrosses.R;
 public class CustomFastScrollView extends FrameLayout 
         implements OnScrollListener, OnHierarchyChangeListener {
 
-	// how much transparency to use for the fast scroll thumb
+    // how much transparency to use for the fast scroll thumb
     private static final int ALPHA_MAX = 255;
     
     // how long before the fast scroll thumb disappears
     private static final long FADE_DURATION = 200;
-	
+    
     private Drawable mCurrentThumb;
     private Drawable mOverlayDrawable;
 
@@ -477,7 +477,7 @@ public class CustomFastScrollView extends FrameLayout
     /**
      * Call when the list's items have changed
      */
-	public void listItemsChanged() {
-		getSections();
-	}
+    public void listItemsChanged() {
+        getSections();
+    }
 }

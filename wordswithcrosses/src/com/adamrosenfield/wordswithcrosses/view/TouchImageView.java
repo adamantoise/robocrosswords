@@ -113,7 +113,7 @@ public class TouchImageView extends ImageView {
 
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                    	last.set(curr);
+                        last.set(curr);
                         start.set(last);
                         mode = Mode.DRAG;
 

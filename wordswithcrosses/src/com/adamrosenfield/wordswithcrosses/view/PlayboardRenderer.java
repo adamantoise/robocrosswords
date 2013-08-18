@@ -197,7 +197,7 @@ public class PlayboardRenderer {
                 canvas.drawRect(boxRect, this.cheated);
             } else if (this.board.isShowErrors() && (box.getResponse() != ' ') &&
                     (box.getSolution() != box.getResponse())) {
-            	box.setCheated(true);
+                box.setCheated(true);
                 canvas.drawRect(boxRect, this.red);
             } else {
                 canvas.drawRect(boxRect, this.white);

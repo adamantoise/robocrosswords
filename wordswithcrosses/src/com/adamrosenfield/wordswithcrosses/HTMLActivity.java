@@ -31,7 +31,7 @@ import android.widget.Button;
 import com.adamrosenfield.wordswithcrosses.versions.AndroidVersionUtils;
 
 public class HTMLActivity extends Activity {
-	protected AndroidVersionUtils utils = AndroidVersionUtils.Factory.getInstance();
+    protected AndroidVersionUtils utils = AndroidVersionUtils.Factory.getInstance();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

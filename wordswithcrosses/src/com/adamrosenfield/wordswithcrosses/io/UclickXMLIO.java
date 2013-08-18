@@ -51,10 +51,10 @@ import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
  *   <Height v="[Height]" />
  *   <AllAnswer v="[Grid]" />
  *   <across>
- *   	<a[i] a="[Answer]" c="[Clue]" n="[GridIndex]" cn="[ClueNumber]" />
+ *      <a[i] a="[Answer]" c="[Clue]" n="[GridIndex]" cn="[ClueNumber]" />
  *   </across>
  *   <down>
- *   	<d[j] ... />
+ *      <d[j] ... />
  *   </down>
  * </crossword>
  *
@@ -64,127 +64,127 @@ import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
  * which the clue starts.  [Clue] text is HTML escaped.
  */
 public class UclickXMLIO {
-	private static String CHARSET_NAME = "utf8";
+    private static String CHARSET_NAME = "utf8";
 
-	private static class UclickXMLParser extends DefaultHandler {
-		private Puzzle puz;
-		private SparseArray<String> acrossNumToClueMap = new SparseArray<String>();
-		private SparseArray<String> downNumToClueMap = new SparseArray<String>();
-		private boolean inAcross = false;
-		private boolean inDown = false;
-		private int maxClueNum = -1;
+    private static class UclickXMLParser extends DefaultHandler {
+        private Puzzle puz;
+        private SparseArray<String> acrossNumToClueMap = new SparseArray<String>();
+        private SparseArray<String> downNumToClueMap = new SparseArray<String>();
+        private boolean inAcross = false;
+        private boolean inDown = false;
+        private int maxClueNum = -1;
 
-		public UclickXMLParser(Puzzle puz) {
-			this.puz = puz;
-		}
+        public UclickXMLParser(Puzzle puz) {
+            this.puz = puz;
+        }
 
-		@Override
-		public void startElement(String nsURI, String strippedName,
-				String tagName, Attributes attributes) throws SAXException {
-			strippedName = strippedName.trim();
-			String name = strippedName.length() == 0 ? tagName.trim() : strippedName;
-			if (inAcross) {
-				int clueNum = Integer.parseInt(attributes.getValue("cn"));
-				if (clueNum > maxClueNum) {
-					maxClueNum = clueNum;
-				}
-				try {
-					acrossNumToClueMap.put(clueNum, URLDecoder.decode(attributes.getValue("c"), CHARSET_NAME));
-				} catch (UnsupportedEncodingException e) {
-					acrossNumToClueMap.put(clueNum, attributes.getValue("c"));
-				}
-			} else if (inDown) {
-				int clueNum = Integer.parseInt(attributes.getValue("cn"));
-				if (clueNum > maxClueNum) {
-					maxClueNum = clueNum;
-				}
-				try {
-					downNumToClueMap.put(clueNum, URLDecoder.decode(attributes.getValue("c"), CHARSET_NAME));
-				} catch (UnsupportedEncodingException e) {
-					downNumToClueMap.put(clueNum, attributes.getValue("c"));
-				}
-			} else if (name.equalsIgnoreCase("title")) {
-				puz.setTitle(attributes.getValue("v"));
-			} else if (name.equalsIgnoreCase("author")) {
-				puz.setAuthor(attributes.getValue("v"));
-			} else if (name.equalsIgnoreCase("width")) {
-				puz.setWidth(Integer.parseInt(attributes.getValue("v")));
-			} else if (name.equalsIgnoreCase("height")) {
-				puz.setHeight(Integer.parseInt(attributes.getValue("v")));
-			} else if (name.equalsIgnoreCase("allanswer")) {
-				String rawGrid = attributes.getValue("v");
-				Box[] boxesList = new Box[puz.getHeight()*puz.getWidth()];
-				for (int i = 0; i < rawGrid.length(); i++) {
-					char sol = rawGrid.charAt(i);
-					if (sol != '-') {
-						boxesList[i] = new Box();
-						boxesList[i].setSolution(sol);
-						boxesList[i].setResponse(' ');
-					}
-				}
-				puz.setBoxesList(boxesList);
-				puz.setBoxes(puz.buildBoxes());
-			} else if (name.equalsIgnoreCase("across")) {
-				inAcross = true;
-			} else if (name.equalsIgnoreCase("down")) {
-				inDown = true;
-			}
-		}
+        @Override
+        public void startElement(String nsURI, String strippedName,
+                String tagName, Attributes attributes) throws SAXException {
+            strippedName = strippedName.trim();
+            String name = strippedName.length() == 0 ? tagName.trim() : strippedName;
+            if (inAcross) {
+                int clueNum = Integer.parseInt(attributes.getValue("cn"));
+                if (clueNum > maxClueNum) {
+                    maxClueNum = clueNum;
+                }
+                try {
+                    acrossNumToClueMap.put(clueNum, URLDecoder.decode(attributes.getValue("c"), CHARSET_NAME));
+                } catch (UnsupportedEncodingException e) {
+                    acrossNumToClueMap.put(clueNum, attributes.getValue("c"));
+                }
+            } else if (inDown) {
+                int clueNum = Integer.parseInt(attributes.getValue("cn"));
+                if (clueNum > maxClueNum) {
+                    maxClueNum = clueNum;
+                }
+                try {
+                    downNumToClueMap.put(clueNum, URLDecoder.decode(attributes.getValue("c"), CHARSET_NAME));
+                } catch (UnsupportedEncodingException e) {
+                    downNumToClueMap.put(clueNum, attributes.getValue("c"));
+                }
+            } else if (name.equalsIgnoreCase("title")) {
+                puz.setTitle(attributes.getValue("v"));
+            } else if (name.equalsIgnoreCase("author")) {
+                puz.setAuthor(attributes.getValue("v"));
+            } else if (name.equalsIgnoreCase("width")) {
+                puz.setWidth(Integer.parseInt(attributes.getValue("v")));
+            } else if (name.equalsIgnoreCase("height")) {
+                puz.setHeight(Integer.parseInt(attributes.getValue("v")));
+            } else if (name.equalsIgnoreCase("allanswer")) {
+                String rawGrid = attributes.getValue("v");
+                Box[] boxesList = new Box[puz.getHeight()*puz.getWidth()];
+                for (int i = 0; i < rawGrid.length(); i++) {
+                    char sol = rawGrid.charAt(i);
+                    if (sol != '-') {
+                        boxesList[i] = new Box();
+                        boxesList[i].setSolution(sol);
+                        boxesList[i].setResponse(' ');
+                    }
+                }
+                puz.setBoxesList(boxesList);
+                puz.setBoxes(puz.buildBoxes());
+            } else if (name.equalsIgnoreCase("across")) {
+                inAcross = true;
+            } else if (name.equalsIgnoreCase("down")) {
+                inDown = true;
+            }
+        }
 
-		@Override
-		public void endElement(String nsURI, String strippedName,
-				String tagName) throws SAXException {
-			strippedName = strippedName.trim();
-			String name = strippedName.length() == 0 ? tagName.trim() : strippedName;
+        @Override
+        public void endElement(String nsURI, String strippedName,
+                String tagName) throws SAXException {
+            strippedName = strippedName.trim();
+            String name = strippedName.length() == 0 ? tagName.trim() : strippedName;
 
-			if (name.equalsIgnoreCase("across")) {
-				inAcross = false;
-			} else if (name.equalsIgnoreCase("down")) {
-				inDown = false;
-			} else if (name.equalsIgnoreCase("crossword")) {
-				int numberOfClues = acrossNumToClueMap.size() + downNumToClueMap.size();
-				puz.setNumberOfClues(numberOfClues);
-				String[] rawClues = new String[numberOfClues];
-				int i = 0;
-				for(int clueNum = 1; clueNum <= maxClueNum; clueNum++) {
-		            String clue = acrossNumToClueMap.get(clueNum);
-		            if (clue != null) {
-		                rawClues[i] = clue;
-		                i++;
-		            }
+            if (name.equalsIgnoreCase("across")) {
+                inAcross = false;
+            } else if (name.equalsIgnoreCase("down")) {
+                inDown = false;
+            } else if (name.equalsIgnoreCase("crossword")) {
+                int numberOfClues = acrossNumToClueMap.size() + downNumToClueMap.size();
+                puz.setNumberOfClues(numberOfClues);
+                String[] rawClues = new String[numberOfClues];
+                int i = 0;
+                for(int clueNum = 1; clueNum <= maxClueNum; clueNum++) {
+                    String clue = acrossNumToClueMap.get(clueNum);
+                    if (clue != null) {
+                        rawClues[i] = clue;
+                        i++;
+                    }
 
-		            clue = downNumToClueMap.get(clueNum);
-		            if (clue != null) {
-		                rawClues[i] = clue;
-		                i++;
-		            }
-				}
-				puz.setRawClues(rawClues);
-			}
-		}
-	}
+                    clue = downNumToClueMap.get(clueNum);
+                    if (clue != null) {
+                        rawClues[i] = clue;
+                        i++;
+                    }
+                }
+                puz.setRawClues(rawClues);
+            }
+        }
+    }
 
-	public static boolean convertUclickPuzzle(InputStream is, DataOutputStream os,
-			String copyright, Calendar date) {
-		Puzzle puz = new Puzzle();
-		puz.setDate(date);
-		puz.setCopyright(copyright);
-		SAXParserFactory factory = SAXParserFactory.newInstance();
-		try {
-			SAXParser parser = factory.newSAXParser();
-			//parser.setProperty("http://xml.org/sax/features/validation", false);
-			XMLReader xr = parser.getXMLReader();
-			xr.setContentHandler(new UclickXMLParser(puz));
-			xr.parse(new InputSource(is));
+    public static boolean convertUclickPuzzle(InputStream is, DataOutputStream os,
+            String copyright, Calendar date) {
+        Puzzle puz = new Puzzle();
+        puz.setDate(date);
+        puz.setCopyright(copyright);
+        SAXParserFactory factory = SAXParserFactory.newInstance();
+        try {
+            SAXParser parser = factory.newSAXParser();
+            //parser.setProperty("http://xml.org/sax/features/validation", false);
+            XMLReader xr = parser.getXMLReader();
+            xr.setContentHandler(new UclickXMLParser(puz));
+            xr.parse(new InputSource(is));
 
-	        puz.setVersion(IO.VERSION_STRING);
-	        puz.setNotes("");
+            puz.setVersion(IO.VERSION_STRING);
+            puz.setNotes("");
 
-			IO.save(puz, os);
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
+            IO.save(puz, os);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

@@ -179,22 +179,22 @@ public class MerlReagleDownloader extends AbstractJPZDownloader
         return false;
     }
 
-	@Override
+    @Override
     protected String createUrlSuffix(Calendar date)
-	{
-	    return "";
-	}
+    {
+        return "";
+    }
 
-	private static class MerlReagleMetadata implements JPZIO.PuzzleMetadataSetter
-	{
-	    private String title;
-	    private int year;
+    private static class MerlReagleMetadata implements JPZIO.PuzzleMetadataSetter
+    {
+        private String title;
+        private int year;
 
-	    public MerlReagleMetadata(String title, int year)
-	    {
-	        this.title = title;
-	        this.year = year;
-	    }
+        public MerlReagleMetadata(String title, int year)
+        {
+            this.title = title;
+            this.year = year;
+        }
 
         public void setMetadata(Puzzle puzzle)
         {
@@ -202,5 +202,5 @@ public class MerlReagleDownloader extends AbstractJPZDownloader
             puzzle.setTitle(title);
             puzzle.setCopyright("\u00A9 " + year + " " + AUTHOR);
         }
-	}
+    }
 }

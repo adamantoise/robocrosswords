@@ -42,29 +42,29 @@ import com.adamrosenfield.wordswithcrosses.puz.Box;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 
 public class IO {
-	public static final byte[] FILE_MAGIC = new byte[] {
-	    (byte)'A', (byte)'C', (byte)'R', (byte)'O', (byte)'S', (byte)'S',
-	    (byte)'&', (byte)'D', (byte)'O', (byte)'W', (byte)'N', (byte)0
-	};
+    public static final byte[] FILE_MAGIC = new byte[] {
+        (byte)'A', (byte)'C', (byte)'R', (byte)'O', (byte)'S', (byte)'S',
+        (byte)'&', (byte)'D', (byte)'O', (byte)'W', (byte)'N', (byte)0
+    };
 
-	public static final String VERSION_STRING = "1.2";
-	private static final Charset CHARSET = Charset.forName("Cp1252");
+    public static final String VERSION_STRING = "1.2";
+    private static final Charset CHARSET = Charset.forName("Cp1252");
 
-	// Extra Section IDs
-	private enum ExtraSection
-	{
-	    GEXT,
-	    LTIM,
-	    Unknown,
-	}
-	// TODO: Support GRBS, RTBL, and RUSR sections for rebus puzzles
+    // Extra Section IDs
+    private enum ExtraSection
+    {
+        GEXT,
+        LTIM,
+        Unknown,
+    }
+    // TODO: Support GRBS, RTBL, and RUSR sections for rebus puzzles
 
-	// GEXT section bitmasks
-	private static final byte GEXT_WAS_INCORRECT  = (byte)0x10;
-	private static final byte GEXT_IS_INCORRECT   = (byte)0x20;
-	private static final byte GEXT_SQUARE_CIRCLED = (byte)0x80;
+    // GEXT section bitmasks
+    private static final byte GEXT_WAS_INCORRECT  = (byte)0x10;
+    private static final byte GEXT_IS_INCORRECT   = (byte)0x20;
+    private static final byte GEXT_SQUARE_CIRCLED = (byte)0x80;
 
-	private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
+    private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
 
     /**
      * Copies the data from an InputStream object to an OutputStream object.
@@ -98,223 +98,223 @@ public class IO {
         return totalBytes;
     }
 
-	public static Puzzle load(File file) throws IOException {
-	    FileInputStream fis = new FileInputStream(file);
+    public static Puzzle load(File file) throws IOException {
+        FileInputStream fis = new FileInputStream(file);
         try {
             return load(new DataInputStream(fis));
         } finally {
             fis.close();
         }
-	}
+    }
 
-	public static Puzzle load(DataInputStream input) throws IOException {
-	    long startTime = System.currentTimeMillis();
+    public static Puzzle load(DataInputStream input) throws IOException {
+        long startTime = System.currentTimeMillis();
 
-		Puzzle puz = new Puzzle();
+        Puzzle puz = new Puzzle();
 
-		input.skipBytes(2);
+        input.skipBytes(2);
 
-		byte[] magic = new byte[12];
-		input.readFully(magic);
-		if (!Arrays.equals(magic, FILE_MAGIC)) {
-		    throw new IOException("Invalid/missing magic");
-		}
+        byte[] magic = new byte[12];
+        input.readFully(magic);
+        if (!Arrays.equals(magic, FILE_MAGIC)) {
+            throw new IOException("Invalid/missing magic");
+        }
 
-		input.skipBytes(10);
+        input.skipBytes(10);
 
-		byte[] versionString = new byte[3];
+        byte[] versionString = new byte[3];
 
-		for (int i = 0; i < versionString.length; i++) {
-			versionString[i] = input.readByte();
-		}
+        for (int i = 0; i < versionString.length; i++) {
+            versionString[i] = input.readByte();
+        }
 
-		input.skip(1);
-		puz.setVersion(new String(versionString));
+        input.skip(1);
+        puz.setVersion(new String(versionString));
 
-		input.skipBytes(2);
-		puz.setSolutionChecksum(Short.reverseBytes(input.readShort()));
+        input.skipBytes(2);
+        puz.setSolutionChecksum(Short.reverseBytes(input.readShort()));
 
-		input.skipBytes(12);
+        input.skipBytes(12);
 
-		puz.setWidth(0xFFFF & input.readByte());
-		puz.setHeight(0xFFFF & input.readByte());
-		puz.setNumberOfClues(Short.reverseBytes(input.readShort()));
+        puz.setWidth(0xFFFF & input.readByte());
+        puz.setHeight(0xFFFF & input.readByte());
+        puz.setNumberOfClues(Short.reverseBytes(input.readShort()));
 
-		input.skipBytes(2);
-		puz.setScrambled(input.readShort() != 0);
+        input.skipBytes(2);
+        puz.setScrambled(input.readShort() != 0);
 
-		Box[][] boxes = new Box[puz.getHeight()][puz.getWidth()];
-		byte[] answerByte = new byte[1];
+        Box[][] boxes = new Box[puz.getHeight()][puz.getWidth()];
+        byte[] answerByte = new byte[1];
 
-		for (int r = 0; r < boxes.length; r++) {
-			for (int c = 0; c < boxes[r].length; c++) {
-				answerByte[0] = input.readByte();
+        for (int r = 0; r < boxes.length; r++) {
+            for (int c = 0; c < boxes[r].length; c++) {
+                answerByte[0] = input.readByte();
 
-				char solution = new String(answerByte, CHARSET.name())
-						.charAt(0);
+                char solution = new String(answerByte, CHARSET.name())
+                        .charAt(0);
 
-				if (solution != '.') {
-					boxes[r][c] = new Box();
-					boxes[r][c].setSolution((char) solution);
-				}
-			}
-		}
+                if (solution != '.') {
+                    boxes[r][c] = new Box();
+                    boxes[r][c].setSolution((char) solution);
+                }
+            }
+        }
 
-		for (int r = 0; r < boxes.length; r++) {
-			for (int c = 0; c < boxes[r].length; c++) {
-				answerByte[0] = input.readByte();
+        for (int r = 0; r < boxes.length; r++) {
+            for (int c = 0; c < boxes[r].length; c++) {
+                answerByte[0] = input.readByte();
 
-				char answer = new String(answerByte, CHARSET.name()).charAt(0);
+                char answer = new String(answerByte, CHARSET.name()).charAt(0);
 
-				if (answer == '.') {
-					continue;
-				} else if (answer == '-') {
-					boxes[r][c].setResponse(' ');
-				} else if (boxes[r][c] != null) {
-					boxes[r][c].setResponse(answer);
-				} else {
-					LOG.warning("IO.load(): Unexpected answer: " + r + "," + c + " " + answer);
-				}
-			}
-		}
+                if (answer == '.') {
+                    continue;
+                } else if (answer == '-') {
+                    boxes[r][c].setResponse(' ');
+                } else if (boxes[r][c] != null) {
+                    boxes[r][c].setResponse(answer);
+                } else {
+                    LOG.warning("IO.load(): Unexpected answer: " + r + "," + c + " " + answer);
+                }
+            }
+        }
 
-		puz.setBoxes(boxes);
+        puz.setBoxes(boxes);
 
-		puz.setTitle(readNullTerminatedString(input));
-		puz.setAuthor(readNullTerminatedString(input));
-		puz.setCopyright(readNullTerminatedString(input));
+        puz.setTitle(readNullTerminatedString(input));
+        puz.setAuthor(readNullTerminatedString(input));
+        puz.setCopyright(readNullTerminatedString(input));
 
-		ArrayList<String> acrossClues = new ArrayList<String>();
-		ArrayList<Integer> acrossCluesLookup = new ArrayList<Integer>();
-		ArrayList<Integer> downCluesLookup = new ArrayList<Integer>();
-		ArrayList<String> downClues = new ArrayList<String>();
-		ArrayList<String> rawClues = new ArrayList<String>();
+        ArrayList<String> acrossClues = new ArrayList<String>();
+        ArrayList<Integer> acrossCluesLookup = new ArrayList<Integer>();
+        ArrayList<Integer> downCluesLookup = new ArrayList<Integer>();
+        ArrayList<String> downClues = new ArrayList<String>();
+        ArrayList<String> rawClues = new ArrayList<String>();
 
-		for (int r = 0; r < boxes.length; r++) {
-			for (int c = 0; c < boxes[r].length; c++) {
-				if (boxes[r][c] == null) {
-					continue;
-				}
+        for (int r = 0; r < boxes.length; r++) {
+            for (int c = 0; c < boxes[r].length; c++) {
+                if (boxes[r][c] == null) {
+                    continue;
+                }
 
-				if (boxes[r][c].isAcross()
-						&& (boxes[r][c].getClueNumber() != 0)) {
-					String value = readNullTerminatedString(input);
+                if (boxes[r][c].isAcross()
+                        && (boxes[r][c].getClueNumber() != 0)) {
+                    String value = readNullTerminatedString(input);
 
-					acrossCluesLookup.add(boxes[r][c].getClueNumber());
-					acrossClues.add(value);
-					rawClues.add(value);
-				}
+                    acrossCluesLookup.add(boxes[r][c].getClueNumber());
+                    acrossClues.add(value);
+                    rawClues.add(value);
+                }
 
-				if (boxes[r][c].isDown() && (boxes[r][c].getClueNumber() != 0)) {
-					String value = readNullTerminatedString(input);
-					downCluesLookup.add(boxes[r][c].getClueNumber());
-					downClues.add(value);
-					rawClues.add(value);
-				}
-			}
-		}
+                if (boxes[r][c].isDown() && (boxes[r][c].getClueNumber() != 0)) {
+                    String value = readNullTerminatedString(input);
+                    downCluesLookup.add(boxes[r][c].getClueNumber());
+                    downClues.add(value);
+                    rawClues.add(value);
+                }
+            }
+        }
 
-		puz.setDownClues(downClues.toArray(new String[downClues.size()]));
-		puz.setDownCluesLookup(downCluesLookup
-				.toArray(new Integer[downCluesLookup.size()]));
-		puz.setAcrossClues(acrossClues.toArray(new String[acrossClues.size()]));
-		puz.setAcrossCluesLookup(acrossCluesLookup
-				.toArray(new Integer[acrossCluesLookup.size()]));
-		puz.setRawClues(rawClues.toArray(new String[rawClues.size()]));
+        puz.setDownClues(downClues.toArray(new String[downClues.size()]));
+        puz.setDownCluesLookup(downCluesLookup
+                .toArray(new Integer[downCluesLookup.size()]));
+        puz.setAcrossClues(acrossClues.toArray(new String[acrossClues.size()]));
+        puz.setAcrossCluesLookup(acrossCluesLookup
+                .toArray(new Integer[acrossCluesLookup.size()]));
+        puz.setRawClues(rawClues.toArray(new String[rawClues.size()]));
 
-		puz.setNotes(readNullTerminatedString(input));
+        puz.setNotes(readNullTerminatedString(input));
 
-		boolean eof = false;
+        boolean eof = false;
 
-		while (!eof) {
-			try {
-				switch (readExtraSectionType(input)) {
-				case GEXT:
-					readGextSection(input, puz);
-					break;
+        while (!eof) {
+            try {
+                switch (readExtraSectionType(input)) {
+                case GEXT:
+                    readGextSection(input, puz);
+                    break;
 
-				case LTIM:
-				    readLtimSection(input, puz);
-				    break;
+                case LTIM:
+                    readLtimSection(input, puz);
+                    break;
 
-				default:
-					skipExtraSection(input);
-				}
-			} catch (EOFException e) {
-				eof = true;
-			}
-		}
+                default:
+                    skipExtraSection(input);
+                }
+            } catch (EOFException e) {
+                eof = true;
+            }
+        }
 
-		LOG.info("Load complete in " + (System.currentTimeMillis() - startTime) + " ms");
+        LOG.info("Load complete in " + (System.currentTimeMillis() - startTime) + " ms");
 
-		return puz;
-	}
+        return puz;
+    }
 
-	private static ExtraSection readExtraSectionType(DataInputStream input)
-			throws IOException {
-		byte[] title = new byte[4];
+    private static ExtraSection readExtraSectionType(DataInputStream input)
+            throws IOException {
+        byte[] title = new byte[4];
 
-		for (int i = 0; i < title.length; i++) {
-			title[i] = input.readByte();
-		}
+        for (int i = 0; i < title.length; i++) {
+            title[i] = input.readByte();
+        }
 
-		String section = new String(title);
+        String section = new String(title);
 
-		if ("GEXT".equals(section)) {
-			return ExtraSection.GEXT;
-		} else if ("LTIM".equals(section)) {
-		    return ExtraSection.LTIM;
-		} else {
-		    return ExtraSection.Unknown;
-		}
-	}
+        if ("GEXT".equals(section)) {
+            return ExtraSection.GEXT;
+        } else if ("LTIM".equals(section)) {
+            return ExtraSection.LTIM;
+        } else {
+            return ExtraSection.Unknown;
+        }
+    }
 
-	private static void readGextSection(DataInputStream input, Puzzle puz)
-			throws IOException {
-		input.skipBytes(4);
+    private static void readGextSection(DataInputStream input, Puzzle puz)
+            throws IOException {
+        input.skipBytes(4);
 
-		Box[][] boxes = puz.getBoxes();
+        Box[][] boxes = puz.getBoxes();
 
-		for (int r = 0; r < boxes.length; r++) {
-			for (int c = 0; c < boxes[r].length; c++) {
-				byte gextInfo = input.readByte();
+        for (int r = 0; r < boxes.length; r++) {
+            for (int c = 0; c < boxes[r].length; c++) {
+                byte gextInfo = input.readByte();
 
-				if ((gextInfo & (GEXT_WAS_INCORRECT | GEXT_IS_INCORRECT)) != 0) {
-				    if (boxes[r][c] != null) {
-				        boxes[r][c].setCheated(true);
-				    }
-				}
-				if ((gextInfo & GEXT_SQUARE_CIRCLED) != 0) {
-					if (boxes[r][c] != null) {
-						boxes[r][c].setCircled(true);
-					}
-				}
-			}
-		}
+                if ((gextInfo & (GEXT_WAS_INCORRECT | GEXT_IS_INCORRECT)) != 0) {
+                    if (boxes[r][c] != null) {
+                        boxes[r][c].setCheated(true);
+                    }
+                }
+                if ((gextInfo & GEXT_SQUARE_CIRCLED) != 0) {
+                    if (boxes[r][c] != null) {
+                        boxes[r][c].setCircled(true);
+                    }
+                }
+            }
+        }
 
-		input.skipBytes(1);
-	}
+        input.skipBytes(1);
+    }
 
-	private static void readLtimSection(DataInputStream input, Puzzle puz) throws IOException {
-	    short numBytes = Short.reverseBytes(input.readShort());
-	    input.skipBytes(2); // checksum
-	    byte[] ltimBytes = new byte[numBytes + 1];
-	    input.readFully(ltimBytes);
+    private static void readLtimSection(DataInputStream input, Puzzle puz) throws IOException {
+        short numBytes = Short.reverseBytes(input.readShort());
+        input.skipBytes(2); // checksum
+        byte[] ltimBytes = new byte[numBytes + 1];
+        input.readFully(ltimBytes);
 
-	    String ltimStr = new String(ltimBytes);
-	    String[] ltimParts = ltimStr.split(",");
-	    if (ltimParts.length != 2) {
-	        LOG.warning("Bad LTIM section: " + ltimStr);
-	        return;
-	    }
+        String ltimStr = new String(ltimBytes);
+        String[] ltimParts = ltimStr.split(",");
+        if (ltimParts.length != 2) {
+            LOG.warning("Bad LTIM section: " + ltimStr);
+            return;
+        }
 
-	    try {
-	        int secondsElapsed = Math.max(Integer.parseInt(ltimParts[0]), 0);
-	        puz.setTime(secondsElapsed * 1000);
-	    } catch (NumberFormatException e) {
-	        LOG.warning("Bad LTIM section: " + ltimStr);
-	    }
-	}
+        try {
+            int secondsElapsed = Math.max(Integer.parseInt(ltimParts[0]), 0);
+            puz.setTime(secondsElapsed * 1000);
+        } catch (NumberFormatException e) {
+            LOG.warning("Bad LTIM section: " + ltimStr);
+        }
+    }
 
    private static void skipExtraSection(DataInputStream input) throws IOException {
         short numBytes = Short.reverseBytes(input.readShort());
@@ -323,168 +323,168 @@ public class IO {
         input.skipBytes(1); // null terminator
     }
 
-	private static String readNullTerminatedString(InputStream is)
-			throws IOException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream(128);
+    private static String readNullTerminatedString(InputStream is)
+            throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(128);
 
-		for (byte nextByte = (byte)is.read(); nextByte != 0x0; nextByte = (byte)is.read()) {
-			if (nextByte != 0x0) {
-				baos.write(nextByte);
-			}
+        for (byte nextByte = (byte)is.read(); nextByte != 0x0; nextByte = (byte)is.read()) {
+            if (nextByte != 0x0) {
+                baos.write(nextByte);
+            }
 
-			if (baos.size() > 4096) {
-				throw new IOException("Run on string!");
-			}
-		}
+            if (baos.size() > 4096) {
+                throw new IOException("Run on string!");
+            }
+        }
 
-		return (baos.size() == 0) ? null : new String(baos.toByteArray(), CHARSET.name());
-	}
+        return (baos.size() == 0) ? null : new String(baos.toByteArray(), CHARSET.name());
+    }
 
-	public static void save(Puzzle puzzle, File destFile) throws IOException {
-		long incept = System.currentTimeMillis();
+    public static void save(Puzzle puzzle, File destFile) throws IOException {
+        long incept = System.currentTimeMillis();
 
-		File tempFile = new File(WordsWithCrossesApplication.TEMP_DIR, destFile.getName());
+        File tempFile = new File(WordsWithCrossesApplication.TEMP_DIR, destFile.getName());
 
-		FileOutputStream fos = new FileOutputStream(tempFile);
+        FileOutputStream fos = new FileOutputStream(tempFile);
         try {
             save(puzzle, fos);
         } finally {
             fos.close();
         }
 
-		if (!tempFile.renameTo(destFile)) {
-		    throw new IOException("Failed to rename " + tempFile + " to " + destFile);
-		}
+        if (!tempFile.renameTo(destFile)) {
+            throw new IOException("Failed to rename " + tempFile + " to " + destFile);
+        }
 
-		LOG.info("Save complete in " + (System.currentTimeMillis() - incept) + " ms");
-	}
+        LOG.info("Save complete in " + (System.currentTimeMillis() - incept) + " ms");
+    }
 
-	public static void save(Puzzle puz, OutputStream os)
-			throws IOException {
-		/*
-		 * We write the puzzle to a temporary output stream, with 0 entered for
-		 * any checksums. Once we have this written out, we can calculate all of
-		 * the checksums and write the file to the original output stream.
-		 */
-		ByteArrayOutputStream tmp = new ByteArrayOutputStream();
-		DataOutputStream tmpDos = new DataOutputStream(tmp);
+    public static void save(Puzzle puz, OutputStream os)
+            throws IOException {
+        /*
+         * We write the puzzle to a temporary output stream, with 0 entered for
+         * any checksums. Once we have this written out, we can calculate all of
+         * the checksums and write the file to the original output stream.
+         */
+        ByteArrayOutputStream tmp = new ByteArrayOutputStream();
+        DataOutputStream tmpDos = new DataOutputStream(tmp);
 
-		tmpDos.writeShort(0);
+        tmpDos.writeShort(0);
 
-		tmpDos.write(FILE_MAGIC);
+        tmpDos.write(FILE_MAGIC);
 
-		tmpDos.write(new byte[10]);
+        tmpDos.write(new byte[10]);
 
-		tmpDos.writeBytes(puz.getVersion());
-		tmpDos.writeByte(0);
+        tmpDos.writeBytes(puz.getVersion());
+        tmpDos.writeByte(0);
 
-		tmpDos.write(new byte[2]);
+        tmpDos.write(new byte[2]);
 
-		tmpDos.writeShort(Short.reverseBytes(puz.getSolutionChecksum()));
+        tmpDos.writeShort(Short.reverseBytes(puz.getSolutionChecksum()));
 
-		tmpDos.write(new byte[12]);
+        tmpDos.write(new byte[12]);
 
-		int width = puz.getWidth();
-		int height = puz.getHeight();
-		int numberOfBoxes = width * height;
+        int width = puz.getWidth();
+        int height = puz.getHeight();
+        int numberOfBoxes = width * height;
 
-		tmpDos.writeByte(width);
-		tmpDos.writeByte(height);
+        tmpDos.writeByte(width);
+        tmpDos.writeByte(height);
 
-		int numberOfClues = puz.getNumberOfClues();
+        int numberOfClues = puz.getNumberOfClues();
 
-		tmpDos.writeShort(Short.reverseBytes((short) numberOfClues));
-		tmpDos.writeShort(Short.reverseBytes((short) 1));
+        tmpDos.writeShort(Short.reverseBytes((short) numberOfClues));
+        tmpDos.writeShort(Short.reverseBytes((short) 1));
 
-		short scrambled = puz.isScrambled() ? (short) 4 : (short) 0;
-		tmpDos.writeShort(Short.reverseBytes(scrambled));
+        short scrambled = puz.isScrambled() ? (short) 4 : (short) 0;
+        tmpDos.writeShort(Short.reverseBytes(scrambled));
 
-		Box[][] boxes = puz.getBoxes();
-		byte[] gextSection = new byte[numberOfBoxes];
+        Box[][] boxes = puz.getBoxes();
+        byte[] gextSection = new byte[numberOfBoxes];
 
-		for (int r = 0; r < boxes.length; r++) {
-			for (int c = 0; c < boxes[r].length; c++) {
-				if (boxes[r][c] == null) {
-					tmpDos.writeByte('.');
-				} else {
-					byte val = (byte)boxes[r][c].getSolution(); // Character.toString().getBytes("Cp1252")[0];
+        for (int r = 0; r < boxes.length; r++) {
+            for (int c = 0; c < boxes[r].length; c++) {
+                if (boxes[r][c] == null) {
+                    tmpDos.writeByte('.');
+                } else {
+                    byte val = (byte)boxes[r][c].getSolution(); // Character.toString().getBytes("Cp1252")[0];
                     tmpDos.writeByte(val);
 
-					byte gextVal = 0;
-					if (boxes[r][c].isCheated()) {
-					    gextVal |= GEXT_WAS_INCORRECT;
-					}
-					if (boxes[r][c].isCircled()) {
-						gextVal |= GEXT_SQUARE_CIRCLED;
-					}
-					gextSection[width * r + c] = gextVal;
-				}
-			}
-		}
+                    byte gextVal = 0;
+                    if (boxes[r][c].isCheated()) {
+                        gextVal |= GEXT_WAS_INCORRECT;
+                    }
+                    if (boxes[r][c].isCircled()) {
+                        gextVal |= GEXT_SQUARE_CIRCLED;
+                    }
+                    gextSection[width * r + c] = gextVal;
+                }
+            }
+        }
 
-		for (int r = 0; r < boxes.length; r++) {
-			for (int c = 0; c < boxes[r].length; c++) {
-				if (boxes[r][c] == null) {
-					tmpDos.writeByte('.');
-				} else {
-					byte val = (byte) boxes[r][c].getResponse(); // Character.toString().getBytes("Cp1252")[0];
-					tmpDos.writeByte((boxes[r][c].getResponse() == ' ') ? '-'
-							: val);
-				}
-			}
-		}
+        for (int r = 0; r < boxes.length; r++) {
+            for (int c = 0; c < boxes[r].length; c++) {
+                if (boxes[r][c] == null) {
+                    tmpDos.writeByte('.');
+                } else {
+                    byte val = (byte) boxes[r][c].getResponse(); // Character.toString().getBytes("Cp1252")[0];
+                    tmpDos.writeByte((boxes[r][c].getResponse() == ' ') ? '-'
+                            : val);
+                }
+            }
+        }
 
-		writeNullTerminatedString(tmpDos, puz.getTitle());
-		writeNullTerminatedString(tmpDos, puz.getAuthor());
-		writeNullTerminatedString(tmpDos, puz.getCopyright());
+        writeNullTerminatedString(tmpDos, puz.getTitle());
+        writeNullTerminatedString(tmpDos, puz.getAuthor());
+        writeNullTerminatedString(tmpDos, puz.getCopyright());
 
-		for (String clue : puz.getRawClues()) {
-			writeNullTerminatedString(tmpDos, clue);
-		}
+        for (String clue : puz.getRawClues()) {
+            writeNullTerminatedString(tmpDos, clue);
+        }
 
-		writeNullTerminatedString(tmpDos, puz.getNotes());
+        writeNullTerminatedString(tmpDos, puz.getNotes());
 
-		if (puz.getTime() > 0) {
-		    int secondsElapsed = (int)(puz.getTime() / 1000);
-		    String ltimStr = secondsElapsed + ",0";
-		    byte[] ltimBytes = ltimStr.getBytes();
-		    writeExtraSection(tmpDos, "LTIM", ltimBytes);
-		}
+        if (puz.getTime() > 0) {
+            int secondsElapsed = (int)(puz.getTime() / 1000);
+            String ltimStr = secondsElapsed + ",0";
+            byte[] ltimBytes = ltimStr.getBytes();
+            writeExtraSection(tmpDos, "LTIM", ltimBytes);
+        }
 
-		writeExtraSection(tmpDos, "GEXT", gextSection);
+        writeExtraSection(tmpDos, "GEXT", gextSection);
 
-		byte[] puzByteArray = tmp.toByteArray();
-		ByteBuffer bb = ByteBuffer.wrap(puzByteArray);
-		bb.order(ByteOrder.LITTLE_ENDIAN);
+        byte[] puzByteArray = tmp.toByteArray();
+        ByteBuffer bb = ByteBuffer.wrap(puzByteArray);
+        bb.order(ByteOrder.LITTLE_ENDIAN);
 
-		// Calculate checksums and write to byte array.
-		int c_cib = checksumCIB(puzByteArray, 0);
-		bb.putShort(0x0E, (short) c_cib);
+        // Calculate checksums and write to byte array.
+        int c_cib = checksumCIB(puzByteArray, 0);
+        bb.putShort(0x0E, (short) c_cib);
 
-		int c_primary = checksumPrimaryBoard(puzByteArray, numberOfBoxes,
-				numberOfClues, c_cib);
-		bb.putShort(0, (short) c_primary);
+        int c_primary = checksumPrimaryBoard(puzByteArray, numberOfBoxes,
+                numberOfClues, c_cib);
+        bb.putShort(0, (short) c_primary);
 
-		int c_sol = checksumSolution(puzByteArray, numberOfBoxes, 0);
-		int c_grid = checksumGrid(puzByteArray, numberOfBoxes, 0);
-		int c_part = checksumPartialBoard(puzByteArray, numberOfBoxes,
-				numberOfClues, 0);
+        int c_sol = checksumSolution(puzByteArray, numberOfBoxes, 0);
+        int c_grid = checksumGrid(puzByteArray, numberOfBoxes, 0);
+        int c_part = checksumPartialBoard(puzByteArray, numberOfBoxes,
+                numberOfClues, 0);
 
-		bb.position(0x10);
-		bb.put((byte) (0x49 ^ (c_cib & 0xFF)));
-		bb.put((byte) (0x43 ^ (c_sol & 0xFF)));
-		bb.put((byte) (0x48 ^ (c_grid & 0xFF)));
-		bb.put((byte) (0x45 ^ (c_part & 0xFF)));
-		bb.put((byte) (0x41 ^ ((c_cib & 0xFF00) >> 8)));
-		bb.put((byte) (0x54 ^ ((c_sol & 0xFF00) >> 8)));
-		bb.put((byte) (0x45 ^ ((c_grid & 0xFF00) >> 8)));
-		bb.put((byte) (0x44 ^ ((c_part & 0xFF00) >> 8)));
+        bb.position(0x10);
+        bb.put((byte) (0x49 ^ (c_cib & 0xFF)));
+        bb.put((byte) (0x43 ^ (c_sol & 0xFF)));
+        bb.put((byte) (0x48 ^ (c_grid & 0xFF)));
+        bb.put((byte) (0x45 ^ (c_part & 0xFF)));
+        bb.put((byte) (0x41 ^ ((c_cib & 0xFF00) >> 8)));
+        bb.put((byte) (0x54 ^ ((c_sol & 0xFF00) >> 8)));
+        bb.put((byte) (0x45 ^ ((c_grid & 0xFF00) >> 8)));
+        bb.put((byte) (0x44 ^ ((c_part & 0xFF00) >> 8)));
 
-		// Dump byte array to output stream.
-		os.write(puzByteArray);
-	}
+        // Dump byte array to output stream.
+        os.write(puzByteArray);
+    }
 
-	private static void writeExtraSection(DataOutputStream dos, String sectionName, byte[] data) throws IOException {
+    private static void writeExtraSection(DataOutputStream dos, String sectionName, byte[] data) throws IOException {
         dos.writeBytes(sectionName);
         dos.writeShort(Short.reverseBytes((short)data.length));
 
@@ -494,142 +494,142 @@ public class IO {
         dos.writeShort(Short.reverseBytes((short)cksum));
         dos.write(data);
         dos.writeByte(0);
-	}
+    }
 
-	/**
-	 * Attempts to unscramble the solution using the input key. Modifications to
-	 * the solution array occur in place. If true, the unscrambled solution
-	 * checksum is valid.
-	 */
-	private static boolean tryUnscramble(Puzzle p, int key_int, byte[] solution) {
-		p.unscrambleKey[0] = (key_int / 1000) % 10;
-		p.unscrambleKey[1] = (key_int / 100) % 10;
-		p.unscrambleKey[2] = (key_int / 10) % 10;
-		p.unscrambleKey[3] = (key_int / 1) % 10;
+    /**
+     * Attempts to unscramble the solution using the input key. Modifications to
+     * the solution array occur in place. If true, the unscrambled solution
+     * checksum is valid.
+     */
+    private static boolean tryUnscramble(Puzzle p, int key_int, byte[] solution) {
+        p.unscrambleKey[0] = (key_int / 1000) % 10;
+        p.unscrambleKey[1] = (key_int / 100) % 10;
+        p.unscrambleKey[2] = (key_int / 10) % 10;
+        p.unscrambleKey[3] = (key_int / 1) % 10;
 
-		for (int i = 3; i >= 0; i--) {
-			unscrambleString(p, solution);
-			System.arraycopy(p.unscrambleBuf, 0, solution, 0,
-					p.unscrambleBuf.length);
-			unshiftString(p, solution, p.unscrambleKey[i]);
+        for (int i = 3; i >= 0; i--) {
+            unscrambleString(p, solution);
+            System.arraycopy(p.unscrambleBuf, 0, solution, 0,
+                    p.unscrambleBuf.length);
+            unshiftString(p, solution, p.unscrambleKey[i]);
 
-			for (int j = 0; j < solution.length; j++) {
-				int letter = (solution[j] & 0xFF) - p.unscrambleKey[j % 4];
+            for (int j = 0; j < solution.length; j++) {
+                int letter = (solution[j] & 0xFF) - p.unscrambleKey[j % 4];
 
-				if (letter < 65) {
-					letter += 26;
-				}
+                if (letter < 65) {
+                    letter += 26;
+                }
 
-				solution[j] = (byte)letter;
-			}
-		}
+                solution[j] = (byte)letter;
+            }
+        }
 
-		if (p.solutionChecksum == (short)IO.checksumRegion(solution)) {
-			int s = 0;
-			for (int i = 0; i < p.getBoxesList().length; i++) {
-				Box b = p.getBoxesList()[i];
-				if (b != null) {
-					b.setSolution((char)solution[s++]);
-				}
-			}
-			return true;
-		}
-		return false;
-	}
+        if (p.solutionChecksum == (short)IO.checksumRegion(solution)) {
+            int s = 0;
+            for (int i = 0; i < p.getBoxesList().length; i++) {
+                Box b = p.getBoxesList()[i];
+                if (b != null) {
+                    b.setSolution((char)solution[s++]);
+                }
+            }
+            return true;
+        }
+        return false;
+    }
 
-	// TODO: Call this somewhere?
-	public static boolean crackPuzzle(Puzzle puz) {
-		for (int a = 0; a < 10000; a++) {
-			if (tryUnscramble(puz, a, puz.initializeUnscrambleData())) {
-				return true;
-			}
-		}
-		return false;
-	}
+    // TODO: Call this somewhere?
+    public static boolean crackPuzzle(Puzzle puz) {
+        for (int a = 0; a < 10000; a++) {
+            if (tryUnscramble(puz, a, puz.initializeUnscrambleData())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	private static void writeNullTerminatedString(OutputStream os, String value)
-			throws IOException {
-		value = (value == null) ? "" : value;
+    private static void writeNullTerminatedString(OutputStream os, String value)
+            throws IOException {
+        value = (value == null) ? "" : value;
 
-		byte[] encoded = CHARSET.encode(value).array();
-		os.write(encoded);
-		os.write(0);
-	}
+        byte[] encoded = CHARSET.encode(value).array();
+        os.write(encoded);
+        os.write(0);
+    }
 
-	private static void unscrambleString(Puzzle p, byte[] str) {
-		int oddIndex = 0;
-		int evenIndex = str.length / 2;
+    private static void unscrambleString(Puzzle p, byte[] str) {
+        int oddIndex = 0;
+        int evenIndex = str.length / 2;
 
-		for (int i = 0; i < str.length; i++) {
-			if ((i % 2) == 0) {
-				p.unscrambleBuf[evenIndex++] = str[i];
-			} else {
-				p.unscrambleBuf[oddIndex++] = str[i];
-			}
-		}
-	}
+        for (int i = 0; i < str.length; i++) {
+            if ((i % 2) == 0) {
+                p.unscrambleBuf[evenIndex++] = str[i];
+            } else {
+                p.unscrambleBuf[oddIndex++] = str[i];
+            }
+        }
+    }
 
-	private static void unshiftString(Puzzle p, byte[] str, int keynum) {
-		System.arraycopy(str, str.length - keynum, p.unscrambleTmp, 0, keynum);
-		System.arraycopy(str, 0, str, keynum, str.length - keynum);
-		System.arraycopy(p.unscrambleTmp, 0, str, 0, keynum);
-	}
+    private static void unshiftString(Puzzle p, byte[] str, int keynum) {
+        System.arraycopy(str, str.length - keynum, p.unscrambleTmp, 0, keynum);
+        System.arraycopy(str, 0, str, keynum, str.length - keynum);
+        System.arraycopy(p.unscrambleTmp, 0, str, 0, keynum);
+    }
 
-	private static int checksumCIB(byte[] puzByteArray, int cksum) {
-		return checksumRegion(puzByteArray, 0x2C, 8, cksum);
-	}
+    private static int checksumCIB(byte[] puzByteArray, int cksum) {
+        return checksumRegion(puzByteArray, 0x2C, 8, cksum);
+    }
 
-	private static int checksumGrid(byte[] puzByteArray, int numberOfBoxes, int cksum) {
-		return checksumRegion(puzByteArray, 0x34 + numberOfBoxes, numberOfBoxes, cksum);
-	}
+    private static int checksumGrid(byte[] puzByteArray, int numberOfBoxes, int cksum) {
+        return checksumRegion(puzByteArray, 0x34 + numberOfBoxes, numberOfBoxes, cksum);
+    }
 
-	private static int checksumPartialBoard(byte[] puzByteArray, int numberOfBoxes, int numberOfClues, int cksum) {
-		int offset = 0x34 + (2 * numberOfBoxes);
+    private static int checksumPartialBoard(byte[] puzByteArray, int numberOfBoxes, int numberOfClues, int cksum) {
+        int offset = 0x34 + (2 * numberOfBoxes);
 
-		for (int i = 0; i < (4 + numberOfClues); i++) {
-			int startOffset = offset;
+        for (int i = 0; i < (4 + numberOfClues); i++) {
+            int startOffset = offset;
 
-			while (puzByteArray[offset] != 0 && offset < puzByteArray.length) {
-				offset++;
-			}
+            while (puzByteArray[offset] != 0 && offset < puzByteArray.length) {
+                offset++;
+            }
 
-			int length = offset - startOffset;
+            int length = offset - startOffset;
 
-			if ((i > 2) && (i < (3 + numberOfClues))) {
-				cksum = checksumRegion(puzByteArray, startOffset, length, cksum);
-			} else if (length > 0) {
-				cksum = checksumRegion(puzByteArray, startOffset, length + 1, cksum);
-			}
+            if ((i > 2) && (i < (3 + numberOfClues))) {
+                cksum = checksumRegion(puzByteArray, startOffset, length, cksum);
+            } else if (length > 0) {
+                cksum = checksumRegion(puzByteArray, startOffset, length + 1, cksum);
+            }
 
-			offset++;
-		}
+            offset++;
+        }
 
-		return cksum;
-	}
+        return cksum;
+    }
 
-	private static int checksumPrimaryBoard(byte[] puzByteArray,
-			int numberOfBoxes, int numberOfClues, int cksum) {
-		cksum = checksumSolution(puzByteArray, numberOfBoxes, cksum);
-		cksum = checksumGrid(puzByteArray, numberOfBoxes, cksum);
-		cksum = checksumPartialBoard(puzByteArray, numberOfBoxes, numberOfClues,
-				cksum);
+    private static int checksumPrimaryBoard(byte[] puzByteArray,
+            int numberOfBoxes, int numberOfClues, int cksum) {
+        cksum = checksumSolution(puzByteArray, numberOfBoxes, cksum);
+        cksum = checksumGrid(puzByteArray, numberOfBoxes, cksum);
+        cksum = checksumPartialBoard(puzByteArray, numberOfBoxes, numberOfClues,
+                cksum);
 
-		return cksum;
-	}
+        return cksum;
+    }
 
-	private static int checksumSolution(byte[] puzByteArray, int numberOfBoxes, int cksum) {
-		return checksumRegion(puzByteArray, 0x34, numberOfBoxes, cksum);
-	}
+    private static int checksumSolution(byte[] puzByteArray, int numberOfBoxes, int cksum) {
+        return checksumRegion(puzByteArray, 0x34, numberOfBoxes, cksum);
+    }
 
-	private static int checksumRegion(byte[] data) {
-	    return checksumRegion(data, 0);
-	}
+    private static int checksumRegion(byte[] data) {
+        return checksumRegion(data, 0);
+    }
 
-	private static int checksumRegion(byte[] data, int cksum) {
-	    return checksumRegion(data, 0, data.length, cksum);
-	}
+    private static int checksumRegion(byte[] data, int cksum) {
+        return checksumRegion(data, 0, data.length, cksum);
+    }
 
-	private static int checksumRegion(byte[] data, int offset, int length, int cksum) {
+    private static int checksumRegion(byte[] data, int offset, int length, int cksum) {
         for (int i = offset; i < (offset + length); i++) {
             if ((cksum & 0x1) != 0) {
                 cksum = (cksum >> 1) + 0x8000;

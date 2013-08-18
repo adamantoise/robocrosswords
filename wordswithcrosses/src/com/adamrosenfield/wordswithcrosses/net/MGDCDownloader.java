@@ -136,25 +136,25 @@ public class MGDCDownloader extends AbstractDownloader
         return super.download(date, url, headers);
     }
 
-	@Override
+    @Override
     protected String createUrlSuffix(Calendar date)
-	{
-	    return "";
-	}
+    {
+        return "";
+    }
 
-	private static String getDaySuffix(int dayOfMonth)
-	{
-	    if (dayOfMonth >= 10 && dayOfMonth < 20)
-	    {
-	        return "th";
-	    }
+    private static String getDaySuffix(int dayOfMonth)
+    {
+        if (dayOfMonth >= 10 && dayOfMonth < 20)
+        {
+            return "th";
+        }
 
-	    switch (dayOfMonth % 10)
-	    {
-	    case 1: return "st";
-	    case 2: return "nd";
-	    case 3: return "rd";
-	    default: return "th";
-	    }
-	}
+        switch (dayOfMonth % 10)
+        {
+        case 1: return "st";
+        case 2: return "nd";
+        case 3: return "rd";
+        default: return "th";
+        }
+    }
 }

@@ -63,7 +63,7 @@ public class Box {
         }
 
         if (isCircled() != other.isCircled()) {
-        	return false;
+            return false;
         }
 
         if (getResponse() != other.getResponse()) {
@@ -143,14 +143,14 @@ public class Box {
      * @return if the box is circled
      */
     public boolean isCircled() {
-    	return circled;
+        return circled;
     }
 
     /**
      * @param circled the circled to set
      */
     public void setCircled(boolean circled) {
-    	this.circled = circled;
+        this.circled = circled;
     }
 
     /**

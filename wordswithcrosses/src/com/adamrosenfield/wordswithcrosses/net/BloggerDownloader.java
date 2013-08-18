@@ -62,11 +62,11 @@ public abstract class BloggerDownloader extends AbstractDownloader
         return super.download(date, url);
     }
 
-	@Override
+    @Override
     protected String createUrlSuffix(Calendar date)
-	{
-	    return "";
-	}
+    {
+        return "";
+    }
 
     private static String iso8601String(Calendar date)
     {

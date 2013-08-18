@@ -192,9 +192,9 @@ public class MGWCCDownloader extends AbstractDownloader
         return false;
     }
 
-	@Override
+    @Override
     protected String createUrlSuffix(Calendar date)
-	{
-	    return "";
-	}
+    {
+        return "";
+    }
 }

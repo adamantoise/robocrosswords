@@ -34,29 +34,29 @@ import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 
 public abstract class AbstractPageScraper extends AbstractDownloader {
 
-	private static final String REGEX = "http://[^ ^']*\\.puz";
-	private static final String REL_REGEX = "href=\"(.*\\.puz)\"";
-	private static final Pattern PAT = Pattern.compile(REGEX);
-	private static final Pattern REL_PAT = Pattern.compile(REL_REGEX);
+    private static final String REGEX = "http://[^ ^']*\\.puz";
+    private static final String REL_REGEX = "href=\"(.*\\.puz)\"";
+    private static final Pattern PAT = Pattern.compile(REGEX);
+    private static final Pattern REL_PAT = Pattern.compile(REL_REGEX);
 
-	protected AbstractPageScraper(String downloaderName) {
-	    super("", downloaderName);
-	}
+    protected AbstractPageScraper(String downloaderName) {
+        super("", downloaderName);
+    }
 
-	@Override
+    @Override
     protected String createUrlSuffix(Calendar date) {
-	    return "";
-	}
+        return "";
+    }
 
-	protected abstract String getScrapeURL(Calendar date);
+    protected abstract String getScrapeURL(Calendar date);
 
-	@Override
+    @Override
     public boolean download(Calendar date) throws IOException {
-	    return scrapePage(date, getScrapeURL(date));
-	}
+        return scrapePage(date, getScrapeURL(date));
+    }
 
-	protected boolean scrapePage(Calendar date, String url) throws IOException {
-	    String scrapedPage = downloadUrlToString(url);
+    protected boolean scrapePage(Calendar date, String url) throws IOException {
+        String scrapedPage = downloadUrlToString(url);
 
         List<String> puzzleUrls = getPuzzleURLs(scrapedPage);
         puzzleUrls.addAll(getPuzzleRelativeURLs(url, scrapedPage));
@@ -74,29 +74,29 @@ public abstract class AbstractPageScraper extends AbstractDownloader {
         }
 
         return false;
-	}
+    }
 
-	public static List<String> getPuzzleRelativeURLs(String baseUrl, String input)
-			throws MalformedURLException {
-		URL base = new URL(baseUrl);
-		ArrayList<String> result = new ArrayList<String>();
-		Matcher matcher = REL_PAT.matcher(input);
+    public static List<String> getPuzzleRelativeURLs(String baseUrl, String input)
+            throws MalformedURLException {
+        URL base = new URL(baseUrl);
+        ArrayList<String> result = new ArrayList<String>();
+        Matcher matcher = REL_PAT.matcher(input);
 
-		while (matcher.find()) {
-			result.add(new URL(base, matcher.group(1)).toString());
-		}
+        while (matcher.find()) {
+            result.add(new URL(base, matcher.group(1)).toString());
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	public static List<String> getPuzzleURLs(String input) {
-		ArrayList<String> result = new ArrayList<String>();
-		Matcher matcher = PAT.matcher(input);
+    public static List<String> getPuzzleURLs(String input) {
+        ArrayList<String> result = new ArrayList<String>();
+        Matcher matcher = PAT.matcher(input);
 
-		while (matcher.find()) {
-			result.add(matcher.group());
-		}
+        while (matcher.find()) {
+            result.add(matcher.group());
+        }
 
-		return result;
-	}
+        return result;
+    }
 }

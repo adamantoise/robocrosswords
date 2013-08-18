@@ -146,38 +146,38 @@ public class Puzzle {
      * Initialize the temporary unscramble buffers.  Returns the scrambled solution.
      */
     public byte[] initializeUnscrambleData() {
-    	unscrambleKey = new int[4];
-    	unscrambleTmp = new byte[9];
+        unscrambleKey = new int[4];
+        unscrambleTmp = new byte[9];
 
-    	byte[] solution = getSolutionDown();
-    	unscrambleBuf = new byte[solution.length];
+        byte[] solution = getSolutionDown();
+        unscrambleBuf = new byte[solution.length];
 
-    	return solution;
+        return solution;
     }
 
-	private byte[] getSolutionDown() {
-		StringBuilder ans = new StringBuilder();
-		for (int c = 0; c < width; c++) {
-			for (int r = 0; r < height; r++) {
-				if (boxes[r][c] != null) {
-					ans.append(boxes[r][c].getSolution());
-				}
-			}
-		}
-		return ans.toString().getBytes();
-	}
+    private byte[] getSolutionDown() {
+        StringBuilder ans = new StringBuilder();
+        for (int c = 0; c < width; c++) {
+            for (int r = 0; r < height; r++) {
+                if (boxes[r][c] != null) {
+                    ans.append(boxes[r][c].getSolution());
+                }
+            }
+        }
+        return ans.toString().getBytes();
+    }
 
-	public void setUnscrambledSolution(byte[] solution) {
-		int i = 0;
-		for (int c = 0; c < width; c++) {
-			for (int r = 0; r < height; r++) {
-				if (boxes[r][c] != null) {
-					boxes[r][c].setSolution((char) solution[i++]);
-				}
-			}
-		}
-		setScrambled(false);
-	}
+    public void setUnscrambledSolution(byte[] solution) {
+        int i = 0;
+        for (int c = 0; c < width; c++) {
+            for (int r = 0; r < height; r++) {
+                if (boxes[r][c] != null) {
+                    boxes[r][c].setSolution((char) solution[i++]);
+                }
+            }
+        }
+        setScrambled(false);
+    }
 
     public void setCopyright(String copyright) {
         this.copyright = copyright;
@@ -284,8 +284,8 @@ public class Puzzle {
     }
 
     public int getPercentFilled() {
-    	int total = 0;
-    	int filled = 0;
+        int total = 0;
+        int filled = 0;
 
         for (int r = 0; r < boxes.length; r++) {
             for (int c = 0; c < boxes[r].length; c++) {
@@ -327,27 +327,27 @@ public class Puzzle {
     }
 
     public void setVersion(String version) {
-    	this.version = version;
+        this.version = version;
     }
 
      public String getVersion() {
-    	 return version;
+         return version;
      }
 
     public void setScrambled(boolean scrambled) {
-    	this.scrambled = scrambled;
+        this.scrambled = scrambled;
     }
 
     public boolean isScrambled() {
-    	return scrambled;
+        return scrambled;
     }
 
     public void setSolutionChecksum(short checksum) {
-    	this.solutionChecksum = checksum;
+        this.solutionChecksum = checksum;
     }
 
     public short getSolutionChecksum() {
-    	return solutionChecksum;
+        return solutionChecksum;
     }
 
     /**
@@ -470,19 +470,19 @@ public class Puzzle {
         }
 
         if (version == null) {
-	        if (other.version != null) {
-	            return false;
-	        }
+            if (other.version != null) {
+                return false;
+            }
         } else if (!version.equals(other.version)) {
             return false;
         }
 
         if (scrambled != other.scrambled) {
-        	return false;
+            return false;
         }
 
         if (solutionChecksum != other.solutionChecksum) {
-        	return false;
+            return false;
         }
 
         return true;

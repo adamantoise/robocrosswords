@@ -132,11 +132,11 @@ public class SeparatedListAdapter extends BaseAdapter implements SectionIndexer 
 
     @Override
     public int getViewTypeCount() {
-        //		// assume that headers count as one, then total all sections
-        //		int total = 1;
-        //		for(Adapter adapter : this.sections)
-        //			total += adapter.getViewTypeCount();
-        //		return total;
+        //      // assume that headers count as one, then total all sections
+        //      int total = 1;
+        //      for(Adapter adapter : this.sections)
+        //          total += adapter.getViewTypeCount();
+        //      return total;
         return 2;
     }
 

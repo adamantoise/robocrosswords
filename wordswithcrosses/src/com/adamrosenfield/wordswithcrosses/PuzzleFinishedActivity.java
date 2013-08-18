@@ -35,13 +35,13 @@ import com.adamrosenfield.wordswithcrosses.puz.Box;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 
 public class PuzzleFinishedActivity extends WordsWithCrossesActivity{
-	private static final long SECONDS = 1000;
+    private static final long SECONDS = 1000;
     private static final long MINUTES = SECONDS * 60;
     private static final long HOURS = MINUTES * 60;
     private final NumberFormat two_int = NumberFormat.getIntegerInstance();
-	private final DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
+    private final DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
 
-	@Override
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         utils.holographic(this);
@@ -64,20 +64,20 @@ public class PuzzleFinishedActivity extends WordsWithCrossesActivity{
         long seconds = elapsed / SECONDS;
 
         String elapsedString = (hours > 0 ? two_int.format(hours) + ":" : "") +
-        		two_int.format(minutes) + ":"+
+                two_int.format(minutes) + ":"+
                 two_int.format(seconds);
 
         int totalClues = puz.getAcrossClues().length + puz.getDownClues().length;
         int totalBoxes = 0;
         int cheatedBoxes = 0;
         for (Box b : puz.getBoxesList()) {
-        	if (b == null) {
-        		continue;
-        	}
-        	if(b.isCheated()) {
-        		cheatedBoxes++;
-        	}
-        	totalBoxes++;
+            if (b == null) {
+                continue;
+            }
+            if(b.isCheated()) {
+                cheatedBoxes++;
+            }
+            totalBoxes++;
         }
 
         String cheatedStr = (int)Math.ceil((double)cheatedBoxes * 100D / (double)totalBoxes) + "%";
@@ -110,25 +110,25 @@ public class PuzzleFinishedActivity extends WordsWithCrossesActivity{
         Button share = (Button) this.findViewById(R.id.share);
         share.setOnClickListener(new OnClickListener() {
 
-			public void onClick(View v) {
-				Intent sendIntent = new Intent(Intent.ACTION_SEND);
-//				sendIntent.putExtra(Intent.EXTRA_SUBJECT,
-//						"I finished a puzzle in Words With Crosses!");
-				sendIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-				sendIntent.setType("text/plain");
-				startActivity(Intent.createChooser(sendIntent, "Share your time"));
-			}
+            public void onClick(View v) {
+                Intent sendIntent = new Intent(Intent.ACTION_SEND);
+//              sendIntent.putExtra(Intent.EXTRA_SUBJECT,
+//                      "I finished a puzzle in Words With Crosses!");
+                sendIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                sendIntent.setType("text/plain");
+                startActivity(Intent.createChooser(sendIntent, "Share your time"));
+            }
 
         });
 
         Button done = (Button) this.findViewById(R.id.done);
         done.setOnClickListener(new OnClickListener(){
 
-			public void onClick(View v) {
-				finish();
-			}
+            public void onClick(View v) {
+                finish();
+            }
 
         });
 
-	}
+    }
 }
