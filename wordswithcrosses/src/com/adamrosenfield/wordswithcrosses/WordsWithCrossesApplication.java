@@ -95,7 +95,8 @@ public class WordsWithCrossesApplication extends Application {
                 try {
                     writer.println("VERSION INT: " + android.os.Build.VERSION.SDK_INT);
                     writer.println("VERSION RELEASE: " + android.os.Build.VERSION.RELEASE);
-                    writer.println("MODEL: " + android.os.Build.DEVICE);
+                    writer.println("MODEL: " + android.os.Build.MODEL);
+                    writer.println("DEVICE: " + android.os.Build.DEVICE);
                     writer.println("DISPLAY: " + android.os.Build.DISPLAY);
                     writer.println("MANUFACTURER: " + android.os.Build.MANUFACTURER);
                 } finally {
