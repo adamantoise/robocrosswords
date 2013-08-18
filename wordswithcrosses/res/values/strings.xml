@@ -168,10 +168,12 @@
     <string name="menu_reveal_puzzle">Puzzle</string>
     <string name="menu_clues">Clues</string>
     <string name="menu_info">Info</string>
+    <string name="menu_notes">Notes</string>
 
     <string name="reveal_puzzle_title">Reveal Entire Puzzle</string>
     <string name="reveal_puzzle_body">Are you sure?</string>
-    <string name="reveal_puzzle_ok">OK</string>
-    <string name="reveal_puzzle_cancel">Cancel</string>
+
+    <string name="dialog_info_title">Puzzle Info</string>
+    <string name="dialog_notes_title">Puzzle Notes</string>
 
 </resources>

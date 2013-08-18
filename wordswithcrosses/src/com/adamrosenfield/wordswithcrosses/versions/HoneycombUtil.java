@@ -81,9 +81,7 @@ public class HoneycombUtil extends GingerbreadUtil {
         if (bar == null) {
             return null;
         }
-        bar.setDisplayShowCustomEnabled(true);
-        bar.setDisplayShowTitleEnabled(false);
-        bar.setDisplayShowHomeEnabled(true);
+        bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME, ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
         bar.setCustomView(id);
         return bar.getCustomView();
     }

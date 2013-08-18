@@ -231,10 +231,6 @@ public class WordsWithCrossesApplication extends Application {
         return dbHelper;
     }
 
-    public static boolean isLandscape(DisplayMetrics metrics) {
-        return metrics.widthPixels > metrics.heightPixels;
-    }
-
     public static double getScreenSizeInInches(DisplayMetrics metrics) {
         double x = metrics.widthPixels/metrics.xdpi;
         double y = metrics.heightPixels/metrics.ydpi;
@@ -248,14 +244,5 @@ public class WordsWithCrossesApplication extends Application {
 
         double screenInches = getScreenSizeInInches(metrics);
         return (screenInches > 9.0);  // look for a 9" or larger screen.
-    }
-
-    public static boolean isMiniTabletish(DisplayMetrics metrics) {
-        if (android.os.Build.VERSION.SDK_INT < 11) {
-            return false;
-        }
-
-        double screenInches = getScreenSizeInInches(metrics);
-        return (screenInches > 5.5 && screenInches <= 9.0);
     }
 }

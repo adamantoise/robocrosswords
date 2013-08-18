@@ -42,6 +42,7 @@ import android.inputmethodservice.KeyboardView.OnKeyboardActionListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.ContextMenu;
@@ -86,7 +87,9 @@ public class PlayActivity extends WordsWithCrossesActivity {
     public static final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
+
     private static final int INFO_DIALOG = 0;
+    private static final int NOTES_DIALOG = 1;
     private static final int REVEAL_PUZZLE_DIALOG = 2;
 
     /** Clue font sizes, in sp */
@@ -140,6 +143,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
     private static final int MENU_ID_INFO = 7;
     private static final int MENU_ID_HELP = 8;
     private static final int MENU_ID_SETTINGS = 9;
+    private static final int MENU_ID_NOTES = 10;
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -320,8 +324,12 @@ public class PlayActivity extends WordsWithCrossesActivity {
                     });
 
             clue = (TextView)this.findViewById(R.id.clueLine);
-            if (clue.getVisibility() != View.GONE && android.os.Build.VERSION.SDK_INT >= 14) {
-                clue.setVisibility(View.GONE);
+
+            View clueContainer = findViewById(R.id.clueContainer);
+            if (clueContainer.getVisibility() != View.GONE &&
+                android.os.Build.VERSION.SDK_INT >= 11)
+            {
+                clueContainer.setVisibility(View.GONE);
                 View clueLine = utils.onActionBarCustom(this, R.layout.clue_line_only);
                 if (clueLine != null) {
                     clue = (TextView)clueLine.findViewById(R.id.clueLine);
@@ -336,6 +344,13 @@ public class PlayActivity extends WordsWithCrossesActivity {
                     PlayActivity.this.startActivityForResult(i, 0);
                 }
             });
+
+            if (clueContainer.getVisibility() != View.GONE &&
+                !TextUtils.isEmpty(puz.getNotes()))
+            {
+                View notesButton = findViewById(R.id.notesButton);
+                notesButton.setVisibility(View.VISIBLE);
+            }
 
             boardView = (CrosswordImageView)findViewById(R.id.board);
             boardView.setBoard(BOARD, metrics);
@@ -410,7 +425,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
         revealPuzzleDialog.setButton(
                 DialogInterface.BUTTON_POSITIVE,
-                getResources().getString(R.string.reveal_puzzle_ok),
+                getResources().getString(android.R.string.ok),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         BOARD.revealPuzzle();
@@ -419,7 +434,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
                 });
         revealPuzzleDialog.setButton(
                 DialogInterface.BUTTON_NEGATIVE,
-                getResources().getString(R.string.reveal_puzzle_cancel),
+                getResources().getString(android.R.string.cancel),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -601,6 +616,11 @@ public class PlayActivity extends WordsWithCrossesActivity {
             .setIcon(android.R.drawable.ic_menu_help);
         menu.add(Menu.NONE, MENU_ID_SETTINGS, Menu.NONE, R.string.menu_settings)
             .setIcon(android.R.drawable.ic_menu_preferences);
+
+        if (!TextUtils.isEmpty(puz.getNotes())) {
+            MenuItem notesItem = menu.add(Menu.NONE, MENU_ID_NOTES, Menu.NONE, R.string.menu_notes).setIcon(R.drawable.ic_action_paste);
+            utils.onActionBarWithText(notesItem);
+        }
 
         if (WordsWithCrossesApplication.isTabletish(metrics)) {
             utils.onActionBarWithText(showItem);
@@ -790,6 +810,10 @@ public class PlayActivity extends WordsWithCrossesActivity {
             showHTMLPage("playscreen.html");
             return true;
 
+        case MENU_ID_NOTES:
+            onNotesClicked(null);
+            return true;
+
         case R.id.context_zoom_in:
             boardView.zoomIn();
             fitToScreen = false;
@@ -844,6 +868,9 @@ public class PlayActivity extends WordsWithCrossesActivity {
             // This is weird. I don't know why a rotate resets the dialog.
             // Whatevs.
             return createInfoDialog();
+
+        case NOTES_DIALOG:
+            return createNotesDialog();
 
         case REVEAL_PUZZLE_DIALOG:
             return revealPuzzleDialog;
@@ -968,6 +995,30 @@ public class PlayActivity extends WordsWithCrossesActivity {
         }
     }
 
+    public void onNotesClicked(View notesButton) {
+        if (!TextUtils.isEmpty(puz.getNotes())) {
+            deprecatedShowDialog(NOTES_DIALOG);
+        }
+    }
+
+    private Dialog createNotesDialog() {
+        String notes = puz.getNotes();
+
+        AlertDialog.Builder notesDialogBuilder = new AlertDialog.Builder(this);
+        notesDialogBuilder
+            .setTitle(getResources().getString(R.string.dialog_notes_title))
+            .setMessage(notes)
+            .setPositiveButton(
+                android.R.string.ok,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        return notesDialogBuilder.create();
+    }
+
     private void setClueSize(int dps) {
         this.clue.setTextSize(TypedValue.COMPLEX_UNIT_SP, dps);
 
@@ -1005,7 +1056,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
             dialog = new Dialog(this);
         }
 
-        dialog.setTitle("Puzzle Info");
+        dialog.setTitle(getResources().getString(R.string.dialog_info_title));
         dialog.setContentView(R.layout.puzzle_info_dialog);
 
         TextView view = (TextView) dialog.findViewById(R.id.puzzle_info_title);

@@ -5,52 +5,71 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
+  <LinearLayout
+      android:id="@+id/clueContainer"
+      android:orientation="horizontal"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:visibility="gone"
+      android:background="#2C2C2C"
+      >
     <TextView
         android:id="@+id/clueLine"
-        android:layout_width="fill_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:text="@string/hello"
         android:textSize="12sp"
         android:minLines="2"
         android:maxLines="4"
         android:textColor="#FFFFFF"
-        android:background="#2C2C2C"
+        />
+
+    <ImageButton
+        android:id="@+id/notesButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="4dp"
         android:visibility="gone"
-    />
+        android:src="@drawable/ic_action_paste_inv"
+        android:contentDescription="@string/menu_notes"
+        android:onClick="onNotesClicked"
+        />
+  </LinearLayout>
 
-     <android.inputmethodservice.KeyboardView
-        android:id="@+id/playKeyboard"
-        android:layout_alignParentBottom="true"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-    />
+  <android.inputmethodservice.KeyboardView
+      android:id="@+id/playKeyboard"
+      android:layout_alignParentBottom="true"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      />
 
-    <RelativeLayout
-        android:id="@+id/clues"
+  <RelativeLayout
+      android:id="@+id/clues"
+      android:layout_width="325dp"
+      android:layout_height="wrap_content"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentTop="true"
+      android:layout_above="@id/playKeyboard">
+
+    <ListView
+        android:id="@+id/allClues"
         android:layout_width="325dp"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_above="@id/playKeyboard">
+        tools:ignore="InconsistentLayout"/>
 
-        <ListView
-            android:id="@+id/allClues"
-            android:layout_width="325dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            tools:ignore="InconsistentLayout"/>
+  </RelativeLayout>
 
-    </RelativeLayout>
-
-    <com.adamrosenfield.wordswithcrosses.view.CrosswordImageView
-        android:id="@+id/board"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:layout_above="@id/playKeyboard"
-        android:layout_toLeftOf="@id/clues"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:scrollbars="horizontal|vertical" />
+  <com.adamrosenfield.wordswithcrosses.view.CrosswordImageView
+      android:id="@+id/board"
+      android:layout_width="wrap_content"
+      android:layout_height="fill_parent"
+      android:layout_above="@id/playKeyboard"
+      android:layout_toLeftOf="@id/clues"
+      android:layout_alignParentLeft="true"
+      android:layout_alignParentTop="true"
+      android:scrollbars="horizontal|vertical" />
 
 </RelativeLayout>
