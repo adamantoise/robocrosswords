@@ -87,6 +87,11 @@ public class KingFeaturesPlaintextIO {
             line = scanner.nextLine();
         }
 
+        if (line.length() < 3) {
+            LOG.warning("KFIO: Line too short");
+            return false;
+        }
+
         // Process solution grid.
         List<char[]> solGrid = new ArrayList<char[]>();
         line = line.substring(1, line.length()-2);
@@ -104,6 +109,11 @@ public class KingFeaturesPlaintextIO {
 
             char[] row = new char[width];
             for (int x = 0; x < width; x++) {
+                if (rowString[x].isEmpty()) {
+                    LOG.warning("KFIO: Empty solution cell");
+                    return false;
+                }
+
                 row[x] = rowString[x].charAt(0);
             }
             solGrid.add(row);
@@ -189,7 +199,7 @@ public class KingFeaturesPlaintextIO {
                 i++;
             }
 
-            if (i < line.length()) {
+            if (i < line.length() - 1) {
                 lastClueNum = clueNum;
                 String clue = line.substring(i+2).trim();
                 downNumToClueMap.put(clueNum, clue);
