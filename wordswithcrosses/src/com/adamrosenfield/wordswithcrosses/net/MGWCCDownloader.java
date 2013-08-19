@@ -63,7 +63,7 @@ public class MGWCCDownloader extends AbstractDownloader
     }
 
     @Override
-    public boolean download(Calendar date) throws IOException
+    public void download(Calendar date) throws IOException
     {
         // Figure out which archive page to scrape
         Calendar now = Calendar.getInstance();
@@ -134,7 +134,7 @@ public class MGWCCDownloader extends AbstractDownloader
             if (!matcher.find())
             {
                 LOG.warning("Failed to scrape date URL in page: " + scrapeUrl);
-                return false;
+                throw new IOException("Failed to scrape date URL in page");
             }
 
             // Get the day from the regex match
@@ -149,7 +149,7 @@ public class MGWCCDownloader extends AbstractDownloader
                 // This should never happen, since the regex group only matches
                 // digits
                 LOG.warning("Error parsing integer: " + dayString);
-                return false;
+                throw new IOException("Failed parsing date");
             }
 
             if (day == date.get(Calendar.DATE))
@@ -159,7 +159,7 @@ public class MGWCCDownloader extends AbstractDownloader
                 if (!matcher.find())
                 {
                     LOG.warning("Failed to find puzzle ID in page: " + scrapeUrl);
-                    return false;
+                    throw new IOException("Failed to find puzzle ID in page");
                 }
 
                 Map<String, String> headers = new HashMap<String, String>();
@@ -168,7 +168,8 @@ public class MGWCCDownloader extends AbstractDownloader
                 String id = matcher.group(1);
                 String url = "http://icrossword.com/publish/server/puzzle/index.php?id=" + id;
 
-                return super.download(date, url, headers);
+                super.download(date, url, headers);
+                return;
             }
             else
             {
@@ -180,7 +181,7 @@ public class MGWCCDownloader extends AbstractDownloader
                     // If we got here, it probably means it's Friday morning and
                     // the puzzle hasn't been posted yet
                     LOG.warning("Failed to scrape MGWCC; is the puzzle out yet?");
-                    return false;
+                    throw new IOException("Failed to scrape puzzle");
                 }
                 else
                 {
@@ -189,7 +190,7 @@ public class MGWCCDownloader extends AbstractDownloader
             }
         }
 
-        return false;
+        throw new IOException("Failed to scrape puzzle");
     }
 
     @Override

@@ -104,15 +104,15 @@ public abstract class AbstractDownloader implements Downloader {
 
     protected abstract String createUrlSuffix(Calendar date);
 
-    public boolean download(Calendar date) throws IOException {
-        return download(date, createUrlSuffix(date));
+    public void download(Calendar date) throws IOException {
+        download(date, createUrlSuffix(date));
     }
 
-    protected boolean download(Calendar date, String urlSuffix) throws IOException {
-        return download(date, urlSuffix, EMPTY_MAP);
+    protected void download(Calendar date, String urlSuffix) throws IOException {
+        download(date, urlSuffix, EMPTY_MAP);
     }
 
-    protected boolean download(Calendar date, String urlSuffix, Map<String, String> headers)
+    protected void download(Calendar date, String urlSuffix, Map<String, String> headers)
             throws IOException {
         URL url = new URL(this.baseUrl + urlSuffix);
 
@@ -120,7 +120,7 @@ public abstract class AbstractDownloader implements Downloader {
 
         String filename = getFilename(date);
         File destFile = new File(WordsWithCrossesApplication.CROSSWORDS_DIR, filename);
-        return utils.downloadFile(url, headers, destFile, true, getName());
+        utils.downloadFile(url, headers, destFile, true, getName());
     }
 
     protected String downloadUrlToString(String url) throws IOException {

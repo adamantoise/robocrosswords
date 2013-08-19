@@ -25,11 +25,24 @@ import java.util.Calendar;
 
 import android.content.Context;
 
+import com.adamrosenfield.wordswithcrosses.R;
+
 /**
  * Does not actually download any puzzles; just adds an "All Available" option to the dropdown.
  */
 public class DummyDownloader implements Downloader {
+
+    private Context mContext;
+
+    public DummyDownloader() {
+    }
+
+    public DummyDownloader(Context context) {
+        mContext = context;
+    }
+
     public void setContext(Context context) {
+        mContext = context;
     }
 
     public boolean isPuzzleAvailable(Calendar date) {
@@ -44,8 +57,7 @@ public class DummyDownloader implements Downloader {
         return null;
     }
 
-    public boolean download(Calendar date) throws IOException {
-        return false;
+    public void download(Calendar date) throws IOException {
     }
 
     public String sourceUrl(Calendar date) {
@@ -54,6 +66,6 @@ public class DummyDownloader implements Downloader {
 
     @Override
     public String toString() {
-        return "All available";
+        return mContext.getResources().getString(R.string.source_all_available);
     }
 }

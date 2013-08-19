@@ -57,7 +57,7 @@ public class NevilleFogartyDownloader extends AbstractDownloader
     }
 
     @Override
-    public boolean download(Calendar date) throws IOException
+    public void download(Calendar date) throws IOException
     {
         // First, scrape the archives for the given date to get the
         // link to the full blog post for the given date
@@ -75,7 +75,7 @@ public class NevilleFogartyDownloader extends AbstractDownloader
         if (!matcher.find())
         {
             LOG.warning("Failed to find \"Continue reading\" link on page: " + scrapeUrl);
-            return false;
+            throw new IOException("Failed to scrape archives page");
         }
 
         // Then, scrape the blog post for the puzzle download link
@@ -86,11 +86,11 @@ public class NevilleFogartyDownloader extends AbstractDownloader
         if (!matcher.find())
         {
             LOG.warning("Failed to find puzzle link on page: " + scrapeUrl);
-            return false;
+            throw new IOException("Failed to scrape puzzle link");
         }
 
         // Finally, download the puzzle
         String puzzleUrl = resolveUrl(scrapeUrl, matcher.group(1));
-        return super.download(date, puzzleUrl);
+        super.download(date, puzzleUrl);
     }
 }

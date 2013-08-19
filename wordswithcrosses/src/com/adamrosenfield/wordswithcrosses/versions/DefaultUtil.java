@@ -46,10 +46,13 @@ public class DefaultUtil implements AndroidVersionUtils {
 
     protected static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
 
-    public void setContext(Context ctx) {
+    protected Context context;
+
+    public void setContext(Context context) {
+        this.context = context;
     }
 
-    public boolean downloadFile(URL url, Map<String, String> headers,
+    public void downloadFile(URL url, Map<String, String> headers,
             File destination, boolean notification, String title)
             throws IOException {
 
@@ -71,7 +74,9 @@ public class DefaultUtil implements AndroidVersionUtils {
             fos.close();
         }
 
-        return tempFile.renameTo(destination);
+        if (!tempFile.renameTo(destination)) {
+            throw new IOException("Failed to rename " + tempFile + " to " + destination);
+        }
     }
 
     public void onFileDownloaded(long id, boolean successful) {

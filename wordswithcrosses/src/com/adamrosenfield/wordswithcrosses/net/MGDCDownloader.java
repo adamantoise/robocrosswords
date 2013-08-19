@@ -90,13 +90,13 @@ public class MGDCDownloader extends AbstractDownloader
     }
 
     @Override
-    public boolean download(Calendar date) throws IOException
+    public void download(Calendar date) throws IOException
     {
         long millisSinceStart = (date.getTimeInMillis() - START_DATE.getTimeInMillis());
         int daysSinceStart = (int)(millisSinceStart / 1000 / 86400);
         if (daysSinceStart < 0)
         {
-            return false;
+            throw new IOException("MGDC puzzle is not available yet for this date");
         }
 
         int puzzleNum = ((daysSinceStart + 2) / 7) * 5 + ((daysSinceStart + 2) % 7) - 1;
@@ -124,7 +124,7 @@ public class MGDCDownloader extends AbstractDownloader
         if (!matcher.find())
         {
             LOG.warning("Failed to find puzzle ID in page: " + scrapeUrl);
-            return false;
+            throw new IOException("Failed to find puzzle ID in page");
         }
 
         Map<String, String> headers = new HashMap<String, String>();
@@ -133,7 +133,7 @@ public class MGDCDownloader extends AbstractDownloader
         String id = matcher.group(1);
         String url = "http://icrossword.com/publish/server/puzzle/index.php?id=" + id;
 
-        return super.download(date, url, headers);
+        super.download(date, url, headers);
     }
 
     @Override

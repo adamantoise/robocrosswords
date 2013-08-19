@@ -33,9 +33,9 @@ import android.view.View;
 
 public interface AndroidVersionUtils {
 
-    public void setContext(Context ctx);
+    public void setContext(Context context);
 
-    public boolean downloadFile(URL url, Map<String, String> headers,
+    public void downloadFile(URL url, Map<String, String> headers,
             File destination, boolean notification, String title)
             throws IOException;
 

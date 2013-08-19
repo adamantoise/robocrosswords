@@ -190,9 +190,7 @@ public class HttpDownloadActivity extends WordsWithCrossesActivity {
             if (scheme.equals("http") || scheme.equals("https")) {
                 // If we're opening a HTTP(S) URI, download the file
                 utils.setContext(this);
-                if (!utils.downloadFile(new URL(uriString), EMPTY_MAP, downloadDestFile, true, filename)) {
-                    throw new IOException("Download failed: " + uriString);
-                }
+                utils.downloadFile(new URL(uriString), EMPTY_MAP, downloadDestFile, true, filename);
             } else {
                 // Otherwise, just open the content stream directly and save it
                 LOG.info("Copying " + uriString + " ==> " + downloadDestFile);

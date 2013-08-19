@@ -134,8 +134,6 @@ public class Downloaders {
 
         if (prefs.getBoolean("downloadNYT", false)) {
             downloaders.add(new NYTDownloader(
-                context,
-                context.getHandler(),
                 prefs.getString("nytUsername", ""),
                 prefs.getString("nytPassword", "")));
         }
@@ -231,6 +229,8 @@ public class Downloaders {
 
             int notifId = nextNotifId.incrementAndGet();
             boolean succeeded = false;
+            String failureMessage = null;
+
             try {
                 updateDownloadingNotification(not, contentTitle, d.getName());
 
@@ -254,26 +254,40 @@ public class Downloaders {
 
                 LOG.info("Download beginning: " + filename);
 
-                if (d.download(date)) {
-                    LOG.info("Downloaded succeeded: " + filename);
-                    succeeded = true;
-                    long id = dbHelper.addPuzzle(downloadedFile, d.getName(), d.sourceUrl(date), date.getTimeInMillis());
-                    if (enableIndividualDownloadNotifications) {
-                        postDownloadedNotification(notifId, d.getName(), downloadedFile, id);
-                    }
+                d.download(date);
 
-                    somethingDownloaded = true;
-
-                    context.postRenderMessage();
-                } else {
-                    LOG.warning("Download failed: " + filename);
+                LOG.info("Downloaded succeeded: " + filename);
+                long id = dbHelper.addPuzzle(downloadedFile, d.getName(), d.sourceUrl(date), date.getTimeInMillis());
+                if (id == -1) {
+                    throw new IOException("Failed to load puzzle");
                 }
+
+                succeeded = true;
+                somethingDownloaded = true;
+
+                if (enableIndividualDownloadNotifications) {
+                    postDownloadedNotification(notifId, d.getName(), downloadedFile, id);
+                }
+
+                context.postRenderMessage();
+            } catch (DownloadException e) {
+                LOG.warning("Download failed: " + d.getName());
+                e.printStackTrace();
+                failureMessage = context.getResources().getString(e.getResource());
             } catch (IOException e) {
+                LOG.warning("Download failed: " + d.getName());
                 e.printStackTrace();
             }
 
-            if (!succeeded && enableIndividualDownloadNotifications && notificationManager != null) {
-                postDownloadFailedNotification(notifId, d.getName());
+            // Notify the user about failed downloads.  Don't notify if
+            // notifications are disabled, unless there's a non-standard
+            // failure message (e.g. invalid username/password) that they
+            // should know about.
+            if (!succeeded &&
+                (enableIndividualDownloadNotifications || failureMessage != null) &&
+                notificationManager != null)
+            {
+                postDownloadFailedNotification(notifId, d.getName(), failureMessage);
             }
         }
 
@@ -337,12 +351,15 @@ public class Downloaders {
     }
 
     @SuppressWarnings("deprecation")
-    private void postDownloadFailedNotification(int notifId, String name) {
+    private void postDownloadFailedNotification(int notifId, String name, String failureMessage) {
         String contentTitle = context.getResources().getString(R.string.download_failed, name);
+
+        String contentText = (failureMessage != null ? failureMessage : name);
+
         Notification not = new Notification(
                 android.R.drawable.stat_notify_error, contentTitle,
                 System.currentTimeMillis());
-        not.setLatestEventInfo(context, contentTitle, name, pendingBrowseIntent);
+        not.setLatestEventInfo(context, contentTitle, contentText, pendingBrowseIntent);
 
         if (this.notificationManager != null) {
             this.notificationManager.notify(notifId, not);

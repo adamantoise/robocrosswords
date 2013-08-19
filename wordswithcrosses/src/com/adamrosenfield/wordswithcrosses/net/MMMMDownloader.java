@@ -57,7 +57,7 @@ public class MMMMDownloader extends AbstractDownloader
     }
 
     @Override
-    public boolean download(Calendar date) throws IOException
+    public void download(Calendar date) throws IOException
     {
         String scrapeUrl = BASE_URL;
         if (date.get(Calendar.YEAR) != 2012)
@@ -83,12 +83,12 @@ public class MMMMDownloader extends AbstractDownloader
             // one and download it
             String puzzleUrl = matcher.group(1);
             String fullUrl = resolveUrl(scrapeUrl, puzzleUrl);
-            return super.download(date, fullUrl);
+            super.download(date, fullUrl);
         }
         else
         {
             LOG.warning("Failed to find puzzle link for " + date + " on page: " + scrapeUrl);
-            return false;
+            throw new IOException("Failed to find puzzle link");
         }
     }
 }

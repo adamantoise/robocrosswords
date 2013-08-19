@@ -52,7 +52,7 @@ public abstract class UclickDownloader extends AbstractDownloader {
     }
 
     @Override
-    protected boolean download(Calendar date, String urlSuffix, Map<String, String> headers)
+    protected void download(Calendar date, String urlSuffix, Map<String, String> headers)
             throws IOException {
         URL url = new URL(this.baseUrl + urlSuffix);
 
@@ -60,26 +60,26 @@ public abstract class UclickDownloader extends AbstractDownloader {
 
         String filename = getFilename(date);
         File xmlFile = new File(WordsWithCrossesApplication.TEMP_DIR, filename);
-        if (!utils.downloadFile(url, headers, xmlFile, true, getName())) {
-            return false;
-        }
+        utils.downloadFile(url, headers, xmlFile, true, getName());
 
         try {
             File destFile = new File(WordsWithCrossesApplication.CROSSWORDS_DIR, filename);
-            return convertUclickPuzzle(xmlFile, destFile, date);
+            convertUclickPuzzle(xmlFile, destFile, date);
         } finally {
             xmlFile.delete();
         }
     }
 
-    private boolean convertUclickPuzzle(File xmlFile, File destFile, Calendar date) throws IOException {
+    private void convertUclickPuzzle(File xmlFile, File destFile, Calendar date) throws IOException {
         String fullCopyright = "\u00a9 " + date.get(Calendar.YEAR) + " " + copyright;
 
         FileInputStream fis = new FileInputStream(xmlFile);
         try {
             DataOutputStream dos = new DataOutputStream(new FileOutputStream(destFile));
             try {
-                return UclickXMLIO.convertUclickPuzzle(fis, dos, fullCopyright, date);
+                if (!UclickXMLIO.convertUclickPuzzle(fis, dos, fullCopyright, date)) {
+                    throw new IOException("Failed to convert Uclick puzzle");
+                }
             } finally {
                 dos.close();
             }

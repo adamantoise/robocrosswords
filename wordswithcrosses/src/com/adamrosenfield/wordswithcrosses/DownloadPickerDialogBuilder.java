@@ -133,7 +133,7 @@ public class DownloadPickerDialogBuilder {
 
     public void updatePuzzleSelect(String toSelect) {
         mAvailableDownloaders = mDownloaders.get().getDownloaders(getCurrentDate());
-        mAvailableDownloaders.add(0, new DummyDownloader());
+        mAvailableDownloaders.add(0, new DummyDownloader(mActivity));
 
         mAdapter.setNotifyOnChange(false);
         mAdapter.clear();

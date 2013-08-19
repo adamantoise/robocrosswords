@@ -1,7 +1,6 @@
 /**
  * This file is part of Words With Crosses.
  *
- * Copyright (C) 2009-2010 Robert Cooper
  * Copyright (C) 2013 Adam Rosenfield
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,21 +20,21 @@
 package com.adamrosenfield.wordswithcrosses.net;
 
 import java.io.IOException;
-import java.util.Calendar;
 
-import android.content.Context;
+public class DownloadException extends IOException
+{
+    private static final long serialVersionUID = -5973110073382723812L;
 
-public interface Downloader {
+    private int mResource;
 
-    public void setContext(Context context);
+    public DownloadException(int resource)
+    {
+        super();
+        mResource = resource;
+    }
 
-    public boolean isPuzzleAvailable(Calendar date);
-
-    public String getName();
-
-    public String getFilename(Calendar date);
-
-    public void download(Calendar date) throws IOException;
-
-    public String sourceUrl(Calendar date);
+    public int getResource()
+    {
+        return mResource;
+    }
 }

@@ -51,11 +51,11 @@ public abstract class AbstractPageScraper extends AbstractDownloader {
     protected abstract String getScrapeURL(Calendar date);
 
     @Override
-    public boolean download(Calendar date) throws IOException {
-        return scrapePage(date, getScrapeURL(date));
+    public void download(Calendar date) throws IOException {
+        scrapePage(date, getScrapeURL(date));
     }
 
-    protected boolean scrapePage(Calendar date, String url) throws IOException {
+    protected void scrapePage(Calendar date, String url) throws IOException {
         String scrapedPage = downloadUrlToString(url);
 
         List<String> puzzleUrls = getPuzzleURLs(scrapedPage);
@@ -67,13 +67,18 @@ public abstract class AbstractPageScraper extends AbstractDownloader {
         for (String puzzleUrl : puzzleUrls) {
             if (!dbHelper.puzzleURLExists(puzzleUrl)) {
                 // TODO: Support scraping more than one puzzle per page
-                return super.download(date, puzzleUrl);
+                super.download(date, puzzleUrl);
+                return;
             } else {
                 LOG.info("Skipping download, already exists in database: " + puzzleUrl);
             }
         }
 
-        return false;
+        if (puzzleUrls.isEmpty()) {
+            throw new IOException("No puzzles to scrape");
+        } else {
+            throw new IOException("No new puzzles to scrape");
+        }
     }
 
     public static List<String> getPuzzleRelativeURLs(String baseUrl, String input)

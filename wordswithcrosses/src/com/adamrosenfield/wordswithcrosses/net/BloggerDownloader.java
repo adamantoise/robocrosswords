@@ -38,7 +38,7 @@ public abstract class BloggerDownloader extends AbstractDownloader
     }
 
     @Override
-    public boolean download(Calendar date) throws IOException
+    public void download(Calendar date) throws IOException
     {
         Calendar endDate = (Calendar)date.clone();
         endDate.add(Calendar.DATE, 2);
@@ -55,11 +55,11 @@ public abstract class BloggerDownloader extends AbstractDownloader
         if (!matcher.find())
         {
             LOG.warning("Failed to find puzzle URL in page: " + scrapeUrl);
-            return false;
+            throw new IOException("Failed to scrape puzzle URL");
         }
 
         String url = matcher.group(1).replaceAll("&amp;amp;", "&");
-        return super.download(date, url);
+        super.download(date, url);
     }
 
     @Override

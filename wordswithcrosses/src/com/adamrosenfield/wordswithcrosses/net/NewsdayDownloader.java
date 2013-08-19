@@ -47,7 +47,7 @@ public class NewsdayDownloader extends AbstractDownloader
     }
 
     @Override
-    protected boolean download(Calendar date, String urlSuffix, Map<String, String> headers)
+    protected void download(Calendar date, String urlSuffix, Map<String, String> headers)
         throws IOException
     {
         URL url = new URL(this.baseUrl + urlSuffix);
@@ -56,10 +56,7 @@ public class NewsdayDownloader extends AbstractDownloader
 
         String filename = getFilename(date);
         File txtFile = new File(WordsWithCrossesApplication.TEMP_DIR, filename);
-        if (!utils.downloadFile(url, headers, txtFile, true, getName()))
-        {
-            return false;
-        }
+        utils.downloadFile(url, headers, txtFile, true, getName());
 
         File destFile = new File(WordsWithCrossesApplication.CROSSWORDS_DIR, filename);
         try
@@ -70,8 +67,6 @@ public class NewsdayDownloader extends AbstractDownloader
         {
             txtFile.delete();
         }
-
-        return true;
     }
 
     @Override

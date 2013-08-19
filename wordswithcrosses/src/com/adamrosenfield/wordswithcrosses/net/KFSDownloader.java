@@ -51,7 +51,7 @@ public abstract class KFSDownloader extends AbstractDownloader {
     }
 
     @Override
-    protected boolean download(Calendar date, String urlSuffix, Map<String, String> headers)
+    protected void download(Calendar date, String urlSuffix, Map<String, String> headers)
             throws IOException {
         URL url = new URL(this.baseUrl + urlSuffix);
 
@@ -59,22 +59,21 @@ public abstract class KFSDownloader extends AbstractDownloader {
 
         String filename = getFilename(date);
         File txtFile = new File(WordsWithCrossesApplication.TEMP_DIR, filename);
-        if (!utils.downloadFile(url, headers, txtFile, true, getName())) {
-            return false;
-        }
+        utils.downloadFile(url, headers, txtFile, true, getName());
 
         File destFile = new File(WordsWithCrossesApplication.CROSSWORDS_DIR, filename);
         String copyright = "\u00a9 " + date.get(Calendar.YEAR) + " King Features Syndicate.";
-
-        boolean succeeded = false;
 
         FileInputStream fis = new FileInputStream(txtFile);
         try {
             FileOutputStream fos = new FileOutputStream(destFile);
             try {
-                succeeded = KingFeaturesPlaintextIO.convertKFPuzzle(
+                if (!KingFeaturesPlaintextIO.convertKFPuzzle(
                     fis, fos, fullName + ", " + df.format(date.getTime()), author,
-                    copyright, date);
+                    copyright, date))
+                {
+                    throw new IOException("KFIO: Failed to convert puzzle");
+                }
             } finally {
                 fos.close();
             }
@@ -82,8 +81,6 @@ public abstract class KFSDownloader extends AbstractDownloader {
             fis.close();
             txtFile.delete();
         }
-
-        return succeeded;
     }
 
     @Override

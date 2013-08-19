@@ -36,12 +36,12 @@ public abstract class AbstractJPZDownloader extends AbstractDownloader {
     }
 
     @Override
-    protected boolean download(Calendar date, String urlSuffix, Map<String, String> headers)
+    protected void download(Calendar date, String urlSuffix, Map<String, String> headers)
             throws IOException {
-        return download(date, urlSuffix, headers, JPZIO.NOOP_METADATA_SETTER);
+        download(date, urlSuffix, headers, JPZIO.NOOP_METADATA_SETTER);
     }
 
-    protected boolean download(Calendar date, String urlSuffix, Map<String, String> headers,
+    protected void download(Calendar date, String urlSuffix, Map<String, String> headers,
             JPZIO.PuzzleMetadataSetter metadataSetter) throws IOException {
         URL url = new URL(this.baseUrl + urlSuffix);
 
@@ -49,14 +49,11 @@ public abstract class AbstractJPZDownloader extends AbstractDownloader {
 
         String filename = getFilename(date);
         File jpzFile = new File(WordsWithCrossesApplication.TEMP_DIR, filename);
-        if (!utils.downloadFile(url, headers, jpzFile, true, getName())) {
-            return false;
-        }
+        utils.downloadFile(url, headers, jpzFile, true, getName());
 
         try {
             File destFile = new File(WordsWithCrossesApplication.CROSSWORDS_DIR, filename);
             JPZIO.convertJPZPuzzle(jpzFile, destFile, metadataSetter);
-            return true;
         } finally {
             jpzFile.delete();
         }

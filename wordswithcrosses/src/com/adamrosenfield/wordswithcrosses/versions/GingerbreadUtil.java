@@ -41,8 +41,6 @@ import com.adamrosenfield.wordswithcrosses.net.AbstractDownloader;
 @TargetApi(9)
 public class GingerbreadUtil extends DefaultUtil {
 
-    protected Context context;
-
     private static class DownloadingFile
     {
         public boolean succeeded = false;
@@ -54,17 +52,13 @@ public class GingerbreadUtil extends DefaultUtil {
     private static Map<Long, Boolean> completedDownloads = new HashMap<Long, Boolean>();
 
     @Override
-    public void setContext(Context ctx) {
-        this.context = ctx;
-    }
-
-    @Override
-    public boolean downloadFile(URL url, Map<String, String> headers, File destination, boolean notification,
+    public void downloadFile(URL url, Map<String, String> headers, File destination, boolean notification,
         String title) throws IOException {
         // Pre-ICS download managers don't support HTTPS
         if ("https".equals(url.getProtocol()) && android.os.Build.VERSION.SDK_INT < 15) {
             LOG.info("HTTPS not supported, not using DownloadManager");
-            return super.downloadFile(url, headers, destination, notification, title);
+            super.downloadFile(url, headers, destination, notification, title);
+            return;
         }
 
         DownloadManager mgr = (DownloadManager)context.getSystemService(Context.DOWNLOAD_SERVICE);
@@ -113,7 +107,7 @@ public class GingerbreadUtil extends DefaultUtil {
                 }
             } catch (InterruptedException e) {
                 LOG.warning("Download interrupted: " + scrubbedUrl);
-                return false;
+                throw new IOException("Download interrupted");
             }
         }
 
@@ -121,12 +115,12 @@ public class GingerbreadUtil extends DefaultUtil {
 
         if (succeeded) {
             if (!destination.equals(tempFile) && !tempFile.renameTo(destination)) {
-                LOG.warning("Renaming " + tempFile + " to " + destination + " failed");
-                return false;
+                LOG.warning("Failed to rename " + tempFile + " to " + destination);
+                throw new IOException("Failed to rename " + tempFile + " to " + destination);
             }
+        } else {
+            throw new IOException("Download failed");
         }
-
-        return succeeded;
     }
 
     @Override

@@ -42,10 +42,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
-import android.content.Context;
-import android.os.Handler;
-import android.widget.Toast;
-
+import com.adamrosenfield.wordswithcrosses.R;
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.io.IO;
 
@@ -57,14 +54,10 @@ import com.adamrosenfield.wordswithcrosses.io.IO;
 public class NYTDownloader extends AbstractDownloader {
     public static final String NAME = "New York Times";
     private static final String LOGIN_URL = "https://myaccount.nytimes.com/auth/login?URI=http://select.nytimes.com/premium/xword/puzzles.html";
-    private Context context;
-    private Handler handler;
     private HashMap<String, String> params = new HashMap<String, String>();
 
-    protected NYTDownloader(Context context, Handler handler, String username, String password) {
+    protected NYTDownloader(String username, String password) {
         super("http://www.nytimes.com/premium/xword/", NAME);
-        this.context = context;
-        this.handler = handler;
         params.put("is_continue", "false");
         params.put("userid", username);
         params.put("password", password);
@@ -88,21 +81,19 @@ public class NYTDownloader extends AbstractDownloader {
     }
 
     @Override
-    protected boolean download(Calendar date, String urlSuffix) throws IOException {
+    protected void download(Calendar date, String urlSuffix) throws IOException {
         URL url = new URL(this.baseUrl + urlSuffix);
 
         HttpClient client = this.login();
-        if (client == null) {
-            return false;
-        }
 
         LOG.info("NYT: Downloading " + url);
         HttpGet get = new HttpGet(url.toString());
         HttpResponse response = client.execute(get);
 
-        if (response.getStatusLine().getStatusCode() != 200) {
+        int status = response.getStatusLine().getStatusCode();
+        if (status != 200) {
             LOG.warning("NYT: Download failed: " + response.getStatusLine());
-            return false;
+            throw new IOException("Download failed: status " + status);
         }
 
         File tempFile = new File(WordsWithCrossesApplication.TEMP_DIR, getFilename(date));
@@ -114,7 +105,9 @@ public class NYTDownloader extends AbstractDownloader {
         }
 
         File destFile = new File(WordsWithCrossesApplication.CROSSWORDS_DIR, getFilename(date));
-        return tempFile.renameTo(destFile);
+        if (!tempFile.renameTo(destFile)) {
+            throw new IOException("Failed to rename " + tempFile + " to " + destFile);
+        }
     }
 
     private HttpClient login() throws IOException {
@@ -180,16 +173,7 @@ public class NYTDownloader extends AbstractDownloader {
 
             if (resp.indexOf("Log in to manage") != -1) {
                 LOG.warning("NYT: Password error");
-                this.handler.post(new Runnable() {
-                    public void run() {
-                        Toast.makeText(
-                                context,
-                                "New York Times login failure. Is your password correct?",
-                                Toast.LENGTH_LONG).show();
-                    }
-                });
-
-                return null;
+                throw new DownloadException(R.string.login_failed);
             }
         }
 

@@ -61,7 +61,7 @@ public class MerlReagleDownloader extends AbstractJPZDownloader
     }
 
     @Override
-    public boolean download(Calendar date) throws IOException
+    public void download(Calendar date) throws IOException
     {
         // Figure out how many weeks old the given date is, rounded down
         Calendar now = Calendar.getInstance();
@@ -70,7 +70,7 @@ public class MerlReagleDownloader extends AbstractJPZDownloader
 
         if (weeksOld >= 4 || weeksOld < 0)
         {
-            return false;
+            throw new IOException("Only the most recent 4 weeks of puzzles are available");
         }
 
         // If the puzzle we want is 3 weeks old, check the 2-week-old puzzle
@@ -110,7 +110,7 @@ public class MerlReagleDownloader extends AbstractJPZDownloader
                 if (!matcher.find())
                 {
                     LOG.warning("Failed to scrape date in page: " + scrapeUrl);
-                    return false;
+                    throw new IOException("Failed to scrape date in page");
                 }
 
                 // Get the day from the regex match
@@ -129,7 +129,7 @@ public class MerlReagleDownloader extends AbstractJPZDownloader
                     // This should never happen, since the regex group only
                     // matches digits
                     LOG.warning("Error parsing integer: " + matcher.group(0));
-                    return false;
+                    throw new IOException("Failed to parse date");
                 }
 
                 int expectedMonth = prevPuzzleDate.get(Calendar.MONTH) + 1;
@@ -163,7 +163,7 @@ public class MerlReagleDownloader extends AbstractJPZDownloader
             if (!matcher.find())
             {
                 LOG.warning("Failed to find puzzle filename in page: " + scrapeUrl);
-                return false;
+                throw new IOException("Failed to find puzzle filename");
             }
 
             String puzzleFilename = matcher.group(1);
@@ -173,10 +173,10 @@ public class MerlReagleDownloader extends AbstractJPZDownloader
             MerlReagleMetadata metadataSetter = new MerlReagleMetadata(title, date.get(Calendar.YEAR));
 
             String url = baseUrl + puzzleFilename;
-            return super.download(date, url, EMPTY_MAP, metadataSetter);
+            super.download(date, url, EMPTY_MAP, metadataSetter);
         }
 
-        return false;
+        throw new IOException("Failed to download puzzle");
     }
 
     @Override
