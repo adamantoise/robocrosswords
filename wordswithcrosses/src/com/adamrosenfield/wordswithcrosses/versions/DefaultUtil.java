@@ -41,6 +41,7 @@ import android.view.View;
 
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.io.IO;
+import com.adamrosenfield.wordswithcrosses.net.HTTPException;
 
 public class DefaultUtil implements AndroidVersionUtils {
 
@@ -64,6 +65,12 @@ public class DefaultUtil implements AndroidVersionUtils {
         }
 
         HttpResponse response = httpclient.execute(httpget);
+
+        int status = response.getStatusLine().getStatusCode();
+        if (status != 200) {
+            throw new HTTPException(status);
+        }
+
         HttpEntity entity = response.getEntity();
 
         File tempFile = new File(WordsWithCrossesApplication.TEMP_DIR, destination.getName());
@@ -79,7 +86,7 @@ public class DefaultUtil implements AndroidVersionUtils {
         }
     }
 
-    public void onFileDownloaded(long id, boolean successful) {
+    public void onFileDownloaded(long id, boolean successful, int status) {
     }
 
     public void finishOnHomeButton(Activity a) {

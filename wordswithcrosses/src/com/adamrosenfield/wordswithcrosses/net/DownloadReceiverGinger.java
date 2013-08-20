@@ -62,6 +62,6 @@ public class DownloadReceiverGinger extends BroadcastReceiver {
 
         boolean succeeded = (status == DownloadManager.STATUS_SUCCESSFUL);
 
-        AndroidVersionUtils.Factory.getInstance().onFileDownloaded(id, succeeded);
+        AndroidVersionUtils.Factory.getInstance().onFileDownloaded(id, succeeded, reason);
     }
 }

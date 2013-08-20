@@ -19,7 +19,11 @@
 
 package com.adamrosenfield.wordswithcrosses.net;
 
+import java.io.IOException;
 import java.util.Calendar;
+
+import com.adamrosenfield.wordswithcrosses.net.HTTPException;
+import com.adamrosenfield.wordswithcrosses.R;
 
 /**
  * Common base class functionality for crosswords downloaded from
@@ -65,4 +69,26 @@ public abstract class XWordHubDownloader extends AbstractDownloader
             DEFAULT_NF.format(date.get(Calendar.MONTH) + 1) +
             DEFAULT_NF.format(date.get(Calendar.DAY_OF_MONTH));
     }
+
+    @Override
+    protected void download(Calendar date, String urlSuffix) throws IOException
+    {
+        try
+        {
+            super.download(date, urlSuffix);
+        }
+        catch (HTTPException e)
+        {
+            if (e.getStatus() == 401)
+            {
+                throw new DownloadException(R.string.login_failed);
+            }
+            else
+            {
+                // TODO: Parse the entity for the error code
+                throw e;
+            }
+        }
+    }
+
 }

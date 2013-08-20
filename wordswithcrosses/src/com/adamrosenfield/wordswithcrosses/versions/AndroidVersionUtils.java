@@ -39,7 +39,7 @@ public interface AndroidVersionUtils {
             File destination, boolean notification, String title)
             throws IOException;
 
-    public void onFileDownloaded(long id, boolean successful);
+    public void onFileDownloaded(long id, boolean successful, int status);
 
     public void finishOnHomeButton(Activity a);
 
