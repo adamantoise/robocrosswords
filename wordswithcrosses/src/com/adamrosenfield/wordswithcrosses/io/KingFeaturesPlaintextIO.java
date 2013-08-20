@@ -109,7 +109,7 @@ public class KingFeaturesPlaintextIO {
 
             char[] row = new char[width];
             for (int x = 0; x < width; x++) {
-                if (rowString[x].isEmpty()) {
+                if (rowString[x].length() == 0) {
                     LOG.warning("KFIO: Empty solution cell");
                     return false;
                 }
