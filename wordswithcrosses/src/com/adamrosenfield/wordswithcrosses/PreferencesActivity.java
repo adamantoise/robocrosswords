@@ -75,7 +75,7 @@ public class PreferencesActivity extends PreferenceActivity {
                 if (newValue instanceof String) {
                     String strValue = (String)newValue;
                     String otherValue = otherPref.getText();
-                    downloadPref.setChecked(!strValue.isEmpty() && !TextUtils.isEmpty(otherValue));
+                    downloadPref.setChecked(!TextUtils.isEmpty(strValue) && !TextUtils.isEmpty(otherValue));
                 }
 
                 return true;
