@@ -42,6 +42,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -314,7 +315,9 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
             } else {
                 render();
             }
-        } else if (!WordsWithCrossesApplication.getDatabaseHelper().hasAnyPuzzles()) {
+        } else if (!WordsWithCrossesApplication.getDatabaseHelper().hasAnyPuzzles() &&
+                   TextUtils.isEmpty(prefs.getString("welcome_shown_release", "")))
+        {
             // If this is the first time the user has launched the app, start
             // downloading a bunch of starter puzzles and show the welcome
             // page
