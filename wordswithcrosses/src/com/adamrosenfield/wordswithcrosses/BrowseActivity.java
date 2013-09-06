@@ -193,6 +193,11 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         lastOpenedView = v;
         lastOpenedPuzzle = ((PuzzleMeta)v.getTag());
 
+        // This can happen when selecting a section header with the keyboard
+        if (lastOpenedPuzzle == null) {
+            return;
+        }
+
         Intent intent = new Intent(Intent.ACTION_EDIT, null, this, PlayActivity.class);
         intent.putExtra(PlayActivity.EXTRA_PUZZLE_ID, lastOpenedPuzzle.id);
         this.startActivity(intent);
