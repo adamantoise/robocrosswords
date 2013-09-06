@@ -38,7 +38,7 @@ public class PatrickBlindauerDownloader extends AbstractPageScraper
         "Jun",
         "Jul",
         "Aug",
-        "Sept",  // At least for 2011 and 2012.  We'll see about 2013...
+        "Sep",
         "Oct",
         "Nov",
         "Dec"
@@ -52,8 +52,19 @@ public class PatrickBlindauerDownloader extends AbstractPageScraper
     @Override
     protected String getScrapeURL(Calendar date)
     {
+        int month = date.get(Calendar.MONTH);
+        String monthStr = BLINDAUER_SHORT_MONTHS[month];
+        if (month == Calendar.SEPTEMBER)
+        {
+            int year = date.get(Calendar.YEAR);
+            if (year == 2011 || year == 2012)
+            {
+                monthStr = "Sept";
+            }
+        }
+
         return ("http://www.patrickblindauer.com/Free_Monthly_Puzzles/" +
-                BLINDAUER_SHORT_MONTHS[date.get(Calendar.MONTH)] +
+                monthStr +
                 "_" +
                 date.get(Calendar.YEAR) +
                 "/");
