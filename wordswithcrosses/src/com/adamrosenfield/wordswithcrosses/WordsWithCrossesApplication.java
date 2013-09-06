@@ -59,6 +59,8 @@ public class WordsWithCrossesApplication extends Application {
     private static final String PREFERENCES_VERSION_PREF = "preferencesVersion";
     private static final int PREFERENCES_VERSION = 1;
 
+    private static Context mContext;
+
     public static Playboard BOARD;
     public static PlayboardRenderer RENDERER;
 
@@ -67,6 +69,8 @@ public class WordsWithCrossesApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        mContext = this;
 
         // Check preferences version and perform any upgrades if necessary
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -110,6 +114,10 @@ public class WordsWithCrossesApplication extends Application {
         }
 
         dbHelper = new PuzzleDatabaseHelper(this);
+    }
+
+    public static Context getContext() {
+        return mContext;
     }
 
     private void migratePreferences(SharedPreferences prefs, int prefsVersion) {

@@ -122,6 +122,7 @@
     <string name="source_download">Downloaded Puzzles</string>
     <string name="source_unknown">Unknown Source</string>
     <string name="source_all_available">All available</string>
+    <string name="author_unknown">Unknown Author</string>
 
     <string name="across">Across</string>
     <string name="down">Down</string>

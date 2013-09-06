@@ -23,6 +23,9 @@ package com.adamrosenfield.wordswithcrosses.puz;
 import java.util.Calendar;
 import java.util.Locale;
 
+import com.adamrosenfield.wordswithcrosses.R;
+import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
+
 public class PuzzleMeta {
 
     public long id;
@@ -70,10 +73,16 @@ public class PuzzleMeta {
     public void canonicalizeAuthor() {
         canonicalAuthor = author.trim();
 
-        if (canonicalAuthor.substring(0, 3).compareToIgnoreCase("by ") == 0) {
+        if (canonicalAuthor.length() > 3 &&
+            canonicalAuthor.substring(0, 3).compareToIgnoreCase("by ") == 0)
+        {
             canonicalAuthor = canonicalAuthor.substring(3);
         }
 
-        canonicalAuthor = canonicalAuthor.substring(0, 1).toUpperCase(Locale.US) + canonicalAuthor.substring(1);
+        if (canonicalAuthor.length() > 0) {
+            canonicalAuthor = canonicalAuthor.substring(0, 1).toUpperCase(Locale.US) + canonicalAuthor.substring(1);
+        } else {
+            canonicalAuthor = WordsWithCrossesApplication.getContext().getResources().getString(R.string.author_unknown);
+        }
     }
 }
