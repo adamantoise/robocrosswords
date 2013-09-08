@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -95,11 +96,12 @@ public class PlayActivity extends WordsWithCrossesActivity {
     /** Clue font sizes, in sp */
     private static final int CLUE_SIZES[] = {12, 14, 16};
 
+    private ProgressDialog loadProgressDialog;
+
     @SuppressWarnings("rawtypes")
     private AdapterView across;
     @SuppressWarnings("rawtypes")
     private AdapterView down;
-    private AlertDialog revealPuzzleDialog;
     private ListView allClues;
     private ClueListAdapter acrossAdapter;
     private ClueListAdapter downAdapter;
@@ -133,6 +135,8 @@ public class PlayActivity extends WordsWithCrossesActivity {
     private boolean fitToScreen = false;
 
     private boolean hasSetInitialZoom = false;
+
+    private Menu mOptionsMenu;
 
     private static final int MENU_ID_SHOW_ERRORS = 1;
     private static final int MENU_ID_REVEAL = 2;
@@ -171,7 +175,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
     }
 
     /** Called when the activity is first created. */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -191,7 +194,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
         utils.holographic(this);
         utils.finishOnHomeButton(this);
 
-        this.showErrors = this.prefs.getBoolean("showErrors", false);
         setDefaultKeyMode(Activity.DEFAULT_KEYS_DISABLE);
 
         if (prefs.getBoolean("fullScreen", false)) {
@@ -199,254 +201,293 @@ public class PlayActivity extends WordsWithCrossesActivity {
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
 
-        String filename = null;
-        try {
-            puzzleId = getIntent().getLongExtra(EXTRA_PUZZLE_ID,  -1);
-            if (puzzleId == -1) {
-                throw new IOException(EXTRA_PUZZLE_ID + " extra must be specified");
-            }
-
-            PuzzleDatabaseHelper dbHelper = WordsWithCrossesApplication.getDatabaseHelper();
-            filename = dbHelper.getFilename(puzzleId);
-            if (filename == null) {
-                throw new IOException("Invalid puzzle ID: " + puzzleId);
-            }
-
-            baseFile = new File(filename);
-            puz = IO.load(baseFile);
-
-            BOARD = new Playboard(puz, puzzleId, getMovementStrategy());
-            RENDERER = new PlayboardRenderer(BOARD, !prefs.getBoolean("suppressHints", false));
-
-            SolveState solveState = dbHelper.getPuzzleSolveState(puzzleId);
-            if (solveState != null) {
-                BOARD.setSolveState(solveState);
-            }
-
-            BOARD.setSkipCompletedLetters(this.prefs.getBoolean("skipFilled", false));
-
-            BOARD.setOnBoardChangedListener(new OnBoardChangedListener() {
-                public void onBoardChanged() {
-                    updateProgressBar();
-                }
-            });
-
-            int keyboardType = "CONDENSED_ARROWS".equals(prefs.getString(
-                    "keyboardType", "")) ? R.xml.keyboard_dpad : R.xml.keyboard;
-            Keyboard keyboard = new Keyboard(this, keyboardType);
-            keyboardView = (KeyboardView) this.findViewById(R.id.playKeyboard);
-            keyboardView.setKeyboard(keyboard);
-            this.useNativeKeyboard = "NATIVE".equals(prefs.getString(
-                    "keyboardType", ""));
-
-            if (this.useNativeKeyboard) {
-                keyboardView.setVisibility(View.GONE);
-            }
-
-            keyboardView
-                    .setOnKeyboardActionListener(new OnKeyboardActionListener() {
-                        private long lastSwipe = 0;
-
-                        public void onKey(int primaryCode, int[] keyCodes) {
-                            long eventTime = System.currentTimeMillis();
-
-                            if ((eventTime - lastSwipe) < 500) {
-                                return;
-                            }
-
-                            KeyEvent event = new KeyEvent(eventTime, eventTime,
-                                    KeyEvent.ACTION_DOWN, primaryCode, 0, 0, 0,
-                                    0, KeyEvent.FLAG_SOFT_KEYBOARD
-                                            | KeyEvent.FLAG_KEEP_TOUCH_MODE);
-                            PlayActivity.this.onKeyUp(primaryCode, event);
-                        }
-
-                        public void onPress(int primaryCode) {
-                        }
-
-                        public void onRelease(int primaryCode) {
-                        }
-
-                        public void onText(CharSequence text) {
-                        }
-
-                        public void swipeDown() {
-                            long eventTime = System.currentTimeMillis();
-                            lastSwipe = eventTime;
-
-                            KeyEvent event = new KeyEvent(eventTime, eventTime,
-                                    KeyEvent.ACTION_DOWN,
-                                    KeyEvent.KEYCODE_DPAD_DOWN, 0, 0, 0, 0,
-                                    KeyEvent.FLAG_SOFT_KEYBOARD
-                                            | KeyEvent.FLAG_KEEP_TOUCH_MODE);
-                            PlayActivity.this.onKeyUp(
-                                    KeyEvent.KEYCODE_DPAD_DOWN, event);
-                        }
-
-                        public void swipeLeft() {
-                            long eventTime = System.currentTimeMillis();
-                            lastSwipe = eventTime;
-
-                            KeyEvent event = new KeyEvent(eventTime, eventTime,
-                                    KeyEvent.ACTION_DOWN,
-                                    KeyEvent.KEYCODE_DPAD_LEFT, 0, 0, 0, 0,
-                                    KeyEvent.FLAG_SOFT_KEYBOARD
-                                            | KeyEvent.FLAG_KEEP_TOUCH_MODE);
-                            PlayActivity.this.onKeyUp(
-                                    KeyEvent.KEYCODE_DPAD_LEFT, event);
-                        }
-
-                        public void swipeRight() {
-                            long eventTime = System.currentTimeMillis();
-                            lastSwipe = eventTime;
-
-                            KeyEvent event = new KeyEvent(eventTime, eventTime,
-                                    KeyEvent.ACTION_DOWN,
-                                    KeyEvent.KEYCODE_DPAD_RIGHT, 0, 0, 0, 0,
-                                    KeyEvent.FLAG_SOFT_KEYBOARD
-                                            | KeyEvent.FLAG_KEEP_TOUCH_MODE);
-                            PlayActivity.this.onKeyUp(
-                                    KeyEvent.KEYCODE_DPAD_RIGHT, event);
-                        }
-
-                        public void swipeUp() {
-                            long eventTime = System.currentTimeMillis();
-                            lastSwipe = eventTime;
-
-                            KeyEvent event = new KeyEvent(eventTime, eventTime,
-                                    KeyEvent.ACTION_DOWN,
-                                    KeyEvent.KEYCODE_DPAD_UP, 0, 0, 0, 0,
-                                    KeyEvent.FLAG_SOFT_KEYBOARD
-                                            | KeyEvent.FLAG_KEEP_TOUCH_MODE);
-                            PlayActivity.this.onKeyUp(KeyEvent.KEYCODE_DPAD_UP,
-                                    event);
-                        }
-                    });
-
-            clue = (TextView)this.findViewById(R.id.clueLine);
-
-            View clueContainer = findViewById(R.id.clueContainer);
-            if (clueContainer.getVisibility() != View.GONE &&
-                android.os.Build.VERSION.SDK_INT >= 11)
-            {
-                clueContainer.setVisibility(View.GONE);
-                View clueLine = utils.onActionBarCustom(this, R.layout.clue_line_only);
-                if (clueLine != null) {
-                    clue = (TextView)clueLine.findViewById(R.id.clueLine);
-                    timerText = (TextView)clueLine.findViewById(R.id.timerText);
-                }
-            }
-            clue.setClickable(true);
-            clue.setOnClickListener(new OnClickListener() {
-                public void onClick(View arg0) {
-                    Intent i = new Intent(PlayActivity.this, ClueListActivity.class);
-                    i.setData(Uri.fromFile(baseFile));
-                    PlayActivity.this.startActivityForResult(i, 0);
-                }
-            });
-
-            if (clueContainer.getVisibility() != View.GONE &&
-                !TextUtils.isEmpty(puz.getNotes()))
-            {
-                View notesButton = findViewById(R.id.notesButton);
-                notesButton.setVisibility(View.VISIBLE);
-            }
-
-            boardView = (CrosswordImageView)findViewById(R.id.board);
-            boardView.setBoard(BOARD, metrics);
-
-            this.registerForContextMenu(boardView);
-
-            boardView.setClickListener(new ClickListener() {
-                public void onClick(Position pos) {
-                    Word prevWord = null;
-                    if (pos != null) {
-                        prevWord = BOARD.setHighlightLetter(pos);
-                    }
-                    render(prevWord);
-                }
-
-                public void onDoubleClick(Position pos) {
-                    if (prefs.getBoolean("doubleTap",  false)) {
-                        if (fitToScreen) {
-                            boardView.setRenderScale(lastBoardScale);
-
-                            Word prevWord = null;
-                            if (pos != null) {
-                                prevWord = BOARD.setHighlightLetter(pos);
-                            }
-                            render(prevWord);
-                        } else {
-                            lastBoardScale = boardView.getRenderScale();
-                            boardView.fitToScreen();
-                            render();
-                        }
-
-                        fitToScreen = !fitToScreen;
-                    } else {
-                        onClick(pos);
-                    }
-                }
-
-                public void onLongClick(Position pos) {
-                    Word prevWord = null;
-                    if (pos != null) {
-                        prevWord = BOARD.setHighlightLetter(pos);
-                    }
-                    boardView.render(prevWord);
-                    openContextMenu(boardView);
-                }
-            });
-
-            boardView.setRenderScaleListener(new RenderScaleListener() {
-                public void onRenderScaleChanged(float renderScale) {
-                    fitToScreen = false;
-                }
-            });
-
-        } catch (IOException e) {
-            e.printStackTrace();
-
-            String text = getResources().getString(R.string.load_puzzle_failed);
-            if (filename != null) {
-                text += filename;
-            }
-
-            Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
-            toast.show();
-            this.finish();
-
+        puzzleId = getIntent().getLongExtra(EXTRA_PUZZLE_ID,  -1);
+        if (puzzleId == -1) {
+            LOG.warning(EXTRA_PUZZLE_ID + " extra must be specified");
+            puzzleLoadFailed(null);
             return;
         }
 
-        revealPuzzleDialog = new AlertDialog.Builder(this).create();
-        revealPuzzleDialog.setTitle(getResources().getString(R.string.reveal_puzzle_title));
-        revealPuzzleDialog.setMessage(getResources().getString(R.string.reveal_puzzle_body));
-
-        revealPuzzleDialog.setButton(
-                DialogInterface.BUTTON_POSITIVE,
-                getResources().getString(android.R.string.ok),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        BOARD.revealPuzzle();
-                        render();
-                    }
-                });
-        revealPuzzleDialog.setButton(
-                DialogInterface.BUTTON_NEGATIVE,
-                getResources().getString(android.R.string.cancel),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-        if (BOARD.isShowErrors() != this.showErrors) {
-            BOARD.toggleShowErrors();
+        PuzzleDatabaseHelper dbHelper = WordsWithCrossesApplication.getDatabaseHelper();
+        final String filename = dbHelper.getFilename(puzzleId);
+        if (filename == null) {
+            LOG.warning("Invalid puzzle ID: " + puzzleId);
+            puzzleLoadFailed(null);
+            return;
         }
 
-        this.render();
+        baseFile = new File(filename);
 
+        if (BOARD != null && BOARD.getPuzzleID() == puzzleId) {
+            puz = BOARD.getPuzzle();
+        }
+
+        if (puz != null) {
+            postPuzzleLoaded();
+        } else {
+            // Show a progress dialog while the puzzle is loaded
+            loadProgressDialog = new ProgressDialog(this);
+            loadProgressDialog.setMessage(getResources().getString(R.string.loading_puzzle));
+            loadProgressDialog.setCancelable(false);
+            loadProgressDialog.show();
+
+            // Load the puzzle on a background thread
+            new Thread(new Runnable() {
+                public void run() {
+                    final Puzzle newPuzzle = loadPuzzle(filename);
+
+                    // Do stuff on the UI thread after the puzzle is loaded
+                    handler.post(new Runnable() {
+                        public void run() {
+                            loadProgressDialog.dismiss();
+
+                            if (newPuzzle != null) {
+                                puz = newPuzzle;
+                                postPuzzleLoaded();
+                            } else {
+                                puzzleLoadFailed(filename);
+                            }
+                        }
+                        });
+                }
+                }).start();
+        }
+    }
+
+    private void puzzleLoadFailed(String filename) {
+        String text = getResources().getString(R.string.load_puzzle_failed);
+        if (filename != null) {
+            text += filename;
+        }
+
+        Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+        toast.show();
+        finish();
+    }
+
+    private Puzzle loadPuzzle(String filename) {
+        try {
+            return IO.load(baseFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private void postPuzzleLoaded() {
+        if (mOptionsMenu != null) {
+            maybeAddNotesMenuItem();
+        }
+
+        initPlayboard();
+        initKeyboard();
+        initClueLists();
+        handleOnResume();
+    }
+
+    private void initPlayboard() {
+        BOARD = new Playboard(puz, puzzleId, getMovementStrategy());
+        RENDERER = new PlayboardRenderer(BOARD);
+
+        PuzzleDatabaseHelper dbHelper = WordsWithCrossesApplication.getDatabaseHelper();
+        SolveState solveState = dbHelper.getPuzzleSolveState(puzzleId);
+        if (solveState != null) {
+            BOARD.setSolveState(solveState);
+        }
+
+        BOARD.setOnBoardChangedListener(new OnBoardChangedListener() {
+            public void onBoardChanged() {
+                updateProgressBar();
+            }
+        });
+
+        clue = (TextView)this.findViewById(R.id.clueLine);
+
+        View clueContainer = findViewById(R.id.clueContainer);
+        if (clueContainer.getVisibility() != View.GONE &&
+            android.os.Build.VERSION.SDK_INT >= 11)
+        {
+            clueContainer.setVisibility(View.GONE);
+            View clueLine = utils.onActionBarCustom(this, R.layout.clue_line_only);
+            if (clueLine != null) {
+                clue = (TextView)clueLine.findViewById(R.id.clueLine);
+                timerText = (TextView)clueLine.findViewById(R.id.timerText);
+            }
+        }
+        clue.setClickable(true);
+        clue.setOnClickListener(new OnClickListener() {
+            public void onClick(View view) {
+                Intent i = new Intent(PlayActivity.this, ClueListActivity.class);
+                i.setData(Uri.fromFile(baseFile));
+                PlayActivity.this.startActivityForResult(i, 0);
+            }
+        });
+
+        if (clueContainer.getVisibility() != View.GONE &&
+            !TextUtils.isEmpty(puz.getNotes()))
+        {
+            View notesButton = findViewById(R.id.notesButton);
+            notesButton.setVisibility(View.VISIBLE);
+        }
+
+        boardView = (CrosswordImageView)findViewById(R.id.board);
+        boardView.setBoard(BOARD, metrics);
+
+        this.registerForContextMenu(boardView);
+
+        boardView.setClickListener(new ClickListener() {
+            public void onClick(Position pos) {
+                Word prevWord = null;
+                if (pos != null) {
+                    prevWord = BOARD.setHighlightLetter(pos);
+                }
+                render(prevWord);
+            }
+
+            public void onDoubleClick(Position pos) {
+                if (prefs.getBoolean("doubleTap",  false)) {
+                    if (fitToScreen) {
+                        boardView.setRenderScale(lastBoardScale);
+
+                        Word prevWord = null;
+                        if (pos != null) {
+                            prevWord = BOARD.setHighlightLetter(pos);
+                        }
+                        render(prevWord);
+                    } else {
+                        lastBoardScale = boardView.getRenderScale();
+                        boardView.fitToScreen();
+                        render();
+                    }
+
+                    fitToScreen = !fitToScreen;
+                } else {
+                    onClick(pos);
+                }
+            }
+
+            public void onLongClick(Position pos) {
+                Word prevWord = null;
+                if (pos != null) {
+                    prevWord = BOARD.setHighlightLetter(pos);
+                }
+                boardView.render(prevWord);
+                openContextMenu(boardView);
+            }
+        });
+
+        boardView.setRenderScaleListener(new RenderScaleListener() {
+            public void onRenderScaleChanged(float renderScale) {
+                fitToScreen = false;
+            }
+        });
+
+        showErrors = prefs.getBoolean("showErrors", false);
+        if (BOARD.isShowErrors() != showErrors) {
+            BOARD.toggleShowErrors();
+        }
+    }
+
+    private void initKeyboard() {
+        int keyboardType = "CONDENSED_ARROWS".equals(prefs.getString(
+                "keyboardType", "")) ? R.xml.keyboard_dpad : R.xml.keyboard;
+        Keyboard keyboard = new Keyboard(this, keyboardType);
+        keyboardView = (KeyboardView) this.findViewById(R.id.playKeyboard);
+        keyboardView.setKeyboard(keyboard);
+        this.useNativeKeyboard = "NATIVE".equals(prefs.getString("keyboardType", ""));
+
+        if (this.useNativeKeyboard) {
+            keyboardView.setVisibility(View.GONE);
+        }
+
+        keyboardView.setOnKeyboardActionListener(new OnKeyboardActionListener() {
+            private long lastSwipe = 0;
+
+            public void onKey(int primaryCode, int[] keyCodes) {
+                long eventTime = System.currentTimeMillis();
+
+                if ((eventTime - lastSwipe) < 500) {
+                    return;
+                }
+
+                KeyEvent event =
+                    new KeyEvent(eventTime,
+                                 eventTime,
+                                 KeyEvent.ACTION_DOWN,
+                                 primaryCode,
+                                 0, 0, 0, 0,
+                                 KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE);
+                PlayActivity.this.onKeyUp(primaryCode, event);
+            }
+
+            public void onPress(int primaryCode) {
+            }
+
+            public void onRelease(int primaryCode) {
+            }
+
+            public void onText(CharSequence text) {
+            }
+
+            public void swipeDown() {
+                long eventTime = System.currentTimeMillis();
+                lastSwipe = eventTime;
+
+                KeyEvent event =
+                    new KeyEvent(eventTime, eventTime,
+                                 KeyEvent.ACTION_DOWN,
+                                 KeyEvent.KEYCODE_DPAD_DOWN,
+                                 0, 0, 0, 0,
+                                 KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE);
+                PlayActivity.this.onKeyUp(KeyEvent.KEYCODE_DPAD_DOWN, event);
+            }
+
+            public void swipeLeft() {
+                long eventTime = System.currentTimeMillis();
+                lastSwipe = eventTime;
+
+                KeyEvent event =
+                    new KeyEvent(eventTime,
+                                 eventTime,
+                                 KeyEvent.ACTION_DOWN,
+                                 KeyEvent.KEYCODE_DPAD_LEFT,
+                                 0, 0, 0, 0,
+                                 KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE);
+                PlayActivity.this.onKeyUp(KeyEvent.KEYCODE_DPAD_LEFT, event);
+            }
+
+            public void swipeRight() {
+                long eventTime = System.currentTimeMillis();
+                lastSwipe = eventTime;
+
+                KeyEvent event =
+                    new KeyEvent(eventTime,
+                                 eventTime,
+                                 KeyEvent.ACTION_DOWN,
+                                 KeyEvent.KEYCODE_DPAD_RIGHT,
+                                 0, 0, 0, 0,
+                                 KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE);
+                PlayActivity.this.onKeyUp(KeyEvent.KEYCODE_DPAD_RIGHT, event);
+            }
+
+            public void swipeUp() {
+                long eventTime = System.currentTimeMillis();
+                lastSwipe = eventTime;
+
+                KeyEvent event =
+                    new KeyEvent(eventTime,
+                                 eventTime,
+                                 KeyEvent.ACTION_DOWN,
+                                 KeyEvent.KEYCODE_DPAD_UP,
+                                 0, 0, 0, 0,
+                                 KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE);
+                PlayActivity.this.onKeyUp(KeyEvent.KEYCODE_DPAD_UP, event);
+            }
+        });
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private void initClueLists() {
         this.across = (AdapterView) this.findViewById(R.id.acrossList);
         this.down = (AdapterView) this.findViewById(R.id.downList);
 
@@ -553,9 +594,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
         }
 
         this.setClueSize(prefs.getInt("clueSize", CLUE_SIZES[0]));
-        setTitle("Words With Crosses - " + puz.getTitle() + " - " + puz.getAuthor()
-                + " -   " + puz.getCopyright());
-        this.showCount = prefs.getBoolean("showCount", false);
     }
 
     @Override
@@ -598,6 +636,8 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        mOptionsMenu = menu;
+
         int showItemStr = (showErrors ? R.string.menu_hide_errors : R.string.menu_show_errors);
         MenuItem showItem = menu.add(Menu.NONE, MENU_ID_SHOW_ERRORS, Menu.NONE, showItemStr)
             .setIcon(android.R.drawable.ic_menu_view);
@@ -617,10 +657,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
         menu.add(Menu.NONE, MENU_ID_SETTINGS, Menu.NONE, R.string.menu_settings)
             .setIcon(android.R.drawable.ic_menu_preferences);
 
-        if (!TextUtils.isEmpty(puz.getNotes())) {
-            MenuItem notesItem = menu.add(Menu.NONE, MENU_ID_NOTES, Menu.NONE, R.string.menu_notes).setIcon(R.drawable.ic_action_paste);
-            utils.onActionBarWithText(notesItem);
-        }
+        maybeAddNotesMenuItem();
 
         if (WordsWithCrossesApplication.isTabletish(metrics)) {
             utils.onActionBarWithText(showItem);
@@ -628,6 +665,13 @@ public class PlayActivity extends WordsWithCrossesActivity {
         }
 
         return true;
+    }
+
+    private void maybeAddNotesMenuItem() {
+        if (puz != null && !TextUtils.isEmpty(puz.getNotes())) {
+            MenuItem notesItem = mOptionsMenu.add(Menu.NONE, MENU_ID_NOTES, Menu.NONE, R.string.menu_notes).setIcon(R.drawable.ic_action_paste);
+            utils.onActionBarWithText(notesItem);
+        }
     }
 
     @Override
@@ -873,7 +917,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
             return createNotesDialog();
 
         case REVEAL_PUZZLE_DIALOG:
-            return revealPuzzleDialog;
+            return createRevealPuzzleDialog();
 
         default:
             return null;
@@ -946,10 +990,21 @@ public class PlayActivity extends WordsWithCrossesActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         this.resumedOn = System.currentTimeMillis();
-        BOARD.setSkipCompletedLetters(this.prefs
-                .getBoolean("skipFilled", false));
+
+        if (puz != null) {
+            handleOnResume();
+        }
+    }
+
+    private void handleOnResume() {
+        setTitle("Words With Crosses - " + puz.getTitle() + " - " + puz.getAuthor() + " -  " + puz.getCopyright());
+
+        BOARD.setSkipCompletedLetters(prefs.getBoolean("skipFilled", false));
         BOARD.setMovementStrategy(getMovementStrategy());
+
+        RENDERER.setHintHighlight(!prefs.getBoolean("suppressHints", false));
 
         String clickSlopStr = prefs.getString("touchSensitivity", "3");
         try {
@@ -964,8 +1019,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
         Keyboard keyboard = new Keyboard(this, keyboardType);
         keyboardView = (KeyboardView) this.findViewById(R.id.playKeyboard);
         keyboardView.setKeyboard(keyboard);
-        this.useNativeKeyboard = "NATIVE".equals(prefs.getString(
-                "keyboardType", ""));
+        this.useNativeKeyboard = "NATIVE".equals(prefs.getString("keyboardType", ""));
 
         if (this.useNativeKeyboard) {
             keyboardView.setVisibility(View.GONE);
@@ -1017,6 +1071,30 @@ public class PlayActivity extends WordsWithCrossesActivity {
                 });
 
         return notesDialogBuilder.create();
+    }
+
+    private Dialog createRevealPuzzleDialog() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder
+            .setTitle(getResources().getString(R.string.reveal_puzzle_title))
+            .setMessage(getResources().getString(R.string.reveal_puzzle_body))
+            .setPositiveButton(
+                android.R.string.ok,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        BOARD.revealPuzzle();
+                        render();
+                    }
+                })
+            .setNegativeButton(
+                getResources().getString(android.R.string.cancel),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        return dialogBuilder.create();
     }
 
     private void setClueSize(int dps) {

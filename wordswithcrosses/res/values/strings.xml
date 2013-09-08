@@ -151,6 +151,7 @@
     <string name="download_failed">Download failed: %s</string>
     <string name="download_failed_newline">Download failed:\n</string>
     <string name="unknown_extension">Unknown file extension:\u0020</string>
+    <string name="loading_puzzle">Loading puzzle…</string>
     <string name="load_puzzle_failed">Failed to load puzzle:\n</string>
     <string name="device_configuration_error">Unable to read device configuration</string>
     <string name="login_failed">Invalid username or password</string>

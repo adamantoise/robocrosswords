@@ -60,9 +60,8 @@ public class PlayboardRenderer {
 
     private boolean hintHighlight;
 
-    public PlayboardRenderer(Playboard board, boolean hintHighlight) {
+    public PlayboardRenderer(Playboard board) {
         this.board = board;
-        this.hintHighlight = hintHighlight;
 
         blackLine.setColor(Color.BLACK);
         blackLine.setStrokeWidth(2.0F);
@@ -99,6 +98,10 @@ public class PlayboardRenderer {
         red.setTypeface(Typeface.SANS_SERIF);
 
         this.cheated.setColor(Color.parseColor("#FFE0E0"));
+    }
+
+    public void setHintHighlight(boolean hintHighlight) {
+        this.hintHighlight = hintHighlight;
     }
 
     public Bitmap draw(Word reset, float scale) {

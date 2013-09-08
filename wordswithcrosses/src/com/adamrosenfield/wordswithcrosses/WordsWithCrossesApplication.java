@@ -198,7 +198,7 @@ public class WordsWithCrossesApplication extends Application {
             File logFile = new File(DEBUG_DIR, "wordswithcrosses.log");
             FileOutputStream fos = new FileOutputStream(logFile);
             try {
-                Process process = Runtime.getRuntime().exec("logcat -d wordswithcrosses:I *:S");
+                Process process = Runtime.getRuntime().exec("logcat -d");
                 IO.copyStream(process.getInputStream(), fos);
                 process.waitFor();
             } finally {
