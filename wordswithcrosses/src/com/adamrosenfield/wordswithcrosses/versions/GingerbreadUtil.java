@@ -56,9 +56,13 @@ public class GingerbreadUtil extends DefaultUtil {
     @Override
     public void downloadFile(URL url, Map<String, String> headers, File destination, boolean notification,
         String title) throws IOException {
-        // Pre-ICS download managers don't support HTTPS
-        if ("https".equals(url.getProtocol()) && android.os.Build.VERSION.SDK_INT < 15) {
-            LOG.info("HTTPS not supported, not using DownloadManager");
+        // The DownloadManager can sometimes be buggy on some devices
+        // (http://code.google.com/p/android/issues/detail?id=18462).  So
+        // don't use it if requested.
+        //
+        // Also, pre-ICS download managers don't support HTTPS
+        if (!prefs.getBoolean("useDownloadManager", true) ||
+            "https".equals(url.getProtocol()) && android.os.Build.VERSION.SDK_INT < 15) {
             super.downloadFile(url, headers, destination, notification, title);
             return;
         }
@@ -69,8 +73,6 @@ public class GingerbreadUtil extends DefaultUtil {
         File tempFile = new File(WordsWithCrossesApplication.TEMP_DIR, destination.getName());
 
         request.setDestinationUri(Uri.fromFile(tempFile));
-        String scrubbedUrl = AbstractDownloader.scrubUrl(url);
-        LOG.info("Downloading " + scrubbedUrl + " ==> " + tempFile);
 
         for (Entry<String, String> entry : headers.entrySet()) {
             request.addRequestHeader(entry.getKey(), entry.getValue());
@@ -83,6 +85,9 @@ public class GingerbreadUtil extends DefaultUtil {
         request.setTitle(title);
         long id = mgr.enqueue(request);
         Long idObj = id;
+
+        String scrubbedUrl = AbstractDownloader.scrubUrl(url);
+        LOG.info("Downloading " + scrubbedUrl + " ==> " + tempFile + " (id=" + id + ")");
 
         // If the request completed really fast, we're done
         DownloadingFile downloadingFile;

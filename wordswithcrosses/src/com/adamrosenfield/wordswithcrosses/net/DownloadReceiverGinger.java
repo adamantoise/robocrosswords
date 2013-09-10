@@ -58,7 +58,7 @@ public class DownloadReceiverGinger extends BroadcastReceiver {
         String mediaType = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_MEDIA_TYPE));
         cursor.close();
 
-        LOG.info("Download completed: status=" + status + " reason=" + reason + " mediaType=" + mediaType);
+        LOG.info("Download completed: id=" + id + " status=" + status + " reason=" + reason + " mediaType=" + mediaType);
 
         boolean succeeded = (status == DownloadManager.STATUS_SUCCESSFUL);
 

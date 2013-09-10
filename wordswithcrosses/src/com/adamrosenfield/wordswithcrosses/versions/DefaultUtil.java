@@ -35,12 +35,15 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.io.IO;
+import com.adamrosenfield.wordswithcrosses.net.AbstractDownloader;
 import com.adamrosenfield.wordswithcrosses.net.HTTPException;
 
 public class DefaultUtil implements AndroidVersionUtils {
@@ -48,9 +51,11 @@ public class DefaultUtil implements AndroidVersionUtils {
     protected static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
 
     protected Context context;
+    protected SharedPreferences prefs;
 
     public void setContext(Context context) {
         this.context = context;
+        prefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     public void downloadFile(URL url, Map<String, String> headers,
@@ -58,6 +63,10 @@ public class DefaultUtil implements AndroidVersionUtils {
             throws IOException {
 
         DefaultHttpClient httpclient = new DefaultHttpClient();
+
+        String scrubbedUrl = AbstractDownloader.scrubUrl(url);
+        File tempFile = new File(WordsWithCrossesApplication.TEMP_DIR, destination.getName());
+        LOG.info("DefaultUtil: Downloading " + scrubbedUrl + " ==> " + tempFile);
 
         HttpGet httpget = new HttpGet(url.toString());
         for (Entry<String, String> e : headers.entrySet()) {
@@ -73,7 +82,6 @@ public class DefaultUtil implements AndroidVersionUtils {
 
         HttpEntity entity = response.getEntity();
 
-        File tempFile = new File(WordsWithCrossesApplication.TEMP_DIR, destination.getName());
         FileOutputStream fos = new FileOutputStream(tempFile);
         try {
             IO.copyStream(entity.getContent(), fos);
@@ -81,9 +89,11 @@ public class DefaultUtil implements AndroidVersionUtils {
             fos.close();
         }
 
-        if (!tempFile.renameTo(destination)) {
+        if (!tempFile.equals(destination) && !tempFile.renameTo(destination)) {
             throw new IOException("Failed to rename " + tempFile + " to " + destination);
         }
+
+        LOG.info("DefaultUtil: Download succeeded: " + scrubbedUrl);
     }
 
     public void onFileDownloaded(long id, boolean successful, int status) {

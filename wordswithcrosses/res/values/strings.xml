@@ -67,6 +67,8 @@
     <string name="pref_application_settings">Application Settings</string>
     <string name="pref_automatic_download">Automatic Download</string>
     <string name="pref_automatic_download_summary">Download today\'s puzzles when starting the application</string>
+    <string name="pref_download_manager">Use Download Manager</string>
+    <string name="pref_download_manager_summary">Uses the Android Download Manager to download puzzles on Android OS 2.3 and higher. Try toggling if you\'re having problems with downloads.</string>
     <string name="pref_no_hint_highlighting">No Hint Highlighting</string>
     <string name="pref_no_hint_highlighting_summary">Prevents the pink boxes indicating \'hints\' in the form of reveals or show errors</string>
     <string name="pref_delete_on_cleanup">Delete on Cleanup</string>
