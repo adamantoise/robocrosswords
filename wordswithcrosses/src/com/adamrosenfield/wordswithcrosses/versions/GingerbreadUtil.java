@@ -42,6 +42,8 @@ import com.adamrosenfield.wordswithcrosses.net.HTTPException;
 @TargetApi(9)
 public class GingerbreadUtil extends DefaultUtil {
 
+    private static final boolean USE_DOWNLOAD_MANAGER = false;
+
     private static class DownloadingFile
     {
         public boolean completed = false;
@@ -54,14 +56,20 @@ public class GingerbreadUtil extends DefaultUtil {
     private static Map<Long, DownloadingFile> completedDownloads = new HashMap<Long, DownloadingFile>();
 
     @Override
+    @SuppressWarnings("unused")  // Ignore dead code warning
     public void downloadFile(URL url, Map<String, String> headers, File destination, boolean notification,
         String title) throws IOException {
-        // The DownloadManager can sometimes be buggy on some devices
-        // (http://code.google.com/p/android/issues/detail?id=18462).  So
-        // don't use it if requested.
+        // The DownloadManager can sometimes be buggy and can cause spurious
+        // errors, see
+        // http://code.google.com/p/android/issues/detail?id=18462
+        // Since puzzle files are very small (a few KB), we don't need to use
+        // any of the useful features the DownloadManager provides, such as
+        // resuming interrupted downloads and resuming downloads across
+        // system reboots.  So for now, just use the ordinary
+        // DefaultHttpClient.
         //
-        // Also, pre-ICS download managers don't support HTTPS
-        if (!prefs.getBoolean("useDownloadManager", true) ||
+        // Also, pre-ICS download managers don't support HTTPS.
+        if (!USE_DOWNLOAD_MANAGER ||
             "https".equals(url.getProtocol()) && android.os.Build.VERSION.SDK_INT < 15) {
             super.downloadFile(url, headers, destination, notification, title);
             return;

@@ -255,13 +255,6 @@
     />
 
     <CheckBoxPreference
-        android:title="@string/pref_download_manager"
-        android:summary="@string/pref_download_manager_summary"
-        android:defaultValue="true"
-        android:key="useDownloadManager"
-    />
-
-    <CheckBoxPreference
         android:title="@string/pref_no_hint_highlighting"
         android:summary="@string/pref_no_hint_highlighting_summary"
         android:defaultValue="false"
