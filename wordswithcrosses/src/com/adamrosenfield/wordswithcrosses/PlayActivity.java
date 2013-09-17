@@ -381,11 +381,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
                 fitToScreen = false;
             }
         });
-
-        showErrors = prefs.getBoolean("showErrors", false);
-        if (BOARD.isShowErrors() != showErrors) {
-            BOARD.toggleShowErrors();
-        }
     }
 
     private void initKeyboard() {
@@ -667,6 +662,16 @@ public class PlayActivity extends WordsWithCrossesActivity {
         return true;
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        int showItemStr = (showErrors ? R.string.menu_hide_errors : R.string.menu_show_errors);
+        menu.findItem(MENU_ID_SHOW_ERRORS).setTitle(showItemStr);
+
+        return true;
+    }
+
     private void maybeAddNotesMenuItem() {
         if (puz != null && !TextUtils.isEmpty(puz.getNotes())) {
             MenuItem notesItem = mOptionsMenu.add(Menu.NONE, MENU_ID_NOTES, Menu.NONE, R.string.menu_notes).setIcon(R.drawable.ic_action_paste);
@@ -826,10 +831,11 @@ public class PlayActivity extends WordsWithCrossesActivity {
             return true;
 
         case MENU_ID_SHOW_ERRORS:
-            BOARD.toggleShowErrors();
-            int showErrorsStr = (BOARD.isShowErrors() ? R.string.menu_hide_errors : R.string.menu_show_errors);
+            showErrors = !showErrors;
+            BOARD.setShowErrors(showErrors);
+            int showErrorsStr = (showErrors ? R.string.menu_hide_errors : R.string.menu_show_errors);
             item.setTitle(showErrorsStr);
-            prefs.edit().putBoolean("showErrors", BOARD.isShowErrors()).commit();
+            prefs.edit().putBoolean("showErrors", showErrors).commit();
             render();
             return true;
 
@@ -1004,7 +1010,10 @@ public class PlayActivity extends WordsWithCrossesActivity {
         BOARD.setSkipCompletedLetters(prefs.getBoolean("skipFilled", false));
         BOARD.setMovementStrategy(getMovementStrategy());
 
-        RENDERER.setHintHighlight(!prefs.getBoolean("suppressHints", false));
+        showErrors = prefs.getBoolean("showErrors", false);
+        BOARD.setShowErrors(showErrors);
+
+        RENDERER.setHintHighlight(prefs.getBoolean("showRevealedLetters", true));
 
         String clickSlopStr = prefs.getString("touchSensitivity", "3");
         try {

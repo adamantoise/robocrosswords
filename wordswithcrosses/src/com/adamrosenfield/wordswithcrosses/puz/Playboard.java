@@ -282,6 +282,10 @@ public class Playboard {
         return this.showErrors;
     }
 
+    public void toggleShowErrors() {
+        showErrors = !showErrors;
+    }
+
     public void setSkipCompletedLetters(boolean skipCompletedLetters) {
         this.skipCompletedLetters = skipCompletedLetters;
     }
@@ -651,10 +655,6 @@ public class Playboard {
         across = !across;
 
         return w;
-    }
-
-    public void toggleShowErrors() {
-        showErrors = !showErrors;
     }
 
     private void onBoardChanged() {

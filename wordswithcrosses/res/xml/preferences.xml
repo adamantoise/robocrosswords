@@ -255,10 +255,17 @@
     />
 
     <CheckBoxPreference
-        android:title="@string/pref_no_hint_highlighting"
-        android:summary="@string/pref_no_hint_highlighting_summary"
+        android:title="@string/pref_show_errors"
+        android:summary="@string/pref_show_errors_summary"
         android:defaultValue="false"
-        android:key="suppressHints"
+        android:key="showErrors"
+    />
+
+    <CheckBoxPreference
+        android:title="@string/pref_show_revealed_letters"
+        android:summary="@string/pref_show_revealed_letters_summary"
+        android:defaultValue="true"
+        android:key="showRevealedLetters"
     />
 
     <CheckBoxPreference

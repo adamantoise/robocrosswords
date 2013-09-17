@@ -67,8 +67,10 @@
     <string name="pref_application_settings">Application Settings</string>
     <string name="pref_automatic_download">Automatic Download</string>
     <string name="pref_automatic_download_summary">Download today\'s puzzles when starting the application</string>
-    <string name="pref_no_hint_highlighting">No Hint Highlighting</string>
-    <string name="pref_no_hint_highlighting_summary">Prevents the pink boxes indicating \'hints\' in the form of reveals or show errors</string>
+    <string name="pref_show_errors">Show Errors</string>
+    <string name="pref_show_errors_summary">Highlights incorrect letters in red</string>
+    <string name="pref_show_revealed_letters">Show Revealed Letters</string>
+    <string name="pref_show_revealed_letters_summary">Highlights revealed letters or previously incorrect letters in pink</string>
     <string name="pref_delete_on_cleanup">Delete on Cleanup</string>
     <string name="pref_delete_on_cleanup_summary">Delete rather than archive old puzzles</string>
     <string name="pref_cleanup_unfinished">Cleanup Unfinished</string>
