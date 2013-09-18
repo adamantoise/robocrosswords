@@ -384,17 +384,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
     }
 
     private void initKeyboard() {
-        int keyboardType = "CONDENSED_ARROWS".equals(prefs.getString(
-                "keyboardType", "")) ? R.xml.keyboard_dpad : R.xml.keyboard;
-        Keyboard keyboard = new Keyboard(this, keyboardType);
-        keyboardView = (KeyboardView) this.findViewById(R.id.playKeyboard);
-        keyboardView.setKeyboard(keyboard);
-        this.useNativeKeyboard = "NATIVE".equals(prefs.getString("keyboardType", ""));
-
-        if (this.useNativeKeyboard) {
-            keyboardView.setVisibility(View.GONE);
-        }
-
+        updateKeyboardFromPrefs();
         keyboardView.setOnKeyboardActionListener(new OnKeyboardActionListener() {
             private long lastSwipe = 0;
 
@@ -479,6 +469,21 @@ public class PlayActivity extends WordsWithCrossesActivity {
                 PlayActivity.this.onKeyUp(KeyEvent.KEYCODE_DPAD_UP, event);
             }
         });
+    }
+
+    private void updateKeyboardFromPrefs() {
+        String keyboardPref = prefs.getString("keyboardType", "");
+        int keyboardType = "CONDENSED_ARROWS".equals(keyboardPref) ? R.xml.keyboard_dpad : R.xml.keyboard;
+        Keyboard keyboard = new Keyboard(this, keyboardType);
+        keyboardView = (KeyboardView)findViewById(R.id.playKeyboard);
+        keyboardView.setKeyboard(keyboard);
+
+        useNativeKeyboard = "NATIVE".equals(keyboardPref);
+        if (useNativeKeyboard) {
+            keyboardView.setVisibility(View.GONE);
+        }
+
+        boardView.setUseNativeKeyboard(useNativeKeyboard);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -1023,16 +1028,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
             // Ignore
         }
 
-        int keyboardType = "CONDENSED_ARROWS".equals(prefs.getString(
-                "keyboardType", "")) ? R.xml.keyboard_dpad : R.xml.keyboard;
-        Keyboard keyboard = new Keyboard(this, keyboardType);
-        keyboardView = (KeyboardView) this.findViewById(R.id.playKeyboard);
-        keyboardView.setKeyboard(keyboard);
-        this.useNativeKeyboard = "NATIVE".equals(prefs.getString("keyboardType", ""));
-
-        if (this.useNativeKeyboard) {
-            keyboardView.setVisibility(View.GONE);
-        }
+        updateKeyboardFromPrefs();
 
         this.showCount = prefs.getBoolean("showCount", false);
         this.onConfigurationChanged(this.configuration);

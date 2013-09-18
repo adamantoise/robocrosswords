@@ -49,6 +49,8 @@ public class CrosswordImageView extends TouchImageView
     private ClickListener clickListener;
     private RenderScaleListener renderScaleListener;
 
+    private boolean useNativeKeyboard = false;
+
     public CrosswordImageView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
@@ -139,6 +141,11 @@ public class CrosswordImageView extends TouchImageView
     public void setRenderScaleListener(RenderScaleListener listener)
     {
         renderScaleListener = listener;
+    }
+
+    public void setUseNativeKeyboard(boolean useNativeKeyboard)
+    {
+        this.useNativeKeyboard = useNativeKeyboard;
     }
 
     public void ensureVisible(Position pos)
@@ -265,7 +272,7 @@ public class CrosswordImageView extends TouchImageView
     @Override
     public boolean onCheckIsTextEditor()
     {
-        return true;
+        return useNativeKeyboard;
     }
 
     public interface ClickListener
