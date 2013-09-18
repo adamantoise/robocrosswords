@@ -163,6 +163,10 @@ public class HttpDownloadActivity extends WordsWithCrossesActivity {
             null,  // selection
             null,  // selectionArgs
             null); // sortOrder
+        if (cursor == null) {
+            return null;
+        }
+
         if (cursor.moveToNext()) {
             filename = cursor.getString(0);
         }
