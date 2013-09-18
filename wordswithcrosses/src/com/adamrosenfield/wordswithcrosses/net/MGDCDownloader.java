@@ -92,31 +92,19 @@ public class MGDCDownloader extends AbstractDownloader
     @Override
     public void download(Calendar date) throws IOException
     {
-        long millisSinceStart = (date.getTimeInMillis() - START_DATE.getTimeInMillis());
-        int daysSinceStart = (int)(millisSinceStart / 1000 / 86400);
-        if (daysSinceStart < 0)
-        {
-            throw new IOException("MGDC puzzle is not available yet for this date");
-        }
-
-        int puzzleNum = ((daysSinceStart + 2) / 7) * 5 + ((daysSinceStart + 2) % 7) - 1;
-        String scrapeUrl =
-            "http://mattgaffneydaily.blogspot.com/" +
+        String dateStr =
             date.get(Calendar.YEAR) +
-            "/" +
+            "-" +
             DEFAULT_NF.format(date.get(Calendar.MONTH) + 1) +
-            "/mgdc-" +
-            String.format("%04d", puzzleNum) +
             "-" +
-            WEEKDAY_NAMES[(date.get(Calendar.DAY_OF_WEEK) - Calendar.MONDAY + 7) % 7] +
-            "-" +
-            MONTH_NAMES[date.get(Calendar.MONTH)] +
-            "-" +
-            date.get(Calendar.DATE) +
-            getDaySuffix(date.get(Calendar.DATE)) +
-            "-" +
-            date.get(Calendar.YEAR) +
-            ".html";
+            date.get(Calendar.DATE);
+
+        String scrapeUrl =
+            "http://mattgaffneydaily.blogspot.com/search?updated-min=" +
+            dateStr +
+            "T00:00:00-05:00&updated-max=" +
+            dateStr +
+            "T23:59:59-05:00&max-results=1";
 
         String scrapedPage = downloadUrlToString(scrapeUrl);
 
