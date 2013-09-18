@@ -22,7 +22,6 @@ package com.adamrosenfield.wordswithcrosses.view;
 import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.RelativeLayout;
 
@@ -50,20 +49,12 @@ public class CrosswordRelativeLayout extends RelativeLayout
         // Based on http://stackoverflow.com/a/5811630/9530
         if (mActivity != null && event.getKeyCode() == KeyEvent.KEYCODE_BACK)
         {
-            KeyEvent.DispatcherState state = getKeyDispatcherState();
-            if (state != null)
+            if (event.getAction() == KeyEvent.ACTION_UP && !event.isCanceled())
             {
-                if (event.getAction() == KeyEvent.ACTION_DOWN && event.getRepeatCount() == 0)
-                {
-                    state.startTracking(event, this);
-                    return true;
-                }
-                else if (event.getAction() == KeyEvent.ACTION_UP && !event.isCanceled() && state.isTracking(event))
-                {
-                    mActivity.onBackPressed();
-                    return true;
-                }
+                mActivity.onBackPressed();
             }
+
+            return true;
         }
 
         return super.dispatchKeyEventPreIme(event);
