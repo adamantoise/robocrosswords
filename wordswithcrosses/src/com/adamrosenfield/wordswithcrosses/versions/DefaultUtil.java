@@ -32,6 +32,9 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpConnectionParams;
 
 import android.app.Activity;
 import android.content.Context;
@@ -53,6 +56,15 @@ public class DefaultUtil implements AndroidVersionUtils {
     protected Context context;
     protected SharedPreferences prefs;
 
+    protected HttpParams mHttpParams;
+
+    public DefaultUtil() {
+        // Set default connect and recv timeouts to 30 seconds
+        mHttpParams = new BasicHttpParams();
+        HttpConnectionParams.setConnectionTimeout(mHttpParams, 30000);
+        HttpConnectionParams.setSoTimeout(mHttpParams, 30000);
+    }
+
     public void setContext(Context context) {
         this.context = context;
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -62,7 +74,7 @@ public class DefaultUtil implements AndroidVersionUtils {
             File destination, boolean notification, String title)
             throws IOException {
 
-        DefaultHttpClient httpclient = new DefaultHttpClient();
+        DefaultHttpClient httpclient = new DefaultHttpClient(mHttpParams);
 
         String scrubbedUrl = AbstractDownloader.scrubUrl(url);
         File tempFile = new File(WordsWithCrossesApplication.TEMP_DIR, destination.getName());
@@ -77,6 +89,7 @@ public class DefaultUtil implements AndroidVersionUtils {
 
         int status = response.getStatusLine().getStatusCode();
         if (status != 200) {
+            LOG.warning("Download failed: " + scrubbedUrl + " status=" + status);
             throw new HTTPException(status);
         }
 
