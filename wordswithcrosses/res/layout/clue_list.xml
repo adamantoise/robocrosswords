@@ -4,7 +4,7 @@
     android:id="@+id/tabhost"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-  <RelativeLayout
+  <com.adamrosenfield.wordswithcrosses.view.CrosswordRelativeLayout
       android:orientation="vertical"
       android:layout_width="fill_parent"
       android:layout_height="fill_parent"
@@ -47,5 +47,5 @@
           android:layout_height="fill_parent"
           />
     </FrameLayout>
-  </RelativeLayout>
+  </com.adamrosenfield.wordswithcrosses.view.CrosswordRelativeLayout>
 </TabHost>

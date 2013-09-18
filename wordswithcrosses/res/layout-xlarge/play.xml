@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<com.adamrosenfield.wordswithcrosses.view.CrosswordRelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
@@ -89,4 +89,4 @@
       android:scrollbars="horizontal|vertical"
       android:layout_marginBottom="5dp" />
 
-</RelativeLayout>
+</com.adamrosenfield.wordswithcrosses.view.CrosswordRelativeLayout>
