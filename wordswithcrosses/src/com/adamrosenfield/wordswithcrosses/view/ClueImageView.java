@@ -22,7 +22,10 @@ package com.adamrosenfield.wordswithcrosses.view;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
+import android.text.InputType;
 import android.util.AttributeSet;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
 
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
@@ -34,10 +37,14 @@ public class ClueImageView extends TouchImageView
 
     private ClickListener clickListener;
 
+    private boolean useNativeKeyboard = false;
+
     public ClueImageView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
         setCanScale(false);
+        setFocusable(true);
+        setFocusableInTouchMode(true);
     }
 
     public void fitToHeight()
@@ -49,6 +56,11 @@ public class ClueImageView extends TouchImageView
     public void setClickListener(ClickListener listener)
     {
         clickListener = listener;
+    }
+
+    public void setUseNativeKeyboard(boolean useNativeKeyboard)
+    {
+        this.useNativeKeyboard = useNativeKeyboard;
     }
 
     @Override
@@ -71,5 +83,22 @@ public class ClueImageView extends TouchImageView
     {
         Bitmap bitmap = WordsWithCrossesApplication.RENDERER.drawWord(renderScale);
         setImageBitmap(bitmap);
+    }
+
+    // Special sauce for ensuring that the delete key functions properly on
+    // certain native soft keyboards
+    @Override
+    public InputConnection onCreateInputConnection(EditorInfo outAttrs)
+    {
+        outAttrs.actionLabel = null;
+        outAttrs.inputType = InputType.TYPE_NULL;
+        outAttrs.imeOptions = EditorInfo.IME_ACTION_NONE;
+        return new CrosswordInputConnection(this);
+    }
+
+    @Override
+    public boolean onCheckIsTextEditor()
+    {
+        return useNativeKeyboard;
     }
 }

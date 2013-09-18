@@ -191,6 +191,7 @@ public class ClueListActivity extends WordsWithCrossesActivity {
                 });
 
         imageView = (ClueImageView)this.findViewById(R.id.miniboard);
+        imageView.setUseNativeKeyboard(useNativeKeyboard);
 
         imageView.setClickListener(new ClickListener() {
             public void onClick(Position pos) {

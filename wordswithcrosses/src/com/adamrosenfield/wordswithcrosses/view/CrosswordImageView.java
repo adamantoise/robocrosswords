@@ -26,10 +26,8 @@ import android.graphics.PointF;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
-import android.view.KeyEvent;
 
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard;
@@ -258,15 +256,14 @@ public class CrosswordImageView extends TouchImageView
     }
 
     // Special sauce for ensuring that the delete key functions properly on
-    // certain native soft keyboards, see
-    // http://stackoverflow.com/q/4886858/9530
+    // certain native soft keyboards
     @Override
     public InputConnection onCreateInputConnection(EditorInfo outAttrs)
     {
         outAttrs.actionLabel = null;
         outAttrs.inputType = InputType.TYPE_NULL;
         outAttrs.imeOptions = EditorInfo.IME_ACTION_NONE;
-        return new CrosswordInputConnection();
+        return new CrosswordInputConnection(this);
     }
 
     @Override
@@ -287,28 +284,5 @@ public class CrosswordImageView extends TouchImageView
     public interface RenderScaleListener
     {
         public void onRenderScaleChanged(float renderScale);
-    }
-
-    private class CrosswordInputConnection extends BaseInputConnection
-    {
-        public CrosswordInputConnection()
-        {
-            super(CrosswordImageView.this, false);
-        }
-
-        @Override
-        public boolean deleteSurroundingText(int beforeLength, int afterLength)
-        {
-            // Magic: in latest Android, deleteSurroundingText(1, 0) will be
-            // called for backspace
-            if (beforeLength == 1 && afterLength == 0)
-            {
-                // Backspace
-                sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
-                sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL));
-            }
-
-            return super.deleteSurroundingText(beforeLength, afterLength);
-        }
     }
 }
