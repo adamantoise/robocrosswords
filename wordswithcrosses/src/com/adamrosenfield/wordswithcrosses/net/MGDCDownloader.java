@@ -35,33 +35,6 @@ public class MGDCDownloader extends AbstractDownloader
 {
     private static final Calendar START_DATE;
 
-    private static final String[] WEEKDAY_NAMES =
-    {
-        "monday",
-        "tuesday",
-        "wednesday",
-        "thursday",
-        "friday",
-        "saturday",  // Unused
-        "sunday"     // Unused
-    };
-
-    private static final String[] MONTH_NAMES =
-    {
-        "january",
-        "february",
-        "march",
-        "april",
-        "may",
-        "june",
-        "july",
-        "august",
-        "september",
-        "october",
-        "november",
-        "december"
-    };
-
     private static final String PUZZLE_REGEX = "\\bid=([A-Za-z0-9_]*\\.puz)\\b";
     private static final Pattern PUZZLE_PATTERN = Pattern.compile(PUZZLE_REGEX);
 
@@ -128,21 +101,5 @@ public class MGDCDownloader extends AbstractDownloader
     protected String createUrlSuffix(Calendar date)
     {
         return "";
-    }
-
-    private static String getDaySuffix(int dayOfMonth)
-    {
-        if (dayOfMonth >= 10 && dayOfMonth < 20)
-        {
-            return "th";
-        }
-
-        switch (dayOfMonth % 10)
-        {
-        case 1: return "st";
-        case 2: return "nd";
-        case 3: return "rd";
-        default: return "th";
-        }
     }
 }
