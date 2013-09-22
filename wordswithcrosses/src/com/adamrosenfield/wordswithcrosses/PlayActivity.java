@@ -244,13 +244,16 @@ public class PlayActivity extends WordsWithCrossesActivity {
                     // Do stuff on the UI thread after the puzzle is loaded
                     handler.post(new Runnable() {
                         public void run() {
-                            loadProgressDialog.dismiss();
+                            if (loadProgressDialog != null) {
+                                loadProgressDialog.dismiss();
+                                loadProgressDialog = null;
 
-                            if (newPuzzle != null) {
-                                puz = newPuzzle;
-                                postPuzzleLoaded();
-                            } else {
-                                puzzleLoadFailed(filename);
+                                if (newPuzzle != null) {
+                                    puz = newPuzzle;
+                                    postPuzzleLoaded();
+                                } else {
+                                    puzzleLoadFailed(filename);
+                                }
                             }
                         }
                         });
@@ -1057,6 +1060,16 @@ public class PlayActivity extends WordsWithCrossesActivity {
         if (timer != null) {
             timer.stop();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (loadProgressDialog != null) {
+            loadProgressDialog.dismiss();
+            loadProgressDialog = null;
+        }
+
+        super.onDestroy();
     }
 
     public void onNotesClicked(View notesButton) {
