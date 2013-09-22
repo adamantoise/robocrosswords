@@ -33,17 +33,20 @@ import java.util.regex.Pattern;
  */
 public class MGDCDownloader extends AbstractDownloader
 {
-    private static final Calendar START_DATE;
+    /** Date on which MGDC started (5 days/week) */
+    private static final Calendar START_DATE = createDate(2011, 9, 21);
+    /** Date on which MGDC became 7 days/week */
+    private static final Calendar DAILY_START_DATE = createDate(2013, 9, 21);
 
     private static final String PUZZLE_REGEX = "\\bid=([A-Za-z0-9_]*\\.puz)\\b";
     private static final Pattern PUZZLE_PATTERN = Pattern.compile(PUZZLE_REGEX);
 
-    static
+    private static Calendar createDate(int year, int month, int day)
     {
-        Calendar startDate = Calendar.getInstance();
-        startDate.clear();
-        startDate.set(2011, 8, 21);  // 2011-09-21 (months start at 0 for Calendar!)
-        START_DATE = startDate;
+        Calendar date = Calendar.getInstance();
+        date.clear();
+        date.set(year, month - 1, day);  // Months start at 0 for Calendar!
+        return date;
     }
 
     public MGDCDownloader()
@@ -57,9 +60,15 @@ public class MGDCDownloader extends AbstractDownloader
         {
             return false;
         }
-
-        int day = date.get(Calendar.DAY_OF_WEEK);
-        return (day >= Calendar.MONDAY && day <= Calendar.FRIDAY);
+        else if (date.compareTo(DAILY_START_DATE) >= 0)
+        {
+            return true;
+        }
+        else
+        {
+            int day = date.get(Calendar.DAY_OF_WEEK);
+            return (day >= Calendar.MONDAY && day <= Calendar.FRIDAY);
+        }
     }
 
     @Override
