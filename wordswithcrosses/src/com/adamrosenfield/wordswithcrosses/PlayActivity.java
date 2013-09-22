@@ -217,6 +217,10 @@ public class PlayActivity extends WordsWithCrossesActivity {
             return;
         }
 
+        // Initialize this here so that onPause() has a reference to a View
+        // even if the puzzle hasn't finished loading yet
+        clue = (TextView)this.findViewById(R.id.clueLine);
+
         baseFile = new File(filename);
 
         if (BOARD != null && BOARD.getPuzzleID() == puzzleId) {
@@ -251,7 +255,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
                         }
                         });
                 }
-                }).start();
+            }).start();
         }
     }
 
@@ -301,8 +305,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
                 updateProgressBar();
             }
         });
-
-        clue = (TextView)this.findViewById(R.id.clueLine);
 
         View clueContainer = findViewById(R.id.clueContainer);
         if (clueContainer.getVisibility() != View.GONE &&
