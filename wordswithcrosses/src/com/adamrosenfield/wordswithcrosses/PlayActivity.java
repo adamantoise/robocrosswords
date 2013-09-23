@@ -117,6 +117,8 @@ public class PlayActivity extends WordsWithCrossesActivity {
     private CrosswordImageView boardView;
     private TextView clue;
     private TextView timerText;
+    private View clueContainer;
+    private boolean maybeShowClueContainerOnPuzzleLoad = false;
     private boolean showTimer = false;
     private boolean showingProgressBar = false;
 
@@ -221,6 +223,12 @@ public class PlayActivity extends WordsWithCrossesActivity {
         // even if the puzzle hasn't finished loading yet
         clue = (TextView)this.findViewById(R.id.clueLine);
 
+        // Hide the clue container while we load the puzzle, then maybe
+        // show it again later
+        clueContainer = findViewById(R.id.clueContainer);
+        maybeShowClueContainerOnPuzzleLoad = (clueContainer.getVisibility() != View.GONE);
+        clueContainer.setVisibility(View.GONE);
+
         baseFile = new File(filename);
 
         if (BOARD != null && BOARD.getPuzzleID() == puzzleId) {
@@ -309,10 +317,9 @@ public class PlayActivity extends WordsWithCrossesActivity {
             }
         });
 
-        View clueContainer = findViewById(R.id.clueContainer);
-        if (clueContainer.getVisibility() != View.GONE &&
-            android.os.Build.VERSION.SDK_INT >= 11)
-        {
+        if (maybeShowClueContainerOnPuzzleLoad && android.os.Build.VERSION.SDK_INT < 11) {
+            clueContainer.setVisibility(View.VISIBLE);
+        } else {
             clueContainer.setVisibility(View.GONE);
             View clueLine = utils.onActionBarCustom(this, R.layout.clue_line_only);
             if (clueLine != null) {
