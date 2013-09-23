@@ -924,6 +924,13 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
     @Override
     protected Dialog onCreateDialog(int id, Bundle args) {
+        // This can get called if the OS is attempting to restore any dialogs
+        // which were previously present but the app was killed while it was in
+        // the background.
+        if (puz == null) {
+            return null;
+        }
+
         switch (id) {
         case INFO_DIALOG:
             // This is weird. I don't know why a rotate resets the dialog.
