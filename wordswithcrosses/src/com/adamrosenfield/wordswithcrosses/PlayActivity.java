@@ -1198,6 +1198,10 @@ public class PlayActivity extends WordsWithCrossesActivity {
     }
 
     private void render(Word previous) {
+        if (puz == null) {
+            return;
+        }
+
         if (this.prefs.getBoolean("forceKeyboard", false)
                 || (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
                 || (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
