@@ -24,7 +24,7 @@ import java.util.Calendar;
 
 /**
  * Los Angeles Times
- * URL: http://cdn.games.arkadiumhosted.com/latimes/assets/DailyCrossword/puzzle_YYMMDD.xml
+ * URL: http://cdn.games.arkadiumhosted.com/latimes/assets/DailyCrossword/laYYMMDD.xml
  * Date: Daily
  */
 public class LATimesDownloader extends AbstractJPZDownloader {
@@ -41,7 +41,7 @@ public class LATimesDownloader extends AbstractJPZDownloader {
 
     @Override
     protected String createUrlSuffix(Calendar date) {
-        return ("puzzle_" +
+        return ("la" +
                 (date.get(Calendar.YEAR) % 100) +
                 DEFAULT_NF.format(date.get(Calendar.MONTH) + 1) +
                 DEFAULT_NF.format(date.get(Calendar.DAY_OF_MONTH)) +
