@@ -166,6 +166,7 @@ public class TouchImageView extends ImageView {
                         break;
 
                     case MotionEvent.ACTION_POINTER_UP:
+                    case MotionEvent.ACTION_CANCEL:
                         mode = Mode.NONE;
                         endLongClickDetection();
                         break;
