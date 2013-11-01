@@ -63,7 +63,7 @@ public class CrosswordImageView extends TouchImageView
         boardHeight = board.getHeight();
 
         // TODO: Get the max texture size from OpenGL instead of hard-coding it
-        minRenderScale = 0.12f * 160 * Math.max(metrics.density, 0.5f) / PlayboardRenderer.BOX_SIZE;
+        minRenderScale = 0.06f * 160 * Math.max(metrics.density, 0.5f) / PlayboardRenderer.BOX_SIZE;
         maxRenderScale = 2047.0f / (PlayboardRenderer.BOX_SIZE * Math.max(boardWidth, boardHeight));
     }
 
