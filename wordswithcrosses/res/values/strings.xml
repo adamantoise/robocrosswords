@@ -89,6 +89,8 @@
     <string name="pref_space_changes_direction_summary">Spacebar changed direction rather than blanking the box</string>
     <string name="pref_enter_changes_direction">Enter Changes Direction</string>
     <string name="pref_enter_changes_direction_summary">Enter changes direction rather than moving to the next clue</string>
+    <string name="pref_clue_size">Clue Text Size</string>
+    <string name="pref_clue_size_summary">Sets the font size of clues</string>
     <string name="pref_initial_zoom">Initial Zoom</string>
     <string name="pref_initial_zoom_summary">Sets the initial zoom when opening a puzzle</string>
     <string name="pref_double_tap_zoom">Double Tap Zoom</string>
@@ -158,10 +160,6 @@
     <string name="device_configuration_error">Unable to read device configuration</string>
     <string name="login_failed">Invalid username or password</string>
 
-    <string name="clue_text_size">Clue Text Size</string>
-    <string name="clue_text_size_small">Small</string>
-    <string name="clue_text_size_medium">Medium</string>
-    <string name="clue_text_size_large">Large</string>
     <string name="zoom_in">Zoom In</string>
     <string name="zoom_out">Zoom Out</string>
     <string name="fit_to_screen">Fit to Screen</string>

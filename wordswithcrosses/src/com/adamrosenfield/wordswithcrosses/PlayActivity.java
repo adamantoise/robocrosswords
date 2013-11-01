@@ -1,3 +1,4 @@
+
 /**
  * This file is part of Words With Crosses.
  *
@@ -25,7 +26,6 @@ import static com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication.RE
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -92,9 +92,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
     private static final int INFO_DIALOG = 0;
     private static final int NOTES_DIALOG = 1;
     private static final int REVEAL_PUZZLE_DIALOG = 2;
-
-    /** Clue font sizes, in sp */
-    private static final int CLUE_SIZES[] = {12, 14, 16};
 
     private ProgressDialog loadProgressDialog;
 
@@ -605,8 +602,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
             });
 
         }
-
-        this.setClueSize(prefs.getInt("clueSize", CLUE_SIZES[0]));
     }
 
     @Override
@@ -638,12 +633,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
         if (view == boardView) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.playactivity_context_menu, menu);
-
-            int clueSize = prefs.getInt("clueSize", CLUE_SIZES[0]);
-            int clueSizeIndex = Arrays.binarySearch(CLUE_SIZES, clueSize);
-            if (clueSizeIndex >= 0) {
-                menu.getItem(0).getSubMenu().getItem(clueSizeIndex).setChecked(true);
-            }
         }
     }
 
@@ -902,18 +891,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
             return true;
 
-        case R.id.context_clue_text_size_small:
-            setClueSize(CLUE_SIZES[0]);
-            return true;
-
-        case R.id.context_clue_text_size_medium:
-            setClueSize(CLUE_SIZES[1]);
-            return true;
-
-        case R.id.context_clue_text_size_large:
-            setClueSize(CLUE_SIZES[2]);
-            return true;
-
         default:
             return false;
         }
@@ -1042,6 +1019,8 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
         RENDERER.setHintHighlight(prefs.getBoolean("showRevealedLetters", true));
 
+        updateClueSize();
+
         String clickSlopStr = prefs.getString("touchSensitivity", "3");
         try {
             int clickSlop = Integer.parseInt(clickSlopStr);
@@ -1134,6 +1113,18 @@ public class PlayActivity extends WordsWithCrossesActivity {
         return dialogBuilder.create();
     }
 
+    private void updateClueSize() {
+        String clueSizeStr = prefs.getString("clueSize", "12");
+        try
+        {
+            setClueSize(Integer.parseInt(clueSizeStr));
+        }
+        catch (NumberFormatException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     private void setClueSize(int dps) {
         this.clue.setTextSize(TypedValue.COMPLEX_UNIT_SP, dps);
 
@@ -1142,10 +1133,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
             acrossAdapter.notifyDataSetInvalidated();
             downAdapter.textSize = dps;
             downAdapter.notifyDataSetInvalidated();
-        }
-
-        if (prefs.getInt("clueSize", CLUE_SIZES[0]) != dps) {
-            this.prefs.edit().putInt("clueSize", dps).commit();
         }
     }
 

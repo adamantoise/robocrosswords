@@ -35,13 +35,23 @@
        <item>31</item>
        <item>-1</item>
      </string-array>
+     <string-array name="clueSizeLabels">
+       <item>Small</item>
+       <item>Medium</item>
+       <item>Large</item>
+     </string-array>
+     <string-array name="clueSizeValues">
+       <item>12</item>
+       <item>14</item>
+       <item>16</item>
+     </string-array>
      <string-array name="initialZoomLabels">
        <item>Fit To Screen</item>
-       <item>1</item>
-       <item>1.5</item>
-       <item>2</item>
-       <item>3</item>
-       <item>4</item>
+       <item>1x</item>
+       <item>1.5x</item>
+       <item>2x</item>
+       <item>3x</item>
+       <item>4x</item>
      </string-array>
      <string-array name="initialZoomValues">
        <item>0</item>

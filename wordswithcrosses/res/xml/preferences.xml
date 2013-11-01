@@ -334,6 +334,14 @@
     />
 
     <ListPreference
+        android:title="@string/pref_clue_size"
+        android:summary="@string/pref_clue_size_summary"
+        android:key="clueSize"
+        android:defaultValue="12"
+        android:entries="@array/clueSizeLabels"
+        android:entryValues="@array/clueSizeValues" />
+
+    <ListPreference
         android:title="@string/pref_initial_zoom"
         android:summary="@string/pref_initial_zoom_summary"
         android:key="initialZoom"

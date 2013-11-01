@@ -1,25 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
   <item
-      android:id="@+id/context_clue_text_size"
-      android:title="@string/clue_text_size">
-    <menu>
-      <group
-          android:id="@+id/context_group_clue_text_size"
-          android:checkableBehavior="single">
-        <item
-            android:id="@+id/context_clue_text_size_small"
-            android:title="@string/clue_text_size_small" />
-        <item
-            android:id="@+id/context_clue_text_size_medium"
-            android:title="@string/clue_text_size_medium" />
-        <item
-            android:id="@+id/context_clue_text_size_large"
-            android:title="@string/clue_text_size_large" />
-      </group>
-    </menu>
-  </item>
-  <item
       android:id="@+id/context_zoom_in"
       android:title="@string/zoom_in" />
   <item
