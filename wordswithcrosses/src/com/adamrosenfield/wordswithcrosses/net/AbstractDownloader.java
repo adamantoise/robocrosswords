@@ -57,7 +57,7 @@ public abstract class AbstractDownloader implements Downloader {
 
     protected static final NumberFormat DEFAULT_NF;
 
-    protected static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:22.0) Gecko/20100101 Firefox/22.0";
+    protected static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:25.0) Gecko/20100101 Firefox/25.0";
 
     private static final String SCRUB_URL_REGEX = "\\b(username|password)=[^&]*";
     private static final Pattern SCRUB_URL_PATTERN = Pattern.compile(SCRUB_URL_REGEX);

@@ -102,6 +102,7 @@ public class MGDCDownloader extends AbstractDownloader
 
         String id = matcher.group(1);
         String url = "http://icrossword.com/publish/server/puzzle/index.php?id=" + id;
+        headers.put("Referer", "http://icrossword.com/share/?id=" + id);
 
         super.download(date, url, headers);
     }
