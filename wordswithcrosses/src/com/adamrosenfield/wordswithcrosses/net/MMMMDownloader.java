@@ -42,12 +42,16 @@ public class MMMMDownloader extends AbstractDownloader
     public boolean isPuzzleAvailable(Calendar date)
     {
         // Puzzles are available on the first Tuesday of each month, starting
-        // from April 2012.
+        // from April 2012, as well as on New Years Eve.
+        int year = date.get(Calendar.YEAR);
+        int month = date.get(Calendar.MONTH);
+        int dayOfMonth = date.get(Calendar.DATE);
+        int dayOfWeek = date.get(Calendar.DAY_OF_WEEK);
         return
-            (date.get(Calendar.YEAR) == 2012 && date.get(Calendar.MONTH) >= Calendar.APRIL ||
-             date.get(Calendar.YEAR) > 2012) &&
-            (date.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY &&
-             date.get(Calendar.DATE) <= 7);
+            (year == 2012 && month >= Calendar.APRIL ||
+             year > 2012 && month >= Calendar.FEBRUARY) &&
+            ((dayOfWeek == Calendar.TUESDAY && dayOfMonth <= 7) ||
+             (month == Calendar.DECEMBER && dayOfMonth == 31));
     }
 
     @Override
@@ -72,9 +76,18 @@ public class MMMMDownloader extends AbstractDownloader
         // at the last 10 days from the previous month, since sometimes that's
         // when the timestamps are.
         // TODO: Use the JPZ instead of the PUZ
-        String month = SHORT_MONTHS[date.get(Calendar.MONTH)];
-        String prevMonth = SHORT_MONTHS[(date.get(Calendar.MONTH) + 11) % 12];
-        Pattern puzzlePattern = Pattern.compile("<a href=\"([^\"]*\\.puz)\">[^<]*</a>\\s*([01]\\d-" + month + "|[23]\\d-" + prevMonth + ")-" + date.get(Calendar.YEAR));
+        Pattern puzzlePattern;
+        if (date.get(Calendar.MONTH) == Calendar.DECEMBER && date.get(Calendar.DATE) == 31)
+        {
+            puzzlePattern = Pattern.compile("<a href=\"([^\"]*\\.puz)\">[^<]*</a>\\s*[23]\\d-" + SHORT_MONTHS[Calendar.DECEMBER] + "-" + date.get(Calendar.YEAR));
+        }
+        else
+        {
+            String month = SHORT_MONTHS[date.get(Calendar.MONTH)];
+            String prevMonth = SHORT_MONTHS[(date.get(Calendar.MONTH) + 11) % 12];
+            puzzlePattern = Pattern.compile("<a href=\"([^\"]*\\.puz)\">[^<]*</a>\\s*([01]\\d-" + month + "|[23]\\d-" + prevMonth + ")-" + date.get(Calendar.YEAR));
+        }
+
         Matcher matcher = puzzlePattern.matcher(scrapedData);
 
         if (matcher.find())
