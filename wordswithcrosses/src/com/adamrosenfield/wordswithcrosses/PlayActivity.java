@@ -152,9 +152,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         this.configuration = newConfig;
 
-        if (this.prefs.getBoolean("forceKeyboard", false)
-                || (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
-                || (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
+        if (shouldShowKeyboard(configuration)) {
             if (this.useNativeKeyboard) {
                 keyboardView.setVisibility(View.GONE);
 
@@ -1189,9 +1187,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
             return;
         }
 
-        if (this.prefs.getBoolean("forceKeyboard", false)
-                || (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
-                || (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
+        if (shouldShowKeyboard(configuration)) {
             if (this.useNativeKeyboard) {
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 

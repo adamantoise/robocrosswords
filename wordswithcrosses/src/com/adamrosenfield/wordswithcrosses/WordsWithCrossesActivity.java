@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -132,6 +133,18 @@ public abstract class WordsWithCrossesActivity extends Activity {
     public SharedPreferences getPrefs()
     {
         return prefs;
+    }
+
+    protected boolean shouldShowKeyboard(Configuration config) {
+        String showKeyboard = prefs.getString("showKeyboard", "AUTO");
+        if ("AUTO".equals(showKeyboard)) {
+            return (config.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES ||
+                    config.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED);
+        } else if ("SHOW".equals(showKeyboard)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**

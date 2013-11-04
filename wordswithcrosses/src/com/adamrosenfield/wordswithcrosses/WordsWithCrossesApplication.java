@@ -57,7 +57,7 @@ public class WordsWithCrossesApplication extends Application {
     public static final String DEVELOPER_EMAIL = "wordswithcrosses@adamrosenfield.com";
 
     private static final String PREFERENCES_VERSION_PREF = "preferencesVersion";
-    private static final int PREFERENCES_VERSION = 2;
+    private static final int PREFERENCES_VERSION = 3;
 
     private static Context mContext;
 
@@ -131,6 +131,10 @@ public class WordsWithCrossesApplication extends Application {
             // Fall-through
         case 1:
             editor.putBoolean("showRevealedLetters", !prefs.getBoolean("suppressHints", false));
+            // Fall-through
+        case 2:
+            editor.putString("showKeyboard",
+                             prefs.getBoolean("forceKeyboard", false) ? "SHOW" : "AUTO");
             break;
 
         default:

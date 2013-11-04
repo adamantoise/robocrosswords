@@ -103,10 +103,10 @@
     <string name="pref_show_progress_bar_summary">Shows your puzzle progress at the top of the screen.\nYou must leave and re-enter a puzzle to apply.</string>
     <string name="pref_full_screen">Full Screen</string>
     <string name="pref_full_screen_summary">Hides the notification bar.\nYou must leave and re-enter a puzzle to apply.</string>
+    <string name="pref_show_keyboard">Show Keyboard</string>
+    <string name="pref_show_keyboard_summary">Set when the software keyboard is shown</string>
     <string name="pref_keyboard_style">Keyboard Style</string>
     <string name="pref_keyboard_style_summary">Select soft keyboard layout</string>
-    <string name="pref_force_keyboard">Force Keyboard</string>
-    <string name="pref_force_keyboard_summary">Forces the keyboard to always be on screen.\nGood for some generic tablets.</string>
     <string name="pref_orientation_lock">Orientation Lock</string>
     <string name="pref_orientation_lock_summary">Locks the screen location</string>
     <string name="pref_category_notifications">Notification Settings</string>

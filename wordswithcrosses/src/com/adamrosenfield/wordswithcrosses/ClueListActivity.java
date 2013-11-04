@@ -467,9 +467,7 @@ public class ClueListActivity extends WordsWithCrossesActivity {
             ioe.printStackTrace();
         }
 
-        if (this.prefs.getBoolean("forceKeyboard", false)
-                || (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
-                || (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
+        if (shouldShowKeyboard(configuration)) {
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             if (imm != null) {
                 imm.hideSoftInputFromWindow(this.imageView.getWindowToken(), 0);
@@ -478,9 +476,7 @@ public class ClueListActivity extends WordsWithCrossesActivity {
     }
 
     private void render() {
-        if (this.prefs.getBoolean("forceKeyboard", false)
-                || (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
-                || (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
+        if (shouldShowKeyboard(configuration)) {
             if (this.useNativeKeyboard) {
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 

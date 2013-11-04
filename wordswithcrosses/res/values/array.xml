@@ -11,6 +11,16 @@
        <item>MOVE_NEXT_CLUE</item>
        <item>MOVE_PARALLEL_WORD</item>
      </string-array>
+     <string-array name="showKeyboardLabels">
+       <item>Automatic</item>
+       <item>Force On</item>
+       <item>Force Off</item>
+     </string-array>
+     <string-array name="showKeyboardValues">
+       <item>AUTO</item>
+       <item>SHOW</item>
+       <item>HIDE</item>
+     </string-array>
      <string-array name="keyboardTypeLabels">
        <item>Small</item>
        <item>With Arrows</item>

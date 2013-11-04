@@ -9,20 +9,22 @@ package com.adamrosenfield.wordswithcrosses;
 
 public final class R {
     public static final class array {
-        public static final int cleanupAgeLabels=0x7f050004;
-        public static final int cleanupAgeValues=0x7f050005;
-        public static final int clueSizeLabels=0x7f050006;
-        public static final int clueSizeValues=0x7f050007;
-        public static final int initialZoomLabels=0x7f050008;
-        public static final int initialZoomValues=0x7f050009;
-        public static final int keyboardTypeLabels=0x7f050002;
-        public static final int keyboardTypeValues=0x7f050003;
+        public static final int cleanupAgeLabels=0x7f050006;
+        public static final int cleanupAgeValues=0x7f050007;
+        public static final int clueSizeLabels=0x7f050008;
+        public static final int clueSizeValues=0x7f050009;
+        public static final int initialZoomLabels=0x7f05000a;
+        public static final int initialZoomValues=0x7f05000b;
+        public static final int keyboardTypeLabels=0x7f050004;
+        public static final int keyboardTypeValues=0x7f050005;
         public static final int movementStrategyLabels=0x7f050000;
         public static final int movementStrategyValues=0x7f050001;
-        public static final int orientationLockLabels=0x7f05000c;
-        public static final int orientationLockValues=0x7f05000d;
-        public static final int touchSensitivityLabels=0x7f05000a;
-        public static final int touchSensitivityValues=0x7f05000b;
+        public static final int orientationLockLabels=0x7f05000e;
+        public static final int orientationLockValues=0x7f05000f;
+        public static final int showKeyboardLabels=0x7f050002;
+        public static final int showKeyboardValues=0x7f050003;
+        public static final int touchSensitivityLabels=0x7f05000c;
+        public static final int touchSensitivityValues=0x7f05000d;
     }
     public static final class attr {
         /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
@@ -240,8 +242,6 @@ containing a value of this type.
         public static final int pref_enter_changes_direction=0x7f060052;
         public static final int pref_enter_changes_direction_summary=0x7f060053;
         public static final int pref_erikagard_summary=0x7f060030;
-        public static final int pref_force_keyboard=0x7f060064;
-        public static final int pref_force_keyboard_summary=0x7f060065;
         public static final int pref_full_screen=0x7f060060;
         public static final int pref_full_screen_summary=0x7f060061;
         public static final int pref_get_subscription=0x7f06001f;
@@ -249,8 +249,8 @@ containing a value of this type.
         public static final int pref_individual_download_notifications_summary=0x7f06006c;
         public static final int pref_initial_zoom=0x7f060056;
         public static final int pref_initial_zoom_summary=0x7f060057;
-        public static final int pref_keyboard_style=0x7f060062;
-        public static final int pref_keyboard_style_summary=0x7f060063;
+        public static final int pref_keyboard_style=0x7f060064;
+        public static final int pref_keyboard_style_summary=0x7f060065;
         public static final int pref_license=0x7f06006f;
         public static final int pref_mgdc_summary=0x7f060025;
         public static final int pref_mgwcc_summary=0x7f060031;
@@ -281,6 +281,8 @@ containing a value of this type.
         public static final int pref_send_debug_package_summary=0x7f060072;
         public static final int pref_show_errors=0x7f06003e;
         public static final int pref_show_errors_summary=0x7f06003f;
+        public static final int pref_show_keyboard=0x7f060062;
+        public static final int pref_show_keyboard_summary=0x7f060063;
         public static final int pref_show_length=0x7f060048;
         public static final int pref_show_length_summary=0x7f060049;
         public static final int pref_show_progress_bar=0x7f06005e;
