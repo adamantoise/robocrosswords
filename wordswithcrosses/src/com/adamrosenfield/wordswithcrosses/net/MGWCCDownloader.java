@@ -21,8 +21,6 @@ package com.adamrosenfield.wordswithcrosses.net;
 
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,10 +29,10 @@ import java.util.regex.Pattern;
  * URL: http://xwordcontest.com/YYYY/MM/page/[page]
  * Date: Friday
  */
-public class MGWCCDownloader extends AbstractDownloader
+public class MGWCCDownloader extends ICrosswordDownloader
 {
-    private static final String PUZZLE_REGEX = "\\bid=([A-Za-z0-9_]*\\.puz)\\b";
-    private static final Pattern PUZZLE_PATTERN = Pattern.compile(PUZZLE_REGEX);
+    private static final String PUZZLE_ID_REGEX = "\\bid=([A-Za-z0-9_]*\\.puz)\\b";
+    private static final Pattern PUZZLE_ID_PATTERN = Pattern.compile(PUZZLE_ID_REGEX);
 
     private static final String[] MONTH_NAMES =
     {
@@ -155,21 +153,15 @@ public class MGWCCDownloader extends AbstractDownloader
             if (day == date.get(Calendar.DATE))
             {
                 // If we got the right date, scrape the puzzle ID and download it
-                matcher = PUZZLE_PATTERN.matcher(scrapedPage);
+                matcher = PUZZLE_ID_PATTERN.matcher(scrapedPage);
                 if (!matcher.find())
                 {
                     LOG.warning("Failed to find puzzle ID in page: " + scrapeUrl);
                     throw new IOException("Failed to find puzzle ID in page");
                 }
 
-                Map<String, String> headers = new HashMap<String, String>();
-                headers.put("User-Agent", USER_AGENT);
-
                 String id = matcher.group(1);
-                String url = "http://icrossword.com/publish/server/puzzle/index.php?id=" + id;
-                headers.put("Referer", "http://icrossword.com/share/?id=" + id);
-
-                super.download(date, url, headers);
+                download(date, id);
                 return;
             }
             else

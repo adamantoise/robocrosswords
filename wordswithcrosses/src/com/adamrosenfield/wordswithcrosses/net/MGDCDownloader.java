@@ -21,8 +21,6 @@ package com.adamrosenfield.wordswithcrosses.net;
 
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,15 +29,15 @@ import java.util.regex.Pattern;
  * URL: http://mattgaffneydaily.blogspot.com/YYYY/MM/mgdc-####-weekday-month-dayth-year.html
  * Date: Monday-Friday
  */
-public class MGDCDownloader extends AbstractDownloader
+public class MGDCDownloader extends ICrosswordDownloader
 {
     /** Date on which MGDC started (5 days/week) */
     private static final Calendar START_DATE = createDate(2011, 9, 21);
     /** Date on which MGDC became 7 days/week */
     private static final Calendar DAILY_START_DATE = createDate(2013, 9, 21);
 
-    private static final String PUZZLE_REGEX = "\\bid=([A-Za-z0-9_]*\\.puz)\\b";
-    private static final Pattern PUZZLE_PATTERN = Pattern.compile(PUZZLE_REGEX);
+    private static final String PUZZLE_ID_REGEX = "\\bid=([A-Za-z0-9_]*\\.puz)\\b";
+    private static final Pattern PUZZLE_ID_PATTERN = Pattern.compile(PUZZLE_ID_REGEX);
 
     private static Calendar createDate(int year, int month, int day)
     {
@@ -90,21 +88,15 @@ public class MGDCDownloader extends AbstractDownloader
 
         String scrapedPage = downloadUrlToString(scrapeUrl);
 
-        Matcher matcher = PUZZLE_PATTERN.matcher(scrapedPage);
+        Matcher matcher = PUZZLE_ID_PATTERN.matcher(scrapedPage);
         if (!matcher.find())
         {
             LOG.warning("Failed to find puzzle ID in page: " + scrapeUrl);
             throw new IOException("Failed to find puzzle ID in page");
         }
 
-        Map<String, String> headers = new HashMap<String, String>();
-        headers.put("User-Agent", USER_AGENT);
-
         String id = matcher.group(1);
-        String url = "http://icrossword.com/publish/server/puzzle/index.php?id=" + id;
-        headers.put("Referer", "http://icrossword.com/share/?id=" + id);
-
-        super.download(date, url, headers);
+        download(date, id);
     }
 
     @Override

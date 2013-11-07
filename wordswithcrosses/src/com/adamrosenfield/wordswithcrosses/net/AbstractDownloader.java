@@ -20,10 +20,8 @@
 
 package com.adamrosenfield.wordswithcrosses.net;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.NumberFormat;
@@ -36,7 +34,6 @@ import java.util.regex.Pattern;
 import android.content.Context;
 
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
-import com.adamrosenfield.wordswithcrosses.io.IO;
 import com.adamrosenfield.wordswithcrosses.versions.AndroidVersionUtils;
 
 public abstract class AbstractDownloader implements Downloader {
@@ -124,18 +121,13 @@ public abstract class AbstractDownloader implements Downloader {
     }
 
     protected String downloadUrlToString(String url) throws IOException {
+        return downloadUrlToString(url, EMPTY_MAP);
+    }
+
+    protected String downloadUrlToString(String url, Map<String, String> headers) throws IOException {
         LOG.info("Downloading to string: " + url);
 
-        URL u = new URL(url);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        InputStream is = u.openStream();
-        try {
-            IO.copyStream(is, baos);
-        } finally {
-            is.close();
-        }
-
-        return new String(baos.toByteArray());
+        return utils.downloadToString(new URL(url), headers);
     }
 
     /**

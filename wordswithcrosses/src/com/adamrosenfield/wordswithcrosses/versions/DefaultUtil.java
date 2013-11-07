@@ -20,8 +20,10 @@
 
 package com.adamrosenfield.wordswithcrosses.versions;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
@@ -74,11 +76,37 @@ public class DefaultUtil implements AndroidVersionUtils {
             File destination, boolean notification, String title)
             throws IOException {
 
-        DefaultHttpClient httpclient = new DefaultHttpClient(mHttpParams);
-
         String scrubbedUrl = AbstractDownloader.scrubUrl(url);
         File tempFile = new File(WordsWithCrossesApplication.TEMP_DIR, destination.getName());
         LOG.info("DefaultUtil: Downloading " + scrubbedUrl + " ==> " + tempFile);
+        InputStream response = downloadHelper(url, scrubbedUrl, headers);
+
+        FileOutputStream fos = new FileOutputStream(tempFile);
+        try {
+            IO.copyStream(response, fos);
+        } finally {
+            fos.close();
+        }
+
+        if (!tempFile.equals(destination) && !tempFile.renameTo(destination)) {
+            throw new IOException("Failed to rename " + tempFile + " to " + destination);
+        }
+
+        LOG.info("DefaultUtil: Download succeeded: " + scrubbedUrl);
+    }
+
+    public String downloadToString(URL url, Map<String, String> headers) throws IOException {
+        String scrubbedUrl = AbstractDownloader.scrubUrl(url);
+        InputStream response = downloadHelper(url, scrubbedUrl, headers);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        IO.copyStream(response, baos);
+
+        return new String(baos.toByteArray());
+    }
+
+    private InputStream downloadHelper(URL url, String scrubbedUrl, Map<String, String> headers) throws IOException {
+        DefaultHttpClient httpclient = new DefaultHttpClient(mHttpParams);
 
         HttpGet httpget = new HttpGet(url.toString());
         for (Entry<String, String> e : headers.entrySet()) {
@@ -94,19 +122,7 @@ public class DefaultUtil implements AndroidVersionUtils {
         }
 
         HttpEntity entity = response.getEntity();
-
-        FileOutputStream fos = new FileOutputStream(tempFile);
-        try {
-            IO.copyStream(entity.getContent(), fos);
-        } finally {
-            fos.close();
-        }
-
-        if (!tempFile.equals(destination) && !tempFile.renameTo(destination)) {
-            throw new IOException("Failed to rename " + tempFile + " to " + destination);
-        }
-
-        LOG.info("DefaultUtil: Download succeeded: " + scrubbedUrl);
+        return entity.getContent();
     }
 
     public void onFileDownloaded(long id, boolean successful, int status) {
