@@ -1112,21 +1112,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
     }
 
     private void updateClueSize() {
-        String clueSizeStr;
-        try
-        {
-            clueSizeStr = prefs.getString("clueSize", "12");
-        }
-        catch (ClassCastException e)
-        {
-            // This is ugly.  But I don't see a clean way of detecting what
-            // data type a preference is
-            int clueSize = prefs.getInt("clueSize", 12);
-            prefs.edit().putString("clueSize", Integer.toString(clueSize)).commit();
-            setClueSize(clueSize);
-            return;
-        }
-
+        String clueSizeStr = prefs.getString("clueSize", "12");
         try
         {
             setClueSize(Integer.parseInt(clueSizeStr));

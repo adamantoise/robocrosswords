@@ -57,7 +57,7 @@ public class WordsWithCrossesApplication extends Application {
     public static final String DEVELOPER_EMAIL = "wordswithcrosses@adamrosenfield.com";
 
     private static final String PREFERENCES_VERSION_PREF = "preferencesVersion";
-    private static final int PREFERENCES_VERSION = 3;
+    private static final int PREFERENCES_VERSION = 4;
 
     private static Context mContext;
 
@@ -135,10 +135,16 @@ public class WordsWithCrossesApplication extends Application {
         case 2:
             editor.putString("showKeyboard",
                              prefs.getBoolean("forceKeyboard", false) ? "SHOW" : "AUTO");
-            break;
-
-        default:
-            break;
+            // Fall-through
+        case 3:
+            try {
+                // This is ugly.  But I don't see a clean way of detecting
+                // what data type a preference is.
+                int clueSize = prefs.getInt("clueSize", 12);
+                editor.putString("clueSize", Integer.toString(clueSize));
+            } catch (ClassCastException e) {
+                // Ignore
+            }
         }
 
         editor.putInt(PREFERENCES_VERSION_PREF, PREFERENCES_VERSION);
