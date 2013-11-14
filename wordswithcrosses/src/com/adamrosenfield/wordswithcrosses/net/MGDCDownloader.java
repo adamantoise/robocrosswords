@@ -31,13 +31,14 @@ import java.util.regex.Pattern;
  */
 public class MGDCDownloader extends ICrosswordDownloader
 {
+    private static final String BASE_URL = "http://mattgaffneydaily.blogspot.com/";
     /** Date on which MGDC started (5 days/week) */
     private static final Calendar START_DATE = createDate(2011, 9, 21);
     /** Date on which MGDC became 7 days/week */
     private static final Calendar DAILY_START_DATE = createDate(2013, 9, 21);
 
-    private static final String PUZZLE_ID_REGEX = "\\bid=([A-Za-z0-9_]*\\.puz)\\b";
-    private static final Pattern PUZZLE_ID_PATTERN = Pattern.compile(PUZZLE_ID_REGEX);
+    private static final String EMBED_REGEX = "src=\"([^\"]*\\.puz)\"";
+    private static final Pattern EMBED_PATTERN = Pattern.compile(EMBED_REGEX);
 
     private static Calendar createDate(int year, int month, int day)
     {
@@ -80,7 +81,8 @@ public class MGDCDownloader extends ICrosswordDownloader
             date.get(Calendar.DATE);
 
         String scrapeUrl =
-            "http://mattgaffneydaily.blogspot.com/search?updated-min=" +
+            BASE_URL +
+            "search?updated-min=" +
             dateStr +
             "T00:00:00-05:00&updated-max=" +
             dateStr +
@@ -88,15 +90,15 @@ public class MGDCDownloader extends ICrosswordDownloader
 
         String scrapedPage = downloadUrlToString(scrapeUrl);
 
-        Matcher matcher = PUZZLE_ID_PATTERN.matcher(scrapedPage);
+        Matcher matcher = EMBED_PATTERN.matcher(scrapedPage);
         if (!matcher.find())
         {
-            LOG.warning("Failed to find puzzle ID in page: " + scrapeUrl);
-            throw new IOException("Failed to find puzzle ID in page");
+            LOG.warning("Failed to find puzzle iframe in page: " + scrapeUrl);
+            throw new IOException("Failed to find puzzle iframe in page");
         }
 
-        String id = matcher.group(1);
-        download(date, id);
+        String embedUrl = matcher.group(1);
+        download(date, embedUrl, BASE_URL);
     }
 
     @Override

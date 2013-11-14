@@ -31,8 +31,9 @@ import java.util.regex.Pattern;
  */
 public class MGWCCDownloader extends ICrosswordDownloader
 {
-    private static final String PUZZLE_ID_REGEX = "\\bid=([A-Za-z0-9_]*\\.puz)\\b";
-    private static final Pattern PUZZLE_ID_PATTERN = Pattern.compile(PUZZLE_ID_REGEX);
+    private static final String BASE_URL = "http://xwordcontest.com/";
+    private static final String EMBED_URL_REGEX = "src=\"([^\"]*\\.puz)\"";
+    private static final Pattern EMBED_URL_PATTERN = Pattern.compile(EMBED_URL_REGEX);
 
     private static final String[] MONTH_NAMES =
     {
@@ -93,7 +94,8 @@ public class MGWCCDownloader extends ICrosswordDownloader
         // (e.g. on a Friday morning), the blog post might not be up, and that
         // could screw up our page number calculation.
         String dateRegex =
-            "<a href=\"http://xwordcontest.com/" +
+            "<a href=\"" +
+            BASE_URL +
             date.get(Calendar.YEAR) +
             "/" +
             DEFAULT_NF.format(date.get(Calendar.MONTH) + 1) +
@@ -105,7 +107,7 @@ public class MGWCCDownloader extends ICrosswordDownloader
         Pattern datePattern = Pattern.compile(dateRegex);
 
         String baseUrl =
-            "http://xwordcontest.com/" +
+            BASE_URL +
             date.get(Calendar.YEAR) +
             "/" +
             DEFAULT_NF.format(date.get(Calendar.MONTH) + 1) +
@@ -153,15 +155,15 @@ public class MGWCCDownloader extends ICrosswordDownloader
             if (day == date.get(Calendar.DATE))
             {
                 // If we got the right date, scrape the puzzle ID and download it
-                matcher = PUZZLE_ID_PATTERN.matcher(scrapedPage);
+                matcher = EMBED_URL_PATTERN.matcher(scrapedPage);
                 if (!matcher.find())
                 {
-                    LOG.warning("Failed to find puzzle ID in page: " + scrapeUrl);
+                    LOG.warning("Failed to find puzzle URL in page: " + scrapeUrl);
                     throw new IOException("Failed to find puzzle ID in page");
                 }
 
-                String id = matcher.group(1);
-                download(date, id);
+                String embedUrl = matcher.group(1);
+                download(date, embedUrl, BASE_URL);
                 return;
             }
             else

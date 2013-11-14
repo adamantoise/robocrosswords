@@ -36,23 +36,23 @@ public abstract class ICrosswordDownloader extends AbstractDownloader
         super(baseUrl, downloaderName);
     }
 
-    protected void download(Calendar date, String id) throws IOException
+    protected void download(Calendar date, String embedUrl, String referer) throws IOException
     {
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("User-Agent", USER_AGENT);
+        headers.put("Referer", referer);
 
-        String scrapeUrl = "http://icrossword.com/share/?id=" + id;
-        String scrapedPage = downloadUrlToString(scrapeUrl, headers);
+        String scrapedPage = downloadUrlToString(embedUrl, headers);
 
         Matcher matcher = PUZZLE_URL_PATTERN.matcher(scrapedPage);
         if (!matcher.find())
         {
-            LOG.warning("Failed to find puzzle download URL in page: " + scrapeUrl);
+            LOG.warning("Failed to find puzzle download URL in page: " + embedUrl);
             throw new IOException("Failed to find puzzle download URL in page");
         }
 
         String url = matcher.group(1);
-        headers.put("Referer", scrapeUrl);
+        headers.put("Referer", embedUrl);
 
         super.download(date, url, headers);
     }
