@@ -40,14 +40,6 @@ public class MGDCDownloader extends ICrosswordDownloader
     private static final String EMBED_REGEX = "src=\"([^\"]*\\.puz)\"";
     private static final Pattern EMBED_PATTERN = Pattern.compile(EMBED_REGEX);
 
-    private static Calendar createDate(int year, int month, int day)
-    {
-        Calendar date = Calendar.getInstance();
-        date.clear();
-        date.set(year, month - 1, day);  // Months start at 0 for Calendar!
-        return date;
-    }
-
     public MGDCDownloader()
     {
         super("", "Matt Gaffney's Daily Crossword");

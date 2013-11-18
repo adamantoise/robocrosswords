@@ -45,7 +45,7 @@
     <string name="pref_avxw_summary">Requires subscription. Updates Wednesdays.</string>
     <string name="pref_username_summary_avxw">AVXW Username or Email Address</string>
     <string name="pref_password_summary_avxw">AVXW Password</string>
-    <string name="pref_andykravis_summary">Updates Saturdays\nhttp://cruciverbalistatlaw.blogspot.com/</string>
+    <string name="pref_andykravis_summary">Updates Sundays\nhttp://cruciverbalistatlaw.blogspot.com/</string>
     <string name="pref_crooked_summary">Requires subscription. Updates Sundays.</string>
     <string name="pref_username_summary_crooked">CRooked Crosswords Username or Email Address</string>
     <string name="pref_password_summary_crooked">CRooked Crosswords Password</string>

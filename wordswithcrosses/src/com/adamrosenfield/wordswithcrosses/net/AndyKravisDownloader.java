@@ -24,10 +24,12 @@ import java.util.Calendar;
 /**
  * Andy Kravis
  * URL: http://cruciverbalistatlaw.blogspot.com
- * Date: Saturday
+ * Date: Sunday
  */
 public class AndyKravisDownloader extends BloggerDownloader
 {
+    private static final Calendar SWITCHOVER_DATE = createDate(2013, 10, 14);
+
     public AndyKravisDownloader()
     {
         super("Andy Kravis", "http://cruciverbalistatlaw.blogspot.com");
@@ -35,6 +37,15 @@ public class AndyKravisDownloader extends BloggerDownloader
 
     public boolean isPuzzleAvailable(Calendar date)
     {
-        return (date.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY);
+        // Puzzles up through 10/12/13 were on Saturdays; puzzles
+        // after 10/20/13 were on Sundays
+        if (date.compareTo(SWITCHOVER_DATE) >= 0)
+        {
+            return (date.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY);
+        }
+        else
+        {
+            return (date.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY);
+        }
     }
 }
