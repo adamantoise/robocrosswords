@@ -25,10 +25,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
 
 import android.app.Activity;
 import android.content.Context;
@@ -43,6 +47,7 @@ import com.adamrosenfield.wordswithcrosses.io.IO;
 import com.adamrosenfield.wordswithcrosses.net.AbstractDownloader;
 import com.adamrosenfield.wordswithcrosses.net.HTTPException;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -87,11 +92,9 @@ public class DefaultUtil implements AndroidVersionUtils {
         String scrubbedUrl = AbstractDownloader.scrubUrl(url);
         File tempFile = new File(WordsWithCrossesApplication.TEMP_DIR, destination.getName());
         LOG.info("DefaultUtil: Downloading " + scrubbedUrl + " ==> " + tempFile);
-        InputStream response = downloadHelper(url, scrubbedUrl, headers);
-
         FileOutputStream fos = new FileOutputStream(tempFile);
         try {
-            IO.copyStream(response, fos);
+            downloadHelper(url, scrubbedUrl, headers, fos);
         } finally {
             fos.close();
         }
@@ -105,16 +108,15 @@ public class DefaultUtil implements AndroidVersionUtils {
 
     public String downloadToString(URL url, Map<String, String> headers) throws IOException {
         String scrubbedUrl = AbstractDownloader.scrubUrl(url);
-        InputStream response = downloadHelper(url, scrubbedUrl, headers);
-
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        IO.copyStream(response, baos);
+        downloadHelper(url, scrubbedUrl, headers, baos);
 
         return new String(baos.toByteArray());
     }
 
-    private InputStream downloadHelper(URL url, String scrubbedUrl, Map<String, String> headers) throws IOException {
+    private void downloadHelper(URL url, String scrubbedUrl, Map<String, String> headers, OutputStream output) throws IOException {
         HttpGet httpget = new HttpGet(url.toString());
+        httpget.setHeader("Accept-Encoding", "gzip, deflate");
         for (Entry<String, String> e : headers.entrySet()) {
             httpget.setHeader(e.getKey(), e.getValue());
         }
@@ -122,13 +124,36 @@ public class DefaultUtil implements AndroidVersionUtils {
         HttpResponse response = mHttpClient.execute(httpget);
 
         int status = response.getStatusLine().getStatusCode();
+        HttpEntity entity = response.getEntity();
+
         if (status != 200) {
             LOG.warning("Download failed: " + scrubbedUrl + " status=" + status);
+            if (entity != null) {
+                entity.consumeContent();
+            }
+
             throw new HTTPException(status);
         }
 
-        HttpEntity entity = response.getEntity();
-        return entity.getContent();
+        if (entity != null) {
+            // If we got a compressed entity, create the proper decompression
+            // stream wrapper
+            InputStream content = entity.getContent();
+            Header contentEncoding = entity.getContentEncoding();
+            if (contentEncoding != null) {
+                if ("gzip".equals(contentEncoding.getValue())) {
+                    content = new GZIPInputStream(content);
+                } else if ("deflate".equals(contentEncoding.getValue())) {
+                    content = new InflaterInputStream(content, new Inflater(true));
+                }
+            }
+
+            try {
+                IO.copyStream(content, output);
+            } finally {
+                entity.consumeContent();
+            }
+        }
     }
 
     public void onFileDownloaded(long id, boolean successful, int status) {
