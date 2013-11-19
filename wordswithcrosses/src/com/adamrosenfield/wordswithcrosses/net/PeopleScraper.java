@@ -51,6 +51,10 @@ public class PeopleScraper extends AbstractPageScraper {
         Calendar lastFriday = Calendar.getInstance();
         int daysSinceFriday = (lastFriday.get(Calendar.DAY_OF_WEEK) + 7 - Calendar.FRIDAY) % 7;
         lastFriday.add(Calendar.DATE,  -daysSinceFriday);
+        lastFriday.set(Calendar.HOUR, 0);
+        lastFriday.set(Calendar.MINUTE, 0);
+        lastFriday.set(Calendar.SECOND, 0);
+        lastFriday.set(Calendar.MILLISECOND, 0);
 
         return (date.compareTo(lastFriday) >= 0);
     }
