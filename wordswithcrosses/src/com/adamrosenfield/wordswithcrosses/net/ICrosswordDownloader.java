@@ -38,14 +38,13 @@ public abstract class ICrosswordDownloader extends AbstractDownloader
 
     protected void download(Calendar date, String embedUrl, String referer) throws IOException
     {
-        // Pick a random User-Agent string
-        int userAgentIndex = (int)(Math.random() * USER_AGENTS.length);
-        String userAgent = USER_AGENTS[userAgentIndex];
-
+        // Pick some HTTP headers
         Map<String, String> headers = new HashMap<String, String>();
-        headers.put("User-Agent", userAgent);
-        headers.put("Accept", "*");
-        headers.put("Accept-Language", "en");
+        headers.put("User-Agent", pickRandom(USER_AGENTS));
+        headers.put("Accept", pickRandom(ACCEPT_VALUES));
+        headers.put("Accept-Language", pickRandom(ACCEPT_LANGUAGES));
+
+        // Set referer [sic]
         headers.put("Referer", referer);
 
         String scrapedPage = downloadUrlToString(embedUrl, headers);
@@ -73,6 +72,15 @@ public abstract class ICrosswordDownloader extends AbstractDownloader
 
         // Download the puzzle
         super.download(date, url, headers);
+    }
+
+    /**
+     * Picks a random choice from an array
+     */
+    protected static String pickRandom(String[] choices)
+    {
+        int index = (int)(Math.random() * choices.length);
+        return choices[index];
     }
 
     /**
@@ -158,5 +166,26 @@ public abstract class ICrosswordDownloader extends AbstractDownloader
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:25.0) Gecko/20100101 Firefox/25.0",
         "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.76 Safari/537.36",
         "Mozilla/5.0 (Windows NT 6.3; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0",
+    };
+
+    /**
+     * List of random "Accept" header values
+     */
+    protected static final String[] ACCEPT_VALUES =
+    {
+        "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "text/html, application/xhtml+xml, */*",
+        "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+    };
+
+    /**
+     * List of random "Accept-Language" header values
+     */
+    protected static final String[] ACCEPT_LANGUAGES =
+    {
+        "en-US",
+        "en-us",
+        "en-US,en;q=0.5",
+        "en-US,en;q=0.8"
     };
 }

@@ -31,9 +31,13 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 
+import org.apache.http.client.HttpClient;
+
 public interface AndroidVersionUtils {
 
     public void setContext(Context context);
+
+    public HttpClient getHttpClient();
 
     public void downloadFile(URL url, Map<String, String> headers,
             File destination, boolean notification, String title)

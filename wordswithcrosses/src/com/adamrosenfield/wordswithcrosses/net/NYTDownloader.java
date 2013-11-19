@@ -38,7 +38,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
@@ -82,13 +81,13 @@ public class NYTDownloader extends AbstractDownloader {
 
     @Override
     protected void download(Calendar date, String urlSuffix) throws IOException {
+        login();
+
         URL url = new URL(this.baseUrl + urlSuffix);
-
-        HttpClient client = this.login();
-
         LOG.info("NYT: Downloading " + url);
+
         HttpGet get = new HttpGet(url.toString());
-        HttpResponse response = client.execute(get);
+        HttpResponse response = utils.getHttpClient().execute(get);
 
         int status = response.getStatusLine().getStatusCode();
         if (status != 200) {
@@ -110,13 +109,13 @@ public class NYTDownloader extends AbstractDownloader {
         }
     }
 
-    private HttpClient login() throws IOException {
-        DefaultHttpClient httpclient = new DefaultHttpClient();
+    private void login() throws IOException {
+        HttpClient httpClient = utils.getHttpClient();
 
         HttpGet httpget = new HttpGet(LOGIN_URL);
 
         LOG.info("NYT: Logging in");
-        HttpResponse response = httpclient.execute(httpget);
+        HttpResponse response = httpClient.execute(httpget);
         HttpEntity entity = response.getEntity();
 
         if (entity != null) {
@@ -151,7 +150,7 @@ public class NYTDownloader extends AbstractDownloader {
             }
         }
 
-        HttpPost httpost = new HttpPost(LOGIN_URL);
+        HttpPost httpPost = new HttpPost(LOGIN_URL);
 
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 
@@ -159,9 +158,9 @@ public class NYTDownloader extends AbstractDownloader {
             nvps.add(new BasicNameValuePair(e.getKey(), e.getValue()));
         }
 
-        httpost.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
+        httpPost.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
 
-        response = httpclient.execute(httpost);
+        response = httpClient.execute(httpPost);
         entity = response.getEntity();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -178,7 +177,5 @@ public class NYTDownloader extends AbstractDownloader {
         }
 
         LOG.info("NYT: Logged in");
-
-        return httpclient;
     }
 }

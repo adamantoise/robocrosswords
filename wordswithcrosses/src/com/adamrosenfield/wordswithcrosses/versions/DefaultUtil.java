@@ -30,14 +30,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpConnectionParams;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -51,6 +43,15 @@ import com.adamrosenfield.wordswithcrosses.io.IO;
 import com.adamrosenfield.wordswithcrosses.net.AbstractDownloader;
 import com.adamrosenfield.wordswithcrosses.net.HTTPException;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpConnectionParams;
+
 public class DefaultUtil implements AndroidVersionUtils {
 
     protected static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
@@ -59,17 +60,24 @@ public class DefaultUtil implements AndroidVersionUtils {
     protected SharedPreferences prefs;
 
     protected HttpParams mHttpParams;
+    protected DefaultHttpClient mHttpClient;
 
     public DefaultUtil() {
         // Set default connect and recv timeouts to 30 seconds
         mHttpParams = new BasicHttpParams();
         HttpConnectionParams.setConnectionTimeout(mHttpParams, 30000);
         HttpConnectionParams.setSoTimeout(mHttpParams, 30000);
+
+        mHttpClient = new DefaultHttpClient(mHttpParams);
     }
 
     public void setContext(Context context) {
         this.context = context;
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
+    }
+
+    public HttpClient getHttpClient() {
+        return mHttpClient;
     }
 
     public void downloadFile(URL url, Map<String, String> headers,
@@ -106,14 +114,12 @@ public class DefaultUtil implements AndroidVersionUtils {
     }
 
     private InputStream downloadHelper(URL url, String scrubbedUrl, Map<String, String> headers) throws IOException {
-        DefaultHttpClient httpclient = new DefaultHttpClient(mHttpParams);
-
         HttpGet httpget = new HttpGet(url.toString());
         for (Entry<String, String> e : headers.entrySet()) {
             httpget.setHeader(e.getKey(), e.getValue());
         }
 
-        HttpResponse response = httpclient.execute(httpget);
+        HttpResponse response = mHttpClient.execute(httpget);
 
         int status = response.getStatusLine().getStatusCode();
         if (status != 200) {
