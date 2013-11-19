@@ -56,6 +56,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.protocol.HttpContext;
 
 public class DefaultUtil implements AndroidVersionUtils {
 
@@ -85,16 +86,17 @@ public class DefaultUtil implements AndroidVersionUtils {
         return mHttpClient;
     }
 
-    public void downloadFile(URL url, Map<String, String> headers,
-            File destination, boolean notification, String title)
-            throws IOException {
+    public void downloadFile(URL url, Map<String, String> headers, File destination, boolean notification, String title) throws IOException {
+        downloadFile(url, headers, destination, notification, title, null);
+    }
 
+    public void downloadFile(URL url, Map<String, String> headers, File destination, boolean notification, String title, HttpContext httpContext) throws IOException {
         String scrubbedUrl = AbstractDownloader.scrubUrl(url);
         File tempFile = new File(WordsWithCrossesApplication.TEMP_DIR, destination.getName());
         LOG.info("DefaultUtil: Downloading " + scrubbedUrl + " ==> " + tempFile);
         FileOutputStream fos = new FileOutputStream(tempFile);
         try {
-            downloadHelper(url, scrubbedUrl, headers, fos);
+            downloadHelper(url, scrubbedUrl, headers, httpContext, fos);
         } finally {
             fos.close();
         }
@@ -107,21 +109,25 @@ public class DefaultUtil implements AndroidVersionUtils {
     }
 
     public String downloadToString(URL url, Map<String, String> headers) throws IOException {
+        return downloadToString(url, headers, null);
+    }
+
+    public String downloadToString(URL url, Map<String, String> headers, HttpContext httpContext) throws IOException {
         String scrubbedUrl = AbstractDownloader.scrubUrl(url);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        downloadHelper(url, scrubbedUrl, headers, baos);
+        downloadHelper(url, scrubbedUrl, headers, httpContext, baos);
 
         return new String(baos.toByteArray());
     }
 
-    private void downloadHelper(URL url, String scrubbedUrl, Map<String, String> headers, OutputStream output) throws IOException {
+    private void downloadHelper(URL url, String scrubbedUrl, Map<String, String> headers, HttpContext httpContext, OutputStream output) throws IOException {
         HttpGet httpget = new HttpGet(url.toString());
         httpget.setHeader("Accept-Encoding", "gzip, deflate");
         for (Entry<String, String> e : headers.entrySet()) {
             httpget.setHeader(e.getKey(), e.getValue());
         }
 
-        HttpResponse response = mHttpClient.execute(httpget);
+        HttpResponse response = mHttpClient.execute(httpget, httpContext);
 
         int status = response.getStatusLine().getStatusCode();
         HttpEntity entity = response.getEntity();

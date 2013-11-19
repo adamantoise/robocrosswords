@@ -26,6 +26,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
+
 public abstract class ICrosswordDownloader extends AbstractDownloader
 {
     private static final String PUZZLE_URL_REGEX = "<a href=\"([^\"]*\\.puz[^\"]*)\"";
@@ -38,6 +43,10 @@ public abstract class ICrosswordDownloader extends AbstractDownloader
 
     protected void download(Calendar date, String embedUrl, String referer) throws IOException
     {
+        // Use new context with no cookies
+        HttpContext httpContext = new BasicHttpContext();
+        httpContext.setAttribute(ClientContext.COOKIE_STORE, new BasicCookieStore());
+
         // Pick some HTTP headers
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("User-Agent", pickRandom(USER_AGENTS));
@@ -47,7 +56,7 @@ public abstract class ICrosswordDownloader extends AbstractDownloader
         // Set referer [sic]
         headers.put("Referer", referer);
 
-        String scrapedPage = downloadUrlToString(embedUrl, headers);
+        String scrapedPage = downloadUrlToString(embedUrl, headers, httpContext);
 
         Matcher matcher = PUZZLE_URL_PATTERN.matcher(scrapedPage);
         if (!matcher.find())
@@ -71,7 +80,7 @@ public abstract class ICrosswordDownloader extends AbstractDownloader
         }
 
         // Download the puzzle
-        super.download(date, url, headers);
+        super.download(date, url, headers, httpContext);
     }
 
     /**
