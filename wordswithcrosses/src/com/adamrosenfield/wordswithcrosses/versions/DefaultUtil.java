@@ -26,6 +26,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -121,7 +122,14 @@ public class DefaultUtil implements AndroidVersionUtils {
     }
 
     private void downloadHelper(URL url, String scrubbedUrl, Map<String, String> headers, HttpContext httpContext, OutputStream output) throws IOException {
-        HttpGet httpget = new HttpGet(url.toString());
+        HttpGet httpget;
+        try {
+            httpget = new HttpGet(url.toURI());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            throw new IOException("Invalid URL: " + url);
+        }
+
         httpget.setHeader("Accept-Encoding", "gzip, deflate");
         for (Entry<String, String> e : headers.entrySet()) {
             httpget.setHeader(e.getKey(), e.getValue());

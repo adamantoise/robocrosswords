@@ -26,6 +26,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import android.text.TextUtils;
+
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.protocol.BasicHttpContext;
@@ -33,7 +35,7 @@ import org.apache.http.protocol.HttpContext;
 
 public abstract class ICrosswordDownloader extends AbstractDownloader
 {
-    private static final String PUZZLE_URL_REGEX = "<a href=\"([^\"]*\\.puz[^\"]*)\"";
+    private static final String PUZZLE_URL_REGEX = "<a href=\"([^\"]*\\.puz[^\"]*)\"|<a href='([^']*\\.puz[^']*)'";
     private static final Pattern PUZZLE_URL_PATTERN = Pattern.compile(PUZZLE_URL_REGEX);
 
     protected ICrosswordDownloader(String baseUrl, String downloaderName)
@@ -66,6 +68,11 @@ public abstract class ICrosswordDownloader extends AbstractDownloader
         }
 
         String url = matcher.group(1);
+        if (TextUtils.isEmpty(url))
+        {
+            url = matcher.group(2);
+        }
+
         headers.put("Referer", embedUrl);
 
         // Sleep a bit between requests
