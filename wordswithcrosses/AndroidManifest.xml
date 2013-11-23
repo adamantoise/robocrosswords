@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:installLocation="auto"
     package="com.adamrosenfield.wordswithcrosses"
-    android:versionCode="10503"
-    android:versionName="1.5.3">
+    android:versionCode="10504"
+    android:versionName="1.5.4">
 
     <supports-screens
         android:anyDensity="true"
