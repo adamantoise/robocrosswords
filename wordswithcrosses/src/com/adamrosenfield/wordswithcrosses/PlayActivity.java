@@ -1,4 +1,3 @@
-
 /**
  * This file is part of Words With Crosses.
  *
@@ -125,7 +124,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
     private boolean showErrors = false;
     private boolean useNativeKeyboard = false;
     private long lastKey;
-    private long resumedOn;
 
     private DisplayMetrics metrics;
 
@@ -686,18 +684,22 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        Word previous;
-
-        if ((System.currentTimeMillis() - this.resumedOn) < 500) {
+        // Ignore double-presses and bad hardware which report key events for
+        // both the software keyboard and the hardware keyboard
+        long now = System.currentTimeMillis();
+        if (now < lastKey + 5) {
             return true;
         }
+        lastKey = now;
+
+        Word previous;
 
         switch (keyCode) {
         case KeyEvent.KEYCODE_SEARCH:
             BOARD.setMovementStrategy(MovementStrategy.MOVE_NEXT_CLUE);
             previous = BOARD.nextWord();
-            BOARD.setMovementStrategy(this.getMovementStrategy());
-            this.render(previous);
+            BOARD.setMovementStrategy(getMovementStrategy());
+            render(previous);
 
             return true;
 
@@ -710,96 +712,55 @@ public class PlayActivity extends WordsWithCrossesActivity {
             return false;
 
         case KeyEvent.KEYCODE_DPAD_DOWN:
-
-            if ((System.currentTimeMillis() - lastKey) > 50) {
-                previous = BOARD.moveDown();
-                this.render(previous);
-            }
-
-            lastKey = System.currentTimeMillis();
-
+            previous = BOARD.moveDown();
+            render(previous);
             return true;
 
         case KeyEvent.KEYCODE_DPAD_UP:
-
-            if ((System.currentTimeMillis() - lastKey) > 50) {
-                previous = BOARD.moveUp();
-                this.render(previous);
-            }
-
-            lastKey = System.currentTimeMillis();
-
+            previous = BOARD.moveUp();
+            render(previous);
             return true;
 
         case KeyEvent.KEYCODE_DPAD_LEFT:
-
-            if ((System.currentTimeMillis() - lastKey) > 50) {
-                previous = BOARD.moveLeft();
-                this.render(previous);
-            }
-
-            lastKey = System.currentTimeMillis();
-
+            previous = BOARD.moveLeft();
+            render(previous);
             return true;
 
         case KeyEvent.KEYCODE_DPAD_RIGHT:
-
-            if ((System.currentTimeMillis() - lastKey) > 50) {
-                previous = BOARD.moveRight();
-                this.render(previous);
-            }
-
-            lastKey = System.currentTimeMillis();
-
+            previous = BOARD.moveRight();
+            render(previous);
             return true;
 
         case KeyEvent.KEYCODE_DPAD_CENTER:
             previous = BOARD.toggleDirection();
-            this.render(previous);
-
+            render(previous);
             return true;
 
         case KeyEvent.KEYCODE_SPACE:
-
-            if ((System.currentTimeMillis() - lastKey) > 150) {
-                if (prefs.getBoolean("spaceChangesDirection", true)) {
-                    previous = BOARD.toggleDirection();
-                    this.render(previous);
-                } else {
-                    previous = BOARD.playLetter(' ');
-                    this.render(previous);
-                }
+            if (prefs.getBoolean("spaceChangesDirection", true)) {
+                previous = BOARD.toggleDirection();
+                render(previous);
+            } else {
+                previous = BOARD.playLetter(' ');
+                render(previous);
             }
-
-            lastKey = System.currentTimeMillis();
 
             return true;
 
         case KeyEvent.KEYCODE_ENTER:
-
-            if ((System.currentTimeMillis() - lastKey) > 150) {
-                if (prefs.getBoolean("enterChangesDirection", true)) {
-                    previous = BOARD.toggleDirection();
-                    this.render(previous);
-                } else {
-                    previous = BOARD.nextWord();
-                    this.render(previous);
-                }
-
-                lastKey = System.currentTimeMillis();
-
-                return true;
+            if (prefs.getBoolean("enterChangesDirection", true)) {
+                previous = BOARD.toggleDirection();
+                render(previous);
+            } else {
+                previous = BOARD.nextWord();
+                render(previous);
             }
+
+            return true;
 
         case KeyEvent.KEYCODE_DEL:
-
-            if ((System.currentTimeMillis() - lastKey) > 150) {
-                previous = BOARD.deleteLetter();
-                this.render(previous);
-            }
-
-            lastKey = System.currentTimeMillis();
-
+            previous = BOARD.deleteLetter();
+            render(previous);
             return true;
         }
 
@@ -998,8 +959,6 @@ public class PlayActivity extends WordsWithCrossesActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        this.resumedOn = System.currentTimeMillis();
 
         if (puz != null) {
             handleOnResume();
