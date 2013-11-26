@@ -31,8 +31,6 @@ Puzzle sources
 - Jonesin' Crosswords
 - Joseph Crosswords
 - Los Angeles Times
-- Matt Gaffney's Daily Crossword
-- Matt Gaffney's Weekly Crossword Contest
 - Muller Monthly Music Meta
 - Neville Fogarty
 - New York Times (paid subscription required)
