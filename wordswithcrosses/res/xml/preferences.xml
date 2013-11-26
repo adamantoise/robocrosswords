@@ -25,11 +25,6 @@
             android:title="Los Angeles Times"
             android:defaultValue="true"
             android:key="downloadLAT" />
-        <CheckBoxPreference
-            android:title="Matt Gaffney's Daily Crossword"
-            android:summary="@string/pref_mgdc_summary"
-            android:defaultValue="true"
-            android:key="downloadMGDC" />
         <PreferenceScreen
             android:title="New York Times"
             android:summary="@string/pref_requires_subscription"
@@ -182,11 +177,6 @@
             android:summary="@string/pref_updates_thu"
             android:defaultValue="true"
             android:key="downloadJonesin" />
-        <CheckBoxPreference
-            android:title="Matt Gaffney's Weekly Crossword Contest"
-            android:summary="@string/pref_mgwcc_summary"
-            android:defaultValue="true"
-            android:key="downloadMGWCC" />
         <!-- Merl Reagle's puzzle removed at the request of Merl Reagle
         <CheckBoxPreference
             android:title="Merl Reagle's Crossword"

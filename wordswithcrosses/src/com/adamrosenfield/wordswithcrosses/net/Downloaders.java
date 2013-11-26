@@ -111,14 +111,6 @@ public class Downloaders {
             downloaders.add(new LATimesDownloader());
         }
 
-        if (prefs.getBoolean("downloadMGDC", true)) {
-            downloaders.add(new MGDCDownloader());
-        }
-
-        if (prefs.getBoolean("downloadMGWCC", true)) {
-            downloaders.add(new MGWCCDownloader());
-        }
-
         // Merl Reagle has requested this his puzzles be removed
         //if (prefs.getBoolean("downloadMerlReagle", true)) {
         //    downloaders.add(new MerlReagleDownloader());

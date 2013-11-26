@@ -41,7 +41,6 @@
     <string name="pref_updates_fri">Updates Fridays</string>
     <string name="pref_updates_sun">Updates Sundays</string>
     <string name="pref_wapo_summary">Only most recent two weeks of puzzles available</string>
-    <string name="pref_mgdc_summary">http://mattgaffneydaily.blogspot.com/</string>
     <string name="pref_avxw_summary">Requires subscription. Updates Wednesdays.</string>
     <string name="pref_username_summary_avxw">AVXW Username or Email Address</string>
     <string name="pref_password_summary_avxw">AVXW Password</string>
@@ -53,7 +52,6 @@
     <string name="pref_username_summary_crossword_nation">Crossword Nation Username or Email Address</string>
     <string name="pref_password_summary_crossword_nation">Crossword Nation Password</string>
     <string name="pref_erikagard_summary">Updates Wednesdays\nhttp://gluttonforpun.blogspot.com/</string>
-    <string name="pref_mgwcc_summary">Updates Fridays\nSubmit meta answer online at:\nhttp://xwordcontest.com/</string>
     <string name="pref_nevillefogarty_summary">Updates Fridays\nhttp://nevillefogarty.wordpress.com/</string>
     <string name="pref_people_summary">Updates Fridays\nNo archives available</string>
     <string name="pref_che_summary">Updates Fridays (biweekly during the summer)</string>
