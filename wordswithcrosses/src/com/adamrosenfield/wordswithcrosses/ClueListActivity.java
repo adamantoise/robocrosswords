@@ -410,7 +410,7 @@ public class ClueListActivity extends WordsWithCrossesActivity {
                 .toUpperCase(((this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) || this.useNativeKeyboard) ? event
                         .getDisplayLabel() : ((char) keyCode));
 
-        if (PlayActivity.ALPHA.indexOf(c) != -1) {
+        if (PlayActivity.PLAYABLE_CHARS.indexOf(c) != -1) {
             WordsWithCrossesApplication.BOARD.playLetter(c);
 
             Position p = WordsWithCrossesApplication.BOARD.getHighlightLetter();

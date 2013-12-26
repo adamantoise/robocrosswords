@@ -84,7 +84,9 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
     /** Extra data tag required by this activity */
     public static final String EXTRA_PUZZLE_ID = "puzzle_id";
-    public static final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    /** Playable non-rebus characters */
+    public static final String PLAYABLE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
 
@@ -768,7 +770,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
                 .toUpperCase(((this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) || this.useNativeKeyboard) ? event
                         .getDisplayLabel() : ((char) keyCode));
 
-        if (ALPHA.indexOf(c) != -1) {
+        if (PLAYABLE_CHARS.indexOf(c) != -1) {
             previous = BOARD.playLetter(c);
             this.render(previous);
 
