@@ -415,7 +415,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
                     now.get(Calendar.DAY_OF_MONTH),
                     new Provider<Downloaders>() {
                         public Downloaders get() {
-                            return new Downloaders(BrowseActivity.this, nm);
+                            return new Downloaders(BrowseActivity.this, nm, true);
                         }
                     });
 
@@ -698,7 +698,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
             downloadingThreads++;
         }
 
-        Downloaders dls = new Downloaders(this, nm);
+        Downloaders dls = new Downloaders(this, nm, false);
         dls.download(date, downloaders);
 
         synchronized (this) {
@@ -721,7 +721,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
             downloadingThreads++;
         }
 
-        Downloaders dls = new Downloaders(this, nm);
+        Downloaders dls = new Downloaders(this, nm, false);
         dls.enableIndividualDownloadNotifications(false);
 
         Calendar now = Calendar.getInstance();

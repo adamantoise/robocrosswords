@@ -33,6 +33,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 
 import com.adamrosenfield.wordswithcrosses.BrowseActivity;
 import com.adamrosenfield.wordswithcrosses.PlayActivity;
@@ -54,7 +55,7 @@ public class Downloaders {
     private static final int GENERAL_NOTIF_ID = 0;
     private static AtomicInteger nextNotifId = new AtomicInteger(1);
 
-    public Downloaders(BrowseActivity context, NotificationManager notificationManager) {
+    public Downloaders(BrowseActivity context, NotificationManager notificationManager, boolean includeAll) {
         this.context = context;
         this.notificationManager = notificationManager;
         this.prefs = context.getPrefs();
@@ -63,115 +64,129 @@ public class Downloaders {
         pendingBrowseIntent = PendingIntent.getActivity(context, 0, browseIntent, 0);
 
         // BEQ has requested that his puzzles not be automatically downloaded
-        //if (prefs.getBoolean("downloadBEQ", true)) {
+        //if (includeAll || prefs.getBoolean("downloadBEQ", true)) {
         //    downloaders.add(new BEQDownloader());
         //}
 
-        if (prefs.getBoolean("downloadAVXW", false)) {
-            downloaders.add(new AVXWDownloader(prefs.getString("avxwUsername", ""), prefs.getString("avxwPassword", "")));
+        if (includeAll || prefs.getBoolean("downloadAVXW", false)) {
+            String username = prefs.getString("avxwUsername", "");
+            String password = prefs.getString("avxwPassword", "");
+            if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)) {
+                downloaders.add(new AVXWDownloader(username, password));
+            }
         }
 
-        if (prefs.getBoolean("downloadAndyKravis", true)) {
+        if (includeAll || prefs.getBoolean("downloadAndyKravis", true)) {
             downloaders.add(new AndyKravisDownloader());
         }
 
-        if (prefs.getBoolean("downloadCHE", true)) {
+        if (includeAll || prefs.getBoolean("downloadCHE", true)) {
             downloaders.add(new CHEDownloader());
         }
 
-        if (prefs.getBoolean("downloadCrooked", false)) {
-            downloaders.add(new CrookedDownloader(prefs.getString("crookedUsername", ""), prefs.getString("crookedPassword", "")));
+        if (includeAll || prefs.getBoolean("downloadCrooked", false)) {
+            String username = prefs.getString("crookedUsername", "");
+            String password = prefs.getString("crookedPassword", "");
+            if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)) {
+                downloaders.add(new CrookedDownloader(username, password));
+            }
         }
 
-        if (prefs.getBoolean("downloadCrosswordNation", false)) {
-            downloaders.add(new CrosswordNationDownloader(prefs.getString("crosswordNationUsername", ""), prefs.getString("crosswordNationPassword", "")));
+        if (includeAll || prefs.getBoolean("downloadCrosswordNation", false)) {
+            String username = prefs.getString("crosswordNationUsername", "");
+            String password = prefs.getString("crosswordNationPassword", "");
+            if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)) {
+                downloaders.add(new CrosswordNationDownloader(username, password));
+            }
         }
 
-        if (prefs.getBoolean("downloadErikAgard", true)) {
+        if (includeAll || prefs.getBoolean("downloadErikAgard", true)) {
             downloaders.add(new ErikAgardDownloader());
         }
 
-        if (prefs.getBoolean("downloadISwear", true)) {
+        if (includeAll || prefs.getBoolean("downloadISwear", true)) {
             downloaders.add(new ISwearDownloader());
         }
 
-        if (prefs.getBoolean("downloadInkwell", true)) {
+        if (includeAll || prefs.getBoolean("downloadInkwell", true)) {
             downloaders.add(new InkwellDownloader());
         }
 
-        if (prefs.getBoolean("downloadJonesin", true)) {
+        if (includeAll || prefs.getBoolean("downloadJonesin", true)) {
             downloaders.add(new JonesinDownloader());
         }
 
-        if (prefs.getBoolean("downloadJoseph", true)) {
+        if (includeAll || prefs.getBoolean("downloadJoseph", true)) {
             downloaders.add(new JosephDownloader());
         }
 
-        if (prefs.getBoolean("downloadLAT", true)) {
+        if (includeAll || prefs.getBoolean("downloadLAT", true)) {
             downloaders.add(new LATimesDownloader());
         }
 
         // Merl Reagle has requested this his puzzles be removed
-        //if (prefs.getBoolean("downloadMerlReagle", true)) {
+        //if (includeAll || prefs.getBoolean("downloadMerlReagle", true)) {
         //    downloaders.add(new MerlReagleDownloader());
         //}
 
-        if (prefs.getBoolean("downloadMMMM",  true)) {
+        if (includeAll || prefs.getBoolean("downloadMMMM",  true)) {
             downloaders.add(new MMMMDownloader());
         }
 
-        if (prefs.getBoolean("downloadNevilleFogarty",  true)) {
+        if (includeAll || prefs.getBoolean("downloadNevilleFogarty",  true)) {
             downloaders.add(new NevilleFogartyDownloader());
         }
 
-        if (prefs.getBoolean("downloadNYT", false)) {
-            downloaders.add(new NYTDownloader(
-                prefs.getString("nytUsername", ""),
-                prefs.getString("nytPassword", "")));
+        if (includeAll || prefs.getBoolean("downloadNYT", false)) {
+            String username = prefs.getString("nytUsername", "");
+            String password = prefs.getString("nytPassword", "");
+            if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)) {
+                downloaders.add(new NYTDownloader(username, password));
+            }
         }
 
         // NYT classic is no longer updating with new puzzles
-        //if (prefs.getBoolean("downloadNYTClassic", true)) {
+        //if (includeAll || prefs.getBoolean("downloadNYTClassic", true)) {
         //    downloaders.add(new NYTClassicDownloader());
         //}
 
-        if (prefs.getBoolean("downloadNewsday", true)) {
+        if (includeAll || prefs.getBoolean("downloadNewsday", true)) {
             downloaders.add(new NewsdayDownloader());
         }
 
-        if (prefs.getBoolean("downloadPatrickBlindauer",  true)) {
+        if (includeAll || prefs.getBoolean("downloadPatrickBlindauer",  true)) {
             downloaders.add(new PatrickBlindauerDownloader());
         }
 
-        if (prefs.getBoolean("downloadPeople", true)) {
+        if (includeAll || prefs.getBoolean("downloadPeople", true)) {
             downloaders.add(new PeopleScraper());
         }
 
-        if (prefs.getBoolean("downloadPremier", true)) {
+        if (includeAll || prefs.getBoolean("downloadPremier", true)) {
             downloaders.add(new PremierDownloader());
         }
 
-        if (prefs.getBoolean("downloadSheffer", true)) {
+        if (includeAll || prefs.getBoolean("downloadSheffer", true)) {
             downloaders.add(new ShefferDownloader());
         }
 
-        if (prefs.getBoolean("downloadUniversal", true)) {
+        if (includeAll || prefs.getBoolean("downloadUniversal", true)) {
             downloaders.add(new UniversalDownloader());
         }
 
-        if (prefs.getBoolean("downloadUSAToday", true)) {
+        if (includeAll || prefs.getBoolean("downloadUSAToday", true)) {
             downloaders.add(new USATodayDownloader());
         }
 
-        if (prefs.getBoolean("downloadWsj", true)) {
+        if (includeAll || prefs.getBoolean("downloadWsj", true)) {
             downloaders.add(new WSJDownloader());
         }
 
-        if (prefs.getBoolean("downloadWaPo", true)) {
+        if (includeAll || prefs.getBoolean("downloadWaPo", true)) {
             downloaders.add(new WaPoDownloader());
         }
 
-        if (prefs.getBoolean("downloadWaPoPuzzler", true)) {
+        if (includeAll || prefs.getBoolean("downloadWaPoPuzzler", true)) {
             downloaders.add(new WaPoPuzzlerDownloader());
         }
 
