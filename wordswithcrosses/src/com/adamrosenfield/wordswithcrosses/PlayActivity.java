@@ -671,6 +671,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
+        showErrors = prefs.getBoolean("showErrors", false);
         int showItemStr = (showErrors ? R.string.menu_hide_errors : R.string.menu_show_errors);
         menu.findItem(MENU_ID_SHOW_ERRORS).setTitle(showItemStr);
 
