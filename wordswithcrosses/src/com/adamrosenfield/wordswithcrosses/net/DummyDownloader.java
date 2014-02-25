@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.Calendar;
 
 import android.content.Context;
+import android.content.Intent;
 
 import com.adamrosenfield.wordswithcrosses.R;
 
@@ -61,6 +62,14 @@ public class DummyDownloader implements Downloader {
     }
 
     public String sourceUrl(Calendar date) {
+        return null;
+    }
+
+    public boolean isManualDownload() {
+        return false;
+    }
+
+    public Intent getManualDownloadIntent(Calendar date) {
         return null;
     }
 

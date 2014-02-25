@@ -129,6 +129,11 @@ public class Downloaders {
         //    downloaders.add(new MerlReagleDownloader());
         //}
 
+        if (includeAll) {
+            downloaders.add(new MGDCDownloader());
+            downloaders.add(new MGWCCDownloader());
+        }
+
         if (includeAll || prefs.getBoolean("downloadMMMM",  true)) {
             downloaders.add(new MMMMDownloader());
         }
@@ -233,6 +238,10 @@ public class Downloaders {
 
         for (Downloader d : downloaders) {
             d.setContext(context);
+
+            if (d.isManualDownload()) {
+                continue;
+            }
 
             int notifId = nextNotifId.incrementAndGet();
             boolean succeeded = false;

@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import android.content.Context;
+import android.content.Intent;
 
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.versions.AndroidVersionUtils;
@@ -162,5 +163,15 @@ public abstract class AbstractDownloader implements Downloader {
     public static String scrubUrl(URL url)
     {
         return scrubUrl(url.toString());
+    }
+
+    public boolean isManualDownload()
+    {
+        return false;
+    }
+
+    public Intent getManualDownloadIntent(Calendar date)
+    {
+        return null;
     }
 }

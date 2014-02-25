@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.Calendar;
 
 import android.content.Context;
+import android.content.Intent;
 
 public interface Downloader {
 
@@ -38,4 +39,8 @@ public interface Downloader {
     public void download(Calendar date) throws IOException;
 
     public String sourceUrl(Calendar date);
+
+    public boolean isManualDownload();
+
+    public Intent getManualDownloadIntent(Calendar date);
 }

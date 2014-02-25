@@ -400,7 +400,18 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
                             toDownload.remove(0);
                         } else {
                             // Only download selected.
-                            toDownload.add(downloaders.get(selected));
+                            Downloader downloader = downloaders.get(selected);
+                            if (downloader.isManualDownload()) {
+                                // Try to initiate the manual download
+                                Intent intent = downloader.getManualDownloadIntent(date);
+                                if (intent.resolveActivity(getPackageManager()) != null) {
+                                    startActivity(intent);
+                                } else {
+                                    // TODO: Display AlertDialog
+                                }
+                                return;
+                            }
+                            toDownload.add(downloader);
                         }
 
                         download(date, toDownload);
