@@ -29,6 +29,7 @@ Puzzle sources
 - CRooked Crosswords
 - Crossword Nation
 - Daily Record
+- Devil Cross (manual download required)
 - Erik Agard
 - Ink Well Xwords
 - Jonesin' Crosswords
