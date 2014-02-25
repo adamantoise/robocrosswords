@@ -7,6 +7,8 @@ Words With Crosses
 
 If you'd like to support the continued development of *Words With Crosses*, [please donate](http://adamrosenfield.com/donate).  This is a side project of mine done in my spare time, outside of my day job.
 
+[Downloadd *Words With Crosses* on Google Play](https://play.google.com/store/apps/details?id=com.adamrosenfield.wordswithcrosses)
+
 Features
 --------
 
@@ -22,6 +24,7 @@ Puzzle sources
 
 - American Values Club xword
 - Andy Kravis, Cruciverbalist at Law
+- Brendan Emmett Quigley (manual download required)
 - Chronicle of Higher Education
 - CRooked Crosswords
 - Crossword Nation
@@ -31,6 +34,8 @@ Puzzle sources
 - Jonesin' Crosswords
 - Joseph Crosswords
 - Los Angeles Times
+- Matt Gaffney's Daily Crossword (manual download required)
+- Matt Gaffney's Weekly Crossword Contest (manual download required)
 - Muller Monthly Music Meta
 - Neville Fogarty
 - New York Times (paid subscription required)

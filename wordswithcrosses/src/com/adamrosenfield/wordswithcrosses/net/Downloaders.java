@@ -63,10 +63,9 @@ public class Downloaders {
         browseIntent = new Intent(Intent.ACTION_EDIT, null, context, BrowseActivity.class);
         pendingBrowseIntent = PendingIntent.getActivity(context, 0, browseIntent, 0);
 
-        // BEQ has requested that his puzzles not be automatically downloaded
-        //if (includeAll || prefs.getBoolean("downloadBEQ", true)) {
-        //    downloaders.add(new BEQDownloader());
-        //}
+        if (includeAll) {
+            downloaders.add(new BEQDownloader());
+        }
 
         if (includeAll || prefs.getBoolean("downloadAVXW", false)) {
             String username = prefs.getString("avxwUsername", "");

@@ -27,19 +27,26 @@ import java.util.Calendar;
  * URL: http://www.brendanemmettquigley.com/files/[puzzle-name].puz
  * Date: Monday, Thursday
  */
-public class BEQDownloader extends AbstractPageScraper {
-
-    public BEQDownloader() {
+public class BEQDownloader extends ManualDownloader
+{
+    // BEQ has requested that his puzzles not be automatically downloaded,
+    // so we use a manual downloader for now
+    public BEQDownloader()
+    {
         super("Brendan Emmett Quigley");
     }
 
-    @Override
-    protected String getScrapeURL(Calendar date) {
-        return "http://www.brendanemmettquigley.com/";
-    }
-
-    public boolean isPuzzleAvailable(Calendar date) {
+    public boolean isPuzzleAvailable(Calendar date)
+    {
         int day = date.get(Calendar.DAY_OF_WEEK);
         return (day == Calendar.MONDAY || day == Calendar.THURSDAY);
+    }
+
+    @Override
+    protected String getManualDownloadUri(Calendar date)
+    {
+        // AFAICT there aren't any easy-to-form archive URLs or search by
+        // aate URLs, so we just go to the home page for now.
+        return "http://www.brendanemmettquigley.com/";
     }
 }
