@@ -37,7 +37,9 @@ public class ISwearDownloader extends AbstractDownloader {
     }
 
     public boolean isPuzzleAvailable(Calendar date) {
-        return (date.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY);
+        return
+            date.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY &&
+            date.get(Calendar.YEAR) <= 2013;
     }
 
     @Override

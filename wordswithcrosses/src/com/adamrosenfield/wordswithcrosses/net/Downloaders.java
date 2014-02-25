@@ -104,9 +104,11 @@ public class Downloaders {
             downloaders.add(new ErikAgardDownloader());
         }
 
-        if (includeAll || prefs.getBoolean("downloadISwear", true)) {
-            downloaders.add(new ISwearDownloader());
-        }
+        // "I Swear" crossword is no longer being published as of 1/1/2014
+        // TODO: Archives
+        //if (includeAll || prefs.getBoolean("downloadISwear", true)) {
+        //    downloaders.add(new ISwearDownloader());
+        //}
 
         if (includeAll || prefs.getBoolean("downloadInkwell", true)) {
             downloaders.add(new InkwellDownloader());

@@ -163,11 +163,6 @@
             android:defaultValue="true"
             android:key="downloadErikAgard" />
         <CheckBoxPreference
-            android:title="I Swear"
-            android:summary="@string/pref_updates_fri"
-            android:defaultValue="true"
-            android:key="downloadISwear" />
-        <CheckBoxPreference
             android:title="Ink Well"
             android:summary="@string/pref_updates_fri"
             android:defaultValue="true"
