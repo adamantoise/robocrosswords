@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:installLocation="auto"
     package="com.adamrosenfield.wordswithcrosses"
-    android:versionCode="10505"
-    android:versionName="1.5.5">
+    android:versionCode="20000"
+    android:versionName="2.0.0">
 
     <supports-screens
         android:anyDensity="true"
@@ -75,9 +75,9 @@
             </intent-filter>
             <intent-filter >
                 <action android:name="android.intent.action.VIEW" />
-                
+
                 <category android:name="android.intent.category.DEFAULT" />
-                
+
                 <data android:mimeType="application/octet-stream" />
                 <data android:mimeType="application/x-crossword" />
             </intent-filter>
