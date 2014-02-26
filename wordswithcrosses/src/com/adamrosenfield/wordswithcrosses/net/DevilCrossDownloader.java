@@ -19,23 +19,29 @@
 
 package com.adamrosenfield.wordswithcrosses.net;
 
+import java.io.IOException;
 import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Devil Cross
  * URL: http://devilcross.com/
  * Date: Every other Saturday
  */
-public class DevilCrossDownloader extends ManualDownloader
+public class DevilCrossDownloader extends AbstractDownloader
 {
     private static final String BASE_URL = "http://devilcross.com/";
 
     /** Date on which Devil Cross was first published */
     private static final Calendar START_DATE = createDate(2014, 2, 1);
 
+    private static final String PUZZLE_REGEX = "href=\"([^\"]*\\.puz)\">";
+    private static final Pattern PUZZLE_PATTERN = Pattern.compile(PUZZLE_REGEX);
+
     public DevilCrossDownloader()
     {
-        super("Devil Cross");
+        super("", "Devil Cross");
     }
 
     public boolean isPuzzleAvailable(Calendar date)
@@ -52,14 +58,33 @@ public class DevilCrossDownloader extends ManualDownloader
     }
 
     @Override
-    protected String getManualDownloadUri(Calendar date)
+    protected String createUrlSuffix(Calendar date)
     {
-        return BASE_URL +
+        return "";
+    }
+
+    @Override
+    public void download(Calendar date) throws IOException
+    {
+        // First scrape the archive page to find the .puz link
+        String scrapeUrl = BASE_URL +
             date.get(Calendar.YEAR) +
             "/" +
             DEFAULT_NF.format(date.get(Calendar.MONTH) + 1) +
             "/" +
             DEFAULT_NF.format(date.get(Calendar.DATE)) +
             "/";
+        String scrapedData = downloadUrlToString(scrapeUrl);
+
+        Matcher matcher = PUZZLE_PATTERN.matcher(scrapedData);
+        if (!matcher.find())
+        {
+            LOG.warning("Failed to find puzzle link on page: " + scrapeUrl);
+            throw new IOException("Failed to scrape puzzle link");
+        }
+
+        // Now download the puzzle
+        String puzzleUrl = resolveUrl(scrapeUrl, matcher.group(1));
+        super.download(date, puzzleUrl);
     }
 }

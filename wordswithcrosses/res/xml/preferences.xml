@@ -158,6 +158,11 @@
                 custom:url="http://www.xwordnation.com/"/>
         </PreferenceScreen>
         <CheckBoxPreference
+            android:title="Devil Cross"
+            android:summary="@string/pref_devilcross_summary"
+            android:defaultValue="true"
+            android:key="downloadDevilCross" />
+        <CheckBoxPreference
             android:title="Erik Agard"
             android:summary="@string/pref_erikagard_summary"
             android:defaultValue="true"

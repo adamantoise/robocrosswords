@@ -99,7 +99,7 @@ public class Downloaders {
             }
         }
 
-        if (includeAll) {
+        if (includeAll || prefs.getBoolean("downloadDevilCross", true)) {
             downloaders.add(new DevilCrossDownloader());
         }
 
