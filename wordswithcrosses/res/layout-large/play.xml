@@ -62,8 +62,8 @@
     <Gallery
         android:id="@+id/acrossListGal"
         android:layout_width="fill_parent"
-        android:spacing="0dp"
         android:layout_height="wrap_content"
+        android:spacing="0dp"
         tools:ignore="InconsistentLayout"/>
     <TextView
         android:id="@+id/downLabel"
@@ -76,8 +76,8 @@
     <Gallery
         android:id="@+id/downListGal"
         android:layout_width="fill_parent"
-        android:spacing="0dp"
         android:layout_height="wrap_content"
+        android:spacing="0dp"
         tools:ignore="InconsistentLayout"/>
   </LinearLayout>
 

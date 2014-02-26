@@ -510,19 +510,16 @@ public class PlayActivity extends WordsWithCrossesActivity {
             down.setAdapter(this.downAdapter = new ClueListAdapter(this, BOARD
                     .getDownClues(), false));
             across.setOnItemClickListener(new OnItemClickListener() {
-                public void onItemClick(AdapterView<?> arg0, View arg1,
-                        int arg2, long arg3) {
-                    arg0.setSelected(true);
-                    BOARD.jumpTo(arg2, true);
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    parent.setSelected(true);
+                    BOARD.jumpTo(position, true);
                     render();
                 }
             });
             across.setOnItemSelectedListener(new OnItemSelectedListener() {
-                public void onItemSelected(AdapterView<?> arg0, View arg1,
-                        int arg2, long arg3) {
-                    if (!BOARD.isAcross()
-                            || (BOARD.getCurrentClueIndex() != arg2)) {
-                        BOARD.jumpTo(arg2, true);
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if (!BOARD.isAcross() || (BOARD.getCurrentClueIndex() != position)) {
+                        BOARD.jumpTo(position, true);
                         render();
                     }
                 }
@@ -531,24 +528,22 @@ public class PlayActivity extends WordsWithCrossesActivity {
                 }
             });
             down.setOnItemClickListener(new OnItemClickListener() {
-                public void onItemClick(AdapterView<?> arg0, View arg1,
-                        final int arg2, long arg3) {
-                    BOARD.jumpTo(arg2, false);
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    parent.setSelected(true);
+                    BOARD.jumpTo(position, false);
                     render();
                 }
             });
 
             down.setOnItemSelectedListener(new OnItemSelectedListener() {
-                public void onItemSelected(AdapterView<?> arg0, View arg1,
-                        int arg2, long arg3) {
-                    if (BOARD.isAcross()
-                            || (BOARD.getCurrentClueIndex() != arg2)) {
-                        BOARD.jumpTo(arg2, false);
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if (BOARD.isAcross() || (BOARD.getCurrentClueIndex() != position)) {
+                        BOARD.jumpTo(position, false);
                         render();
                     }
                 }
 
-                public void onNothingSelected(AdapterView<?> arg0) {
+                public void onNothingSelected(AdapterView<?> view) {
                 }
             });
             down.scrollTo(0, 0);
