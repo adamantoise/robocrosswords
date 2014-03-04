@@ -21,6 +21,12 @@
         android:calendarViewShown="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+    <CheckBox
+        android:id="@+id/showAll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/show_all"
+        android:onClick="onDownloadDialogShowAllClicked" />
     <Spinner
         android:id="@+id/puzzleSelect"
         android:layout_width="fill_parent"

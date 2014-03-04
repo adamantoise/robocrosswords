@@ -55,9 +55,9 @@ public class Downloaders {
     private static final int GENERAL_NOTIF_ID = 0;
     private static AtomicInteger nextNotifId = new AtomicInteger(1);
 
-    public Downloaders(BrowseActivity context, NotificationManager notificationManager, boolean includeAll) {
+    public Downloaders(BrowseActivity context, boolean includeAll) {
         this.context = context;
-        this.notificationManager = notificationManager;
+        this.notificationManager = context.getNotificationManager();
         this.prefs = context.getPrefs();
 
         browseIntent = new Intent(Intent.ACTION_EDIT, null, context, BrowseActivity.class);

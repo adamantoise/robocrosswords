@@ -26,7 +26,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -41,7 +40,7 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.adamrosenfield.wordswithcrosses.BrowseActivity.Provider;
+import com.adamrosenfield.wordswithcrosses.BrowseActivity;
 import com.adamrosenfield.wordswithcrosses.net.Downloader;
 import com.adamrosenfield.wordswithcrosses.net.Downloaders;
 import com.adamrosenfield.wordswithcrosses.net.DummyDownloader;
@@ -51,28 +50,25 @@ import com.adamrosenfield.wordswithcrosses.net.DummyDownloader;
  */
 public class DownloadPickerDialogBuilder {
     private static DateFormat DATE_FORMAT = new SimpleDateFormat("EEEE", Locale.getDefault());
-    private Activity mActivity;
+    private BrowseActivity mActivity;
     private Dialog mDialog;
     private List<Downloader> mAvailableDownloaders;
     private OnDateChangedListener dateChangedListener;
 
-    private Provider<Downloaders> mDownloaders;
     private Spinner mPuzzleSelect;
     private ArrayAdapter<Downloader> mAdapter;
     private TextView mDateLabel;
     private int mDayOfMonth;
     private int mMonthOfYear;
     private int mYear;
+    private boolean mShowAll = false;
 
-    public DownloadPickerDialogBuilder(Activity a, final OnDownloadSelectedListener downloadButtonListener, int year,
-        int monthOfYear, int dayOfMonth, Provider<Downloaders> provider) {
-        mActivity = a;
+    public DownloadPickerDialogBuilder(BrowseActivity activity, final OnDownloadSelectedListener downloadButtonListener, int year, int monthOfYear, int dayOfMonth) {
+        mActivity = activity;
 
         mYear = year;
         mMonthOfYear = monthOfYear;
         mDayOfMonth = dayOfMonth;
-
-        mDownloaders = provider;
 
         LayoutInflater inflater = (LayoutInflater)mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         ScrollView layout = (ScrollView)inflater.inflate(R.layout.download_dialog, (ViewGroup)mActivity.findViewById(R.id.download_root));
@@ -132,7 +128,7 @@ public class DownloadPickerDialogBuilder {
     }
 
     public void updatePuzzleSelect(String toSelect) {
-        mAvailableDownloaders = mDownloaders.get().getDownloaders(getCurrentDate());
+        mAvailableDownloaders = new Downloaders(mActivity, mShowAll).getDownloaders(getCurrentDate());
         mAvailableDownloaders.add(0, new DummyDownloader(mActivity));
 
         mAdapter.setNotifyOnChange(false);
@@ -150,6 +146,13 @@ public class DownloadPickerDialogBuilder {
         mAdapter.notifyDataSetChanged();
 
         mPuzzleSelect.setSelection(indexToSelect, false);
+    }
+
+    public void showAllPuzzles(boolean showAll) {
+        mShowAll = showAll;
+
+        String curPuzzle = mPuzzleSelect.getSelectedItem().toString();
+        updatePuzzleSelect(curPuzzle);
     }
 
     public interface OnDownloadSelectedListener {

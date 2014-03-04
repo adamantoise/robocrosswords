@@ -55,6 +55,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -420,15 +421,12 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
             Calendar now = Calendar.getInstance();
 
-            downloadPickerDialogBuilder = new DownloadPickerDialogBuilder(this, downloadButtonListener,
-                    now.get(Calendar.YEAR),
-                    now.get(Calendar.MONTH),
-                    now.get(Calendar.DAY_OF_MONTH),
-                    new Provider<Downloaders>() {
-                        public Downloaders get() {
-                            return new Downloaders(BrowseActivity.this, nm, true);
-                        }
-                    });
+            downloadPickerDialogBuilder = new DownloadPickerDialogBuilder(
+                this,
+                downloadButtonListener,
+                now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH));
 
             mDownloadDialog = downloadPickerDialogBuilder.getInstance();
 
@@ -445,6 +443,14 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
             downloadPickerDialogBuilder.updatePuzzleSelect(null);
             break;
         }
+    }
+
+    /**
+     * Called when the "Show All" checkbox in the download dialog is clicked
+     */
+    public void onDownloadDialogShowAllClicked(View view) {
+        boolean checked = ((CheckBox)view).isChecked();
+        downloadPickerDialogBuilder.showAllPuzzles(checked);
     }
 
     @Override
@@ -709,7 +715,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
             downloadingThreads++;
         }
 
-        Downloaders dls = new Downloaders(this, nm, false);
+        Downloaders dls = new Downloaders(this, false);
         dls.download(date, downloaders);
 
         synchronized (this) {
@@ -732,7 +738,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
             downloadingThreads++;
         }
 
-        Downloaders dls = new Downloaders(this, nm, false);
+        Downloaders dls = new Downloaders(this, false);
         dls.enableIndividualDownloadNotifications(false);
 
         Calendar now = Calendar.getInstance();
@@ -752,6 +758,10 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
     public Handler getHandler() {
         return handler;
+    }
+
+    public NotificationManager getNotificationManager() {
+        return nm;
     }
 
     private void render() {
@@ -804,10 +814,6 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
                 }
             }
         }
-    }
-
-    public static interface Provider<T> {
-        T get();
     }
 
     /**

@@ -143,6 +143,7 @@
       <item quantity="other">I finished the %1$s crossword for %2$s in %3$s but got %4$d hints (%5$s) in #WordsWithCrosses!</item>
     </plurals>
 
+    <string name="show_all">Show All</string>
     <string name="puzzle_select">Select a puzzle:</string>
 
     <string name="downloading_puzzles">Downloading Puzzles</string>
