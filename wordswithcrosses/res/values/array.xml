@@ -24,11 +24,13 @@
      <string-array name="keyboardTypeLabels">
        <item>Small</item>
        <item>With Arrows</item>
+       <item>Arrows &amp; Numbers</item>
        <item>Native</item>
      </string-array>
      <string-array name="keyboardTypeValues">
        <item>CONDENSED</item>
        <item>CONDENSED_ARROWS</item>
+       <item>ARROWS_AND_NUMBERS</item>
        <item>NATIVE</item>
      </string-array>
      <string-array name="cleanupAgeLabels">

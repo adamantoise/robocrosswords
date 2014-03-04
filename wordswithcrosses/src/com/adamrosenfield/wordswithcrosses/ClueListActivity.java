@@ -121,15 +121,14 @@ public class ClueListActivity extends WordsWithCrossesActivity {
         timer.start();
         setContentView(R.layout.clue_list);
 
-        int keyboardType = "CONDENSED_ARROWS".equals(prefs.getString(
-                "keyboardType", "")) ? R.xml.keyboard_dpad : R.xml.keyboard;
-        Keyboard keyboard = new Keyboard(this, keyboardType);
-        keyboardView = (KeyboardView) this.findViewById(R.id.clueKeyboard);
-        keyboardView.setKeyboard(keyboard);
-        this.useNativeKeyboard = "NATIVE".equals(prefs.getString(
-                "keyboardType", ""));
+        int keyboardType = getKeyboardTypePreference();
+        useNativeKeyboard = (keyboardType == -1);
+        keyboardView = (KeyboardView)this.findViewById(R.id.clueKeyboard);
 
-        if (this.useNativeKeyboard) {
+        if (!useNativeKeyboard) {
+            Keyboard keyboard = new Keyboard(this, keyboardType);
+            keyboardView.setKeyboard(keyboard);
+        } else {
             keyboardView.setVisibility(View.GONE);
         }
 

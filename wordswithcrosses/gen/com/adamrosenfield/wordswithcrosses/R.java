@@ -335,7 +335,8 @@ containing a value of this type.
     public static final class xml {
         public static final int keyboard=0x7f040000;
         public static final int keyboard_dpad=0x7f040001;
-        public static final int preferences=0x7f040002;
+        public static final int keyboard_dpad_nums=0x7f040002;
+        public static final int preferences=0x7f040003;
     }
     public static final class styleable {
         /** Attributes that can be used with a CustomFastScrollView.

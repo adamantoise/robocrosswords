@@ -480,14 +480,14 @@ public class PlayActivity extends WordsWithCrossesActivity {
     }
 
     private void updateKeyboardFromPrefs() {
-        String keyboardPref = prefs.getString("keyboardType", "");
-        int keyboardType = "CONDENSED_ARROWS".equals(keyboardPref) ? R.xml.keyboard_dpad : R.xml.keyboard;
-        Keyboard keyboard = new Keyboard(this, keyboardType);
+        int keyboardType = getKeyboardTypePreference();
+        useNativeKeyboard = (keyboardType == -1);
         keyboardView = (KeyboardView)findViewById(R.id.playKeyboard);
-        keyboardView.setKeyboard(keyboard);
 
-        useNativeKeyboard = "NATIVE".equals(keyboardPref);
-        if (useNativeKeyboard) {
+        if (!useNativeKeyboard) {
+            Keyboard keyboard = new Keyboard(this, keyboardType);
+            keyboardView.setKeyboard(keyboard);
+        } else {
             keyboardView.setVisibility(View.GONE);
         }
 

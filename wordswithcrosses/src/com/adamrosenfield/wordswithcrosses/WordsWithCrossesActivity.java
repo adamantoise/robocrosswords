@@ -148,6 +148,23 @@ public abstract class WordsWithCrossesActivity extends Activity {
     }
 
     /**
+     * Gets the resource ID of the user's preferred keyboard type, based on
+     * the current preference setting
+     */
+    protected int getKeyboardTypePreference() {
+        String keyboardPref = prefs.getString("keyboardType", "");
+        if ("CONDENSED".equals(keyboardPref)) {
+            return R.xml.keyboard;
+        } else if ("CONDENSED_ARROWS".equals(keyboardPref)) {
+            return R.xml.keyboard_dpad;
+        } else if ("ARROWS_AND_NUMBERS".equals(keyboardPref)) {
+            return R.xml.keyboard_dpad_nums;
+        } else {
+            return -1;
+        }
+    }
+
+    /**
      * Updates our record of the last time we synced the database with the
      * file system
      */
