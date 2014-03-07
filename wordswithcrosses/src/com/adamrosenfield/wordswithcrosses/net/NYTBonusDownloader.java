@@ -1,7 +1,6 @@
 /**
  * This file is part of Words With Crosses.
  *
- * Copyright (C) 2009-2010 Robert Cooper
  * Copyright (C) 2013 Adam Rosenfield
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,35 +22,29 @@ package com.adamrosenfield.wordswithcrosses.net;
 import java.util.Calendar;
 
 /**
- * New York Times
- * URL: http://www.nytimes.com/premium/xword/YYYY/MM/DD/[Mon]DDYY.puz
- * Date: Daily
+ * New York Times monthly bonus puzzle
+ * URL: http://www.nytimes.com/premium/xword/[Mon]YY_sp.puz
+ * Date: 1st of the month
  */
-public class NYTDownloader extends NYTBaseDownloader
+public class NYTBonusDownloader extends NYTBaseDownloader
 {
-    public static final String NAME = "New York Times";
+    private static final String NAME = "New York Times Bonus Puzzle";
 
-    public NYTDownloader(String username, String password)
+    public NYTBonusDownloader(String username, String password)
     {
         super(NAME, username, password);
     }
 
     public boolean isPuzzleAvailable(Calendar date)
     {
-        return true;
+        return (date.get(Calendar.DATE) == 1);
     }
 
     @Override
     protected String createUrlSuffix(Calendar date)
     {
-        return (date.get(Calendar.YEAR) + "/" +
-                DEFAULT_NF.format(date.get(Calendar.MONTH) + 1) +
-                "/" +
-                DEFAULT_NF.format(date.get(Calendar.DAY_OF_MONTH)) +
-                "/" +
-                SHORT_MONTHS[date.get(Calendar.MONTH)] +
-                DEFAULT_NF.format(date.get(Calendar.DAY_OF_MONTH)) +
+        return (SHORT_MONTHS[date.get(Calendar.MONTH)] +
                 DEFAULT_NF.format(date.get(Calendar.YEAR) % 100) +
-                ".puz");
+                "_sp.puz");
     }
 }

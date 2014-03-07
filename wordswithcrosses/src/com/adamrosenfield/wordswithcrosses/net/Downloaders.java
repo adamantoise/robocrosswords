@@ -147,11 +147,15 @@ public class Downloaders {
             downloaders.add(new NevilleFogartyDownloader());
         }
 
-        if (includeAll || prefs.getBoolean("downloadNYT", false)) {
-            String username = prefs.getString("nytUsername", "");
-            String password = prefs.getString("nytPassword", "");
-            if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)) {
-                downloaders.add(new NYTDownloader(username, password));
+        String nytUsername = prefs.getString("nytUsername", "");
+        String nytPassword = prefs.getString("nytPassword", "");
+        if (!TextUtils.isEmpty(nytUsername) && !TextUtils.isEmpty(nytPassword)) {
+            if (includeAll || prefs.getBoolean("downloadNYT", false)) {
+                downloaders.add(new NYTDownloader(nytUsername, nytPassword));
+            }
+
+            if (includeAll || prefs.getBoolean("downloadNYTBonus", false)) {
+                downloaders.add(new NYTBonusDownloader(nytUsername, nytPassword));
             }
         }
 

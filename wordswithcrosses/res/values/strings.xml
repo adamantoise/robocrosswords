@@ -32,6 +32,7 @@
     <string name="pref_monthly_crosswords_summary">Puzzles which update monthly</string>
     <string name="pref_requires_subscription">Requires subscription</string>
     <string name="pref_username">Username</string>
+    <string name="pref_nyt_bonus_summary">Available on 1st of each month</string>
     <string name="pref_username_summary_nyt">NYT Username or Email Address</string>
     <string name="pref_password">Password</string>
     <string name="pref_password_summary_nyt">NYT Password</string>

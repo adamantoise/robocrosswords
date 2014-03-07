@@ -57,7 +57,7 @@ public class WordsWithCrossesApplication extends Application {
     public static final String DEVELOPER_EMAIL = "wordswithcrosses@adamrosenfield.com";
 
     private static final String PREFERENCES_VERSION_PREF = "preferencesVersion";
-    private static final int PREFERENCES_VERSION = 4;
+    private static final int PREFERENCES_VERSION = 5;
 
     private static Context mContext;
 
@@ -145,6 +145,10 @@ public class WordsWithCrossesApplication extends Application {
             } catch (ClassCastException e) {
                 // Ignore
             }
+            // Fall-through
+        case 4:
+            editor.putBoolean("downloadNYTBonus", prefs.getBoolean("downloadNYT", false));
+            // Fall-through
         }
 
         editor.putInt(PREFERENCES_VERSION_PREF, PREFERENCES_VERSION);

@@ -33,6 +33,11 @@
                 android:title="New York Times"
                 android:defaultValue="false"
                 android:key="downloadNYT" />
+            <CheckBoxPreference
+                android:title="New York Times Bonus Puzzle"
+                android:summary="@string/pref_nyt_bonus_summary"
+                android:defaultValue="false"
+                android:key="downloadNYTBonus" />
             <EditTextPreference
                 android:title="@string/pref_username"
                 android:summary="@string/pref_username_summary_nyt"
