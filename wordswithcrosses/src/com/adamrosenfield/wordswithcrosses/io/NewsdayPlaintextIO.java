@@ -162,11 +162,15 @@ public class NewsdayPlaintextIO
                 }
             }
 
-            if (curAcrossClue != numAcrossClues ||
-                curDownClue != numDownClues ||
-                curClue != numAcrossClues + numDownClues)
+            // There's been at least one malformed puzzle (1/3/2014) which had
+            // an extra clue in it.  So ignore extra clues; if there aren't
+            // enough clues, the code above will throw an
+            // ArrayIndexOutOfBoundsException which will be caught below
+            if (curClue < numAcrossClues + numDownClues)
             {
-                throw new IOException("Number of clues specified does not match grid");
+                String[] newRawClues = new String[curClue];
+                System.arraycopy(rawClues, 0, newRawClues, 0, curClue);
+                rawClues = newRawClues;
             }
 
             puzzle.setRawClues(rawClues);
