@@ -134,7 +134,7 @@ public class Downloaders {
         //    downloaders.add(new MerlReagleDownloader());
         //}
 
-        if (includeAll) {
+        if (includeAll || prefs.getBoolean("downloadMGWCC", true)) {
             downloaders.add(new MGDCDownloader());
             downloaders.add(new MGWCCDownloader());
         }

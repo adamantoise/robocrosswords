@@ -23,16 +23,19 @@ import java.util.Calendar;
 
 /**
  * Matt Gaffney's Weekly Crossword Contest
- * URL: http://xwordcontest.com/YYYY/MM/page/[page]
+ * URL: http://xwordcontest.com/submissions/[number]/mgwcc[number].puz
  * Date: Friday
  */
-public class MGWCCDownloader extends ManualDownloader
+public class MGWCCDownloader extends AbstractDownloader
 {
-    private static final String BASE_URL = "http://xwordcontest.com/";
+    private static final String BASE_URL = "http://xwordcontest.com/submissions/";
+
+    /** Date on which MGWCC Cross was first published */
+    private static final Calendar START_DATE = createDate(2008, 6, 6);
 
     public MGWCCDownloader()
     {
-        super("Matt Gaffney's Weekly Crossword Contest");
+        super(BASE_URL, "Matt Gaffney's Weekly Crossword Contest");
     }
 
     public boolean isPuzzleAvailable(Calendar date)
@@ -41,50 +44,17 @@ public class MGWCCDownloader extends ManualDownloader
     }
 
     @Override
-    protected String getManualDownloadUri(Calendar date)
+    protected String createUrlSuffix(Calendar date)
     {
-        // Figure out which archive page we want
-        Calendar now = Calendar.getInstance();
-        Calendar refDate = now;
-        if (date.get(Calendar.MONTH) != now.get(Calendar.MONTH))
-        {
-            refDate = (Calendar)date.clone();
-            refDate.set(Calendar.DATE, refDate.getMaximum(Calendar.DATE));
-        }
+        // Figure out what the puzzle number is
+        long millisSinceStart = (date.getTimeInMillis() - START_DATE.getTimeInMillis());
+        int daysSinceStart = (int)((millisSinceStart/1000 + 86399) / 86400);
+        int puzzleNum = (daysSinceStart / 7) + 1;
 
-        // The page number is the number of Fridays between the given date and
-        // the reference date (now or the end of the given month), inclusive
-        int fridayCount = 0;
-        while (refDate.compareTo(date) >= 0)
-        {
-            int dayOfWeek = refDate.get(Calendar.DAY_OF_WEEK);
-            if (dayOfWeek == Calendar.FRIDAY)
-            {
-                fridayCount++;
-                refDate.add(Calendar.DATE, -7);
-            }
-            else
-            {
-                refDate.add(Calendar.DATE, -((dayOfWeek - Calendar.FRIDAY + 7) % 7));
-            }
-        }
-
-        // This might not be the exactly correct URI (if today is Friday
-        // morning and the puzzle hasn't been posted yet, or if there's an
-        // extra blog post), but it'll be close enough, and the user can
-        // manually find the correct download page in a browser if this is
-        // wrong.
-        String uri =
-            BASE_URL +
-            date.get(Calendar.YEAR) +
-            "/" +
-            DEFAULT_NF.format(date.get(Calendar.MONTH) + 1) +
-            "/";
-        if (fridayCount != 1)
-        {
-            uri += "page/" + fridayCount + "/";
-        }
-
-        return uri;
+        return
+            puzzleNum +
+            "/mgwcc" +
+            puzzleNum +
+            ".puz";
     }
 }

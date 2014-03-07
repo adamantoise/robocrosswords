@@ -177,6 +177,11 @@
             android:summary="@string/pref_updates_thu"
             android:defaultValue="true"
             android:key="downloadJonesin" />
+        <CheckBoxPreference
+            android:title="Matt Gaffney's Weekly Crossword Contest"
+            android:summary="@string/pref_mgwcc_summary"
+            android:defaultValue="true"
+            android:key="downloadMGWCC" />
         <!-- Merl Reagle's puzzle removed at the request of Merl Reagle
         <CheckBoxPreference
             android:title="Merl Reagle's Crossword"
