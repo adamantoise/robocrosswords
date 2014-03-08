@@ -100,7 +100,8 @@
         </activity>
         <activity
             android:label="@string/app_name"
-            android:name="com.adamrosenfield.wordswithcrosses.BrowseActivity" >
+            android:name="com.adamrosenfield.wordswithcrosses.BrowseActivity"
+            android:launchMode="singleTop" >
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
 
