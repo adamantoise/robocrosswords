@@ -63,10 +63,6 @@ public class Downloaders {
         browseIntent = new Intent(Intent.ACTION_EDIT, null, context, BrowseActivity.class);
         pendingBrowseIntent = PendingIntent.getActivity(context, 0, browseIntent, 0);
 
-        if (includeAll) {
-            downloaders.add(new BEQDownloader());
-        }
-
         if (includeAll || prefs.getBoolean("downloadAVXW", false)) {
             String username = prefs.getString("avxwUsername", "");
             String password = prefs.getString("avxwPassword", "");
@@ -78,6 +74,8 @@ public class Downloaders {
         if (includeAll || prefs.getBoolean("downloadAndyKravis", true)) {
             downloaders.add(new AndyKravisDownloader());
         }
+
+        downloaders.add(new BEQDownloader());
 
         if (includeAll || prefs.getBoolean("downloadCHE", true)) {
             downloaders.add(new CHEDownloader());
@@ -134,8 +132,9 @@ public class Downloaders {
         //    downloaders.add(new MerlReagleDownloader());
         //}
 
+        downloaders.add(new MGDCDownloader());
+
         if (includeAll || prefs.getBoolean("downloadMGWCC", true)) {
-            downloaders.add(new MGDCDownloader());
             downloaders.add(new MGWCCDownloader());
         }
 
