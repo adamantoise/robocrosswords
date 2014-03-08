@@ -323,6 +323,8 @@ public class Downloaders {
         if (somethingDownloaded && enableNotifications) {
             postDownloadedGeneral();
         }
+
+        context.updateLastDatabaseSyncTime();
     }
 
     public void enableIndividualDownloadNotifications(boolean enable) {
