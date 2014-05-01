@@ -14,8 +14,8 @@ import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 
 public class DerStandardParserTest {
 
-	private static final boolean NOT_EDITABLE = false;
-	private static final boolean EDITABLE = true;
+	private static final boolean NOT_START = false;
+	private static final boolean START = true;
 	private static final int NO_CLUE = 0;
 	private static final char NO_SOLUTION = 0;
 
@@ -58,13 +58,13 @@ public class DerStandardParserTest {
 		}
 		
 		
-		assertBox(p,  0,  0, NOT_EDITABLE, NOT_EDITABLE, NO_CLUE, NO_SOLUTION);
-		assertBox(p,  1,  0, NOT_EDITABLE, EDITABLE, 		 1,       'E');
-		assertBox(p,  7,  8, NOT_EDITABLE, EDITABLE, 		 17,      'T');
-		assertBox(p,  7, 11, EDITABLE, 		 EDITABLE, 		 22,      'F');
-		assertBox(p,  7, 12, NOT_EDITABLE, EDITABLE, 		 NO_CLUE, 'E');
-		assertBox(p,  8, 11, EDITABLE,     NOT_EDITABLE, NO_CLUE, 'O');
-		assertBox(p, 12, 12, NOT_EDITABLE, NOT_EDITABLE, NO_CLUE, NO_SOLUTION);
+		assertBox(p,  0,  0, NOT_START, NOT_START, NO_CLUE, NO_SOLUTION);
+		assertBox(p,  1,  0, NOT_START, START, 		 1,       'E');
+		assertBox(p,  7,  8, NOT_START, START, 		 17,      'T');
+		assertBox(p,  7, 11, START,	    NOT_START, 22,      'F');
+		assertBox(p,  7, 12, NOT_START, NOT_START, NO_CLUE, 'E');
+		assertBox(p,  8, 11, NOT_START, NOT_START, NO_CLUE, 'O');
+		assertBox(p, 12, 12, NOT_START, NOT_START, NO_CLUE, NO_SOLUTION);
 		
 		assertAcrossClue(p,  0,  6, "Wenn ich rosinngemäß die Trockenbeeren auslese, zittere ich zuletzt vor Zorn (Ez)");
 		assertAcrossClue(p,  5, 15, "<i>EU-Navis</i> sind für alle Höhen geeignet");

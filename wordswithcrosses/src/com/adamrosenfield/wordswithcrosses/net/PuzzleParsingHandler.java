@@ -132,22 +132,35 @@ public class PuzzleParsingHandler extends DefaultHandler {
 			
 			p.setNumberOfClues(horizontal.size() + vertical.size());
 			
-			p.setRawClues(makeRawClues(horizontal, vertical));
+			p.setRawClues(makeRawClues(p.getBoxes(), horizontal, vertical));
 		}
 
-		private String[] makeRawClues(Map<Integer, String>... maps) {
-			Map<Integer, String> all = new HashMap<Integer, String>();
+		private String[] makeRawClues(Box[][] boxes, Map<Integer, String> horizontal,  Map<Integer, String> vertical) {
+			String[] ret = new String[horizontal.size() + vertical.size()];
+			int i=0;
 			
-			for (Map<Integer, String> map : maps) {
-				all.putAll(map);
-			}
+			for (int r = 0; r < boxes.length; r++) {
+         for (int c = 0; c < boxes[r].length; c++) {
+             if (boxes[r][c] == null) {
+                 continue;
+             }
 
-			String[] ret = new String[all.size()];
+             Box box = boxes[r][c];
+             int clueNumber = box.getClueNumber();
+             
+             if (clueNumber != 0) {
+            	 if (box.isAcross()) {
+            		 ret[i++] = horizontal.get(clueNumber);
+            	 }
+
+            	 if (box.isDown()) {
+            		 ret[i++] = vertical.get(clueNumber);
+            	 }
+             }
+         }
+     }
+
 			
-			for (int i=0; i<ret.length; i++) {
-				ret[i] = all.get(i+1);
-			}
-
 			return ret;
 		}
 
@@ -215,19 +228,19 @@ public class PuzzleParsingHandler extends DefaultHandler {
 				for (int x = 0; x<width; x++) {
 					
 					if (editable[x][y]) {
-						boolean across = isEditable(x-1, y) || isEditable(x+1, y);
-						boolean down = isEditable(x, y-1) || isEditable(x, y+1);
-						
 						Box b = new Box();
 						boxes[y * width + x] =  b;
-						
+
 						int nr = number[x][y];
 						if (nr != 0) {
 							b.setClueNumber(nr);
-						}
+						
+							boolean across = !isEditable(x-1, y) && isEditable(x+1, y);
+							boolean down = !isEditable(x, y-1) && isEditable(x, y+1);
 
-						b.setAcross(across);
-						b.setDown(down);
+							b.setAcross(across);
+							b.setDown(down);
+						}
 					}
 				}
 			}
