@@ -60,6 +60,8 @@ public class Downloaders {
         this.notificationManager = context.getNotificationManager();
         this.prefs = context.getPrefs();
 
+        downloaders.add(new DerStandardDownloader());
+        
         browseIntent = new Intent(Intent.ACTION_EDIT, null, context, BrowseActivity.class);
         pendingBrowseIntent = PendingIntent.getActivity(context, 0, browseIntent, 0);
 
