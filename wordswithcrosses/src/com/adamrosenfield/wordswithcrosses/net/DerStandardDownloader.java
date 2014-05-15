@@ -40,11 +40,10 @@ import com.adamrosenfield.wordswithcrosses.net.derstandard.DerStandardPuzzleMeta
 
 /** Downloader for derStandard.at. 
  * 
- * As puzzles are only available as image+html, we have to do some image analysis and html parsing here.
+ * As puzzles are only available as a web application, there's some weird - 
+ * and easily broken if the web app changes - stuff to be done to actually produce PUZ files. 
  * 
- * @author LittleLui
- *
- * Copyright 2011-2012 Wolfgang Groiss
+ * Copyright (this file) 2014 Wolfgang Groiss
  * 
  * This file is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,8 +59,6 @@ import com.adamrosenfield.wordswithcrosses.net.derstandard.DerStandardPuzzleMeta
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
  *
  **/
-//TODO: error handling, running feedback
-//TODO: close streams when done!
 public class DerStandardDownloader extends AbstractDownloader implements DerStandardPuzzleCache {
 	private static final String NAME = "DerStandard.at";
 	private static final String BASE_URL = "http://derstandard.at";
@@ -246,12 +243,17 @@ public class DerStandardDownloader extends AbstractDownloader implements DerStan
 		}
 		
 		if (downloadPuzzleData && pUrl != null && pm.getPuzzle() == null) {
-			InputSource input = new InputSource(getURLReader(getHttpConnection(pUrl)));
-			parser.parsePuzzle(pm, input);
+			Reader r = getURLReader(getHttpConnection(pUrl));
+			try {
+				InputSource input = new InputSource(r);
+				parser.parsePuzzle(pm, input);
+			} finally {
+				r.close();
+			}
 			
 			InputSource isSolution = postForSolution(pm.getId()); 
 			if (isSolution != null) {
-				parser.parseSolution(pm, isSolution);
+					parser.parseSolution(pm, isSolution);
 			}
 			
 			save = true;
@@ -293,9 +295,14 @@ public class DerStandardDownloader extends AbstractDownloader implements DerStan
 
 	
 	private void updateIndex() throws SAXException, ParserConfigurationException, IOException {
-		InputSource input = new InputSource(getURLReader(getHttpConnection(INDEX_URL)));
-		parser.parseIndex(input, this);
-		lastIndexUpdate = new Date();
+		Reader r = getURLReader(getHttpConnection(INDEX_URL));
+		try {
+			InputSource input = new InputSource(r);
+			parser.parseIndex(input, this);
+			lastIndexUpdate = new Date();
+		} finally {
+			r.close();
+		}
 	}
 
 	
@@ -334,12 +341,6 @@ public class DerStandardDownloader extends AbstractDownloader implements DerStan
 		return r;
 	}
 
-	protected InputStream getURLInputStream(String url) throws IOException, MalformedURLException {
-		HttpURLConnection conn = getHttpConnection(url);
-		InputStream in = (InputStream) conn.getContent();
-		return in;
-	}
-	
 	private HttpURLConnection getHttpPostConnection(String url, String postData) throws IOException, MalformedURLException {
 		HttpURLConnection conn = getHttpConnection(url);
 		
@@ -347,8 +348,11 @@ public class DerStandardDownloader extends AbstractDownloader implements DerStan
 		conn.setDoOutput(true);
 		
 		OutputStreamWriter osw = new OutputStreamWriter(conn.getOutputStream());
-		osw.append(postData);
-		osw.close();
+		try {
+			osw.append(postData);
+		} finally {
+			osw.close();
+		}
 		
 		return conn;
 	}
