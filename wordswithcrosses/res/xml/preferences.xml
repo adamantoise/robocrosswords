@@ -71,6 +71,12 @@
             android:summary="@string/pref_updates_mon_to_sat"
             android:defaultValue="true"
             android:key="downloadUSAToday" />
+        <CheckBoxPreference
+            android:title="derStandard.at"
+            android:summary="@string/pref_updates_mon_to_sat"
+            android:defaultValue="true"
+            android:key="downloadDerStandard" />
+        
     </PreferenceScreen>
     <PreferenceScreen
         android:title="@string/pref_weekly_crosswords"

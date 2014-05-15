@@ -60,8 +60,6 @@ public class Downloaders {
         this.notificationManager = context.getNotificationManager();
         this.prefs = context.getPrefs();
 
-        downloaders.add(new DerStandardDownloader());
-        
         browseIntent = new Intent(Intent.ACTION_EDIT, null, context, BrowseActivity.class);
         pendingBrowseIntent = PendingIntent.getActivity(context, 0, browseIntent, 0);
 
@@ -72,7 +70,7 @@ public class Downloaders {
                 downloaders.add(new AVXWDownloader(username, password));
             }
         }
-
+        
         if (includeAll || prefs.getBoolean("downloadAndyKravis", true)) {
             downloaders.add(new AndyKravisDownloader());
         }
@@ -203,6 +201,10 @@ public class Downloaders {
 
         if (includeAll || prefs.getBoolean("downloadWaPoPuzzler", true)) {
             downloaders.add(new WaPoPuzzlerDownloader());
+        }
+
+        if (includeAll || prefs.getBoolean("downloadDerStandard", true)) {
+          downloaders.add(new DerStandardDownloader());
         }
 
         enableNotifications = prefs.getBoolean("enableNotifications", true);
