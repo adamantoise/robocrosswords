@@ -1,4 +1,4 @@
-package com.adamrosenfield.wordswithcrosses.net;
+package com.adamrosenfield.wordswithcrosses.net.derstandard;
 
 import java.io.BufferedReader;
 import java.io.IOException;

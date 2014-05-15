@@ -1,4 +1,4 @@
-package com.adamrosenfield.wordswithcrosses.net;
+package com.adamrosenfield.wordswithcrosses.net.derstandard;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
 
 public class DateParsingHandler extends DefaultHandler {
 	private static final Logger LOG = Logger.getLogger("DateParsingHandler");

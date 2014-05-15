@@ -1,4 +1,4 @@
-package com.adamrosenfield.wordswithcrosses.net;
+package com.adamrosenfield.wordswithcrosses.net.derstandard;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;

@@ -1,4 +1,4 @@
-package com.adamrosenfield.wordswithcrosses.net;
+package com.adamrosenfield.wordswithcrosses.net.derstandard;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -15,6 +15,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
+
 
 public class DerStandardParser {
 	private static final String CANCEL = "Cancel";

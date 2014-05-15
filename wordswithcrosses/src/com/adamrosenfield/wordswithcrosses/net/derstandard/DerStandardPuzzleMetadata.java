@@ -1,11 +1,11 @@
-package com.adamrosenfield.wordswithcrosses.net;
+package com.adamrosenfield.wordswithcrosses.net.derstandard;
 
 import java.io.Serializable;
 import java.util.Calendar;
 
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 
-class DerStandardPuzzleMetadata implements Serializable {
+public class DerStandardPuzzleMetadata implements Serializable {
 	private final String id;
 	private Calendar date;
 	private String puzzleUrl;
@@ -13,7 +13,7 @@ class DerStandardPuzzleMetadata implements Serializable {
 	
 	private transient Puzzle puzzle;
 	
-	DerStandardPuzzleMetadata(String id) {
+	public DerStandardPuzzleMetadata(String id) {
 		this.id = id;
 	}
 

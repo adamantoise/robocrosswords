@@ -34,6 +34,9 @@ import org.xml.sax.SAXException;
 
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.io.IO;
+import com.adamrosenfield.wordswithcrosses.net.derstandard.DerStandardParser;
+import com.adamrosenfield.wordswithcrosses.net.derstandard.DerStandardPuzzleCache;
+import com.adamrosenfield.wordswithcrosses.net.derstandard.DerStandardPuzzleMetadata;
 
 /** Downloader for derStandard.at. 
  * 
