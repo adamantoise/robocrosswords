@@ -17,6 +17,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 public class DerStandardParser {
+	private static final String CANCEL = "Cancel";
 	private static final Pattern P_CHARSET_IN_TYPE = Pattern.compile("[A-Za-z0-9\\-/]+;\\s*charset=([A-Za-z0-9\\-]+)");
 	private static final String P_HINT= "([0-9]+)([^_]+)___";
 	private static final Pattern P_HREF_PUZZLE = Pattern.compile(".*/Kreuzwortraetsel-Nr-([0-9]+)(\\?.*)?");
@@ -38,6 +39,11 @@ public class DerStandardParser {
 					if (m.matches()) {
 						String id = m.group(1);
 						if (id != null) {
+							//we already have this id. assuming inverse-chronological order, we can stop now.
+							if (puzzles.contains(id)) {
+								throw new SAXException(CANCEL);
+							}
+							
 							DerStandardPuzzleMetadata pm = puzzles.createOrGet(id);
 							pm.setDateUrl(href);
 						}
@@ -48,7 +54,14 @@ public class DerStandardParser {
 	  };
 	  
 	  
-	  parse(inputSource, handler);
+	  try {
+	  	parse(inputSource, handler);
+	  } catch (SAXException se) {
+	  	//if we didn't actively cancel, it's a genuine error => rethrow. otherwise swallow and stop parsing.
+	  	if (CANCEL != se.getMessage()) {
+	  		throw se;
+	  	}
+	  }
 	}
 	
 	private void parse(InputSource input, ContentHandler handler) throws SAXException, IOException {

@@ -18,6 +18,7 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -81,6 +82,8 @@ public class DerStandardDownloader extends AbstractDownloader implements DerStan
 	
 	private final DerStandardParser parser = new DerStandardParser();
 	
+	private Date lastIndexUpdate;
+	
 	public DerStandardDownloader() {
 		super(BASE_URL, NAME);
 		
@@ -96,6 +99,12 @@ public class DerStandardDownloader extends AbstractDownloader implements DerStan
 				try {
 					puzzlesById = (Map<String, DerStandardPuzzleMetadata>) ois.readObject();
 					puzzlesByCalendar = (Map<String, DerStandardPuzzleMetadata>) ois.readObject();
+					
+					try {
+						lastIndexUpdate = (Date) ois.readObject();
+					} catch (IOException ioe) {
+						//lastIndexUpdate wasn't saved, swallow and be backward compatible.
+					}
 				} finally {
 					ois.close();
 				}
@@ -113,6 +122,7 @@ public class DerStandardDownloader extends AbstractDownloader implements DerStan
 			try {
 				oos.writeObject(puzzlesById);
 				oos.writeObject(puzzlesByCalendar);
+				oos.writeObject(lastIndexUpdate);
 			} finally {
 				oos.close();
 			}
@@ -183,11 +193,29 @@ public class DerStandardDownloader extends AbstractDownloader implements DerStan
 	
 	
 	private void refreshPuzzleMetadata() throws SAXException, ParserConfigurationException, IOException, JSONException {
-		if (puzzlesById.isEmpty()) {
+		if (shouldUpdateIndex()) {
 			updateIndex();
 			refreshPuzzles();
 			saveSerializedState();
 		}
+	}
+
+	private boolean shouldUpdateIndex() {
+		if (puzzlesById.isEmpty()) {
+			return true;
+		}
+		
+		if (lastIndexUpdate == null) {
+			return true;	
+		}
+		
+		Date now = new Date();
+		Date today = new Date(now.getYear(), now.getMonth(), now.getDate());
+		if (today.after(lastIndexUpdate)) {
+			return true;
+		}
+		
+		return false;
 	}
 
 	private void downloadPuzzle(DerStandardPuzzleMetadata pm) throws SAXException, ParserConfigurationException, IOException, JSONException {
@@ -264,6 +292,7 @@ public class DerStandardDownloader extends AbstractDownloader implements DerStan
 	private void updateIndex() throws SAXException, ParserConfigurationException, IOException {
 		InputSource input = new InputSource(getURLReader(getHttpConnection(INDEX_URL)));
 		parser.parseIndex(input, this);
+		lastIndexUpdate = new Date();
 	}
 
 	
@@ -331,6 +360,9 @@ public class DerStandardDownloader extends AbstractDownloader implements DerStan
 		return conn;
 	}
 	
+	public boolean contains(String id) {
+		return puzzlesById.containsKey(id);
+	}
 	
 	public DerStandardPuzzleMetadata createOrGet(String id) {
 		DerStandardPuzzleMetadata pm = (DerStandardPuzzleMetadata)puzzlesById.get(id);
