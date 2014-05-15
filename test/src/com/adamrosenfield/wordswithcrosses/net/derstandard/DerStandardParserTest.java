@@ -1,4 +1,4 @@
-package com.adamrosenfield.wordswithcrosses.net;
+package com.adamrosenfield.wordswithcrosses.net.derstandard;
 
 import static org.junit.Assert.assertEquals;
 
@@ -9,6 +9,8 @@ import java.util.Calendar;
 import org.junit.Test;
 import org.xml.sax.InputSource;
 
+import com.adamrosenfield.wordswithcrosses.net.derstandard.DerStandardParser;
+import com.adamrosenfield.wordswithcrosses.net.derstandard.DerStandardPuzzleMetadata;
 import com.adamrosenfield.wordswithcrosses.puz.Box;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 
