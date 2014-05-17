@@ -1,10 +1,3 @@
-package com.adamrosenfield.wordswithcrosses.net.derstandard;
-
-import java.io.Serializable;
-import java.util.Calendar;
-
-import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
-
 /**
  * This file is part of Words With Crosses.
  * 
@@ -24,6 +17,14 @@ import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
  * this program. If not, see <http://www.gnu.org/licenses/>.
  * 
  **/
+
+package com.adamrosenfield.wordswithcrosses.net.derstandard;
+
+import java.io.Serializable;
+import java.util.Calendar;
+
+import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
+
 public class DerStandardPuzzleMetadata implements Serializable {
     private final String id;
     private Calendar date;

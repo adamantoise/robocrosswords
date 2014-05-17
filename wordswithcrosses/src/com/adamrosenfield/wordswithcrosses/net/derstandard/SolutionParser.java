@@ -1,3 +1,23 @@
+/**
+ * This file is part of Words With Crosses.
+ * 
+ * Copyright (this file) 2014 Wolfgang Groiss
+ * 
+ * This file is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ **/
+
 package com.adamrosenfield.wordswithcrosses.net.derstandard;
 
 import java.io.BufferedReader;
@@ -20,25 +40,6 @@ import org.xml.sax.SAXException;
 import com.adamrosenfield.wordswithcrosses.puz.Box;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 
-/**
- * This file is part of Words With Crosses.
- * 
- * Copyright (this file) 2014 Wolfgang Groiss
- * 
- * This file is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- **/
 public class SolutionParser {
 
     private static final Logger LOG = Logger.getLogger("SolutionParser");

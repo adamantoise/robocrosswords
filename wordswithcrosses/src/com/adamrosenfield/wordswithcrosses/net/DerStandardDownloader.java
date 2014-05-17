@@ -1,3 +1,23 @@
+/**
+ * This file is part of Words With Crosses. 
+ * 
+ * Copyright (this file) 2014 Wolfgang Groiss
+ * 
+ * This file is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ **/
+
 package com.adamrosenfield.wordswithcrosses.net;
 
 import java.io.File;
@@ -42,22 +62,7 @@ import com.adamrosenfield.wordswithcrosses.net.derstandard.DerStandardPuzzleMeta
  * 
  * As puzzles are only available as a web application, there's some weird - and
  * easily broken if the web app changes - stuff done to actually produce PUZ files.
- * 
- * Copyright (this file) 2014 Wolfgang Groiss
- * 
- * This file is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  **/
 public class DerStandardDownloader extends AbstractDownloader implements
         DerStandardPuzzleCache {

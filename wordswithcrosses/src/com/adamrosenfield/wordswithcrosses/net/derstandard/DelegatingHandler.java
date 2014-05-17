@@ -1,10 +1,3 @@
-package com.adamrosenfield.wordswithcrosses.net.derstandard;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-
 /**
  * This file is part of Words With Crosses.
  * 
@@ -24,6 +17,14 @@ import org.xml.sax.SAXException;
  * this program. If not, see <http://www.gnu.org/licenses/>.
  * 
  **/
+
+package com.adamrosenfield.wordswithcrosses.net.derstandard;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+
 public class DelegatingHandler implements ContentHandler {
     private final ContentHandler[] handlers;
 

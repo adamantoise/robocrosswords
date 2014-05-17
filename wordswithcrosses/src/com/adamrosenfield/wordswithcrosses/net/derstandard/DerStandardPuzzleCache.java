@@ -1,7 +1,3 @@
-package com.adamrosenfield.wordswithcrosses.net.derstandard;
-
-import java.util.Calendar;
-
 /**
  * This file is part of Words With Crosses.
  * 
@@ -21,6 +17,11 @@ import java.util.Calendar;
  * this program. If not, see <http://www.gnu.org/licenses/>.
  * 
  **/
+
+package com.adamrosenfield.wordswithcrosses.net.derstandard;
+
+import java.util.Calendar;
+
 public interface DerStandardPuzzleCache {
 
     boolean contains(String id);

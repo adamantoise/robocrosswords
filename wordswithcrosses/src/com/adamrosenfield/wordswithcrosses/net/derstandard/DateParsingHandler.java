@@ -1,20 +1,3 @@
-package com.adamrosenfield.wordswithcrosses.net.derstandard;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Locale;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
-
 /**
  * This file is part of Words With Crosses.
  * 
@@ -34,6 +17,24 @@ import org.xml.sax.helpers.DefaultHandler;
  * this program. If not, see <http://www.gnu.org/licenses/>.
  * 
  **/
+
+package com.adamrosenfield.wordswithcrosses.net.derstandard;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
 public class DateParsingHandler extends DefaultHandler {
     private static final Logger LOG = Logger.getLogger("DateParsingHandler");
     private static final DateFormat DF_DERSTANDARD = new SimpleDateFormat("dd. MMMM yyyy", Locale.GERMAN);

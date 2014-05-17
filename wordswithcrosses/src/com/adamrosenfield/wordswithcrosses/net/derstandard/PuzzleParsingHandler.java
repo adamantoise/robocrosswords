@@ -1,18 +1,3 @@
-package com.adamrosenfield.wordswithcrosses.net.derstandard;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeSet;
-import java.util.logging.Logger;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
-
-import com.adamrosenfield.wordswithcrosses.puz.Box;
-import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
-
 /**
  * This file is part of Words With Crosses.
  * 
@@ -32,6 +17,22 @@ import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
  * this program. If not, see <http://www.gnu.org/licenses/>.
  * 
  **/
+
+package com.adamrosenfield.wordswithcrosses.net.derstandard;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeSet;
+import java.util.logging.Logger;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
+import com.adamrosenfield.wordswithcrosses.puz.Box;
+import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
+
 public class PuzzleParsingHandler extends DefaultHandler {
 
     private static final Logger LOG = Logger.getLogger("PuzzleParsingHandler");
