@@ -146,7 +146,7 @@ public class DerStandardDownloader extends AbstractDownloader implements DerStan
 				
 				f.renameTo(target);
 
-			} catch (Exception e) {
+			} catch (IOException e) {
 				LOG.log(Level.WARNING, "Unable to save serialized state.", e);
 			}
 		}
@@ -176,7 +176,7 @@ public class DerStandardDownloader extends AbstractDownloader implements DerStan
 		if (pm == null) {
 			try {
 				refreshPuzzleMetadata();
-			} catch (Exception e) {
+			} catch (RefreshException e) {
 				LOG.log(Level.SEVERE, "Error fetching/parsing metadata.", e);
 			}
 		
@@ -191,7 +191,7 @@ public class DerStandardDownloader extends AbstractDownloader implements DerStan
 		if (! targetFile.exists()) {
 			try {
 				downloadPuzzle(pm);
-			} catch (Exception e) {
+			} catch (RefreshException e) {
 				LOG.log(Level.SEVERE, "Error fetching/parsing puzzle.", e);
 				throw new IOException("Could not download puzzle for "+date);
 			}
@@ -206,9 +206,18 @@ public class DerStandardDownloader extends AbstractDownloader implements DerStan
 	
 	
 	
-	private void refreshPuzzleMetadata() throws SAXException, ParserConfigurationException, IOException, JSONException {
+	private void refreshPuzzleMetadata() throws RefreshException {
 		if (shouldUpdateIndex()) {
-			updateIndex();
+			try {
+				updateIndex();
+			} catch (IOException e) {
+				throw new RefreshException("Updating Index.", e);
+			} catch (SAXException e) {
+				throw new RefreshException("Updating Index.", e);
+			} catch (ParserConfigurationException e) {
+				throw new RefreshException("Updating Index.", e);
+			}
+
 			refreshPuzzles();
 			saveSerializedState();
 		}
@@ -234,12 +243,12 @@ public class DerStandardDownloader extends AbstractDownloader implements DerStan
 		return false;
 	}
 
-	private void downloadPuzzle(DerStandardPuzzleMetadata pm) throws SAXException, ParserConfigurationException, IOException, JSONException {
+	private void downloadPuzzle(DerStandardPuzzleMetadata pm) throws RefreshException {
 		refresh(pm, true);
 	}
 
 
-	private void refreshPuzzles() throws SAXException, ParserConfigurationException, IOException, JSONException {
+	private void refreshPuzzles() throws RefreshException {
 		initializeIfNeeded();
 
 		for (final DerStandardPuzzleMetadata pm : puzzlesById.values()) {
@@ -248,19 +257,29 @@ public class DerStandardDownloader extends AbstractDownloader implements DerStan
 	}
 	
 	
-	private void refresh(DerStandardPuzzleMetadata pm, boolean downloadPuzzleData) throws SAXException, ParserConfigurationException, IOException, JSONException {
+	private void refresh(DerStandardPuzzleMetadata pm, boolean downloadPuzzleData) throws RefreshException {
 		String dUrl = pm.getDateUrl(BASE_URL);
 		String pUrl = pm.getPuzzleUrl(BASE_URL);
+		String id = pm.getId();
 		
 		boolean save = false;
 		
 		if (dUrl != null && pm.getDate() == null) {
-			InputSource input = new InputSource(getURLReader(getHttpConnection(dUrl)));
-			parser.parseDate(pm, this, input);
-			save = true;
+			try {
+				InputSource input = new InputSource(getURLReader(getHttpConnection(dUrl)));
+				parser.parseDate(pm, this, input);
+				save = true;
+			} catch (IOException e) {
+				throw new RefreshException("Fetching/Parsing puzzle date for "+dUrl+".", e);
+			} catch (ParserConfigurationException e) {
+				throw new RefreshException("Fetching/Parsing puzzle date for "+dUrl+".", e);
+			} catch (SAXException e) {
+				throw new RefreshException("Fetching/Parsing puzzle date for "+dUrl+".", e);
+			}
 		}
 		
 		if (downloadPuzzleData && pUrl != null && pm.getPuzzle() == null) {
+			try {
 			Reader r = getURLReader(getHttpConnection(pUrl));
 			try {
 				InputSource input = new InputSource(r);
@@ -268,10 +287,25 @@ public class DerStandardDownloader extends AbstractDownloader implements DerStan
 			} finally {
 				r.close();
 			}
+			} catch (IOException e) {
+				throw new RefreshException("Fetching/Parsing puzzle for "+pUrl+".", e);
+			} catch (ParserConfigurationException e) {
+				throw new RefreshException("Fetching/Parsing puzzle for "+pUrl+".", e);
+			} catch (SAXException e) {
+				throw new RefreshException("Fetching/Parsing puzzle for "+pUrl+".", e);
+			}
 			
-			InputSource isSolution = postForSolution(pm.getId()); 
-			if (isSolution != null) {
-					parser.parseSolution(pm, isSolution);
+			try {
+				InputSource isSolution = postForSolution(id); 
+				if (isSolution != null) {
+						parser.parseSolution(pm, isSolution);
+				}
+			} catch (IOException e) {
+				throw new RefreshException("Fetching/Parsing solution for "+id+".", e);
+			} catch (JSONException e) {
+				throw new RefreshException("Fetching/Parsing solution for "+id+".", e);
+			} catch (SAXException e) {
+				throw new RefreshException("Fetching/Parsing solution for "+id+".", e);
 			}
 			
 			save = true;
@@ -281,7 +315,7 @@ public class DerStandardDownloader extends AbstractDownloader implements DerStan
 			try {
 				savePuzzle(pm);
 			} catch (IOException ioe) {
-				LOG.log(Level.SEVERE, "Cannot save puzzle "+pm, ioe);
+				throw new RefreshException("Saving puzzle "+id+".", ioe);
 			}
 		}
 	}
@@ -409,7 +443,15 @@ public class DerStandardDownloader extends AbstractDownloader implements DerStan
 
 	
 	
-	
+	private class RefreshException extends Exception {
+		private RefreshException(String detailMessage, Throwable throwable) {
+			super(detailMessage, throwable);
+		}
+
+		private RefreshException(Throwable throwable) {
+			super(throwable);
+		}
+	}
 	
 	
 
