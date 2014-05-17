@@ -373,7 +373,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name com.adamrosenfield.wordswithcrosses:overlayHeight
+          @attr name android:overlayHeight
         */
         public static final int CustomFastScrollView_overlayHeight = 1;
         /**
@@ -389,7 +389,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name com.adamrosenfield.wordswithcrosses:overlayScrollThumbWidth
+          @attr name android:overlayScrollThumbWidth
         */
         public static final int CustomFastScrollView_overlayScrollThumbWidth = 3;
         /**
@@ -405,7 +405,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name com.adamrosenfield.wordswithcrosses:overlayTextSize
+          @attr name android:overlayTextSize
         */
         public static final int CustomFastScrollView_overlayTextSize = 2;
         /**
@@ -421,7 +421,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name com.adamrosenfield.wordswithcrosses:overlayWidth
+          @attr name android:overlayWidth
         */
         public static final int CustomFastScrollView_overlayWidth = 0;
         /** Attributes that can be used with a OpenURLPreference.
@@ -448,7 +448,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name com.adamrosenfield.wordswithcrosses:url
+          @attr name android:url
         */
         public static final int OpenURLPreference_url = 0;
     };
