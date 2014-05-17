@@ -84,10 +84,18 @@ public class DerStandardDownloader extends AbstractDownloader implements DerStan
 	
 	private Date lastIndexUpdate;
 	
+	private boolean initialized = false;
+	
 	public DerStandardDownloader() {
 		super(BASE_URL, NAME);
-		
-		loadSerializedStateIfExists();
+	}
+	
+	private void initializeIfNeeded() {
+		if (! initialized) {
+
+			loadSerializedStateIfExists();
+			initialized = true;
+		}
 	}
 	
 	private void loadSerializedStateIfExists() {
@@ -109,34 +117,38 @@ public class DerStandardDownloader extends AbstractDownloader implements DerStan
 					ois.close();
 				}
 			}
-		} catch (Exception e) {
+		} catch (ClassNotFoundException e) {
+			LOG.log(Level.WARNING, "Unable to load serialized state.", e);
+		} catch (IOException e) {
 			LOG.log(Level.WARNING, "Unable to load serialized state.", e);
 		}
 	}
 	
 	private void saveSerializedState() {
-		try {
-			File f = makeTempFile();
-			
-			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f));
+		if (initialized) {
 			try {
-				oos.writeObject(puzzlesById);
-				oos.writeObject(puzzlesByCalendar);
-				oos.writeObject(lastIndexUpdate);
-			} finally {
-				oos.close();
-			}
-			
-			File target = getSerializedStateFile();
-			
-			if (target.exists()) {
-				target.delete();
-			}
-			
-			f.renameTo(target);
+				File f = makeTempFile();
+				
+				ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f));
+				try {
+					oos.writeObject(puzzlesById);
+					oos.writeObject(puzzlesByCalendar);
+					oos.writeObject(lastIndexUpdate);
+				} finally {
+					oos.close();
+				}
+				
+				File target = getSerializedStateFile();
+				
+				if (target.exists()) {
+					target.delete();
+				}
+				
+				f.renameTo(target);
 
-		} catch (Exception e) {
-			LOG.log(Level.WARNING, "Unable to save serialized state.", e);
+			} catch (Exception e) {
+				LOG.log(Level.WARNING, "Unable to save serialized state.", e);
+			}
 		}
 	}
 
@@ -187,6 +199,8 @@ public class DerStandardDownloader extends AbstractDownloader implements DerStan
 	}
 
 	private DerStandardPuzzleMetadata getPuzzleByDate(Calendar date) {
+		initializeIfNeeded();
+
 		return puzzlesByCalendar.get(DF_DATE.format(date.getTime()));
 	}
 	
@@ -201,6 +215,8 @@ public class DerStandardDownloader extends AbstractDownloader implements DerStan
 	}
 
 	private boolean shouldUpdateIndex() {
+		initializeIfNeeded();
+
 		if (puzzlesById.isEmpty()) {
 			return true;
 		}
@@ -224,6 +240,8 @@ public class DerStandardDownloader extends AbstractDownloader implements DerStan
 
 
 	private void refreshPuzzles() throws SAXException, ParserConfigurationException, IOException, JSONException {
+		initializeIfNeeded();
+
 		for (final DerStandardPuzzleMetadata pm : puzzlesById.values()) {
 			refresh(pm, false);
 		}
@@ -295,6 +313,8 @@ public class DerStandardDownloader extends AbstractDownloader implements DerStan
 
 	
 	private void updateIndex() throws SAXException, ParserConfigurationException, IOException {
+		initializeIfNeeded();
+
 		Reader r = getURLReader(getHttpConnection(INDEX_URL));
 		try {
 			InputSource input = new InputSource(r);
@@ -309,6 +329,8 @@ public class DerStandardDownloader extends AbstractDownloader implements DerStan
 	
 	
 	public void setDate(DerStandardPuzzleMetadata pm, Calendar c) {
+		initializeIfNeeded();
+
 		pm.setDate(c);
 
 		String key = DF_DATE.format(c.getTime());
@@ -368,10 +390,14 @@ public class DerStandardDownloader extends AbstractDownloader implements DerStan
 	}
 	
 	public boolean contains(String id) {
+		initializeIfNeeded();
+
 		return puzzlesById.containsKey(id);
 	}
 	
 	public DerStandardPuzzleMetadata createOrGet(String id) {
+		initializeIfNeeded();
+
 		DerStandardPuzzleMetadata pm = (DerStandardPuzzleMetadata)puzzlesById.get(id);
 		if (pm == null) {
 			pm = new DerStandardPuzzleMetadata(id);
