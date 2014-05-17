@@ -96,6 +96,10 @@ public class Downloaders {
                 downloaders.add(new CrosswordNationDownloader(username, password));
             }
         }
+		
+        if (includeAll || prefs.getBoolean("downloadDerStandard", true)) {
+          downloaders.add(new DerStandardDownloader());
+        }
 
         if (includeAll || prefs.getBoolean("downloadDevilCross", true)) {
             downloaders.add(new DevilCrossDownloader());
@@ -201,10 +205,6 @@ public class Downloaders {
 
         if (includeAll || prefs.getBoolean("downloadWaPoPuzzler", true)) {
             downloaders.add(new WaPoPuzzlerDownloader());
-        }
-
-        if (includeAll || prefs.getBoolean("downloadDerStandard", true)) {
-          downloaders.add(new DerStandardDownloader());
         }
 
         enableNotifications = prefs.getBoolean("enableNotifications", true);
