@@ -70,6 +70,7 @@ public class SolutionParser {
             }
 
             p.setScrambled(false);
+            pm.setSolutionAvailable(true);
         } finally {
             reader.close();
         }

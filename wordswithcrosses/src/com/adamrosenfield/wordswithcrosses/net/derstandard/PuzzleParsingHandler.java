@@ -81,8 +81,6 @@ public class PuzzleParsingHandler extends DefaultHandler {
         p.setCopyright("derStandard.at");
         p.setDate(pm.getDate());
 
-        p.setTitle("Nr. " + pm.getId());
-
         cwtableHandler.saveTo(p);
         questHandler.saveTo(p);
 

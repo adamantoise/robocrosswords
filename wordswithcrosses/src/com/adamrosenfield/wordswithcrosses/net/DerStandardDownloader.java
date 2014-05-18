@@ -38,8 +38,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Map.Entry;
+import java.util.NavigableMap;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -51,8 +55,12 @@ import org.json.JSONException;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import android.annotation.TargetApi;
+import android.os.Build;
+
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.io.IO;
+import com.adamrosenfield.wordswithcrosses.net.derstandard.DateToIdEstimator;
 import com.adamrosenfield.wordswithcrosses.net.derstandard.DerStandardParser;
 import com.adamrosenfield.wordswithcrosses.net.derstandard.DerStandardPuzzleCache;
 import com.adamrosenfield.wordswithcrosses.net.derstandard.DerStandardPuzzleMetadata;
@@ -64,6 +72,7 @@ import com.adamrosenfield.wordswithcrosses.net.derstandard.DerStandardPuzzleMeta
  * easily broken if the web app changes - stuff done to actually produce PUZ files.
  *
  **/
+@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class DerStandardDownloader extends AbstractDownloader implements
         DerStandardPuzzleCache {
     private static final String NAME = "DerStandard.at";
@@ -83,10 +92,11 @@ public class DerStandardDownloader extends AbstractDownloader implements
     final static boolean DEBUG_IMAGE_PARSING = false;
     private static final String SERIALIZED_STATE_FILENAME = "DerStandardDownloader.ser";
 
-    private Map<String, DerStandardPuzzleMetadata> puzzlesById = new HashMap<String, DerStandardPuzzleMetadata>();
-    private Map<String, DerStandardPuzzleMetadata> puzzlesByCalendar = new HashMap<String, DerStandardPuzzleMetadata>();
+    private SortedMap<Integer, DerStandardPuzzleMetadata> puzzlesById = new TreeMap<Integer, DerStandardPuzzleMetadata>();
+    private NavigableMap<String, DerStandardPuzzleMetadata> puzzlesByCalendar = new TreeMap<String, DerStandardPuzzleMetadata>();
 
     private final DerStandardParser parser = new DerStandardParser();
+    private final DateToIdEstimator estimator = new DateToIdEstimator(this);
 
     private Date lastIndexUpdate;
 
@@ -109,21 +119,17 @@ public class DerStandardDownloader extends AbstractDownloader implements
             File f = getSerializedStateFile();
 
             if (f.exists()) {
-                ObjectInputStream ois = new ObjectInputStream(
-                        new FileInputStream(f));
+                ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f));
                 try {
-                    puzzlesById = (Map<String, DerStandardPuzzleMetadata>) ois.readObject();
-                    puzzlesByCalendar = (Map<String, DerStandardPuzzleMetadata>) ois.readObject();
-
-                    try {
-                        lastIndexUpdate = (Date) ois.readObject();
-                    } catch (IOException ioe) {
-                        // lastIndexUpdate wasn't saved, swallow and be backward compatible.
-                    }
+                    puzzlesById = (SortedMap<Integer, DerStandardPuzzleMetadata>) ois.readObject();
+                    puzzlesByCalendar = (NavigableMap<String, DerStandardPuzzleMetadata>) ois.readObject();
+                    lastIndexUpdate = (Date) ois.readObject();
                 } finally {
                     ois.close();
                 }
             }
+        } catch (IllegalArgumentException e) {
+            LOG.log(Level.WARNING, "Unable to load serialized state.", e);
         } catch (ClassNotFoundException e) {
             LOG.log(Level.WARNING, "Unable to load serialized state.", e);
         } catch (IOException e) {
@@ -136,8 +142,7 @@ public class DerStandardDownloader extends AbstractDownloader implements
             try {
                 File f = makeTempFile();
 
-                ObjectOutputStream oos = new ObjectOutputStream(
-                        new FileOutputStream(f));
+                ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f));
                 try {
                     oos.writeObject(puzzlesById);
                     oos.writeObject(puzzlesByCalendar);
@@ -161,7 +166,7 @@ public class DerStandardDownloader extends AbstractDownloader implements
     }
 
     private File getSerializedStateFile() {
-        return new File(WordsWithCrossesApplication.TEMP_DIR, SERIALIZED_STATE_FILENAME);
+        return new File(WordsWithCrossesApplication.NON_CROSSWORD_DATA_DIR, SERIALIZED_STATE_FILENAME);
     }
 
     private File makeTempFile() throws IOException {
@@ -179,17 +184,13 @@ public class DerStandardDownloader extends AbstractDownloader implements
 
     @Override
     public void download(Calendar date) throws IOException {
+        try {
+            refreshPuzzleMetadata();
+        } catch (RefreshException e) {
+            LOG.log(Level.SEVERE, "Error fetching/parsing metadata.", e);
+        }
 
         DerStandardPuzzleMetadata pm = getPuzzleByDate(date);
-        if (pm == null) {
-            try {
-                refreshPuzzleMetadata();
-            } catch (RefreshException e) {
-                LOG.log(Level.SEVERE, "Error fetching/parsing metadata.", e);
-            }
-
-            pm = getPuzzleByDate(date);
-        }
 
         if (pm == null) {
             throw new IOException("Could not find puzzle for " + date);
@@ -209,7 +210,35 @@ public class DerStandardDownloader extends AbstractDownloader implements
     private DerStandardPuzzleMetadata getPuzzleByDate(Calendar date) {
         initializeIfNeeded();
 
-        return puzzlesByCalendar.get(DF_DATE.format(date.getTime()));
+        return getPuzzleByDateViaEstimator(date.getTime(), new HashSet<Integer>());
+    }
+    
+    private DerStandardPuzzleMetadata getPuzzleByDateViaEstimator(Date date, Set<Integer> alreadyTried) {
+        DerStandardPuzzleMetadata exact = puzzlesByCalendar.get(DF_DATE.format(date.getTime()));
+        
+        if (exact != null) {
+            return exact;
+        }
+        
+        int id = estimator.estimateId(date);
+        if (alreadyTried.contains(id)) {
+            return null;
+        }
+        
+        alreadyTried.add(id);
+        
+        DerStandardPuzzleMetadata estimate = puzzlesById.get(id);
+        if (estimate == null) {
+            return null;
+        }
+        
+        try {
+            refresh(estimate, false, false);
+        } catch (RefreshException re) {
+            return null;
+        }
+        
+        return getPuzzleByDateViaEstimator(date, alreadyTried);
     }
 
     private void refreshPuzzleMetadata() throws RefreshException {
@@ -249,23 +278,25 @@ public class DerStandardDownloader extends AbstractDownloader implements
         return false;
     }
 
-    private void downloadPuzzle(DerStandardPuzzleMetadata pm)
-            throws RefreshException {
-        refresh(pm, true);
+    private void downloadPuzzle(DerStandardPuzzleMetadata pm) throws RefreshException {
+        refresh(pm, true, true);
     }
 
     private void refreshPuzzles() throws RefreshException {
         initializeIfNeeded();
 
+        int count = 0;
         for (final DerStandardPuzzleMetadata pm : puzzlesById.values()) {
-            refresh(pm, false);
+            if (++count < 10 || (pm.isPuzzleAvailable() && !pm.isSolutionAvailable())) {
+                refresh(pm, false, true);
+            }
         }
     }
 
-    private void refresh(DerStandardPuzzleMetadata pm, boolean downloadPuzzleData) throws RefreshException {
+    private void refresh(DerStandardPuzzleMetadata pm, boolean downloadPuzzleData, boolean addPuzzleSolutionIfMissing) throws RefreshException {
         String dUrl = pm.getDateUrl(BASE_URL);
         String pUrl = pm.getPuzzleUrl(BASE_URL);
-        String id = pm.getId();
+        int id = pm.getId();
 
         boolean save = false;
 
@@ -283,12 +314,13 @@ public class DerStandardDownloader extends AbstractDownloader implements
             }
         }
 
-        if (downloadPuzzleData && pUrl != null && pm.getPuzzle() == null) {
+        if (downloadPuzzleData && pUrl != null && !pm.isPuzzleAvailable()) {
             try {
                 Reader r = getURLReader(getHttpConnection(pUrl));
                 try {
                     InputSource input = new InputSource(r);
                     parser.parsePuzzle(pm, input);
+                    save = true;
                 } finally {
                     r.close();
                 }
@@ -299,11 +331,14 @@ public class DerStandardDownloader extends AbstractDownloader implements
             } catch (SAXException e) {
                 throw new RefreshException("Fetching/Parsing puzzle for " + pUrl + ".", e);
             }
-
+        }
+        
+        if (addPuzzleSolutionIfMissing && pm.isPuzzleAvailable() && !pm.isSolutionAvailable()) {
             try {
                 InputSource isSolution = postForSolution(id);
                 if (isSolution != null) {
                     parser.parseSolution(pm, isSolution);
+                    save = true;
                 }
             } catch (IOException e) {
                 throw new RefreshException("Fetching/Parsing solution for " + id + ".", e);
@@ -312,8 +347,6 @@ public class DerStandardDownloader extends AbstractDownloader implements
             } catch (SAXException e) {
                 throw new RefreshException("Fetching/Parsing solution for " + id + ".", e);
             }
-
-            save = true;
         }
 
         if (save) {
@@ -325,7 +358,7 @@ public class DerStandardDownloader extends AbstractDownloader implements
         }
     }
 
-    private InputSource postForSolution(String id)
+    private InputSource postForSolution(int id)
             throws MalformedURLException, IOException {
         HttpURLConnection conn = getHttpPostConnection(SOLUTION_URL, "ExternalId=" + id);
         Reader reader = getURLReader(conn);
@@ -333,7 +366,7 @@ public class DerStandardDownloader extends AbstractDownloader implements
     }
 
     private void savePuzzle(DerStandardPuzzleMetadata pm) throws IOException {
-        if (pm.getPuzzle() != null) {
+        if (pm.isPuzzleAvailable()) {
             File tempFile = new File(WordsWithCrossesApplication.TEMP_DIR, getFilename(pm.getDate()));
             IO.save(pm.getPuzzle(), tempFile);
 
@@ -370,6 +403,10 @@ public class DerStandardDownloader extends AbstractDownloader implements
 
         String key = DF_DATE.format(c.getTime());
         puzzlesByCalendar.put(key, pm);
+    }
+    
+    public static boolean equals(Date d1, Date d2) {
+        return DF_DATE.format(d1).equals(DF_DATE.format(d2));
     }
 
     protected Reader getURLReader(HttpURLConnection conn) throws IOException, MalformedURLException, UnsupportedEncodingException {
@@ -415,13 +452,13 @@ public class DerStandardDownloader extends AbstractDownloader implements
         return conn;
     }
 
-    public boolean contains(String id) {
+    public boolean contains(int id) {
         initializeIfNeeded();
 
         return puzzlesById.containsKey(id);
     }
 
-    public DerStandardPuzzleMetadata createOrGet(String id) {
+    public DerStandardPuzzleMetadata createOrGet(int id) {
         initializeIfNeeded();
 
         DerStandardPuzzleMetadata pm = (DerStandardPuzzleMetadata) puzzlesById.get(id);
@@ -440,6 +477,25 @@ public class DerStandardDownloader extends AbstractDownloader implements
 
         private RefreshException(Throwable throwable) {
             super(throwable);
+        }
+    }
+
+    public DerStandardPuzzleMetadata getClosestTo(Date date) {
+        String s = DF_DATE.format(date);
+        Entry<String, DerStandardPuzzleMetadata> floor   = puzzlesByCalendar.floorEntry(s);
+        Entry<String, DerStandardPuzzleMetadata> ceiling = puzzlesByCalendar.ceilingEntry(s);
+        
+        if (floor == null && ceiling == null) {
+            return null;
+        } else if (floor == null) {
+            return ceiling.getValue();
+        } else if (ceiling == null) {
+            return floor.getValue();
+        } else {
+            long dFloor   = Math.abs(date.getTime() -   floor.getValue().getDate().getTimeInMillis());
+            long dCeiling = Math.abs(date.getTime() - ceiling.getValue().getDate().getTimeInMillis());
+            
+            return dFloor < dCeiling ? floor.getValue() : ceiling.getValue();
         }
     }
 

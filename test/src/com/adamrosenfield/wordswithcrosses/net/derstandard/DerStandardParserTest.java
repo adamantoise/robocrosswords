@@ -25,7 +25,7 @@ public class DerStandardParserTest {
 	public void puzzleParsesCorrectly() throws Exception {
 		DerStandardParser dsp = new DerStandardParser();
 
-		DerStandardPuzzleMetadata pm = new DerStandardPuzzleMetadata("test");
+		DerStandardPuzzleMetadata pm = new DerStandardPuzzleMetadata(7613);
 		
 		InputSource input = new InputSource(new InputStreamReader(getClass().getResourceAsStream("7613-puzzle"), Charset.forName("UTF-8")));
 		dsp.parsePuzzle(pm, input);

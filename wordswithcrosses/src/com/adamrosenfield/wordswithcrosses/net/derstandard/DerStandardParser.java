@@ -56,8 +56,9 @@ public class DerStandardParser {
                     if (href != null) {
                         Matcher m = P_HREF_PUZZLE.matcher(href);
                         if (m.matches()) {
-                            String id = m.group(1);
-                            if (id != null) {
+                            String sId = m.group(1);
+                            if (sId != null) {
+                                int id = Integer.parseInt(sId);
                                 // we already have this id. assuming inverse-chronological order, we can stop now.
                                 if (puzzles.contains(id)) {
                                     throw new SAXException(CANCEL);

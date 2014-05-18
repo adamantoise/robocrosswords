@@ -21,13 +21,16 @@
 package com.adamrosenfield.wordswithcrosses.net.derstandard;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public interface DerStandardPuzzleCache {
 
-    boolean contains(String id);
+    boolean contains(int id);
 
-    DerStandardPuzzleMetadata createOrGet(String id);
+    DerStandardPuzzleMetadata createOrGet(int id);
 
     void setDate(DerStandardPuzzleMetadata pm, Calendar c);
+
+    DerStandardPuzzleMetadata getClosestTo(Date date);
 
 }

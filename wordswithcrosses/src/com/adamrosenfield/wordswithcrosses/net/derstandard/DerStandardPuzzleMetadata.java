@@ -21,19 +21,25 @@
 package com.adamrosenfield.wordswithcrosses.net.derstandard;
 
 import java.io.Serializable;
+import java.text.DateFormat;
 import java.util.Calendar;
 
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 
 public class DerStandardPuzzleMetadata implements Serializable {
-    private final String id;
+    private static final long serialVersionUID = 2L;
+    
+    private final int id;
     private Calendar date;
     private String puzzleUrl;
     private String dateUrl;
+    
+    private boolean puzzleAvailable = false;
+    private boolean solutionAvailable = false;
 
     private transient Puzzle puzzle;
 
-    public DerStandardPuzzleMetadata(String id) {
+    public DerStandardPuzzleMetadata(int id) {
         this.id = id;
     }
 
@@ -63,27 +69,70 @@ public class DerStandardPuzzleMetadata implements Serializable {
 
     public void setDate(Calendar date) {
         this.date = date;
+        refreshPuzzleTitle();
     }
 
     public Calendar getDate() {
         return date;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
     public void setPuzzle(Puzzle p) {
         this.puzzle = p;
+        refreshPuzzleTitle();
+    }
+
+    private void refreshPuzzleTitle() {
+        if (puzzle == null) {
+            return;
+        }
+        
+        StringBuilder sb = new StringBuilder("Nr. ");
+        sb.append(id);
+        
+        if (date != null) {
+            sb.append(" (");
+            sb.append(DateFormat.getDateInstance(DateFormat.MEDIUM).format(date.getTime()));
+            sb.append(")");
+        }
+        
+        if (!solutionAvailable) {
+            sb.append(" [no Solution]");
+        }
+
+        puzzle.setTitle(sb.toString());
     }
 
     public Puzzle getPuzzle() {
         return puzzle;
     }
 
+    public boolean isPuzzleAvailable() {
+        return puzzle != null;
+    }
+
+    public boolean isSolutionAvailable() {
+        return solutionAvailable;
+    }
+
+    public void setSolutionAvailable(boolean solutionAvailable) {
+        this.solutionAvailable = solutionAvailable;
+        refreshPuzzleTitle();
+    }
+
     @Override
     public String toString() {
-        return "DerStandardPuzzleMetadata [id=" + id + ", date=" + date + ", puzzleUrl=" + puzzleUrl + ", puzzle=" + puzzle + "]";
+        return "DerStandardPuzzleMetadata [id=" + id + 
+                                        ", date=" + date + 
+                                        ", puzzleUrl=" + puzzleUrl + 
+                                        ", dateUrl=" + dateUrl + 
+                                        ", puzzleAvailable=" + puzzleAvailable + 
+                                        ", solutionAvailable=" + solutionAvailable + 
+                                        "]";
     }
+
 
 }
