@@ -29,7 +29,7 @@
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:name="com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication"
-        android:restoreAnyVersion="true" >
+        android:restoreAnyVersion="true">
         <!-- Backup not yet enabled
         android:backupAgent=".BackupAgent"
         <meta-data
@@ -42,12 +42,19 @@
             android:name="com.adamrosenfield.wordswithcrosses.HttpDownloadActivity"
             android:theme="@android:style/Theme.NoDisplay"
             tools:ignore="ExportedActivity">
-            <intent-filter >
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
 
+                <!-- The Android pattern matcher is non-greedy, so
+                     matching filenames that contain periods in them
+                     requires this hacky workaround which doesn't
+                     scale to arbitrary numbers of periods, see
+                     http://stackoverflow.com/q/3400072/9530 .  Le
+                     sigh.
+                -->
                 <data
                     android:scheme="file"
                     android:host="*"
@@ -55,7 +62,15 @@
                 <data
                     android:scheme="file"
                     android:host="*"
+                    android:pathPattern=".*\\..*.puz"/>
+                <data
+                    android:scheme="file"
+                    android:host="*"
                     android:pathPattern=".*.jpz"/>
+                <data
+                    android:scheme="file"
+                    android:host="*"
+                    android:pathPattern=".*\\..*.jpz"/>
                 <data
                     android:scheme="http"
                     android:host="*"
@@ -63,7 +78,15 @@
                 <data
                     android:scheme="http"
                     android:host="*"
+                    android:pathPattern=".*\\..*.puz"/>
+                <data
+                    android:scheme="http"
+                    android:host="*"
                     android:pathPattern=".*.jpz"/>
+                <data
+                    android:scheme="http"
+                    android:host="*"
+                    android:pathPattern=".*\\..*.jpz"/>
                 <data
                     android:scheme="https"
                     android:host="*"
@@ -71,9 +94,17 @@
                 <data
                     android:scheme="https"
                     android:host="*"
+                    android:pathPattern=".*\\..*.puz"/>
+                <data
+                    android:scheme="https"
+                    android:host="*"
                     android:pathPattern=".*.jpz"/>
+                <data
+                    android:scheme="https"
+                    android:host="*"
+                    android:pathPattern=".*\\..*.jpz"/>
             </intent-filter>
-            <intent-filter >
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -88,21 +119,21 @@
         </activity>
         <activity
             android:label="@string/activity_settings"
-            android:name="com.adamrosenfield.wordswithcrosses.PreferencesActivity" >
+            android:name="com.adamrosenfield.wordswithcrosses.PreferencesActivity">
         </activity>
         <activity
             android:label="@string/activity_clues"
-            android:name="com.adamrosenfield.wordswithcrosses.ClueListActivity" >
+            android:name="com.adamrosenfield.wordswithcrosses.ClueListActivity">
         </activity>
         <activity
             android:label="@string/app_name"
-            android:name="com.adamrosenfield.wordswithcrosses.HTMLActivity" >
+            android:name="com.adamrosenfield.wordswithcrosses.HTMLActivity">
         </activity>
         <activity
             android:label="@string/app_name"
             android:name="com.adamrosenfield.wordswithcrosses.BrowseActivity"
-            android:launchMode="singleTop" >
-            <intent-filter >
+            android:launchMode="singleTop">
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -111,11 +142,11 @@
         <activity
             android:label="@string/activity_puzzle_completed"
             android:name="com.adamrosenfield.wordswithcrosses.PuzzleFinishedActivity"
-            android:theme="@android:style/Theme.Dialog" >
+            android:theme="@android:style/Theme.Dialog">
         </activity>
 
-        <receiver android:name="com.adamrosenfield.wordswithcrosses.net.DownloadReceiver" >
-            <intent-filter >
+        <receiver android:name="com.adamrosenfield.wordswithcrosses.net.DownloadReceiver">
+            <intent-filter>
                 <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
             </intent-filter>
         </receiver>
