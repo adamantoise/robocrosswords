@@ -24,7 +24,7 @@ import java.util.Calendar;
 
 /**
  * New York Times
- * URL: http://www.nytimes.com/premium/xword/YYYY/MM/DD/[Mon]DDYY.puz
+ * URL: http://www.nytimes.com/svc/crosswords/v2/puzzle/daily-YYYY-MM-DD.puz
  * Date: Daily
  */
 public class NYTDownloader extends NYTBaseDownloader
@@ -44,14 +44,12 @@ public class NYTDownloader extends NYTBaseDownloader
     @Override
     protected String createUrlSuffix(Calendar date)
     {
-        return (date.get(Calendar.YEAR) + "/" +
+        return ("daily-" +
+                date.get(Calendar.YEAR) +
+                "-" +
                 DEFAULT_NF.format(date.get(Calendar.MONTH) + 1) +
-                "/" +
+                "-" +
                 DEFAULT_NF.format(date.get(Calendar.DAY_OF_MONTH)) +
-                "/" +
-                SHORT_MONTHS[date.get(Calendar.MONTH)] +
-                DEFAULT_NF.format(date.get(Calendar.DAY_OF_MONTH)) +
-                DEFAULT_NF.format(date.get(Calendar.YEAR) % 100) +
                 ".puz");
     }
 }

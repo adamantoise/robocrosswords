@@ -50,7 +50,7 @@ public abstract class NYTBaseDownloader extends AbstractDownloader {
     private HashMap<String, String> params = new HashMap<String, String>();
 
     protected NYTBaseDownloader(String name, String username, String password) {
-        super("http://www.nytimes.com/premium/xword/", name);
+        super("http://www.nytimes.com/svc/crosswords/v2/puzzle/", name);
         params.put("is_continue", "false");
         params.put("userid", username);
         params.put("password", password);
