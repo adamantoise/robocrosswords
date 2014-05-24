@@ -30,12 +30,17 @@ import java.util.Calendar;
 public class InkwellDownloader extends AbstractDownloader {
     private static final String NAME = "InkWellXWords.com";
 
+    // Ink Well Crosswords ceased publishing at the end of June 2014
+    private static final Calendar END_DATE = createDate(2014, 6, 30);
+
     public InkwellDownloader() {
         super("http://herbach.dnsalias.com/Tausig/", NAME);
     }
 
     public boolean isPuzzleAvailable(Calendar date) {
-        return (date.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY);
+        return
+            (date.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY &&
+             date.compareTo(END_DATE) <= 0);
     }
 
     @Override

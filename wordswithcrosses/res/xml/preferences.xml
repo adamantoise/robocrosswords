@@ -173,8 +173,8 @@
             android:defaultValue="true"
             android:key="downloadErikAgard" />
         <CheckBoxPreference
-            android:title="Ink Well"
-            android:summary="@string/pref_updates_fri"
+            android:title="Ink Well Xwords"
+            android:summary="@string/pref_inkwell_summary"
             android:defaultValue="true"
             android:key="downloadInkwell" />
         <CheckBoxPreference

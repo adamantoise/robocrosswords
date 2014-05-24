@@ -54,6 +54,7 @@
     <string name="pref_password_summary_crossword_nation">Crossword Nation Password</string>
     <string name="pref_devilcross_summary">Updates every other Saturday\nhttp://devilcross.com/</string>
     <string name="pref_erikagard_summary">Updates Wednesdays\nhttp://gluttonforpun.blogspot.com/</string>
+    <string name="pref_inkwell_summary">Updates Fridays (ends June 2014)</string>
     <string name="pref_mgwcc_summary">Updates Fridays\nSubmit meta answer online at:\nhttp://xwordcontest.com/</string>
     <string name="pref_nevillefogarty_summary">Updates Fridays\nhttp://nevillefogarty.wordpress.com/</string>
     <string name="pref_people_summary">Updates Fridays\nNo archives available</string>
