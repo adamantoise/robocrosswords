@@ -36,7 +36,7 @@ public class DevilCrossDownloader extends AbstractDownloader
     /** Date on which Devil Cross was first published */
     private static final Calendar START_DATE = createDate(2014, 2, 1);
 
-    private static final String PUZZLE_REGEX = "href=\"([^\"]*\\.puz)\">";
+    private static final String PUZZLE_REGEX = "href=\"([^\"]*/wp-content/crosswords/[^.]*\\.php)\">";
     private static final Pattern PUZZLE_PATTERN = Pattern.compile(PUZZLE_REGEX);
 
     public DevilCrossDownloader()
