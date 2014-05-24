@@ -192,9 +192,12 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
         LOG.info("Adding puzzle to database: " + path);
 
         Puzzle puz;
-        try {
+        try
+        {
             puz = IO.load(path);
-        } catch(IOException e) {
+        }
+        catch(IOException e)
+        {
             e.printStackTrace();
             LOG.warning("Failed to load " + path + ", moving to quarantine");
             path.renameTo(new File(WordsWithCrossesApplication.QUARANTINE_DIR, path.getName()));

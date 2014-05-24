@@ -37,6 +37,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
+import android.content.res.Resources;
+import android.text.TextUtils;
+
+import com.adamrosenfield.wordswithcrosses.R;
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.puz.Box;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
@@ -183,6 +187,14 @@ public class IO {
         puz.setTitle(readNullTerminatedString(input));
         puz.setAuthor(readNullTerminatedString(input));
         puz.setCopyright(readNullTerminatedString(input));
+
+        Resources resources = WordsWithCrossesApplication.getContext().getResources();
+        if (TextUtils.isEmpty(puz.getTitle())) {
+            puz.setTitle(resources.getString(R.string.puzzle_untitled));
+        }
+        if (TextUtils.isEmpty(puz.getAuthor())) {
+            puz.setAuthor(resources.getString(R.string.author_unknown));
+        }
 
         ArrayList<String> acrossClues = new ArrayList<String>();
         ArrayList<Integer> acrossCluesLookup = new ArrayList<Integer>();
