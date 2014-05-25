@@ -67,7 +67,7 @@ public abstract class AbstractDownloader implements Downloader {
         DEFAULT_NF = nf;
     }
 
-    protected static Calendar createDate(int year, int month, int day) {
+    public static Calendar createDate(int year, int month, int day) {
         Calendar date = Calendar.getInstance();
         date.clear();
         date.set(year, month - 1, day);  // Months start at 0 for Calendar!

@@ -1,45 +1,46 @@
 package com.adamrosenfield.wordswithcrosses.net.derstandard;
 
-import java.util.Date;
+import java.util.Calendar;
 
+import com.adamrosenfield.wordswithcrosses.net.AbstractDownloader;
 import com.adamrosenfield.wordswithcrosses.net.DerStandardDownloader;
 
 public class DateToIdEstimator {
     private final DerStandardPuzzleCache cache;
-    
-    private final static int  ID_ZERO = 7677;
-    private final static Date DATE_ZERO = new Date(114, 4, 16);
-    
+
+    private final static int ID_ZERO = 7677;
+    private final static Calendar DATE_ZERO = AbstractDownloader.createDate(2014, 4, 16);
+
     public DateToIdEstimator(DerStandardPuzzleCache cache) {
         this.cache = cache;
     }
 
-    public int estimateId(Date date) {
+    public int estimateId(Calendar date) {
         DerStandardPuzzleMetadata dspm = cache.getClosestTo(date);
-        
-        int eId = ID_ZERO; 
-        Date eDate = DATE_ZERO;
-        
+
+        int eId = ID_ZERO;
+        Calendar eDate = DATE_ZERO;
+
         if (dspm != null) {
             eId = dspm.getId();
-            eDate = dspm.getDate().getTime();
-            
+            eDate = dspm.getDate();
+
             if (DerStandardDownloader.equals(date, eDate)) {
                 return dspm.getId();
             }
         }
-        
+
         int id = estimate(date, eId, eDate);
-        
+
         return id;
     }
 
-    private int estimate(Date date, int baseId, Date baseDate) {
-        long day1 = baseDate.getTime();
-        long day2 = date.getTime();
-        int days = (int) Math.round((day2 - day1) / 86400000D);        
+    private int estimate(Calendar date, int baseId, Calendar baseDate) {
+        long day1 = baseDate.getTimeInMillis();
+        long day2 = date.getTimeInMillis();
+        int days = (int) Math.round((day2 - day1) / 86400000D);
         int ids = days > 6 ? ((int) ((float) days * 6f / 7f)) : days;
-        
+
         int id = baseId + ids;
         return id;
     }

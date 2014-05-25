@@ -17,6 +17,6 @@
     </application>
 
     <instrumentation
-        android:targetPackage="com.adamrosenfield.wordswithcrosses.wordswithcrosses"
+        android:targetPackage="com.adamrosenfield.wordswithcrosses"
         android:name="android.test.InstrumentationTestRunner" />
 </manifest>

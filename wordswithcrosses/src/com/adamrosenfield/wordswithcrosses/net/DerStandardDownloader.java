@@ -37,7 +37,6 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
@@ -96,7 +95,7 @@ public class DerStandardDownloader extends AbstractDownloader implements
     private final DerStandardParser parser = new DerStandardParser();
     private final DateToIdEstimator estimator = new DateToIdEstimator(this);
 
-    private Date lastIndexUpdate;
+    private Calendar lastIndexUpdate;
 
     private boolean initialized = false;
 
@@ -122,7 +121,7 @@ public class DerStandardDownloader extends AbstractDownloader implements
                 try {
                     puzzlesById = (SortedMap<Integer, DerStandardPuzzleMetadata>) ois.readObject();
                     puzzlesByCalendar = (NavigableMap<String, DerStandardPuzzleMetadata>) ois.readObject();
-                    lastIndexUpdate = (Date) ois.readObject();
+                    lastIndexUpdate = (Calendar) ois.readObject();
                 } finally {
                     ois.close();
                 }
@@ -209,10 +208,10 @@ public class DerStandardDownloader extends AbstractDownloader implements
     private DerStandardPuzzleMetadata getPuzzleByDate(Calendar date) {
         initializeIfNeeded();
 
-        return getPuzzleByDateViaEstimator(date.getTime(), new HashSet<Integer>());
+        return getPuzzleByDateViaEstimator(date, new HashSet<Integer>());
     }
 
-    private DerStandardPuzzleMetadata getPuzzleByDateViaEstimator(Date date, Set<Integer> alreadyTried) {
+    private DerStandardPuzzleMetadata getPuzzleByDateViaEstimator(Calendar date, Set<Integer> alreadyTried) {
         DerStandardPuzzleMetadata exact = puzzlesByCalendar.get(DF_DATE.format(date.getTime()));
 
         if (exact != null) {
@@ -268,8 +267,10 @@ public class DerStandardDownloader extends AbstractDownloader implements
             return true;
         }
 
-        Date now = new Date();
-        Date today = new Date(now.getYear(), now.getMonth(), now.getDate());
+        Calendar today = Calendar.getInstance();
+        today.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE), 0, 0, 0);
+        today.set(Calendar.MILLISECOND, 0);
+
         if (today.after(lastIndexUpdate)) {
             return true;
         }
@@ -389,7 +390,7 @@ public class DerStandardDownloader extends AbstractDownloader implements
         try {
             InputSource input = new InputSource(r);
             parser.parseIndex(input, this);
-            lastIndexUpdate = new Date();
+            lastIndexUpdate = Calendar.getInstance();
         } finally {
             r.close();
         }
@@ -404,8 +405,8 @@ public class DerStandardDownloader extends AbstractDownloader implements
         puzzlesByCalendar.put(key, pm);
     }
 
-    public static boolean equals(Date d1, Date d2) {
-        return DF_DATE.format(d1).equals(DF_DATE.format(d2));
+    public static boolean equals(Calendar d1, Calendar d2) {
+        return DF_DATE.format(d1.getTime()).equals(DF_DATE.format(d2.getTime()));
     }
 
     protected Reader getURLReader(HttpURLConnection conn) throws IOException, MalformedURLException, UnsupportedEncodingException {
@@ -481,8 +482,8 @@ public class DerStandardDownloader extends AbstractDownloader implements
         }
     }
 
-    public DerStandardPuzzleMetadata getClosestTo(Date date) {
-        String s = DF_DATE.format(date);
+    public DerStandardPuzzleMetadata getClosestTo(Calendar date) {
+        String s = DF_DATE.format(date.getTime());
         Entry<String, DerStandardPuzzleMetadata> floor   = puzzlesByCalendar.floorEntry(s);
         Entry<String, DerStandardPuzzleMetadata> ceiling = puzzlesByCalendar.ceilingEntry(s);
 
@@ -493,8 +494,8 @@ public class DerStandardDownloader extends AbstractDownloader implements
         } else if (ceiling == null) {
             return floor.getValue();
         } else {
-            long dFloor   = Math.abs(date.getTime() -   floor.getValue().getDate().getTimeInMillis());
-            long dCeiling = Math.abs(date.getTime() - ceiling.getValue().getDate().getTimeInMillis());
+            long dFloor   = Math.abs(date.getTimeInMillis() -   floor.getValue().getDate().getTimeInMillis());
+            long dCeiling = Math.abs(date.getTimeInMillis() - ceiling.getValue().getDate().getTimeInMillis());
 
             return dFloor < dCeiling ? floor.getValue() : ceiling.getValue();
         }
