@@ -173,7 +173,7 @@ public class DerStandardDownloader extends AbstractDownloader implements
     }
 
     public boolean isPuzzleAvailable(Calendar date) {
-        return true;
+        return (date.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY);
     }
 
     @Override
