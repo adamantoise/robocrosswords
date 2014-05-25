@@ -19,6 +19,7 @@
 
 package com.adamrosenfield.wordswithcrosses.view;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
@@ -46,6 +47,17 @@ public class CrosswordRelativeLayout extends RelativeLayout
     @Override
     public boolean dispatchKeyEventPreIme(KeyEvent event)
     {
+        if (android.os.Build.VERSION.SDK_INT >= 5 && isBackButtonUpEvent(event))
+        {
+            return true;
+        }
+
+        return super.dispatchKeyEventPreIme(event);
+    }
+
+    @TargetApi(5)
+    private boolean isBackButtonUpEvent(KeyEvent event)
+    {
         // Based on http://stackoverflow.com/a/5811630/9530
         if (mActivity != null && event.getKeyCode() == KeyEvent.KEYCODE_BACK)
         {
@@ -57,6 +69,6 @@ public class CrosswordRelativeLayout extends RelativeLayout
             return true;
         }
 
-        return super.dispatchKeyEventPreIme(event);
+        return false;
     }
 }
