@@ -21,6 +21,8 @@ package com.adamrosenfield.wordswithcrosses.net;
 
 import java.util.Calendar;
 
+import com.adamrosenfield.wordswithcrosses.CalendarUtil;
+
 /**
  * Andy Kravis
  * URL: http://cruciverbalistatlaw.blogspot.com
@@ -28,7 +30,7 @@ import java.util.Calendar;
  */
 public class AndyKravisDownloader extends BloggerDownloader
 {
-    private static final Calendar SWITCHOVER_DATE = createDate(2013, 10, 14);
+    private static final Calendar SWITCHOVER_DATE = CalendarUtil.createDate(2013, 10, 14);
 
     public AndyKravisDownloader()
     {

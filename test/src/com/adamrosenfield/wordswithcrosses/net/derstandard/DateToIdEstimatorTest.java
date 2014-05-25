@@ -4,7 +4,7 @@ import java.util.Calendar;
 
 import android.test.AndroidTestCase;
 
-import com.adamrosenfield.wordswithcrosses.net.AbstractDownloader;
+import com.adamrosenfield.wordswithcrosses.CalendarUtil;
 
 public class DateToIdEstimatorTest extends AndroidTestCase {
 
@@ -14,8 +14,8 @@ public class DateToIdEstimatorTest extends AndroidTestCase {
 		DerStandardPuzzleMetadata dspm_7642 = new DerStandardPuzzleMetadata(7642);
 
 		{
-			dspm_7671.setDate(AbstractDownloader.createDate(2014, 5, 9));
-			dspm_7642.setDate(AbstractDownloader.createDate(2014, 4, 3));
+			dspm_7671.setDate(CalendarUtil.createDate(2014, 5, 9));
+			dspm_7642.setDate(CalendarUtil.createDate(2014, 4, 3));
 		}
 
 		@Override
@@ -41,23 +41,23 @@ public class DateToIdEstimatorTest extends AndroidTestCase {
 	});
 
 	public void testZeroDifference() {
-		assertEquals(7677, testee.estimateId(AbstractDownloader.createDate(2014, 5, 16)));
+		assertEquals(7677, testee.estimateId(CalendarUtil.createDate(2014, 5, 16)));
 	}
 
 	public void testWeekDifference() {
-		assertEquals(7671, testee.estimateId(AbstractDownloader.createDate(2014, 5, 9)));
+		assertEquals(7671, testee.estimateId(CalendarUtil.createDate(2014, 5, 9)));
 	}
 
 	public void testMonthsDifference1() {
-		assertEquals(7639, testee.estimateId(AbstractDownloader.createDate(2014, 3, 31)));
+		assertEquals(7639, testee.estimateId(CalendarUtil.createDate(2014, 3, 31)));
 	}
 
 	public void testMonthsDifference2() {
-		assertEquals(7613, testee.estimateId(AbstractDownloader.createDate(2014, 2, 28)));
+		assertEquals(7613, testee.estimateId(CalendarUtil.createDate(2014, 2, 28)));
 	}
 
 	public void testMonthsDifference3() {
-		assertEquals(7605, testee.estimateId(AbstractDownloader.createDate(2014, 2, 18))); //7604 would be correct, but close enough
+		assertEquals(7605, testee.estimateId(CalendarUtil.createDate(2014, 2, 18))); //7604 would be correct, but close enough
 	}
 
 }

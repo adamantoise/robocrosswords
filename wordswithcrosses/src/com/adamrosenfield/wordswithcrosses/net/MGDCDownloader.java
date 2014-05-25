@@ -21,6 +21,8 @@ package com.adamrosenfield.wordswithcrosses.net;
 
 import java.util.Calendar;
 
+import com.adamrosenfield.wordswithcrosses.CalendarUtil;
+
 /**
  * Matt Gaffney's Daily Crossword
  * URL: http://mattgaffneydaily.blogspot.com/YYYY/MM/mgdc-####-weekday-month-dayth-year.html
@@ -30,9 +32,9 @@ public class MGDCDownloader extends ManualDownloader
 {
     private static final String BASE_URL = "http://mattgaffneydaily.blogspot.com/";
     /** Date on which MGDC started (5 days/week) */
-    private static final Calendar START_DATE = createDate(2011, 9, 21);
+    private static final Calendar START_DATE = CalendarUtil.createDate(2011, 9, 21);
     /** Date on which MGDC became 7 days/week */
-    private static final Calendar DAILY_START_DATE = createDate(2013, 9, 21);
+    private static final Calendar DAILY_START_DATE = CalendarUtil.createDate(2013, 9, 21);
 
     public MGDCDownloader()
     {

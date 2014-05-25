@@ -2,14 +2,14 @@ package com.adamrosenfield.wordswithcrosses.net.derstandard;
 
 import java.util.Calendar;
 
-import com.adamrosenfield.wordswithcrosses.net.AbstractDownloader;
+import com.adamrosenfield.wordswithcrosses.CalendarUtil;
 import com.adamrosenfield.wordswithcrosses.net.DerStandardDownloader;
 
 public class DateToIdEstimator {
     private final DerStandardPuzzleCache cache;
 
     private final static int ID_ZERO = 7677;
-    private final static Calendar DATE_ZERO = AbstractDownloader.createDate(2014, 4, 16);
+    private final static Calendar DATE_ZERO = CalendarUtil.createDate(2014, 4, 16);
 
     public DateToIdEstimator(DerStandardPuzzleCache cache) {
         this.cache = cache;

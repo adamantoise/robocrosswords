@@ -22,6 +22,8 @@ package com.adamrosenfield.wordswithcrosses.net;
 
 import java.util.Calendar;
 
+import com.adamrosenfield.wordswithcrosses.CalendarUtil;
+
 /**
  * Ink Well Crosswords
  * URL: http://herbach.dnsalias.com/Tausig/vvYYMMDD.puz
@@ -31,7 +33,7 @@ public class InkwellDownloader extends AbstractDownloader {
     private static final String NAME = "InkWellXWords.com";
 
     // Ink Well Crosswords ceased publishing at the end of June 2014
-    private static final Calendar END_DATE = createDate(2014, 6, 30);
+    private static final Calendar END_DATE = CalendarUtil.createDate(2014, 6, 30);
 
     public InkwellDownloader() {
         super("http://herbach.dnsalias.com/Tausig/", NAME);

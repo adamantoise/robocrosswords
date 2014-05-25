@@ -21,6 +21,8 @@ package com.adamrosenfield.wordswithcrosses.net;
 
 import java.util.Calendar;
 
+import com.adamrosenfield.wordswithcrosses.CalendarUtil;
+
 /**
  * Matt Gaffney's Weekly Crossword Contest
  * URL: http://xwordcontest.com/submissions/[number]/mgwcc[number].puz
@@ -30,8 +32,8 @@ public class MGWCCDownloader extends AbstractDownloader
 {
     private static final String BASE_URL = "http://xwordcontest.com/submissions/";
 
-    /** Date on which MGWCC Cross was first published */
-    private static final Calendar START_DATE = createDate(2008, 6, 6);
+    /** Date on which MGWCC was first published */
+    private static final Calendar START_DATE = CalendarUtil.createDate(2008, 6, 6);
 
     public MGWCCDownloader()
     {
