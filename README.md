@@ -29,6 +29,7 @@ Puzzle sources
 - CRooked Crosswords
 - Crossword Nation
 - Daily Record
+- Der Standard (thanks to [Wolfgang Groiss](https://github.com/LittleLui)!)
 - Devil Cross
 - Erik Agard
 - Ink Well Xwords
