@@ -24,10 +24,12 @@ import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.adamrosenfield.wordswithcrosses.CalendarUtil;
+
 /**
  * Muller's Monthly Music Meta
  * URL: http://pmxwords.com/
- * Date: First Tuesday of each month
+ * Date: First Tuesday of each month at 12:00 U.S. Eastern time
  */
 public class MMMMDownloader extends AbstractDownloader
 {
@@ -63,6 +65,13 @@ public class MMMMDownloader extends AbstractDownloader
     @Override
     public void download(Calendar date) throws IOException
     {
+        Calendar now = Calendar.getInstance();
+        Calendar releaseTime = getReleaseTime(date);
+        if (now.before(releaseTime))
+        {
+            throw new IOException("Puzzle has not yet been released!");
+        }
+
         String scrapeUrl = BASE_URL;
         if (date.get(Calendar.YEAR) != 2012)
         {
@@ -103,5 +112,14 @@ public class MMMMDownloader extends AbstractDownloader
             LOG.warning("Failed to find puzzle link for " + date + " on page: " + scrapeUrl);
             throw new IOException("Failed to find puzzle link");
         }
+    }
+
+    /**
+     * Gets the exact time (12:00 EST or EDT) when the puzzle for the given
+     * date is released.
+     */
+    private static Calendar getReleaseTime(Calendar date)
+    {
+        return CalendarUtil.createDate(CalendarUtil.TZ_US_EASTERN, date.get(Calendar.YEAR), date.get(Calendar.MONTH) + 1, date.get(Calendar.DATE), 12, 0, 0);
     }
 }
