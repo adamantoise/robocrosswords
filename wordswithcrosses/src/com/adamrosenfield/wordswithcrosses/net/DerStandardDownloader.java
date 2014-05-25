@@ -38,6 +38,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.Set;
@@ -82,7 +83,7 @@ public class DerStandardDownloader extends AbstractDownloader implements
 
     private static final Pattern P_CHARSET_IN_TYPE = Pattern.compile("[A-Za-z0-9\\-/]+;\\s*charset=([A-Za-z0-9\\-]+)");
 
-    private static final DateFormat DF_DATE = new SimpleDateFormat("yyyy-MM-dd");
+    private static final DateFormat DF_DATE = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
     private static final Logger LOG = Logger.getLogger("DerStandardDownloader");
 
