@@ -65,10 +65,10 @@ public class DerStandardParserTest extends AndroidTestCase {
 		assertBox(p,  8, 11, NOT_START, NOT_START, NO_CLUE, 'O');
 		assertBox(p, 12, 12, NOT_START, NOT_START, NO_CLUE, NO_SOLUTION);
 
-		assertAcrossClue(p,  0,  6, "Wenn ich rosinngemäß die Trockenbeeren auslese, zittere ich zuletzt vor Zorn (Ez)");
-		assertAcrossClue(p,  5, 15, "<i>EU-Navis</i> sind für alle Höhen geeignet");
+		assertAcrossClue(p,  0,  6, "Wenn ich rosinngem\u00e4\u00df die Trockenbeeren auslese, zittere ich zuletzt vor Zorn (Ez)");
+		assertAcrossClue(p,  5, 15, "<i>EU-Navis</i>\u00a0sind f\u00fcr alle H\u00f6hen geeignet");
 
-		assertDownClue(  p,  5,  9, "Wird der Teil von 7 waagrecht ausfällig, ists völlig verkehrt");
+		assertDownClue(  p,  5,  9, "Wird der Teil von 7 waagrecht ausf\u00e4llig, ists v\u00f6llig verkehrt");
 
 
 	}
@@ -114,3 +114,4 @@ public class DerStandardParserTest extends AndroidTestCase {
 		}
 	}
 }
+
