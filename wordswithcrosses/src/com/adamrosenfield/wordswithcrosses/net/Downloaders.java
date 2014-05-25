@@ -70,7 +70,7 @@ public class Downloaders {
                 downloaders.add(new AVXWDownloader(username, password));
             }
         }
-        
+
         if (includeAll || prefs.getBoolean("downloadAndyKravis", true)) {
             downloaders.add(new AndyKravisDownloader());
         }
@@ -96,8 +96,8 @@ public class Downloaders {
                 downloaders.add(new CrosswordNationDownloader(username, password));
             }
         }
-		
-        if (includeAll || prefs.getBoolean("downloadDerStandard", true)) {
+
+        if (includeAll || prefs.getBoolean("downloadDerStandard", false)) {
           downloaders.add(new DerStandardDownloader());
         }
 
