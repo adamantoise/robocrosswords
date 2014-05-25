@@ -1,7 +1,5 @@
 package com.adamrosenfield.wordswithcrosses.net.derstandard;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Calendar;
 
 import android.test.AndroidTestCase;
@@ -43,23 +41,23 @@ public class DateToIdEstimatorTest extends AndroidTestCase {
 	});
 
 	public void testZeroDifference() {
-		assertEquals(7677, testee.estimateId(AbstractDownloader.createDate(2014, 4, 16)));
+		assertEquals(7677, testee.estimateId(AbstractDownloader.createDate(2014, 5, 16)));
 	}
 
 	public void testWeekDifference() {
-		assertEquals(7671, testee.estimateId(AbstractDownloader.createDate(2014, 4, 9)));
+		assertEquals(7671, testee.estimateId(AbstractDownloader.createDate(2014, 5, 9)));
 	}
 
 	public void testMonthsDifference1() {
-		assertEquals(7640, testee.estimateId(AbstractDownloader.createDate(2014, 3, 4)));
+		assertEquals(7639, testee.estimateId(AbstractDownloader.createDate(2014, 3, 31)));
 	}
 
 	public void testMonthsDifference2() {
-		assertEquals(7613, testee.estimateId(AbstractDownloader.createDate(2014, 1, 28)));
+		assertEquals(7613, testee.estimateId(AbstractDownloader.createDate(2014, 2, 28)));
 	}
 
 	public void testMonthsDifference3() {
-		assertEquals(7605, testee.estimateId(AbstractDownloader.createDate(2014, 1, 18))); //7604 would be correct, but close enough
+		assertEquals(7605, testee.estimateId(AbstractDownloader.createDate(2014, 2, 18))); //7604 would be correct, but close enough
 	}
 
 }
