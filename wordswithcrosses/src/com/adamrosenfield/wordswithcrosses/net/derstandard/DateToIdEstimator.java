@@ -39,7 +39,7 @@ public class DateToIdEstimator {
         long day1 = baseDate.getTimeInMillis();
         long day2 = date.getTimeInMillis();
         int days = (int) Math.round((day2 - day1) / 86400000D);
-        int ids = days > 6 ? ((int) ((float) days * 6f / 7f)) : days;
+        int ids = Math.abs(days) > 6 ? ((int) ((float) days * 6f / 7f)) : days;
 
         int id = baseId + ids;
         return id;
