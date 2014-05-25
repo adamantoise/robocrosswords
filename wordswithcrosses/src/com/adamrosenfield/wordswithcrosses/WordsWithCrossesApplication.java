@@ -46,6 +46,7 @@ import com.adamrosenfield.wordswithcrosses.view.PlayboardRenderer;
 public class WordsWithCrossesApplication extends Application {
 
     public static File CROSSWORDS_DIR;
+    public static File NON_CROSSWORD_DATA_DIR;
     public static File TEMP_DIR;
     public static File QUARANTINE_DIR;
 
@@ -84,6 +85,7 @@ public class WordsWithCrossesApplication extends Application {
             "Android/data/" + getPackageName() + "/files");
 
         CROSSWORDS_DIR = new File(externalStorageDir, "crosswords");
+        NON_CROSSWORD_DATA_DIR = new File(externalStorageDir, "data");        
         TEMP_DIR = new File(externalStorageDir, "temp");
         QUARANTINE_DIR = new File(externalStorageDir, "quarantine");
 
@@ -160,7 +162,7 @@ public class WordsWithCrossesApplication extends Application {
             return false;
         }
 
-        for (File dir : new File[]{CROSSWORDS_DIR, TEMP_DIR, QUARANTINE_DIR, DEBUG_DIR}) {
+        for (File dir : new File[]{CROSSWORDS_DIR, NON_CROSSWORD_DATA_DIR, TEMP_DIR, QUARANTINE_DIR, DEBUG_DIR}) {
             if (!dir.isDirectory() && !dir.mkdirs()) {
                 LOG.warning("Failed to create directory tree: " + dir);
                 return false;
