@@ -28,7 +28,6 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.logging.Logger;
 
 import org.ccil.cowan.tagsoup.AutoDetector;
 import org.json.JSONArray;
@@ -41,8 +40,6 @@ import com.adamrosenfield.wordswithcrosses.puz.Box;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 
 public class SolutionParser {
-
-    private static final Logger LOG = Logger.getLogger("SolutionParser");
 
     private final DerStandardPuzzleMetadata pm;
 
@@ -109,14 +106,28 @@ public class SolutionParser {
     }
 
     private String read(Reader reader) throws IOException {
-        BufferedReader br = reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader);
-        StringBuilder sb = new StringBuilder();
-
-        String line = null;
-        while ((line = br.readLine()) != null) {
-            sb.append(line + "\n");
+        BufferedReader br;
+        boolean shouldClose = false;
+        if (reader instanceof BufferedReader) {
+            br = (BufferedReader)reader;
+        } else {
+            br = new BufferedReader(reader);
+            shouldClose = true;
         }
-        return sb.toString();
+
+        try {
+            StringBuilder sb = new StringBuilder();
+
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            return sb.toString();
+        } finally {
+            if (shouldClose) {
+                br.close();
+            }
+        }
     }
 
     // stolen from tagsoup

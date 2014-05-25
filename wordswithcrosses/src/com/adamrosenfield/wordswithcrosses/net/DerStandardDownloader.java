@@ -1,21 +1,21 @@
 /**
- * This file is part of Words With Crosses. 
- * 
+ * This file is part of Words With Crosses.
+ *
  * Copyright (this file) 2014 Wolfgang Groiss
- * 
+ *
  * This file is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  **/
 
 package com.adamrosenfield.wordswithcrosses.net;
@@ -67,7 +67,7 @@ import com.adamrosenfield.wordswithcrosses.net.derstandard.DerStandardPuzzleMeta
 
 /**
  * Downloader for derStandard.at.
- * 
+ *
  * As puzzles are only available as a web application, there's some weird - and
  * easily broken if the web app changes - stuff done to actually produce PUZ files.
  *
@@ -82,8 +82,6 @@ public class DerStandardDownloader extends AbstractDownloader implements
     private static final String SOLUTION_URL = BASE_URL + "/RaetselApp/Home/GetCrosswordResult";
 
     private static final Pattern P_CHARSET_IN_TYPE = Pattern.compile("[A-Za-z0-9\\-/]+;\\s*charset=([A-Za-z0-9\\-]+)");
-    private static final String P_HINT = "([0-9]+)([^_]+)___";
-    private static final Pattern P_HREF_PUZZLE = Pattern.compile(".*/Kreuzwortraetsel-Nr-([0-9]+)(\\?.*)?");
 
     private static final DateFormat DF_DATE = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -114,6 +112,7 @@ public class DerStandardDownloader extends AbstractDownloader implements
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void loadSerializedStateIfExists() {
         try {
             File f = getSerializedStateFile();
@@ -212,32 +211,32 @@ public class DerStandardDownloader extends AbstractDownloader implements
 
         return getPuzzleByDateViaEstimator(date.getTime(), new HashSet<Integer>());
     }
-    
+
     private DerStandardPuzzleMetadata getPuzzleByDateViaEstimator(Date date, Set<Integer> alreadyTried) {
         DerStandardPuzzleMetadata exact = puzzlesByCalendar.get(DF_DATE.format(date.getTime()));
-        
+
         if (exact != null) {
             return exact;
         }
-        
+
         int id = estimator.estimateId(date);
         if (alreadyTried.contains(id)) {
             return null;
         }
-        
+
         alreadyTried.add(id);
-        
+
         DerStandardPuzzleMetadata estimate = puzzlesById.get(id);
         if (estimate == null) {
             return null;
         }
-        
+
         try {
             refresh(estimate, false, false);
         } catch (RefreshException re) {
             return null;
         }
-        
+
         return getPuzzleByDateViaEstimator(date, alreadyTried);
     }
 
@@ -332,7 +331,7 @@ public class DerStandardDownloader extends AbstractDownloader implements
                 throw new RefreshException("Fetching/Parsing puzzle for " + pUrl + ".", e);
             }
         }
-        
+
         if (addPuzzleSolutionIfMissing && pm.isPuzzleAvailable() && !pm.isSolutionAvailable()) {
             try {
                 InputSource isSolution = postForSolution(id);
@@ -404,7 +403,7 @@ public class DerStandardDownloader extends AbstractDownloader implements
         String key = DF_DATE.format(c.getTime());
         puzzlesByCalendar.put(key, pm);
     }
-    
+
     public static boolean equals(Date d1, Date d2) {
         return DF_DATE.format(d1).equals(DF_DATE.format(d2));
     }
@@ -471,6 +470,8 @@ public class DerStandardDownloader extends AbstractDownloader implements
     }
 
     private class RefreshException extends Exception {
+        private static final long serialVersionUID = 3521756473491768245L;
+
         private RefreshException(String detailMessage, Throwable throwable) {
             super(detailMessage, throwable);
         }
@@ -484,7 +485,7 @@ public class DerStandardDownloader extends AbstractDownloader implements
         String s = DF_DATE.format(date);
         Entry<String, DerStandardPuzzleMetadata> floor   = puzzlesByCalendar.floorEntry(s);
         Entry<String, DerStandardPuzzleMetadata> ceiling = puzzlesByCalendar.ceilingEntry(s);
-        
+
         if (floor == null && ceiling == null) {
             return null;
         } else if (floor == null) {
@@ -494,7 +495,7 @@ public class DerStandardDownloader extends AbstractDownloader implements
         } else {
             long dFloor   = Math.abs(date.getTime() -   floor.getValue().getDate().getTimeInMillis());
             long dCeiling = Math.abs(date.getTime() - ceiling.getValue().getDate().getTimeInMillis());
-            
+
             return dFloor < dCeiling ? floor.getValue() : ceiling.getValue();
         }
     }

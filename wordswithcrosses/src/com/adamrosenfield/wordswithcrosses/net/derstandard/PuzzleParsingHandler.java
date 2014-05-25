@@ -23,7 +23,6 @@ package com.adamrosenfield.wordswithcrosses.net.derstandard;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
-import java.util.logging.Logger;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -34,8 +33,6 @@ import com.adamrosenfield.wordswithcrosses.puz.Box;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 
 public class PuzzleParsingHandler extends DefaultHandler {
-
-    private static final Logger LOG = Logger.getLogger("PuzzleParsingHandler");
 
     private final DerStandardPuzzleMetadata pm;
 
