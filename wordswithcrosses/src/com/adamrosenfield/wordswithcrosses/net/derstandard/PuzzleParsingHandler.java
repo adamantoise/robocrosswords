@@ -1,28 +1,26 @@
 /**
  * This file is part of Words With Crosses.
- * 
+ *
  * Copyright (this file) 2014 Wolfgang Groiss
- * 
+ *
  * This file is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  **/
 
 package com.adamrosenfield.wordswithcrosses.net.derstandard;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeSet;
+import android.util.SparseArray;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -103,9 +101,9 @@ public class PuzzleParsingHandler extends DefaultHandler {
     }
 
     private final class HintsHandler extends DefaultHandler {
-        Map<Integer, String> horizontal = new HashMap<Integer, String>();
-        Map<Integer, String> vertical = new HashMap<Integer, String>();
-        Map<Integer, String> current;
+        SparseArray<String> horizontal = new SparseArray<String>();
+        SparseArray<String> vertical = new SparseArray<String>();
+        SparseArray<String> current;
         boolean inQuestItem = false;
         boolean inQuestItemText = false;
         StringBuilder questItemText = new StringBuilder();
@@ -146,7 +144,7 @@ public class PuzzleParsingHandler extends DefaultHandler {
             p.setRawClues(makeRawClues(p.getBoxes(), horizontal, vertical));
         }
 
-        private String[] makeRawClues(Box[][] boxes, Map<Integer, String> horizontal, Map<Integer, String> vertical) {
+        private String[] makeRawClues(Box[][] boxes, SparseArray<String> horizontal, SparseArray<String> vertical) {
             String[] ret = new String[horizontal.size() + vertical.size()];
             int i = 0;
 
@@ -174,13 +172,12 @@ public class PuzzleParsingHandler extends DefaultHandler {
             return ret;
         }
 
-        private void copyOver(Map<Integer, String> map, String[] clues, Integer[] cluesLookup) {
-            int count = 0;
-            for (Integer key : new TreeSet<Integer>(map.keySet())) {
-                String value = map.get(key);
-                clues[count] = value.trim();
-                cluesLookup[count] = key;
-                ++count;
+        private void copyOver(SparseArray<String> map, String[] clues, Integer[] cluesLookup) {
+            for (int i = 0; i < map.size(); i++) {
+                int key = map.keyAt(i);
+                String value = map.valueAt(i);
+                clues[i] = value.trim();
+                cluesLookup[i] = key;
             }
         }
 
