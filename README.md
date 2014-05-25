@@ -51,3 +51,13 @@ Puzzle sources
 - Wall Street Journal
 - Washington Post (aka CrosSynergy)
 - Washington Post Puzzler
+
+License
+-------
+
+*Words With Crosses* is licensed under the terms of the [GNU General Public License Verion 3](http://www.gnu.org/copyleft/gpl.html).
+
+Third-party libraries
+---------------------
+
+- [TagSoup v1.2.1](http://home.ccil.org/~cowan/XML/tagsoup/) ([Apache License Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html))
