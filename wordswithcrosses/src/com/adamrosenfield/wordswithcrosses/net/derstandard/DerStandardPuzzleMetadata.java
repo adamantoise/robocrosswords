@@ -30,29 +30,22 @@ public class DerStandardPuzzleMetadata implements Serializable {
     private static final long serialVersionUID = 2L;
     
     private final int id;
-    private Calendar date;
-    private String puzzleUrl;
-    private String dateUrl;
+    private final Calendar date;
+    private final String puzzleUrl;
     
     private boolean puzzleAvailable = false;
     private boolean solutionAvailable = false;
 
     private transient Puzzle puzzle;
 
-    public DerStandardPuzzleMetadata(int id) {
+    public DerStandardPuzzleMetadata(int id, String puzzleUrl, Calendar date) {
         this.id = id;
+        this.date = date;
+        this.puzzleUrl = puzzleUrl;
     }
 
     public String getPuzzleUrl(String relativeBase) {
         return getUrl(puzzleUrl, relativeBase);
-    }
-
-    public void setPuzzleUrl(String puzzleUrl) {
-        this.puzzleUrl = puzzleUrl;
-    }
-
-    public String getDateUrl(String relativeBase) {
-        return getUrl(dateUrl, relativeBase);
     }
 
     private String getUrl(String url, String relativeBase) {
@@ -61,15 +54,6 @@ public class DerStandardPuzzleMetadata implements Serializable {
         } else {
             return relativeBase + url;
         }
-    }
-
-    public void setDateUrl(String dateUrl) {
-        this.dateUrl = dateUrl;
-    }
-
-    public void setDate(Calendar date) {
-        this.date = date;
-        refreshPuzzleTitle();
     }
 
     public Calendar getDate() {
@@ -92,12 +76,6 @@ public class DerStandardPuzzleMetadata implements Serializable {
         
         StringBuilder sb = new StringBuilder("Nr. ");
         sb.append(id);
-        
-        if (date != null) {
-            sb.append(" (");
-            sb.append(DateFormat.getDateInstance(DateFormat.MEDIUM).format(date.getTime()));
-            sb.append(")");
-        }
         
         if (!solutionAvailable) {
             sb.append(" [no Solution]");
@@ -128,7 +106,6 @@ public class DerStandardPuzzleMetadata implements Serializable {
         return "DerStandardPuzzleMetadata [id=" + id + 
                                         ", date=" + date + 
                                         ", puzzleUrl=" + puzzleUrl + 
-                                        ", dateUrl=" + dateUrl + 
                                         ", puzzleAvailable=" + puzzleAvailable + 
                                         ", solutionAvailable=" + solutionAvailable + 
                                         "]";

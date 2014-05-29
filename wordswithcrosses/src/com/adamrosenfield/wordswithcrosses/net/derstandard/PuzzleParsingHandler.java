@@ -70,16 +70,19 @@ public class PuzzleParsingHandler extends DefaultHandler {
 
     @Override
     public void endDocument() throws SAXException {
-        Puzzle p = new Puzzle();
+        if (cwtableHandler.wasSane() &&
+            questHandler.wasSane()) {
+            Puzzle p = new Puzzle();
 
-        p.setAuthor("derStandard.at");
-        p.setCopyright("derStandard.at");
-        p.setDate(pm.getDate());
+            p.setAuthor("derStandard.at");
+            p.setCopyright("derStandard.at");
+            p.setDate(pm.getDate());
 
-        cwtableHandler.saveTo(p);
-        questHandler.saveTo(p);
+            cwtableHandler.saveTo(p);
+            questHandler.saveTo(p);
 
-        pm.setPuzzle(p);
+            pm.setPuzzle(p);
+        }
     }
 
     private boolean hasClass(Attributes attributes, String clazz) {
@@ -123,6 +126,10 @@ public class PuzzleParsingHandler extends DefaultHandler {
                 }
             }
 
+        }
+
+        public boolean wasSane() {
+            return horizontal.size() > 0 && vertical.size() > 0;
         }
 
         public void saveTo(Puzzle p) {
@@ -255,6 +262,10 @@ public class PuzzleParsingHandler extends DefaultHandler {
 
             p.setWidth(width);
             p.setHeight(height);
+        }
+
+        public boolean wasSane() {
+            return width > 0 && height > 0;
         }
 
         private boolean isEditable(int x, int y) {

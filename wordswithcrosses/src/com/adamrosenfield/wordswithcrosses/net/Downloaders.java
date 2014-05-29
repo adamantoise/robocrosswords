@@ -98,7 +98,8 @@ public class Downloaders {
         }
 
         if (includeAll || prefs.getBoolean("downloadDerStandard", false)) {
-          downloaders.add(new DerStandardDownloader());
+          String startId = prefs.getString("derStandardStartId", "7180");
+          downloaders.add(new DerStandardDownloader(startId));
         }
 
         if (includeAll || prefs.getBoolean("downloadDevilCross", true)) {

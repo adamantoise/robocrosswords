@@ -71,11 +71,25 @@
             android:summary="@string/pref_updates_mon_to_sat"
             android:defaultValue="true"
             android:key="downloadUSAToday" />
-        <CheckBoxPreference
+        <PreferenceScreen
             android:title="derStandard.at"
             android:summary="@string/pref_derstandard_summary"
-            android:defaultValue="false"
-            android:key="downloadDerStandard" />
+            android:key="selectDerStandard">
+        	<CheckBoxPreference
+            	android:title="derStandard.at"
+            	android:summary="@string/pref_derstandard_summary"
+            	android:defaultValue="false"
+            	android:key="downloadDerStandard" />
+        	<EditTextPreference 
+        	    android:title="Puzzle ID for 2014-06-01"
+            	android:summary="@string/pref_derstandard_start_id"
+            	android:defaultValue="7180"
+            	android:numeric="integer"
+            	android:maxLength="4"
+            	android:key="derStandardStartId" />
+        	
+        	
+        </PreferenceScreen>
 
     </PreferenceScreen>
     <PreferenceScreen
