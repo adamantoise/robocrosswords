@@ -41,8 +41,7 @@
     <string name="pref_updates_thu">Updates Thursdays</string>
     <string name="pref_updates_fri">Updates Fridays</string>
     <string name="pref_updates_sun">Updates Sundays</string>
-    <string name="pref_derstandard_summary">Updates Daily\nGerman cryptic crosswords</string>
-    <string name="pref_derstandard_start_id">7170 = first available, 7613 = first w/ solution.</string>
+    <string name="pref_derstandard_summary">Updates Monday–Saturday\nGerman cryptic crosswords</string>
     <string name="pref_wapo_summary">Only most recent two weeks of puzzles available</string>
     <string name="pref_avxw_summary">Requires subscription. Updates Wednesdays.</string>
     <string name="pref_username_summary_avxw">AVXW Username or Email Address</string>
