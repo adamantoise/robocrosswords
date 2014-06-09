@@ -52,6 +52,8 @@ import android.os.Build;
 import com.adamrosenfield.wordswithcrosses.CalendarUtil;
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.io.IO;
+import com.adamrosenfield.wordswithcrosses.net.derstandard.CalendarDateToIdConverter;
+import com.adamrosenfield.wordswithcrosses.net.derstandard.ConfigurableDailyDateToIdConverter;
 import com.adamrosenfield.wordswithcrosses.net.derstandard.DateToIdConverter;
 import com.adamrosenfield.wordswithcrosses.net.derstandard.DerStandardParser;
 import com.adamrosenfield.wordswithcrosses.net.derstandard.DerStandardPuzzleMetadata;
@@ -81,25 +83,13 @@ public class DerStandardDownloader extends AbstractDownloader {
     private static final Logger LOG = Logger.getLogger("DerStandardDownloader");
 
     private final DerStandardParser parser = new DerStandardParser();
-    private final DateToIdConverter converter;
+    private final DateToIdConverter converter = new CalendarDateToIdConverter();
 
     /** @param startId the id to associate with 2014-06-01. Other IDs are calculated based on this, assuming daily puzzles 
      * (so slowly catching up with actual puzzles, which aren't released on sundays and holidays; overtaking in a few years, probably).
      */ 
-    public DerStandardDownloader(String startId) {
+    public DerStandardDownloader() {
         super(BASE_URL, NAME);
-        
-        int id = 7170;
-        
-        if (startId != null) {
-            try {
-                id = Integer.parseInt(startId);
-            } catch (NumberFormatException nfe) {
-                //ignore
-            }
-        }
-        
-        converter = new DateToIdConverter(id, CalendarUtil.createDate(2014, 6, 29));
     }
    
     public boolean isPuzzleAvailable(Calendar date) {
