@@ -27,9 +27,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import android.app.Dialog;
 import android.app.NotificationManager;
@@ -62,6 +63,7 @@ import android.widget.TextView;
 import com.adamrosenfield.wordswithcrosses.PuzzleDatabaseHelper.IDAndFilename;
 import com.adamrosenfield.wordswithcrosses.net.Downloader;
 import com.adamrosenfield.wordswithcrosses.net.Downloaders;
+import com.adamrosenfield.wordswithcrosses.net.DummyDownloader;
 import com.adamrosenfield.wordswithcrosses.puz.PuzzleMeta;
 import com.adamrosenfield.wordswithcrosses.view.CustomFastScrollView;
 import com.adamrosenfield.wordswithcrosses.view.SeparatedListAdapter;
@@ -75,6 +77,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
     private String MENU_UNARCHIVE;
     private String MENU_DELETE;
     private String MENU_DOWNLOAD;
+    private String MENU_BULK_DOWNLOAD;
     private String MENU_SORT;
     private String MENU_BYDATE_ASCENDING;
     private String MENU_BYDATE_DESCENDING;
@@ -86,10 +89,15 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
     private String PREF_SENDDEBUGPACKAGE;
 
     private static final int DOWNLOAD_DIALOG_ID = 0;
+    private static final int BULK_DOWNLOAD_DIALOG_ID = 1;
+    
     private SortOrder sortOrder = SortOrder.DATE_DESC;
     private BaseAdapter currentAdapter = null;
     private DownloadPickerDialogBuilder downloadPickerDialogBuilder;
     private Dialog mDownloadDialog;
+
+    private BulkDownloadPickerDialogBuilder bulkDownloadPickerDialogBuilder;
+    private Dialog mBulkDownloadDialog;
 
     /** Puzzle for which a context menu is currently open */
     private PuzzleMeta contextPuzzle = null;
@@ -111,6 +119,63 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
     /** Number of threads which are currently downloading puzzles */
     private int downloadingThreads = 0;
+    
+    private DownloadPickerDialogBuilder.OnDownloadSelectedListener downloadButtonListener = new DownloadPickerDialogBuilder.OnDownloadSelectedListener() {
+        public void onDownloadSelected(Calendar date, Set<Downloader> downloaders) {
+            doDownload(date, date, downloaders, true);
+        
+        }
+
+        public void onDownloadSelected(Calendar from, Calendar to, Set<Downloader> downloaders) {
+            doDownload(from, to, downloaders, false);
+        }
+            
+        private void doDownload(Calendar from, Calendar to, Set<Downloader> downloaders, boolean allowManualDownload) {   
+            Set<Downloader> manual = new HashSet<Downloader>();
+            Set<Downloader> automatic = new HashSet<Downloader>();
+            
+            boolean all = downloaders.isEmpty();
+            
+            for (Downloader downloader : downloaders) {
+                if (downloader instanceof DummyDownloader) {
+                    continue;
+                }
+                
+                if (downloader.isManualDownload()) {
+                    manual.add(downloader);
+                } else {
+                    automatic.add(downloader);
+                }
+            }
+            
+            if (! manual.isEmpty()) {
+                if (allowManualDownload) {
+                    for (Downloader downloader : manual) {
+                        // Try to initiate the manual download
+                        Calendar date = (Calendar)from.clone();
+                        
+                        while (! date.after(to)) {
+                            Intent intent = downloader.getManualDownloadIntent(date);
+                            if (intent.resolveActivity(getPackageManager()) != null) {
+                                startActivity(intent);
+                            } else {
+                                // TODO: Display AlertDialog, but only once! Not inside these nested loops!
+                            }
+                            date.add(Calendar.DATE, 1);
+                        }
+                    }
+                } else {
+                    // TODO: Display AlertDialog
+                }
+            }
+            
+
+            if (all || !automatic.isEmpty()) {
+                download(from, to, automatic);
+            }
+        }
+    };
+
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
@@ -166,6 +231,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         System.setProperty("http.keepAlive", "false");
 
         utils.onActionBarWithText(menu.add(MENU_DOWNLOAD).setIcon(android.R.drawable.ic_menu_rotate));
+        utils.onActionBarWithText(menu.add(MENU_BULK_DOWNLOAD).setIcon(android.R.drawable.ic_menu_agenda));
 
         SubMenu sortMenu = menu.addSubMenu(MENU_SORT)
                                .setIcon(android.R.drawable.ic_menu_sort_alphabetically);
@@ -208,6 +274,10 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getTitle().equals(MENU_DOWNLOAD)) {
             deprecatedShowDialog(DOWNLOAD_DIALOG_ID);
+
+            return true;
+        } else if (item.getTitle().equals(MENU_BULK_DOWNLOAD)) {
+            deprecatedShowDialog(BULK_DOWNLOAD_DIALOG_ID);
 
             return true;
         } else if (item.getTitle().equals(MENU_SETTINGS)) {
@@ -290,6 +360,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         MENU_UNARCHIVE = getResources().getString(R.string.menu_unarchive);
         MENU_DELETE = getResources().getString(R.string.menu_delete);
         MENU_DOWNLOAD = getResources().getString(R.string.menu_download);
+        MENU_BULK_DOWNLOAD = getResources().getString(R.string.menu_bulk_download);
         MENU_SORT = getResources().getString(R.string.menu_sort);
         MENU_BYDATE_ASCENDING = getResources().getString(R.string.menu_bydate_asc);
         MENU_BYDATE_DESCENDING = getResources().getString(R.string.menu_bydate_desc);
@@ -388,39 +459,10 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
     @Override
     protected Dialog onCreateDialog(int id) {
+        Calendar now = Calendar.getInstance();
+
         switch (id) {
-        case DOWNLOAD_DIALOG_ID:
-
-            DownloadPickerDialogBuilder.OnDownloadSelectedListener downloadButtonListener = new DownloadPickerDialogBuilder.OnDownloadSelectedListener() {
-                    public void onDownloadSelected(Calendar date, List<Downloader> downloaders, int selected) {
-                        List<Downloader> toDownload = new LinkedList<Downloader>();
-
-                        if (selected == 0) {
-                            // Download all available.
-                            toDownload.addAll(downloaders);
-                            toDownload.remove(0);
-                        } else {
-                            // Only download selected.
-                            Downloader downloader = downloaders.get(selected);
-                            if (downloader.isManualDownload()) {
-                                // Try to initiate the manual download
-                                Intent intent = downloader.getManualDownloadIntent(date);
-                                if (intent.resolveActivity(getPackageManager()) != null) {
-                                    startActivity(intent);
-                                } else {
-                                    // TODO: Display AlertDialog
-                                }
-                                return;
-                            }
-                            toDownload.add(downloader);
-                        }
-
-                        download(date, toDownload);
-                    }
-                };
-
-            Calendar now = Calendar.getInstance();
-
+          case DOWNLOAD_DIALOG_ID:
             downloadPickerDialogBuilder = new DownloadPickerDialogBuilder(
                 this,
                 downloadButtonListener,
@@ -431,6 +473,19 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
             mDownloadDialog = downloadPickerDialogBuilder.getInstance();
 
             return mDownloadDialog;
+            
+          case BULK_DOWNLOAD_DIALOG_ID:
+            bulkDownloadPickerDialogBuilder = new BulkDownloadPickerDialogBuilder(
+                this,
+                downloadButtonListener,
+                now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH));
+
+            mBulkDownloadDialog = bulkDownloadPickerDialogBuilder.getInstance();
+
+            return mBulkDownloadDialog;
+            
         }
 
         return null;
@@ -439,9 +494,12 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
     @Override
     protected void onPrepareDialog(int id, Dialog dialog) {
         switch (id) {
-        case DOWNLOAD_DIALOG_ID:
+          case DOWNLOAD_DIALOG_ID:
             downloadPickerDialogBuilder.updatePuzzleSelect(null);
             break;
+          case BULK_DOWNLOAD_DIALOG_ID:
+            bulkDownloadPickerDialogBuilder.updatePuzzleSelect(null);
+            break;            
         }
     }
 
@@ -702,21 +760,30 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         dbHelper.archivePuzzle(puzzle.id, archive);
     }
 
-    private void download(final Calendar date, final List<Downloader> downloaders) {
+    private void download(final Calendar date, final Set<Downloader> downloaders) {
+        download(date, date, downloaders);
+    }
+
+    private void download(final Calendar from, final Calendar to, final Set<Downloader> downloaders) {
         new Thread(new Runnable() {
             public void run() {
-                BrowseActivity.this.internalDownload(date, downloaders);
+                BrowseActivity.this.internalDownload(from, to, downloaders);
             }
         }).start();
     }
 
-    private void internalDownload(Calendar date, List<Downloader> downloaders) {
+    private void internalDownload(Calendar from, Calendar to, Set<Downloader> downloaders) {
         synchronized (this) {
             downloadingThreads++;
         }
 
         Downloaders dls = new Downloaders(this, false);
-        dls.download(date, downloaders);
+        
+        Calendar date = (Calendar)from.clone();
+        while (! date.after(to)) {
+            dls.download(date, downloaders);
+            date.add(Calendar.DATE, 1);
+        }
 
         synchronized (this) {
             downloadingThreads--;

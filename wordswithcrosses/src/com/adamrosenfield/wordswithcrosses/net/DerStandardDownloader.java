@@ -83,7 +83,7 @@ public class DerStandardDownloader extends AbstractDownloader {
     private static final Logger LOG = Logger.getLogger("DerStandardDownloader");
 
     private final DerStandardParser parser = new DerStandardParser();
-    private final DateToIdConverter converter = new CalendarDateToIdConverter();
+    private static final DateToIdConverter converter = new CalendarDateToIdConverter();
 
     /** @param startId the id to associate with 2014-06-01. Other IDs are calculated based on this, assuming daily puzzles 
      * (so slowly catching up with actual puzzles, which aren't released on sundays and holidays; overtaking in a few years, probably).

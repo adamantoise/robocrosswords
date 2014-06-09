@@ -23,6 +23,7 @@ package com.adamrosenfield.wordswithcrosses.net;
 import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -215,7 +216,7 @@ public class Downloaders {
         List<Downloader> retVal = new LinkedList<Downloader>();
 
         for (Downloader d : downloaders) {
-            if (d.isPuzzleAvailable(date)) {
+            if (date == null || d.isPuzzleAvailable(date)) {
                 retVal.add(d);
             }
         }
@@ -227,7 +228,7 @@ public class Downloaders {
         download(date, getDownloaders(date));
     }
 
-    public void download(Calendar date, List<Downloader> downloaders) {
+    public void download(Calendar date, Collection<Downloader> downloaders) {
         date = (Calendar)date.clone();
         date.set(Calendar.HOUR_OF_DAY, 0);
         date.set(Calendar.MINUTE, 0);
