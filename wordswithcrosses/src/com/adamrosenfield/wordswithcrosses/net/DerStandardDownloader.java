@@ -63,12 +63,6 @@ import com.adamrosenfield.wordswithcrosses.net.derstandard.DerStandardPuzzleMeta
  *
  * As puzzles are only available as a web application, there's some weird - and
  * easily broken if the web app changes - stuff done to actually produce PUZ files.
- * 
- * We don't follow the date-assignment on the web page, neither do we follow that of the newspaper.
- * Instead, we deliver one puzzle per day, starting e.g. with 7180 on 2014-06-01 
- *  => however, that is configurable
- * from 7170 it appears there are continuously puzzles available.
- * 7613 appears to be the first with a solution available.
  *
  **/
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
@@ -85,9 +79,6 @@ public class DerStandardDownloader extends AbstractDownloader {
     private final DerStandardParser parser = new DerStandardParser();
     private static final DateToIdConverter converter = new CalendarDateToIdConverter();
 
-    /** @param startId the id to associate with 2014-06-01. Other IDs are calculated based on this, assuming daily puzzles 
-     * (so slowly catching up with actual puzzles, which aren't released on sundays and holidays; overtaking in a few years, probably).
-     */ 
     public DerStandardDownloader() {
         super(BASE_URL, NAME);
     }
