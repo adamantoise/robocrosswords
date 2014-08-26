@@ -24,14 +24,14 @@ import java.util.Calendar;
 
 /**
  * Wall Street Journal
- * URL: http://mazerlm.home.comcast.net/~mazerlm/wsjYYMMDD.puz
+ * URL: http://herbach.dnsalias.com/wsj/wsjYYMMDD.puz
  * Date: Friday
  */
 public class WSJDownloader extends AbstractDownloader {
     private static final String NAME = "Wall Street Journal";
 
     public WSJDownloader() {
-        super("http://mazerlm.home.comcast.net/~mazerlm/", NAME);
+        super("http://herbach.dnsalias.com/wsj/", NAME);
     }
 
     public boolean isPuzzleAvailable(Calendar date) {
