@@ -471,7 +471,7 @@ public class DerStandardDownloader extends AbstractDownloader implements
         return pm;
     }
 
-    private class RefreshException extends Exception {
+    private static class RefreshException extends Exception {
         private static final long serialVersionUID = 3521756473491768245L;
 
         private RefreshException(String detailMessage, Throwable throwable) {
