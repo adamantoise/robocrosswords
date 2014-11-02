@@ -24,6 +24,8 @@ import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.adamrosenfield.wordswithcrosses.CalendarUtil;
+
 /**
  * Neville Fogarty
  * URL: http://nevillefogarty.wordpress.com/
@@ -40,6 +42,9 @@ public class NevilleFogartyDownloader extends AbstractDownloader
     private static final String PUZZLE_REGEX = "href=\"([^\"]*)\"><img [^>]*title=\"Download \\.puz file\"";
     private static final Pattern PUZZLE_PATTERN = Pattern.compile(PUZZLE_REGEX);
 
+    /** Final publication date (at least for now...) */
+    private static final Calendar END_DATE = CalendarUtil.createDate(2014, 9, 27);
+
     public NevilleFogartyDownloader()
     {
         super("", NAME);
@@ -47,7 +52,7 @@ public class NevilleFogartyDownloader extends AbstractDownloader
 
     public boolean isPuzzleAvailable(Calendar date)
     {
-        return (date.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY);
+        return (date.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) && (date.compareTo(END_DATE) <= 0);
     }
 
     @Override
