@@ -685,7 +685,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
         // Ignore double-presses and bad hardware which report key events for
         // both the software keyboard and the hardware keyboard
         long now = System.currentTimeMillis();
-        if (now < lastKey + 5) {
+        if (now < lastKey + 50) {
             return true;
         }
         lastKey = now;
