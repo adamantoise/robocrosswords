@@ -27,12 +27,14 @@ import java.net.URL;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.versions.AndroidVersionUtils;
@@ -47,8 +49,12 @@ public abstract class AbstractDownloader implements Downloader {
 
     protected String baseUrl;
     private String downloaderName;
+    private String userAgent;
 
     protected final AndroidVersionUtils utils = AndroidVersionUtils.Factory.getInstance();
+
+    protected static final String HEADER_USER_AGENT = "User-Agent";
+    protected static final String USER_AGENT_CURL = "curl/7.38.0";
 
     protected static final String[] SHORT_MONTHS = new String[] {
         "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -100,14 +106,33 @@ public abstract class AbstractDownloader implements Downloader {
         return downloaderName;
     }
 
+    protected void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+    }
+
+    protected String getUserAgent() {
+        return userAgent;
+    }
+
     protected abstract String createUrlSuffix(Calendar date);
+
+    protected Map<String, String> getDefaultHeaders() {
+        if (!TextUtils.isEmpty(userAgent)) {
+            Map<String, String> headers = new HashMap<String, String>();
+            headers.put(HEADER_USER_AGENT, userAgent);
+
+            return headers;
+        } else {
+            return EMPTY_MAP;
+        }
+    }
 
     public void download(Calendar date) throws IOException {
         download(date, createUrlSuffix(date));
     }
 
     protected void download(Calendar date, String urlSuffix) throws IOException {
-        download(date, urlSuffix, EMPTY_MAP);
+        download(date, urlSuffix, getDefaultHeaders());
     }
 
     protected void download(Calendar date, String urlSuffix, Map<String, String> headers) throws IOException {
@@ -125,7 +150,7 @@ public abstract class AbstractDownloader implements Downloader {
     }
 
     protected String downloadUrlToString(String url) throws IOException {
-        return downloadUrlToString(url, EMPTY_MAP);
+        return downloadUrlToString(url, getDefaultHeaders());
     }
 
     protected String downloadUrlToString(String url, Map<String, String> headers) throws IOException {

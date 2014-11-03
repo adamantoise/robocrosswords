@@ -31,6 +31,10 @@ public class ErikAgardDownloader extends BloggerDownloader
     public ErikAgardDownloader()
     {
         super("Erik Agard", "http://gluttonforpun.blogspot.com");
+
+        // The Dropbox download links don't normally redirect automatically,
+        // unless the server detects certain user agents (such as Curl)
+        setUserAgent(USER_AGENT_CURL);
     }
 
     public boolean isPuzzleAvailable(Calendar date)
