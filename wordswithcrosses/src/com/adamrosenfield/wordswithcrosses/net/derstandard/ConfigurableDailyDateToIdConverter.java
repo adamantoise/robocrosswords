@@ -2,9 +2,6 @@ package com.adamrosenfield.wordswithcrosses.net.derstandard;
 
 import java.util.Calendar;
 
-import com.adamrosenfield.wordswithcrosses.CalendarUtil;
-import com.adamrosenfield.wordswithcrosses.net.DerStandardDownloader;
-
 public class ConfigurableDailyDateToIdConverter implements DateToIdConverter {
     private final int idZero ;
     private final Calendar dateZero;

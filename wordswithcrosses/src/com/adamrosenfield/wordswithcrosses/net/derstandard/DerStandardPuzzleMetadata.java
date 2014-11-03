@@ -21,7 +21,6 @@
 package com.adamrosenfield.wordswithcrosses.net.derstandard;
 
 import java.io.Serializable;
-import java.text.DateFormat;
 import java.util.Calendar;
 
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
