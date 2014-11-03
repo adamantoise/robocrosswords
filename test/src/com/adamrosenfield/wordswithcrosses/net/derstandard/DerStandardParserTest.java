@@ -2,13 +2,12 @@ package com.adamrosenfield.wordswithcrosses.net.derstandard;
 
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-
-import android.test.AndroidTestCase;
+import java.util.GregorianCalendar;
 
 import org.xml.sax.InputSource;
 
-import com.adamrosenfield.wordswithcrosses.net.derstandard.DerStandardParser;
-import com.adamrosenfield.wordswithcrosses.net.derstandard.DerStandardPuzzleMetadata;
+import android.test.AndroidTestCase;
+
 import com.adamrosenfield.wordswithcrosses.puz.Box;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 
@@ -22,7 +21,7 @@ public class DerStandardParserTest extends AndroidTestCase {
 	public void testPuzzleParsesCorrectly() throws Exception {
 		DerStandardParser dsp = new DerStandardParser();
 
-		DerStandardPuzzleMetadata pm = new DerStandardPuzzleMetadata(7613);
+		DerStandardPuzzleMetadata pm = new DerStandardPuzzleMetadata(7613, "http://example.com/7613", new GregorianCalendar());
 
 		InputSource input = new InputSource(new InputStreamReader(getClass().getResourceAsStream("7613-puzzle"), Charset.forName("UTF-8")));
 		dsp.parsePuzzle(pm, input);

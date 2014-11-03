@@ -21,13 +21,9 @@
 package com.adamrosenfield.wordswithcrosses.net;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
@@ -37,13 +33,8 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashSet;
+import java.util.GregorianCalendar;
 import java.util.Locale;
-import java.util.Map.Entry;
-import java.util.NavigableMap;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -58,11 +49,13 @@ import org.xml.sax.SAXException;
 import android.annotation.TargetApi;
 import android.os.Build;
 
+import com.adamrosenfield.wordswithcrosses.CalendarUtil;
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.io.IO;
-import com.adamrosenfield.wordswithcrosses.net.derstandard.DateToIdEstimator;
+import com.adamrosenfield.wordswithcrosses.net.derstandard.CalendarDateToIdConverter;
+import com.adamrosenfield.wordswithcrosses.net.derstandard.ConfigurableDailyDateToIdConverter;
+import com.adamrosenfield.wordswithcrosses.net.derstandard.DateToIdConverter;
 import com.adamrosenfield.wordswithcrosses.net.derstandard.DerStandardParser;
-import com.adamrosenfield.wordswithcrosses.net.derstandard.DerStandardPuzzleCache;
 import com.adamrosenfield.wordswithcrosses.net.derstandard.DerStandardPuzzleMetadata;
 
 /**
@@ -73,107 +66,25 @@ import com.adamrosenfield.wordswithcrosses.net.derstandard.DerStandardPuzzleMeta
  *
  **/
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
-public class DerStandardDownloader extends AbstractDownloader implements
-        DerStandardPuzzleCache {
+public class DerStandardDownloader extends AbstractDownloader {
     private static final String NAME = "DerStandard.at";
     private static final String BASE_URL = "http://derstandard.at";
-    private static final String INDEX_URL = BASE_URL + "/r1256744634465/Kreuzwortraetsel";
     private static final String PUZZLE_URL = BASE_URL + "/raetselapp/?id=";
     private static final String SOLUTION_URL = BASE_URL + "/RaetselApp/Home/GetCrosswordResult";
 
     private static final Pattern P_CHARSET_IN_TYPE = Pattern.compile("[A-Za-z0-9\\-/]+;\\s*charset=([A-Za-z0-9\\-]+)");
 
-    private static final DateFormat DF_DATE = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-
     private static final Logger LOG = Logger.getLogger("DerStandardDownloader");
 
-    final static boolean DEBUG_IMAGE_PARSING = false;
-    private static final String SERIALIZED_STATE_FILENAME = "DerStandardDownloader.ser";
-
-    private SortedMap<Integer, DerStandardPuzzleMetadata> puzzlesById = new TreeMap<Integer, DerStandardPuzzleMetadata>();
-    private NavigableMap<String, DerStandardPuzzleMetadata> puzzlesByCalendar = new TreeMap<String, DerStandardPuzzleMetadata>();
-
     private final DerStandardParser parser = new DerStandardParser();
-    private final DateToIdEstimator estimator = new DateToIdEstimator(this);
-
-    private Calendar lastIndexUpdate;
-
-    private boolean initialized = false;
+    private static final DateToIdConverter converter = new CalendarDateToIdConverter();
 
     public DerStandardDownloader() {
         super(BASE_URL, NAME);
     }
-
-    private void initializeIfNeeded() {
-        if (!initialized) {
-
-            loadSerializedStateIfExists();
-            initialized = true;
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private void loadSerializedStateIfExists() {
-        try {
-            File f = getSerializedStateFile();
-
-            if (f.exists()) {
-                ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f));
-                try {
-                    puzzlesById = (SortedMap<Integer, DerStandardPuzzleMetadata>) ois.readObject();
-                    puzzlesByCalendar = (NavigableMap<String, DerStandardPuzzleMetadata>) ois.readObject();
-                    lastIndexUpdate = (Calendar) ois.readObject();
-                } finally {
-                    ois.close();
-                }
-            }
-        } catch (IllegalArgumentException e) {
-            LOG.log(Level.WARNING, "Unable to load serialized state.", e);
-        } catch (ClassNotFoundException e) {
-            LOG.log(Level.WARNING, "Unable to load serialized state.", e);
-        } catch (IOException e) {
-            LOG.log(Level.WARNING, "Unable to load serialized state.", e);
-        }
-    }
-
-    private void saveSerializedState() {
-        if (initialized) {
-            try {
-                File f = makeTempFile();
-
-                ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f));
-                try {
-                    oos.writeObject(puzzlesById);
-                    oos.writeObject(puzzlesByCalendar);
-                    oos.writeObject(lastIndexUpdate);
-                } finally {
-                    oos.close();
-                }
-
-                File target = getSerializedStateFile();
-
-                if (target.exists()) {
-                    target.delete();
-                }
-
-                f.renameTo(target);
-
-            } catch (IOException e) {
-                LOG.log(Level.WARNING, "Unable to save serialized state.", e);
-            }
-        }
-    }
-
-    private File getSerializedStateFile() {
-        return new File(WordsWithCrossesApplication.NON_CROSSWORD_DATA_DIR, SERIALIZED_STATE_FILENAME);
-    }
-
-    private File makeTempFile() throws IOException {
-        return File.createTempFile(SERIALIZED_STATE_FILENAME, ".temp", WordsWithCrossesApplication.TEMP_DIR);
-    }
-
+   
     public boolean isPuzzleAvailable(Calendar date) {
-        return (date.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY);
+        return converter.getId(date) != DateToIdConverter.NONE;
     }
 
     @Override
@@ -183,12 +94,6 @@ public class DerStandardDownloader extends AbstractDownloader implements
 
     @Override
     public void download(Calendar date) throws IOException {
-        try {
-            refreshPuzzleMetadata();
-        } catch (RefreshException e) {
-            LOG.log(Level.SEVERE, "Error fetching/parsing metadata.", e);
-        }
-
         DerStandardPuzzleMetadata pm = getPuzzleByDate(date);
 
         if (pm == null) {
@@ -207,115 +112,21 @@ public class DerStandardDownloader extends AbstractDownloader implements
     }
 
     private DerStandardPuzzleMetadata getPuzzleByDate(Calendar date) {
-        initializeIfNeeded();
+        int id = converter.getId(date);
 
-        return getPuzzleByDateViaEstimator(date, new HashSet<Integer>());
+        DerStandardPuzzleMetadata dspm = new DerStandardPuzzleMetadata(id, PUZZLE_URL + id, date);
+        
+        return dspm;
     }
 
-    private DerStandardPuzzleMetadata getPuzzleByDateViaEstimator(Calendar date, Set<Integer> alreadyTried) {
-        DerStandardPuzzleMetadata exact = puzzlesByCalendar.get(DF_DATE.format(date.getTime()));
-
-        if (exact != null) {
-            return exact;
-        }
-
-        int id = estimator.estimateId(date);
-        if (alreadyTried.contains(id)) {
-            return null;
-        }
-
-        alreadyTried.add(id);
-
-        DerStandardPuzzleMetadata estimate = puzzlesById.get(id);
-        if (estimate == null) {
-            return null;
-        }
-
-        try {
-            refresh(estimate, false, false);
-        } catch (RefreshException re) {
-            return null;
-        }
-
-        return getPuzzleByDateViaEstimator(date, alreadyTried);
-    }
-
-    private void refreshPuzzleMetadata() throws RefreshException {
-        if (shouldUpdateIndex()) {
-            try {
-                updateIndex();
-            } catch (IOException e) {
-                throw new RefreshException("Updating Index.", e);
-            } catch (SAXException e) {
-                throw new RefreshException("Updating Index.", e);
-            } catch (ParserConfigurationException e) {
-                throw new RefreshException("Updating Index.", e);
-            }
-
-            refreshPuzzles();
-            saveSerializedState();
-        }
-    }
-
-    private boolean shouldUpdateIndex() {
-        initializeIfNeeded();
-
-        if (puzzlesById.isEmpty()) {
-            return true;
-        }
-
-        if (lastIndexUpdate == null) {
-            return true;
-        }
-
-        Calendar today = Calendar.getInstance();
-        today.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE), 0, 0, 0);
-        today.set(Calendar.MILLISECOND, 0);
-
-        if (today.after(lastIndexUpdate)) {
-            return true;
-        }
-
-        return false;
-    }
-
+   
     private void downloadPuzzle(DerStandardPuzzleMetadata pm) throws RefreshException {
-        refresh(pm, true, true);
-    }
-
-    private void refreshPuzzles() throws RefreshException {
-        initializeIfNeeded();
-
-        int count = 0;
-        for (final DerStandardPuzzleMetadata pm : puzzlesById.values()) {
-            if (++count < 10 || (pm.isPuzzleAvailable() && !pm.isSolutionAvailable())) {
-                refresh(pm, false, true);
-            }
-        }
-    }
-
-    private void refresh(DerStandardPuzzleMetadata pm, boolean downloadPuzzleData, boolean addPuzzleSolutionIfMissing) throws RefreshException {
-        String dUrl = pm.getDateUrl(BASE_URL);
         String pUrl = pm.getPuzzleUrl(BASE_URL);
         int id = pm.getId();
 
         boolean save = false;
 
-        if (dUrl != null && pm.getDate() == null) {
-            try {
-                InputSource input = new InputSource(getURLReader(getHttpConnection(dUrl)));
-                parser.parseDate(pm, this, input);
-                save = true;
-            } catch (IOException e) {
-                throw new RefreshException("Fetching/Parsing puzzle date for " + dUrl + ".", e);
-            } catch (ParserConfigurationException e) {
-                throw new RefreshException("Fetching/Parsing puzzle date for " + dUrl + ".", e);
-            } catch (SAXException e) {
-                throw new RefreshException("Fetching/Parsing puzzle date for " + dUrl + ".", e);
-            }
-        }
-
-        if (downloadPuzzleData && pUrl != null && !pm.isPuzzleAvailable()) {
+        if (pUrl != null && !pm.isPuzzleAvailable()) {
             try {
                 Reader r = getURLReader(getHttpConnection(pUrl));
                 try {
@@ -334,7 +145,7 @@ public class DerStandardDownloader extends AbstractDownloader implements
             }
         }
 
-        if (addPuzzleSolutionIfMissing && pm.isPuzzleAvailable() && !pm.isSolutionAvailable()) {
+        if (pm.isPuzzleAvailable() && !pm.isSolutionAvailable()) {
             try {
                 InputSource isSolution = postForSolution(id);
                 if (isSolution != null) {
@@ -384,32 +195,6 @@ public class DerStandardDownloader extends AbstractDownloader implements
         return destFile;
     }
 
-    private void updateIndex() throws SAXException, ParserConfigurationException, IOException {
-        initializeIfNeeded();
-
-        Reader r = getURLReader(getHttpConnection(INDEX_URL));
-        try {
-            InputSource input = new InputSource(r);
-            parser.parseIndex(input, this);
-            lastIndexUpdate = Calendar.getInstance();
-        } finally {
-            r.close();
-        }
-    }
-
-    public void setDate(DerStandardPuzzleMetadata pm, Calendar c) {
-        initializeIfNeeded();
-
-        pm.setDate(c);
-
-        String key = DF_DATE.format(c.getTime());
-        puzzlesByCalendar.put(key, pm);
-    }
-
-    public static boolean equals(Calendar d1, Calendar d2) {
-        return DF_DATE.format(d1.getTime()).equals(DF_DATE.format(d2.getTime()));
-    }
-
     protected Reader getURLReader(HttpURLConnection conn) throws IOException, MalformedURLException, UnsupportedEncodingException {
         InputStream in = (InputStream) conn.getContent();
         String encoding = conn.getContentEncoding();
@@ -453,24 +238,6 @@ public class DerStandardDownloader extends AbstractDownloader implements
         return conn;
     }
 
-    public boolean contains(int id) {
-        initializeIfNeeded();
-
-        return puzzlesById.containsKey(id);
-    }
-
-    public DerStandardPuzzleMetadata createOrGet(int id) {
-        initializeIfNeeded();
-
-        DerStandardPuzzleMetadata pm = (DerStandardPuzzleMetadata) puzzlesById.get(id);
-        if (pm == null) {
-            pm = new DerStandardPuzzleMetadata(id);
-            pm.setPuzzleUrl(PUZZLE_URL + id);
-            puzzlesById.put(id, pm);
-        }
-        return pm;
-    }
-
     private static class RefreshException extends Exception {
         private static final long serialVersionUID = 3521756473491768245L;
 
@@ -483,23 +250,6 @@ public class DerStandardDownloader extends AbstractDownloader implements
         }
     }
 
-    public DerStandardPuzzleMetadata getClosestTo(Calendar date) {
-        String s = DF_DATE.format(date.getTime());
-        Entry<String, DerStandardPuzzleMetadata> floor   = puzzlesByCalendar.floorEntry(s);
-        Entry<String, DerStandardPuzzleMetadata> ceiling = puzzlesByCalendar.ceilingEntry(s);
 
-        if (floor == null && ceiling == null) {
-            return null;
-        } else if (floor == null) {
-            return ceiling.getValue();
-        } else if (ceiling == null) {
-            return floor.getValue();
-        } else {
-            long dFloor   = Math.abs(date.getTimeInMillis() -   floor.getValue().getDate().getTimeInMillis());
-            long dCeiling = Math.abs(date.getTimeInMillis() - ceiling.getValue().getDate().getTimeInMillis());
-
-            return dFloor < dCeiling ? floor.getValue() : ceiling.getValue();
-        }
-    }
 
 }

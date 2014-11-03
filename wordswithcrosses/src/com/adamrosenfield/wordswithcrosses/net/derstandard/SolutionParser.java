@@ -55,6 +55,8 @@ public class SolutionParser {
 
             Puzzle p = pm.getPuzzle();
 
+            boolean responseWasSane = false;
+            
             JSONObject response = new JSONObject(json);
             JSONArray results = response.getJSONArray("Results");
             for (int i = 0; i < results.length(); i++) {
@@ -64,10 +66,16 @@ public class SolutionParser {
                 boolean horizontal = result.getBoolean("Horizontal");
 
                 writeAnswer(p, wordNumber, answer, horizontal);
+                
+                responseWasSane = true;
             }
 
-            p.setScrambled(false);
-            pm.setSolutionAvailable(true);
+            
+            if (responseWasSane) {
+                p.setScrambled(false);
+                pm.setSolutionAvailable(true);
+            }
+            
         } finally {
             reader.close();
         }
