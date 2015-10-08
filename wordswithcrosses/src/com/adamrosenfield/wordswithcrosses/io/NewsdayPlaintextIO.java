@@ -31,6 +31,7 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
+import com.adamrosenfield.wordswithcrosses.io.charset.StandardCharsets;
 import com.adamrosenfield.wordswithcrosses.puz.Box;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 
@@ -71,7 +72,7 @@ public class NewsdayPlaintextIO
 
         try
         {
-            Scanner scanner = new Scanner(is);
+            Scanner scanner = new Scanner(is, StandardCharsets.ISO_8859_1.name());
             scanner.nextLine();  // "ARCHIVE"
             scanner.nextLine();  // ""
             scanner.nextLine();  // YYMMDD
