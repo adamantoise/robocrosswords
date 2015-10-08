@@ -1,0 +1,31 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 17
+    buildToolsVersion "23.0.1"
+
+    defaultConfig {
+        applicationId "com.adamrosenfield.wordswithcrosses"
+        minSdkVersion 4
+        targetSdkVersion 17
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_5
+            targetCompatibility JavaVersion.VERSION_1_5
+        }
+
+        testApplicationId "com.adamrosenfield.wordswithcrosses.wordswithcrosses.test"
+        testInstrumentationRunner "android.test.InstrumentationTestRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+}
+
+dependencies {
+    compile 'org.ccil.cowan.tagsoup:tagsoup:1.2'
+    androidTestCompile 'junit:junit:4.12'
+}

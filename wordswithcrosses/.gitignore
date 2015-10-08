@@ -1,6 +1,7 @@
-/.gradle
-/.idea/libraries
+/.gradle/
+/.idea/libraries/
 /.idea/workspace.xml
-/build
-/captures
+/app/build/
+/build/
+/captures/
 /local.properties
