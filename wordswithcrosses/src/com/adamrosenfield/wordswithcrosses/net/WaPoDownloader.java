@@ -24,14 +24,14 @@ import java.util.Calendar;
 
 /**
  * CrosSynergy/Washington Post downloader
- * URL: http://cdn.games.arkadiumhosted.com/washingtonpost/crossynergy/csYYMMDD.jpz
+ * URL: https://washingtonpost.as.arkadiumhosted.com/clients/washingtonpost-content/crossynergy/csYYMMDD.jpz
  * Date: Daily
  */
 public class WaPoDownloader extends AbstractJPZDownloader {
     private static final String NAME = "Washington Post";
 
     public WaPoDownloader() {
-        super("http://cdn.games.arkadiumhosted.com/washingtonpost/crossynergy/", NAME);
+        super("https://washingtonpost.as.arkadiumhosted.com/clients/washingtonpost-content/crossynergy/", NAME);
     }
 
     public boolean isPuzzleAvailable(Calendar date) {
