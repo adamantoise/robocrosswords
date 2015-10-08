@@ -11,11 +11,13 @@
         android:summary="@string/pref_daily_crosswords_summary"
         android:key="selectDaily"
         >
+        <!-- CrosSynergy is subscription-only as of 2015-xx-xx
         <CheckBoxPreference
             android:title="CrosSynergy/Washington Post"
             android:summary="@string/pref_wapo_summary"
             android:defaultValue="true"
             android:key="downloadWaPo" />
+        -->
         <CheckBoxPreference
             android:title="Joseph Crosswords"
             android:summary="@string/pref_updates_mon_to_sat"
@@ -187,11 +189,13 @@
             android:summary="@string/pref_updates_thu"
             android:defaultValue="true"
             android:key="downloadJonesin" />
+        <!-- MGWCC is subscription-only as of 2015-01-01
         <CheckBoxPreference
             android:title="Matt Gaffney's Weekly Crossword Contest"
             android:summary="@string/pref_mgwcc_summary"
             android:defaultValue="true"
             android:key="downloadMGWCC" />
+        -->
         <!-- Merl Reagle's puzzle removed at the request of Merl Reagle
         <CheckBoxPreference
             android:title="Merl Reagle's Crossword"
@@ -221,7 +225,7 @@
             android:key="downloadWsj" />
         <CheckBoxPreference
             android:title="Washington Post Puzzler"
-            android:summary="@string/pref_updates_sun"
+            android:summary="@string/pref_wapopuzzler_summary"
             android:defaultValue="true"
             android:key="downloadWaPoPuzzler" />
     </PreferenceScreen>

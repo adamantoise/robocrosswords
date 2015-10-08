@@ -42,7 +42,7 @@
     <string name="pref_updates_fri">Updates Fridays</string>
     <string name="pref_updates_sun">Updates Sundays</string>
     <string name="pref_derstandard_summary">Updates Monday–Saturday\nGerman cryptic crosswords</string>
-    <string name="pref_wapo_summary">Only most recent two weeks of puzzles available</string>
+    <!-- <string name="pref_wapo_summary">Only most recent two weeks of puzzles available</string> -->
     <string name="pref_avxw_summary">Requires subscription. Updates Wednesdays.</string>
     <string name="pref_username_summary_avxw">AVXW Username or Email Address</string>
     <string name="pref_password_summary_avxw">AVXW Password</string>
@@ -56,9 +56,10 @@
     <string name="pref_devilcross_summary">Updates every other Saturday\nhttp://devilcross.com/</string>
     <string name="pref_erikagard_summary">Updates Wednesdays\nhttp://gluttonforpun.blogspot.com/</string>
     <string name="pref_inkwell_summary">Updates Fridays (ends June 2014)</string>
-    <string name="pref_mgwcc_summary">Updates Fridays\nSubmit meta answer online at:\nhttp://xwordcontest.com/</string>
+    <!-- <string name="pref_mgwcc_summary">Updates Fridays\nSubmit meta answer online at:\nhttp://xwordcontest.com/</string> -->
     <string name="pref_nevillefogarty_summary">Updates Fridays (ends Sept 2014)\nhttp://nevillefogarty.wordpress.com/</string>
     <string name="pref_people_summary">Updates Fridays\nNo archives available</string>
+    <string name="pref_wapopuzzler_summary">Updates Sundays (ends March 2015)</string>
     <string name="pref_che_summary">Updates Fridays (biweekly during the summer)</string>
     <!-- <string name="pref_reagle_summary">Updates Sundays\nOnly the 4 most recent puzzles available</string> -->
     <string name="pref_mmmm_summary">Updates first Tuesday of the month\nSubmit meta answer online at:\nhttp://pmxwords.com</string>

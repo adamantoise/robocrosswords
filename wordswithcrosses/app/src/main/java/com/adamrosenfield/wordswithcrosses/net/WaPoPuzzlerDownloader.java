@@ -22,6 +22,8 @@ package com.adamrosenfield.wordswithcrosses.net;
 
 import java.util.Calendar;
 
+import com.adamrosenfield.wordswithcrosses.CalendarUtil;
+
 /**
  * Washington Post Puzzler
  * URL: http://cdn.games.arkadiumhosted.com/washingtonpost/puzzler/puzzle_130505.xml
@@ -30,12 +32,16 @@ import java.util.Calendar;
 public class WaPoPuzzlerDownloader extends AbstractJPZDownloader {
     private static final String NAME = "Washington Post Puzzler";
 
+    // Washington Post Puzzler ceased publishing after March 2015
+    private static final Calendar END_DATE = CalendarUtil.createDate(2015, 3, 31);
     public WaPoPuzzlerDownloader() {
         super("http://cdn.games.arkadiumhosted.com/washingtonpost/puzzler/", NAME);
     }
 
     public boolean isPuzzleAvailable(Calendar date) {
-        return (date.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY);
+        return
+            (date.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY &&
+             date.compareTo(END_DATE) <= 0);
     }
 
     @Override

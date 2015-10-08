@@ -138,9 +138,10 @@ public class Downloaders {
 
         downloaders.add(new MGDCDownloader());
 
-        if (includeAll || prefs.getBoolean("downloadMGWCC", true)) {
-            downloaders.add(new MGWCCDownloader());
-        }
+        // MGWCC is subscription-only as of 2015-01-01
+        //if (includeAll || prefs.getBoolean("downloadMGWCC", true)) {
+        //    downloaders.add(new MGWCCDownloader());
+        //}
 
         if (includeAll || prefs.getBoolean("downloadMMMM",  true)) {
             downloaders.add(new MMMMDownloader());
@@ -199,9 +200,10 @@ public class Downloaders {
             downloaders.add(new WSJDownloader());
         }
 
-        if (includeAll || prefs.getBoolean("downloadWaPo", true)) {
-            downloaders.add(new WaPoDownloader());
-        }
+        // CrosSynergy/Washington Post is subscription-only as of 2015-xx-xx
+        //if (includeAll || prefs.getBoolean("downloadWaPo", true)) {
+        //    downloaders.add(new WaPoDownloader());
+        //}
 
         if (includeAll || prefs.getBoolean("downloadWaPoPuzzler", true)) {
             downloaders.add(new WaPoPuzzlerDownloader());
