@@ -23,7 +23,7 @@ import java.util.Calendar;
 
 /**
  * New York Times monthly bonus puzzle
- * URL: http://www.nytimes.com/svc/crosswords/v2/puzzle/monthly%20bonus-YYYY-MM.puz
+ * URL: http://www.nytimes.com/svc/crosswords/v2/puzzle/bonus-YYYY-MM.puz
  * Date: 1st of the month
  */
 public class NYTBonusDownloader extends NYTBaseDownloader
@@ -43,7 +43,7 @@ public class NYTBonusDownloader extends NYTBaseDownloader
     @Override
     protected String createUrlSuffix(Calendar date)
     {
-        return ("monthly%20bonus-" +
+        return ("bonus-" +
                 date.get(Calendar.YEAR) +
                 "-" +
                 DEFAULT_NF.format(date.get(Calendar.MONTH) + 1) +
