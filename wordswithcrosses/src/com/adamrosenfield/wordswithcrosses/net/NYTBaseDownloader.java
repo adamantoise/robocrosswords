@@ -147,7 +147,7 @@ public abstract class NYTBaseDownloader extends AbstractDownloader {
 
             String resp = new String(baos.toByteArray());
 
-            if (resp.indexOf("Log in to manage") != -1) {
+            if (resp.indexOf("We couldn't find that combination of email and password. Please try again.") != -1) {
                 LOG.warning("NYT: Password error");
                 throw new DownloadException(R.string.login_failed);
             }
