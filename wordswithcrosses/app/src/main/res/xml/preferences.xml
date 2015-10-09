@@ -79,6 +79,11 @@
             android:defaultValue="true"
             android:key="downloadUSAToday" />
         <CheckBoxPreference
+            android:title="The Wall Street Journal"
+            android:summary="@string/pref_updates_mon_to_sat"
+            android:defaultValue="true"
+            android:key="downloadWsj" />
+        <CheckBoxPreference
            	android:title="derStandard.at"
            	android:summary="@string/pref_derstandard_summary"
            	android:defaultValue="false"
@@ -223,11 +228,6 @@
             android:summary="@string/pref_updates_sun"
             android:defaultValue="true"
             android:key="downloadPremier" />
-        <CheckBoxPreference
-            android:title="The Wall Street Journal"
-            android:summary="@string/pref_updates_fri"
-            android:defaultValue="true"
-            android:key="downloadWsj" />
         <CheckBoxPreference
             android:title="Washington Post Puzzler"
             android:summary="@string/pref_wapopuzzler_summary"
