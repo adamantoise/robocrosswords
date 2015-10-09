@@ -181,6 +181,15 @@ public class Box {
         this.solution = solution;
     }
 
+    public void setSolution(String solution) {
+        // TODO: Support rebuses
+        if (solution.length() != 1) {
+            throw new IllegalArgumentException("Box solution must have length one; got: " + solution);
+        }
+
+        setSolution(solution.charAt(0));
+    }
+
     /**
      * @return the clueNumber
      */

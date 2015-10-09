@@ -158,6 +158,10 @@ public class Downloaders {
                 downloaders.add(new NYTDownloader(nytUsername, nytPassword));
             }
 
+            if (includeAll || prefs.getBoolean("downloadNYTMini", false)) {
+                downloaders.add(new NYTMiniDownloader(nytUsername, nytPassword));
+            }
+
             if (includeAll || prefs.getBoolean("downloadNYTBonus", false)) {
                 downloaders.add(new NYTBonusDownloader(nytUsername, nytPassword));
             }

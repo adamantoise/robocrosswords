@@ -46,11 +46,17 @@ import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.io.IO;
 
 public abstract class NYTBaseDownloader extends AbstractDownloader {
+    private static final String BASE_URL = "http://www.nytimes.com/svc/crosswords/v2/puzzle/";
     private static final String LOGIN_URL = "https://myaccount.nytimes.com/auth/login?URI=http://select.nytimes.com/premium/xword/puzzles.html";
+
     private HashMap<String, String> params = new HashMap<String, String>();
 
     protected NYTBaseDownloader(String name, String username, String password) {
-        super("http://www.nytimes.com/svc/crosswords/v2/puzzle/", name);
+        this(BASE_URL, name, username, password);
+    }
+
+    protected NYTBaseDownloader(String baseUrl, String name, String username, String password) {
+        super(baseUrl, name);
         params.put("is_continue", "false");
         params.put("userid", username);
         params.put("password", password);
@@ -86,7 +92,7 @@ public abstract class NYTBaseDownloader extends AbstractDownloader {
         }
     }
 
-    private void login() throws IOException {
+    protected void login() throws IOException {
         HttpClient httpClient = utils.getHttpClient();
 
         HttpGet httpget = new HttpGet(LOGIN_URL);

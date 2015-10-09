@@ -24,6 +24,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.logging.Logger;
 
+import android.util.SparseArray;
+
 import com.adamrosenfield.wordswithcrosses.io.IO;
 
 public class Puzzle {
@@ -215,6 +217,9 @@ public class Puzzle {
      * @param height the height to set
      */
     public void setHeight(int height) {
+        if (height <= 0) {
+            throw new IllegalArgumentException("Invalid height: " + height);
+        }
         this.height = height;
     }
 
@@ -306,6 +311,37 @@ public class Puzzle {
         this.rawClues = rawClues;
     }
 
+    /**
+     * Helper function to set rawClues from the maps of across and down clues.
+     * Performs a merge of the two sorted clue maps.
+     */
+    public void setRawClues(SparseArray<String> acrossClues, SparseArray<String> downClues) {
+        int numAcross = acrossClues.size();
+        int numDown = downClues.size();
+        rawClues = new String[numAcross + numDown];
+
+        int i = 0, j = 0;
+        while (i < numAcross && j < numDown) {
+            int clue1 = acrossClues.keyAt(i);
+            int clue2 = downClues.keyAt(j);
+            if (clue1 <= clue2) {
+                rawClues[i + j] = acrossClues.valueAt(i);
+                i++;
+            } else {
+                rawClues[i + j] = downClues.valueAt(j);
+                j++;
+            }
+        }
+
+        while (i < numAcross) {
+            rawClues[i + j] = acrossClues.valueAt(i);
+            i++;
+        }
+        while (j < numDown) {
+            rawClues[i + j] = downClues.valueAt(j);
+        }
+    }
+
     public String[] getRawClues() {
         return rawClues;
     }
@@ -354,6 +390,9 @@ public class Puzzle {
      * @param width the width to set
      */
     public void setWidth(int width) {
+        if (width <= 0) {
+            throw new IllegalArgumentException("Invalid width: " + width);
+        }
         this.width = width;
     }
 
