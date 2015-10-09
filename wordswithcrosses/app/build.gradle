@@ -9,8 +9,8 @@ android {
         minSdkVersion 4
         targetSdkVersion 17
         compileOptions {
-            sourceCompatibility JavaVersion.VERSION_1_5
-            targetCompatibility JavaVersion.VERSION_1_5
+            sourceCompatibility JavaVersion.VERSION_1_7
+            targetCompatibility JavaVersion.VERSION_1_7
         }
 
         testApplicationId "com.adamrosenfield.wordswithcrosses.wordswithcrosses.test"
