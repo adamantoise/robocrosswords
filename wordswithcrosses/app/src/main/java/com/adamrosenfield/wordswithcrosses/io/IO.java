@@ -154,12 +154,11 @@ public class IO {
             for (int c = 0; c < boxes[r].length; c++) {
                 answerByte[0] = input.readByte();
 
-                char solution = new String(answerByte, CHARSET.name())
-                        .charAt(0);
+                char solution = new String(answerByte, CHARSET.name()).charAt(0);
 
                 if (solution != '.') {
                     boxes[r][c] = new Box();
-                    boxes[r][c].setSolution((char) solution);
+                    boxes[r][c].setSolution(solution);
                 }
             }
         }
@@ -196,11 +195,11 @@ public class IO {
             puz.setAuthor(resources.getString(R.string.author_unknown));
         }
 
-        ArrayList<String> acrossClues = new ArrayList<String>();
-        ArrayList<Integer> acrossCluesLookup = new ArrayList<Integer>();
-        ArrayList<Integer> downCluesLookup = new ArrayList<Integer>();
-        ArrayList<String> downClues = new ArrayList<String>();
-        ArrayList<String> rawClues = new ArrayList<String>();
+        ArrayList<String> acrossClues = new ArrayList<>();
+        ArrayList<Integer> acrossCluesLookup = new ArrayList<>();
+        ArrayList<Integer> downCluesLookup = new ArrayList<>();
+        ArrayList<String> downClues = new ArrayList<>();
+        ArrayList<String> rawClues = new ArrayList<>();
 
         for (int r = 0; r < boxes.length; r++) {
             for (int c = 0; c < boxes[r].length; c++) {
@@ -340,9 +339,7 @@ public class IO {
         ByteArrayOutputStream baos = new ByteArrayOutputStream(128);
 
         for (byte nextByte = (byte)is.read(); nextByte != 0x0; nextByte = (byte)is.read()) {
-            if (nextByte != 0x0) {
-                baos.write(nextByte);
-            }
+            baos.write(nextByte);
 
             if (baos.size() > 4096) {
                 throw new IOException("Run on string!");

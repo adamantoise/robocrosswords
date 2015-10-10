@@ -84,7 +84,7 @@ public abstract class AbstractPageScraper extends AbstractDownloader {
     public static List<String> getPuzzleRelativeURLs(String baseUrl, String input)
             throws MalformedURLException {
         URL base = new URL(baseUrl);
-        ArrayList<String> result = new ArrayList<String>();
+        ArrayList<String> result = new ArrayList<>();
         Matcher matcher = REL_PAT.matcher(input);
 
         while (matcher.find()) {
@@ -95,7 +95,7 @@ public abstract class AbstractPageScraper extends AbstractDownloader {
     }
 
     public static List<String> getPuzzleURLs(String input) {
-        ArrayList<String> result = new ArrayList<String>();
+        ArrayList<String> result = new ArrayList<>();
         Matcher matcher = PAT.matcher(input);
 
         while (matcher.find()) {

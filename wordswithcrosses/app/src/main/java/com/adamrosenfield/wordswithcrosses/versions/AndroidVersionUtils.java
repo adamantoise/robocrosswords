@@ -93,8 +93,4 @@ public interface AndroidVersionUtils {
     }
 
     public View onActionBarCustom(Activity a, int id);
-
-    public void hideWindowTitle(Activity a);
-
-    public void hideActionBar(Activity a);
 }

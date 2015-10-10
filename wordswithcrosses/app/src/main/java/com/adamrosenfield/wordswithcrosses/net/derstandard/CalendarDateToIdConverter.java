@@ -71,8 +71,8 @@ public class CalendarDateToIdConverter implements DateToIdConverter {
 
 
     private static class SynchronizationPoints {
-        private final SortedSet<String> knownDates = new TreeSet<String>();
-        private final Map<String, Integer> dateToId = new HashMap<String, Integer>();
+        private final SortedSet<String> knownDates = new TreeSet<>();
+        private final Map<String, Integer> dateToId = new HashMap<>();
         
         public void addDate(String date, int id) {
             knownDates.add(date);
@@ -138,8 +138,8 @@ public class CalendarDateToIdConverter implements DateToIdConverter {
         private final String fixedDate;
         private final int fixedId;
         
-        private final SortedSet<String> skipsBefore = new TreeSet<String>(Collections.reverseOrder());
-        private final SortedSet<String> skipsAfter = new TreeSet<String>();
+        private final SortedSet<String> skipsBefore = new TreeSet<>(Collections.reverseOrder());
+        private final SortedSet<String> skipsAfter = new TreeSet<>();
         
         
         public SynchronizationPointsBuilder(String date, int id) {

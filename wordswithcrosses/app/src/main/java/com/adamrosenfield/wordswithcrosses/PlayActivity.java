@@ -242,7 +242,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
             // Load the puzzle on a background thread
             new Thread(new Runnable() {
                 public void run() {
-                    final Puzzle newPuzzle = loadPuzzle(filename);
+                    final Puzzle newPuzzle = loadPuzzle();
 
                     // Do stuff on the UI thread after the puzzle is loaded
                     handler.post(new Runnable() {
@@ -276,7 +276,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
         finish();
     }
 
-    private Puzzle loadPuzzle(String filename) {
+    private Puzzle loadPuzzle() {
         try {
             return IO.load(baseFile);
         } catch (IOException e) {
@@ -1084,9 +1084,9 @@ public class PlayActivity extends WordsWithCrossesActivity {
         this.clue.setTextSize(TypedValue.COMPLEX_UNIT_SP, dps);
 
         if ((acrossAdapter != null) && (downAdapter != null)) {
-            acrossAdapter.textSize = dps;
+            acrossAdapter.setTextSize(dps);
             acrossAdapter.notifyDataSetInvalidated();
-            downAdapter.textSize = dps;
+            downAdapter.setTextSize(dps);
             downAdapter.notifyDataSetInvalidated();
         }
     }

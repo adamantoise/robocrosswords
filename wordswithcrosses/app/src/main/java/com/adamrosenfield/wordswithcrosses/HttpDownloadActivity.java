@@ -45,7 +45,7 @@ import com.adamrosenfield.wordswithcrosses.io.JPZIO;
 
 public class HttpDownloadActivity extends WordsWithCrossesActivity {
 
-    private static final Map<String, String> EMPTY_MAP = Collections.<String, String>emptyMap();
+    private static final Map<String, String> EMPTY_MAP = Collections.emptyMap();
 
     private Handler handler = new Handler();
 
@@ -250,7 +250,7 @@ public class HttpDownloadActivity extends WordsWithCrossesActivity {
         });
     }
 
-    private static File getDestFile(String filename) throws IOException {
+    private static File getDestFile(String filename) {
         String prefix;
         int dot = filename.lastIndexOf('.');
         if (dot != -1) {

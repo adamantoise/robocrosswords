@@ -87,15 +87,6 @@ public class HoneycombUtil extends GingerbreadUtil {
     }
 
     @Override
-    public void hideActionBar(Activity a) {
-        ActionBar ab = a.getActionBar();
-        if (ab == null) {
-            return;
-        }
-        ab.hide();
-    }
-
-    @Override
     protected void setNotificationVisibility(Request request, boolean notification) {
         request.setNotificationVisibility(notification ? Request.VISIBILITY_VISIBLE : Request.VISIBILITY_HIDDEN);
     }

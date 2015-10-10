@@ -68,8 +68,8 @@ public class UclickXMLIO {
 
     private static class UclickXMLParser extends DefaultHandler {
         private Puzzle puz;
-        private SparseArray<String> acrossNumToClueMap = new SparseArray<String>();
-        private SparseArray<String> downNumToClueMap = new SparseArray<String>();
+        private SparseArray<String> acrossNumToClueMap = new SparseArray<>();
+        private SparseArray<String> downNumToClueMap = new SparseArray<>();
         private boolean inAcross = false;
         private boolean inDown = false;
         private int maxClueNum = -1;

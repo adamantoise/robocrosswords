@@ -53,9 +53,9 @@ public class GingerbreadUtil extends DefaultUtil {
         public int status = -1;
     }
 
-    private static ConcurrentMap<Long, DownloadingFile> waitingDownloads = new ConcurrentSkipListMap<Long, DownloadingFile>();
+    private static final ConcurrentMap<Long, DownloadingFile> waitingDownloads = new ConcurrentSkipListMap<>();
 
-    private static Map<Long, DownloadingFile> completedDownloads = new HashMap<Long, DownloadingFile>();
+    private static final Map<Long, DownloadingFile> completedDownloads = new HashMap<>();
 
     @Override
     @SuppressWarnings("unused")  // Ignore dead code warning

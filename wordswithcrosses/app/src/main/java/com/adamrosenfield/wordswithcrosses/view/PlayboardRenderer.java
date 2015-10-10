@@ -156,13 +156,13 @@ public class PlayboardRenderer {
         Position[] word = board.getCurrentWordPositions();
         Box[] boxes = board.getCurrentWordBoxes();
         int boxSize = (int)(BOX_SIZE * scale);
-        Bitmap bitmap = Bitmap.createBitmap((int)(word.length * boxSize), (int)(boxSize), Bitmap.Config.RGB_565);
+        Bitmap bitmap = Bitmap.createBitmap(word.length * boxSize, boxSize, Bitmap.Config.RGB_565);
         bitmap.eraseColor(Color.BLACK);
 
         Canvas canvas = new Canvas(bitmap);
 
         for (int i = 0; i < word.length; i++) {
-            int x = (int)(i * boxSize);
+            int x = i * boxSize;
             int y = 0;
             drawBox(canvas, x, y, word[i].down, word[i].across, scale, boxes[i], null);
         }

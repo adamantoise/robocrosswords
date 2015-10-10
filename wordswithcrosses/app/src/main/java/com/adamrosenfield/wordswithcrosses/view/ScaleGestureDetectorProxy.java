@@ -47,27 +47,7 @@ public abstract class ScaleGestureDetectorProxy
                 constructor = clazz.getConstructor(Context.class, Class.forName("android.view.ScaleGestureDetector$OnScaleGestureListener"));
                 return (ScaleGestureDetectorProxy)constructor.newInstance(context, listener);
             }
-            catch (ClassNotFoundException e)
-            {
-                e.printStackTrace();
-            }
-            catch (NoSuchMethodException e)
-            {
-                e.printStackTrace();
-            }
-            catch (SecurityException e)
-            {
-                e.printStackTrace();
-            }
-            catch (InstantiationException e)
-            {
-                e.printStackTrace();
-            }
-            catch (IllegalAccessException e)
-            {
-                e.printStackTrace();
-            }
-            catch (InvocationTargetException e)
+            catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | InvocationTargetException e)
             {
                 e.printStackTrace();
             }

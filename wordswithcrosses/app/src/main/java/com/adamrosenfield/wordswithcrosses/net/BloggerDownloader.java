@@ -29,7 +29,7 @@ public abstract class BloggerDownloader extends AbstractDownloader
     private static final String PUZZLE_REGEX = "href=(?:\"|&quot;)(https?://(?:[^\"&]|&(?!quot;))*\\.puz(?:[^\"&]|&(?!quot;))*)(?:\"|&quot;)";
     private static final Pattern PUZZLE_PATTERN = Pattern.compile(PUZZLE_REGEX);
 
-    private String baseUrl;
+    private final String baseUrl;
 
     public BloggerDownloader(String downloaderName, String baseUrl)
     {

@@ -193,8 +193,8 @@ public class JPZIO {
     }
 
     private static class JPZXMLParser extends DefaultHandler {
-        private SparseArray<String> acrossNumToClueMap = new SparseArray<String>();
-        private SparseArray<String> downNumToClueMap = new SparseArray<String>();
+        private SparseArray<String> acrossNumToClueMap = new SparseArray<>();
+        private SparseArray<String> downNumToClueMap = new SparseArray<>();
         private Puzzle puz;
         private StringBuilder curBuffer;
         private Box[][] boxes;

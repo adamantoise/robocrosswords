@@ -450,18 +450,13 @@ public class Puzzle {
 
         Box[][] b1 = boxes;
         Box[][] b2 = other.boxes;
-        boolean boxEq = true;
 
         for (int r = 0; r < b1.length; r++) {
             for (int c = 0; c < b1[r].length; c++) {
-                boxEq = boxEq
-                    ? ((b1[r][c] == b2[r][c]) || b1[r][c].equals(b2[r][c]))
-                    : boxEq;
+                if (!b1[r][c].equals(b2[r][c])) {
+                    return false;
+                }
             }
-        }
-
-        if (!boxEq) {
-            return false;
         }
 
         if (copyright == null) {

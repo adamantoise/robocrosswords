@@ -224,9 +224,7 @@ public class WordsWithCrossesApplication extends Application {
             } finally {
                 fos.close();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | IOException e) {
             e.printStackTrace();
         }
     }
@@ -236,9 +234,8 @@ public class WordsWithCrossesApplication extends Application {
         File zipDir = new File(dir2zip);
         String[] dirList = zipDir.list();
         byte[] readBuffer = new byte[4096];
-        int bytesIn = 0;
-        for (int i = 0; i < dirList.length; i++) {
-            File f = new File(zipDir, dirList[i]);
+        for (String filename : dirList) {
+            File f = new File(zipDir, filename);
             if (f.isDirectory()) {
                 String filePath = f.getPath();
                 zipDir(filePath, zos);
@@ -248,6 +245,7 @@ public class WordsWithCrossesApplication extends Application {
 
             ZipEntry anEntry = new ZipEntry(f.getPath());
             zos.putNextEntry(anEntry);
+            int bytesIn;
             while ((bytesIn = fis.read(readBuffer)) != -1) {
                 zos.write(readBuffer, 0, bytesIn);
             }

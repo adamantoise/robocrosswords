@@ -22,8 +22,6 @@ package com.adamrosenfield.wordswithcrosses.net.derstandard;
 
 import java.io.IOException;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.json.JSONException;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -39,7 +37,7 @@ public class DerStandardParser {
         xmlReader.parse(input);
     }
 
-    public void parsePuzzle(DerStandardPuzzleMetadata pm, InputSource input) throws SAXException, ParserConfigurationException, IOException {
+    public void parsePuzzle(DerStandardPuzzleMetadata pm, InputSource input) throws SAXException, IOException {
         PuzzleParsingHandler pph = new PuzzleParsingHandler(pm);
 
         parse(input, pph);

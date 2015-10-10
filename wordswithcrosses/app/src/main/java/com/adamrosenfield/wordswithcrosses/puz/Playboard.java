@@ -30,8 +30,8 @@ import com.adamrosenfield.wordswithcrosses.PuzzleDatabaseHelper.SolveState;
 
 public class Playboard {
 
-    private SparseArray<Position> acrossWordStarts = new SparseArray<Position>();
-    private SparseArray<Position> downWordStarts = new SparseArray<Position>();
+    private SparseArray<Position> acrossWordStarts = new SparseArray<>();
+    private SparseArray<Position> downWordStarts = new SparseArray<>();
     private MovementStrategy movementStrategy = MovementStrategy.MOVE_NEXT_ON_AXIS;
     private Position highlightLetter = new Position(0, 0);
     private Puzzle puzzle;
@@ -602,7 +602,7 @@ public class Playboard {
     }
 
     public List<Position> revealPuzzle() {
-        ArrayList<Position> changes = new ArrayList<Position>();
+        ArrayList<Position> changes = new ArrayList<>();
 
         for (int r = 0; r < boxes.length; r++) {
             for (int c = 0; c < boxes[r].length; c++) {
@@ -622,7 +622,7 @@ public class Playboard {
     }
 
     public List<Position> revealWord() {
-        ArrayList<Position> changes = new ArrayList<Position>();
+        ArrayList<Position> changes = new ArrayList<>();
         Position oldHighlight = this.highlightLetter;
         Word w = getCurrentWord();
         this.highlightLetter = w.start;

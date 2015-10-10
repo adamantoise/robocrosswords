@@ -45,10 +45,10 @@ public abstract class AbstractDownloader implements Downloader {
 
     protected static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
 
-    protected static final Map<String, String> EMPTY_MAP = Collections.<String, String>emptyMap();
+    protected static final Map<String, String> EMPTY_MAP = Collections.emptyMap();
 
-    protected String baseUrl;
-    private String downloaderName;
+    protected final String baseUrl;
+    private final String downloaderName;
     private String userAgent;
 
     protected final AndroidVersionUtils utils = AndroidVersionUtils.Factory.getInstance();
@@ -118,7 +118,7 @@ public abstract class AbstractDownloader implements Downloader {
 
     protected Map<String, String> getDefaultHeaders() {
         if (!TextUtils.isEmpty(userAgent)) {
-            Map<String, String> headers = new HashMap<String, String>();
+            Map<String, String> headers = new HashMap<>();
             headers.put(HEADER_USER_AGENT, userAgent);
 
             return headers;

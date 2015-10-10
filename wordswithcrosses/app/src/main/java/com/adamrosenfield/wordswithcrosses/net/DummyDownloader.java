@@ -35,9 +35,6 @@ public class DummyDownloader implements Downloader {
 
     private Context mContext;
 
-    public DummyDownloader() {
-    }
-
     public DummyDownloader(Context context) {
         mContext = context;
     }

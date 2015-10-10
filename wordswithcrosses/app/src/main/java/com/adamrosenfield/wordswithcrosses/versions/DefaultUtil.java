@@ -188,10 +188,4 @@ public class DefaultUtil implements AndroidVersionUtils {
     public View onActionBarCustom(Activity a, int id) {
         return null;
     }
-
-    public void hideWindowTitle(Activity a) {
-    }
-
-    public void hideActionBar(Activity a) {
-    }
 }

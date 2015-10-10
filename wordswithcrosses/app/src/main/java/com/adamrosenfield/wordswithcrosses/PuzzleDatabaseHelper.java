@@ -166,7 +166,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
             null,             // Having
             COLUMN_FILENAME); // Order by
 
-        ArrayList<IDAndFilename> filenameList = new ArrayList<IDAndFilename>(cursor.getCount());
+        ArrayList<IDAndFilename> filenameList = new ArrayList<>(cursor.getCount());
         while (cursor.moveToNext())
         {
             filenameList.add(new IDAndFilename(cursor.getLong(0), cursor.getString(1)));
@@ -407,7 +407,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
     {
         SQLiteDatabase db = getReadableDatabase();
 
-        ArrayList<String> sourceList = new ArrayList<String>();
+        ArrayList<String> sourceList = new ArrayList<>();
         Cursor cursor = db.query(
             TABLE_CROSSWORDS,
             new String[]{COLUMN_SOURCE}, // Columns
@@ -449,7 +449,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
 
         String orderBy = sortOrder.getOrderByClause();
 
-        ArrayList<PuzzleMeta> puzzles = new ArrayList<PuzzleMeta>();
+        ArrayList<PuzzleMeta> puzzles = new ArrayList<>();
         String[] columns = new String[] {
             COLUMN_ID, COLUMN_FILENAME, COLUMN_ARCHIVED, COLUMN_AUTHOR,
             COLUMN_TITLE, COLUMN_SOURCE, COLUMN_DATE,
@@ -507,7 +507,7 @@ public class PuzzleDatabaseHelper extends SQLiteOpenHelper
             null,  // Group by
             null,  // Having
             null); // Order by
-        ArrayList<IDAndFilename> filenameList = new ArrayList<IDAndFilename>(cursor.getCount());
+        ArrayList<IDAndFilename> filenameList = new ArrayList<>(cursor.getCount());
         while (cursor.moveToNext())
         {
             filenameList.add(new IDAndFilename(cursor.getLong(0), cursor.getString(1)));

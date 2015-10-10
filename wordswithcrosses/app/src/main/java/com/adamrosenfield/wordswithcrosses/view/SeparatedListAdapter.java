@@ -35,11 +35,11 @@ import com.adamrosenfield.wordswithcrosses.R;
 public class SeparatedListAdapter extends BaseAdapter implements SectionIndexer {
     private static final int TYPE_SECTION_HEADER = 0;
     private final ArrayAdapter<String> headers;
-    private final ArrayList<String> headerLabels = new ArrayList<String>();
-    public final ArrayList<Adapter> sections = new ArrayList<Adapter>();
+    private final ArrayList<String> headerLabels = new ArrayList<>();
+    public final ArrayList<Adapter> sections = new ArrayList<>();
 
     public SeparatedListAdapter(Context context) {
-        headers = new ArrayAdapter<String>(context, R.layout.puzzle_list_header);
+        headers = new ArrayAdapter<>(context, R.layout.puzzle_list_header);
     }
 
     public int getCount() {

@@ -187,7 +187,7 @@ public class CrosswordImageView extends TouchImageView
         CLICK,
         DOUBLE_CLICK,
         LONG_CLICK
-    };
+    }
 
     @Override
     protected void onClick(PointF pos)

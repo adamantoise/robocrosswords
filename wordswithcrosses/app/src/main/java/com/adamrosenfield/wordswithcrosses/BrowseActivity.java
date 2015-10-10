@@ -98,7 +98,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
     private PuzzleMeta lastOpenedPuzzle = null;
 
     private Handler handler = new Handler();
-    private List<String> sourceList = new ArrayList<String>();
+    private List<String> sourceList = new ArrayList<>();
     private CustomFastScrollView fastScrollView;
     private ListView puzzleList;
     private ListView sources;
@@ -393,7 +393,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
             DownloadPickerDialogBuilder.OnDownloadSelectedListener downloadButtonListener = new DownloadPickerDialogBuilder.OnDownloadSelectedListener() {
                     public void onDownloadSelected(Calendar date, List<Downloader> downloaders, int selected) {
-                        List<Downloader> toDownload = new LinkedList<Downloader>();
+                        List<Downloader> toDownload = new LinkedList<>();
 
                         if (selected == 0) {
                             // Download all available.
@@ -546,9 +546,9 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         }
 
         // Sort the list of filenames
-        ArrayList<String> filenameList = new ArrayList<String>(fileList.length);
-        for (int i = 0; i < fileList.length; i++) {
-            filenameList.add(fileList[i].getAbsolutePath());
+        ArrayList<String> filenameList = new ArrayList<>(fileList.length);
+        for (File file : fileList) {
+            filenameList.add(file.getAbsolutePath());
         }
         Collections.sort(
             filenameList,
@@ -562,8 +562,8 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         PuzzleDatabaseHelper dbHelper = WordsWithCrossesApplication.getDatabaseHelper();
         List<PuzzleDatabaseHelper.IDAndFilename> dbFileList = dbHelper.getFilenameList();
 
-        ArrayList<String> filesToAdd = new ArrayList<String>();
-        ArrayList<Long> filesToRemove = new ArrayList<Long>();
+        ArrayList<String> filesToAdd = new ArrayList<>();
+        ArrayList<Long> filesToRemove = new ArrayList<>();
 
         // Pseudo-merge the two sorted lists to reconcile them
         int filenameIndex = 0;
@@ -642,7 +642,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         if (deleteOnCleanup) {
             // Get list of puzzles to delete
             List<IDAndFilename> puzzles = dbHelper.getFilenamesToCleanup(maxAge);
-            ArrayList<Long> ids = new ArrayList<Long>();
+            ArrayList<Long> ids = new ArrayList<>();
 
             // Delete the puzzles from the file system
             for (IDAndFilename idAndFilename : puzzles) {
@@ -684,7 +684,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
         // Delete the puzzle from the database
         PuzzleDatabaseHelper dbHelper = WordsWithCrossesApplication.getDatabaseHelper();
-        ArrayList<Long> idsToRemove = new ArrayList<Long>(1);
+        ArrayList<Long> idsToRemove = new ArrayList<>(1);
         idsToRemove.add(puzzle.id);
         dbHelper.removePuzzles(idsToRemove);
     }
@@ -819,7 +819,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
     /**
      * Enumeration of supported puzzle sort orders
      */
-    public static enum SortOrder {
+    public enum SortOrder {
         // Do not reorder these, otherwise preference values (stored as the
         // enum's ordinal values) will be wrong
         DATE_ASC,
@@ -916,7 +916,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         = new SimpleDateFormat("EEEE\nMMM dd, yyyy", Locale.getDefault());
 
     private class FileAdapter extends BaseAdapter {
-        private ArrayList<PuzzleMeta> puzzles = new ArrayList<PuzzleMeta>();
+        private final ArrayList<PuzzleMeta> puzzles = new ArrayList<>();
 
         public FileAdapter() {
         }

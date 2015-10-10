@@ -93,7 +93,7 @@ public class KingFeaturesPlaintextIO {
         }
 
         // Process solution grid.
-        List<char[]> solGrid = new ArrayList<char[]>();
+        List<char[]> solGrid = new ArrayList<>();
         line = line.substring(1, line.length()-2);
         String[] rowString = line.split(" ");
         int width = rowString.length;
@@ -144,7 +144,7 @@ public class KingFeaturesPlaintextIO {
         puz.setBoxes(boxes);
 
         // Process clues.
-        SparseArray<String> acrossNumToClueMap = new SparseArray<String>();
+        SparseArray<String> acrossNumToClueMap = new SparseArray<>();
         line = line.substring(1);
         int clueNum;
         int lastClueNum = 0;
@@ -180,7 +180,7 @@ public class KingFeaturesPlaintextIO {
 
         int maxClueNum = lastClueNum;
 
-        SparseArray<String> downNumToClueMap = new SparseArray<String>();
+        SparseArray<String> downNumToClueMap = new SparseArray<>();
         line = line.substring(1);
         boolean finished = false;
         do {

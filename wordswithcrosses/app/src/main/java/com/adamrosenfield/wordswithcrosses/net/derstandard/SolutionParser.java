@@ -126,7 +126,7 @@ public class SolutionParser {
         try {
             StringBuilder sb = new StringBuilder();
 
-            String line = null;
+            String line;
             while ((line = br.readLine()) != null) {
                 sb.append(line + "\n");
             }
@@ -172,7 +172,7 @@ public class SolutionParser {
 
     // stolen from tagsoup
     // Get an InputStream based on a publicid and a systemid
-    private InputStream getInputStream(String publicid, String systemid) throws IOException, SAXException {
+    private InputStream getInputStream(String publicid, String systemid) throws IOException {
         URL basis = new URL("file", "", System.getProperty("user.dir") + "/.");
         URL url = new URL(basis, systemid);
         URLConnection c = url.openConnection();

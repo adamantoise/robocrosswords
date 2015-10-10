@@ -45,7 +45,7 @@ public class Downloaders {
     private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
     private BrowseActivity context;
     private SharedPreferences prefs;
-    private List<Downloader> downloaders = new LinkedList<Downloader>();
+    private List<Downloader> downloaders = new LinkedList<>();
     private NotificationManager notificationManager;
     private boolean enableNotifications;
     private boolean enableIndividualDownloadNotifications;
@@ -218,7 +218,7 @@ public class Downloaders {
     }
 
     public List<Downloader> getDownloaders(Calendar date) {
-        List<Downloader> retVal = new LinkedList<Downloader>();
+        List<Downloader> retVal = new LinkedList<>();
 
         for (Downloader d : downloaders) {
             if (d.isPuzzleAvailable(date)) {

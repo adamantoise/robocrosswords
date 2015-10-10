@@ -36,8 +36,6 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.json.JSONException;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -130,11 +128,7 @@ public class DerStandardDownloader extends AbstractDownloader {
                 } finally {
                     r.close();
                 }
-            } catch (IOException e) {
-                throw new RefreshException("Fetching/Parsing puzzle for " + pUrl + ".", e);
-            } catch (ParserConfigurationException e) {
-                throw new RefreshException("Fetching/Parsing puzzle for " + pUrl + ".", e);
-            } catch (SAXException e) {
+            } catch (IOException | SAXException e) {
                 throw new RefreshException("Fetching/Parsing puzzle for " + pUrl + ".", e);
             }
         }
@@ -146,11 +140,7 @@ public class DerStandardDownloader extends AbstractDownloader {
                     parser.parseSolution(pm, isSolution);
                     save = true;
                 }
-            } catch (IOException e) {
-                throw new RefreshException("Fetching/Parsing solution for " + id + ".", e);
-            } catch (JSONException e) {
-                throw new RefreshException("Fetching/Parsing solution for " + id + ".", e);
-            } catch (SAXException e) {
+            } catch (IOException | JSONException | SAXException e) {
                 throw new RefreshException("Fetching/Parsing solution for " + id + ".", e);
             }
         }
@@ -164,8 +154,7 @@ public class DerStandardDownloader extends AbstractDownloader {
         }
     }
 
-    private InputSource postForSolution(int id)
-            throws MalformedURLException, IOException {
+    private InputSource postForSolution(int id) throws IOException {
         HttpURLConnection conn = getHttpPostConnection(SOLUTION_URL, "ExternalId=" + id);
         Reader reader = getURLReader(conn);
         return new InputSource(reader);

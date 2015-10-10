@@ -45,7 +45,6 @@ import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
 
 import com.adamrosenfield.wordswithcrosses.io.IO;
-import com.adamrosenfield.wordswithcrosses.puz.Playboard.Clue;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Word;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
@@ -253,11 +252,11 @@ public class ClueListActivity extends WordsWithCrossesActivity {
         this.across = (ListView) this.findViewById(R.id.acrossList);
         this.down = (ListView) this.findViewById(R.id.downList);
 
-        across.setAdapter(new ArrayAdapter<Clue>(this,
+        across.setAdapter(new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, WordsWithCrossesApplication.BOARD
                         .getAcrossClues()));
         across.setFocusableInTouchMode(true);
-        down.setAdapter(new ArrayAdapter<Clue>(this,
+        down.setAdapter(new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, WordsWithCrossesApplication.BOARD
                         .getDownClues()));
         across.setOnItemClickListener(new OnItemClickListener() {

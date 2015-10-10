@@ -104,8 +104,8 @@ public class PuzzleParsingHandler extends DefaultHandler {
     }
 
     private final class HintsHandler extends DefaultHandler {
-        SparseArray<String> horizontal = new SparseArray<String>();
-        SparseArray<String> vertical = new SparseArray<String>();
+        SparseArray<String> horizontal = new SparseArray<>();
+        SparseArray<String> vertical = new SparseArray<>();
         SparseArray<String> current;
         boolean inQuestItem = false;
         boolean inQuestItemText = false;

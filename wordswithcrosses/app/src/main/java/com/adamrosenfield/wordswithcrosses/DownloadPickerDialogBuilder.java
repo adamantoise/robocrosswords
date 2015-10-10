@@ -92,7 +92,7 @@ public class DownloadPickerDialogBuilder {
 
         mPuzzleSelect = (Spinner)layout.findViewById(R.id.puzzleSelect);
 
-        mAdapter = new ArrayAdapter<Downloader>(mActivity, android.R.layout.simple_spinner_item);
+        mAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item);
         mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mPuzzleSelect.setAdapter(mAdapter);
 

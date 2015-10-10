@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Calendar;
-import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
@@ -179,22 +178,7 @@ public class NewsdayPlaintextIO
             // Save out the puzzle
             IO.save(puzzle, os);
         }
-        catch (ArrayIndexOutOfBoundsException e)
-        {
-            e.printStackTrace();
-            throw new IOException(e.getMessage());
-        }
-        catch (IllegalStateException e)
-        {
-            e.printStackTrace();
-            throw new IOException(e.getMessage());
-        }
-        catch (InputMismatchException e)
-        {
-            e.printStackTrace();
-            throw new IOException(e.getMessage());
-        }
-        catch (NoSuchElementException e)
+        catch (ArrayIndexOutOfBoundsException | IllegalStateException | NoSuchElementException e)
         {
             e.printStackTrace();
             throw new IOException(e.getMessage());

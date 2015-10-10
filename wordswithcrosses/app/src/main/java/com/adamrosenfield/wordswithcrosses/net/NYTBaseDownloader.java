@@ -49,7 +49,7 @@ public abstract class NYTBaseDownloader extends AbstractDownloader {
     private static final String BASE_URL = "http://www.nytimes.com/svc/crosswords/v2/puzzle/";
     private static final String LOGIN_URL = "https://myaccount.nytimes.com/auth/login?URI=http://select.nytimes.com/premium/xword/puzzles.html";
 
-    private HashMap<String, String> params = new HashMap<String, String>();
+    private HashMap<String, String> params = new HashMap<>();
 
     protected NYTBaseDownloader(String name, String username, String password) {
         this(BASE_URL, name, username, password);
@@ -135,7 +135,7 @@ public abstract class NYTBaseDownloader extends AbstractDownloader {
 
         HttpPost httpPost = new HttpPost(LOGIN_URL);
 
-        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        List<NameValuePair> nvps = new ArrayList<>();
 
         for (Entry<String, String> e : this.params.entrySet()) {
             nvps.add(new BasicNameValuePair(e.getKey(), e.getValue()));
@@ -153,7 +153,7 @@ public abstract class NYTBaseDownloader extends AbstractDownloader {
 
             String resp = new String(baos.toByteArray());
 
-            if (resp.indexOf("We couldn't find that combination of email and password. Please try again.") != -1) {
+            if (resp.contains("We couldn't find that combination of email and password. Please try again.")) {
                 LOG.warning("NYT: Password error");
                 throw new DownloadException(R.string.login_failed);
             }

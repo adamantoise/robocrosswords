@@ -37,14 +37,17 @@ import com.adamrosenfield.wordswithcrosses.puz.Box;
 import com.adamrosenfield.wordswithcrosses.puz.Playboard.Clue;
 
 public class ClueListAdapter extends BaseAdapter {
-    private static final int transparent = Color.TRANSPARENT;
-    private static final int highlight = Color.argb(100, 200, 191, 231);
-    public int textSize = 14;
+    private static final int TRANSPARENT = Color.TRANSPARENT;
+    private static final int HIGHLIGHT = Color.argb(100, 200, 191, 231);
+    private static final int DEFAULT_TEXT_SIZE = 14;
+
+    private int textSize = DEFAULT_TEXT_SIZE;
+
     private Clue highlightClue;
-    private Context context;
-    private SparseArray<Box[]> cache = new SparseArray<Box[]>();
-    private Clue[] clues;
-    private boolean across;
+    private final Context context;
+    private final SparseArray<Box[]> cache = new SparseArray<>();
+    private final Clue[] clues;
+    private final boolean across;
     private boolean isActive = false;
 
     public ClueListAdapter(Context context, Clue[] clues, boolean across) {
@@ -59,6 +62,10 @@ public class ClueListAdapter extends BaseAdapter {
 
     public int getCount() {
         return clues.length;
+    }
+
+    public void setTextSize(int textSize) {
+        this.textSize = textSize;
     }
 
     public void setHighlightClue(Clue c) {
@@ -111,9 +118,9 @@ public class ClueListAdapter extends BaseAdapter {
         word.setText(sb);
 
         if (this.isActive && c.equals(this.highlightClue)) {
-            view.setBackgroundColor(highlight);
+            view.setBackgroundColor(HIGHLIGHT);
         } else {
-            view.setBackgroundColor(transparent);
+            view.setBackgroundColor(TRANSPARENT);
         }
 
         return view;
