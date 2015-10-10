@@ -23,7 +23,7 @@ import java.util.Calendar;
 
 /**
  * Universal Crossword
- * URL: http://picayune.uclick.com/comics/fcs/data/fcsYYMMDD-data.xml
+ * URL: http://picayune.uclick.com/comics/fcx/data/fcxYYMMDD-data.xml
  * Date: Monday-Saturday, excluding holidays
  */
 public class UniversalDownloader extends UclickDownloader
