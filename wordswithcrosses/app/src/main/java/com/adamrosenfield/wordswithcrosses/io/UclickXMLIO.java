@@ -37,6 +37,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import android.util.SparseArray;
 
+import com.adamrosenfield.wordswithcrosses.io.charset.StandardCharsets;
 import com.adamrosenfield.wordswithcrosses.puz.Box;
 import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 
@@ -64,7 +65,6 @@ import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
  * which the clue starts.  [Clue] text is HTML escaped.
  */
 public class UclickXMLIO {
-    private static String CHARSET_NAME = "utf8";
 
     private static class UclickXMLParser extends DefaultHandler {
         private Puzzle puz;
@@ -88,25 +88,19 @@ public class UclickXMLIO {
                 if (clueNum > maxClueNum) {
                     maxClueNum = clueNum;
                 }
-                try {
-                    acrossNumToClueMap.put(clueNum, URLDecoder.decode(attributes.getValue("c"), CHARSET_NAME));
-                } catch (UnsupportedEncodingException e) {
-                    acrossNumToClueMap.put(clueNum, attributes.getValue("c"));
-                }
+
+                acrossNumToClueMap.put(clueNum, urlDecode(attributes.getValue("c")));
             } else if (inDown) {
                 int clueNum = Integer.parseInt(attributes.getValue("cn"));
                 if (clueNum > maxClueNum) {
                     maxClueNum = clueNum;
                 }
-                try {
-                    downNumToClueMap.put(clueNum, URLDecoder.decode(attributes.getValue("c"), CHARSET_NAME));
-                } catch (UnsupportedEncodingException e) {
-                    downNumToClueMap.put(clueNum, attributes.getValue("c"));
-                }
+
+                downNumToClueMap.put(clueNum, urlDecode(attributes.getValue("c")));
             } else if (name.equalsIgnoreCase("title")) {
-                puz.setTitle(attributes.getValue("v"));
+                puz.setTitle(urlDecode(attributes.getValue("v")));
             } else if (name.equalsIgnoreCase("author")) {
-                puz.setAuthor(attributes.getValue("v"));
+                puz.setAuthor(urlDecode(attributes.getValue("v")));
             } else if (name.equalsIgnoreCase("width")) {
                 puz.setWidth(Integer.parseInt(attributes.getValue("v")));
             } else if (name.equalsIgnoreCase("height")) {
@@ -185,6 +179,16 @@ public class UclickXMLIO {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    private static String urlDecode(String s) {
+        try {
+            return URLDecoder.decode(s, StandardCharsets.UTF_8.name());
+        } catch(UnsupportedEncodingException e) {
+            // Should never happen
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 }
