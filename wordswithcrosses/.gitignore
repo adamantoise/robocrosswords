@@ -1,4 +1,5 @@
 /.gradle/
+/.idea/dictionaries/
 /.idea/libraries/
 /.idea/workspace.xml
 /app/build/
