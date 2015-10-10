@@ -110,6 +110,14 @@ public class Playboard {
         return boxes;
     }
 
+    public Box getBox(int row, int column) {
+        return boxes[row][column];
+    }
+
+    public Box getBox(Position p) {
+        return boxes[p.down][p.across];
+    }
+
     public Clue getClue() {
         Clue c = new Clue();
 
@@ -642,6 +650,11 @@ public class Playboard {
         onBoardChanged();
 
         return changes;
+    }
+
+    public boolean skipCurrentBox(Position p, boolean skipCompleted) {
+        Box box = boxes[p.down][p.across];
+        return (box == null || skipCurrentBox(box, skipCompleted));
     }
 
     public boolean skipCurrentBox(Box b, boolean skipCompleted) {

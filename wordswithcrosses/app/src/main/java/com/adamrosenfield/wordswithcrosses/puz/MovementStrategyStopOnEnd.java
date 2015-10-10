@@ -31,30 +31,39 @@ public class MovementStrategyStopOnEnd extends MovementStrategy {
 
     @Override
     public Word move(Playboard board, boolean skipCompletedLetters) {
-        // This is overly complex, but I am trying to save calls to heavy
-        // methods on the board.
-
         Position p = board.getHighlightLetter();
         Word w = board.getCurrentWord();
-        if (isWordEnd(p, w)) {
-            return w;
-        } else {
-            MOVE_NEXT_ON_AXIS.move(board,skipCompletedLetters);
+
+        if (!isWordEnd(p, w)) {
+            MOVE_NEXT_ON_AXIS.move(board, skipCompletedLetters);
+
             Word newWord = board.getCurrentWord();
-            if (newWord.equals(w)) {
-                return w;
-            } else {
+            if (!newWord.equals(w)) {
+                // If moving along the same axis put the cursor into a
+                // different word, revert back to our previous position.
                 board.setHighlightLetter(p);
-                return w;
+            } else if (skipCompletedLetters) {
+                // If we we ended up in a square which ought to have been
+                // skipped, it means we're in the last word in the current row
+                // or column, and we're now in the last cell of that word.
+                // To ensure the behavior is consistent in both of the cases
+                // where we're in the last word vs. not, revert back to our
+                // previous position.
+                Position current = board.getHighlightLetter();
+                if (board.skipCurrentBox(current, skipCompletedLetters)) {
+                    board.setHighlightLetter(p);
+                }
             }
         }
+
+        return w;
     }
 
     @Override
     public Word back(Playboard board) {
         Word w = board.getCurrentWord();
         Position p = board.getHighlightLetter();
-        if(!p.equals(w.start)){
+        if (!p.equals(w.start)) {
             MOVE_NEXT_ON_AXIS.back(board);
         }
         return w;

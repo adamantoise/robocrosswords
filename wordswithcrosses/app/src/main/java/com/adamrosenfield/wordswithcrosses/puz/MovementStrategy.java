@@ -43,9 +43,9 @@ public abstract class MovementStrategy {
 
     protected static boolean isLastWordInDirection(Box[][] boxes, Word w) {
         if (w.across) {
-            return (w.start.down + 1 >= boxes.length);
+            return (w.start.down >= boxes.length - 1);
         } else {
-            return (w.start.across + 1 >= boxes[w.start.down].length);
+            return (w.start.across >= boxes[w.start.down].length - 1);
         }
     }
 
