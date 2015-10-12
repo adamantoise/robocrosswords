@@ -182,7 +182,7 @@ public class PlayboardRenderer {
         white.setTextSize(scale * 20F);
 
         boolean inCurrentWord = (currentWord != null) && currentWord.checkInWord(col, row);
-        Position highlight = this.board.getHighlightLetter();
+        Position highlight = this.board.getCursorPosition();
 
         Paint thisLetter = null;
 

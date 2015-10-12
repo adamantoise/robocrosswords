@@ -30,14 +30,14 @@ import com.adamrosenfield.wordswithcrosses.PuzzleDatabaseHelper.SolveState;
 
 public class Playboard {
 
-    private SparseArray<Position> acrossWordStarts = new SparseArray<>();
-    private SparseArray<Position> downWordStarts = new SparseArray<>();
+    private final SparseArray<Position> acrossWordStarts = new SparseArray<>();
+    private final SparseArray<Position> downWordStarts = new SparseArray<>();
     private MovementStrategy movementStrategy = MovementStrategy.MOVE_NEXT_ON_AXIS;
-    private Position highlightLetter = new Position(0, 0);
-    private Puzzle puzzle;
-    private long puzzleId = -1;
-    private Box[][] boxes;
-    private boolean across = true;
+    private Position cursorPosition = new Position(0, 0);
+    private final Puzzle puzzle;
+    private final long puzzleId;
+    private final Box[][] boxes;
+    private boolean isCursorAcross = true;
     private boolean showErrors;
     private boolean skipCompletedLetters;
     private OnBoardChangedListener onBoardChangedListener;
@@ -50,7 +50,6 @@ public class Playboard {
     public Playboard(Puzzle puzzle, long puzzleId) {
         this.puzzle = puzzle;
         this.puzzleId = puzzleId;
-        this.highlightLetter = new Position(0, 0);
         this.boxes = new Box[puzzle.getBoxes().length][puzzle.getBoxes()[0].length];
 
         for (int r = 0; r < puzzle.getBoxes().length; r++) {
@@ -86,12 +85,12 @@ public class Playboard {
         return puzzle.getHeight();
     }
 
-    public void setAcross(boolean across) {
-        this.across = across;
+    public void setIsCursorAcross(boolean isCursorAcross) {
+        this.isCursorAcross = isCursorAcross;
     }
 
-    public boolean isAcross() {
-        return across;
+    public boolean isCursorAcross() {
+        return isCursorAcross;
     }
 
     public Clue[] getAcrossClues() {
@@ -127,13 +126,18 @@ public class Playboard {
         }
 
         c.number = boxes[start.down][start.across].getClueNumber();
-        c.hint = this.across ? puzzle.findAcrossClue(c.number) : puzzle.findDownClue(c.number);
+        c.hint = this.isCursorAcross ? puzzle.findAcrossClue(c.number) : puzzle.findDownClue(c.number);
 
         return c;
     }
 
+    private int getClueNumberForWordAtPos(int row, int col, boolean isAcross) {
+        Position wordStart = getWordStart(row, col, isAcross);
+        return boxes[wordStart.down][wordStart.across].getClueNumber();
+    }
+
     public Box getCurrentBox() {
-        return boxes[highlightLetter.down][highlightLetter.across];
+        return boxes[cursorPosition.down][cursorPosition.across];
     }
 
     /** Returns the 0 based index of the current clue based on the current across or down state
@@ -143,7 +147,7 @@ public class Playboard {
     public int getCurrentClueIndex() {
         Clue c = this.getClue();
 
-        if (across) {
+        if (isCursorAcross) {
             return Arrays.binarySearch(this.puzzle.getAcrossCluesLookup(), c.number);
         } else {
             return Arrays.binarySearch(this.puzzle.getDownCluesLookup(), c.number);
@@ -153,7 +157,7 @@ public class Playboard {
     public Word getCurrentWord() {
         Word w = new Word();
         w.start = getCurrentWordStart();
-        w.across = across;
+        w.across = isCursorAcross;
         w.length = getWordRange();
 
         return w;
@@ -205,9 +209,15 @@ public class Playboard {
     }
 
     public Position getCurrentWordStart() {
-        int row = highlightLetter.down;
-        int col = highlightLetter.across;
-        if (isAcross()) {
+        return getWordStart(cursorPosition, isCursorAcross);
+    }
+
+    private Position getWordStart(Position pos, boolean isAcross) {
+        return getWordStart(pos.down, pos.across, isAcross);
+    }
+
+    private Position getWordStart(int row, int col, boolean isAcross) {
+        if (isAcross) {
             while (col > 0 && boxes[row][col] != null && boxes[row][col - 1] != null) {
                 col--;
             }
@@ -216,6 +226,28 @@ public class Playboard {
         } else {
             while (row > 0 && boxes[row][col] != null && boxes[row - 1][col] != null) {
                 row--;
+            }
+
+            return new Position(col, row);
+        }
+    }
+
+    private Position getWordEnd(Position pos, boolean isAcross) {
+        return getWordEnd(pos.down, pos.across, isAcross);
+    }
+
+    private Position getWordEnd(int row, int col, boolean isAcross) {
+        if (isAcross) {
+            int width = getWidth();
+            while (col < width - 1 && boxes[row][col] != null && boxes[row][col + 1] != null) {
+                col++;
+            }
+
+            return new Position(col, row);
+        } else {
+            int height = getHeight();
+            while (row < height - 1 && boxes[row][col] != null && boxes[row + 1][col] != null) {
+                row++;
             }
 
             return new Position(col, row);
@@ -236,38 +268,39 @@ public class Playboard {
 
     public SolveState getSolveState() {
         SolveState solveState = new SolveState();
-        solveState.position = new Position(getHighlightLetter());
-        solveState.isOrientationAcross = isAcross();
+        solveState.position = new Position(cursorPosition);
+        solveState.isOrientationAcross = isCursorAcross;
 
         return solveState;
     }
 
     public void setSolveState(SolveState solveState) {
-        setHighlightLetter(solveState.position);
-        setAcross(solveState.isOrientationAcross);
+        setCursorPosition(solveState.position);
+        setIsCursorAcross(solveState.isOrientationAcross);
     }
 
-    public Word setHighlightLetter(Position highlightLetter) {
-        Word w = getCurrentWord();
-
-        if (highlightLetter.equals(this.highlightLetter)) {
-            this.toggleDirection();
-        } else {
-            if ((highlightLetter.down >= 0) &&
-                (highlightLetter.down < boxes.length) &&
-                (highlightLetter.across >= 0) &&
-                (highlightLetter.across < boxes[highlightLetter.down].length) &&
-                (boxes[highlightLetter.down][highlightLetter.across] != null))
-            {
-                this.highlightLetter = highlightLetter;
-            }
+    public void setCursorPosition(Position pos) {
+        if (pos.down >= 0 &&
+            pos.down < getHeight() &&
+            pos.across >= 0 &&
+            pos.across < getWidth() &&
+            boxes[pos.down][pos.across] != null)
+        {
+            cursorPosition = pos;
         }
-
-        return w;
     }
 
-    public Position getHighlightLetter() {
-        return highlightLetter;
+    public void setCursorPosition(PositionAndOrientation pos) {
+        setCursorPosition(pos.pos);
+        setIsCursorAcross(pos.isAcross);
+    }
+
+    public Position getCursorPosition() {
+        return cursorPosition;
+    }
+
+    public MovementStrategy getMovementStrategy() {
+        return movementStrategy;
     }
 
     public void setMovementStrategy(MovementStrategy movementStrategy) {
@@ -275,7 +308,7 @@ public class Playboard {
     }
 
     public Puzzle getPuzzle() {
-        return this.puzzle;
+        return puzzle;
     }
 
     public long getPuzzleID() {
@@ -287,7 +320,7 @@ public class Playboard {
     }
 
     public boolean isShowErrors() {
-        return this.showErrors;
+        return showErrors;
     }
 
     public void toggleShowErrors() {
@@ -332,14 +365,16 @@ public class Playboard {
     public int getWordRange(Position start, boolean across) {
         if (across) {
             int col = start.across;
-            while (col < boxes[start.down].length && boxes[start.down][col] != null) {
+            int width = getWidth();
+            while (col < width && boxes[start.down][col] != null) {
                 col++;
             }
 
             return col - start.across;
         } else {
             int row = start.down;
-            while (row < boxes.length && boxes[row][start.across] != null) {
+            int height = getHeight();
+            while (row < height && boxes[row][start.across] != null) {
                 row++;
             }
 
@@ -348,7 +383,7 @@ public class Playboard {
     }
 
     public int getWordRange() {
-        return getWordRange(getCurrentWordStart(), isAcross());
+        return getWordRange(getCurrentWordStart(), isCursorAcross());
     }
 
     /**
@@ -357,12 +392,12 @@ public class Playboard {
      * -Delete the letter in the current box.
      */
     public Word deleteLetter() {
-        Box currentBox = boxes[highlightLetter.down][highlightLetter.across];
+        Box currentBox = boxes[cursorPosition.down][cursorPosition.across];
         Word wordToReturn = getCurrentWord();
 
         if (currentBox.getResponse() == ' ') {
-            wordToReturn = previousLetter();
-            currentBox = boxes[highlightLetter.down][highlightLetter.across];
+            wordToReturn = moveToPreviousLetterStopAtEndOfWord();
+            currentBox = boxes[cursorPosition.down][cursorPosition.across];
         }
 
         currentBox.setResponse(' ');
@@ -375,13 +410,13 @@ public class Playboard {
 
         if (across) {
             if (clueIndex >= 0 && clueIndex < puzzle.getAcrossCluesLookup().length) {
-                highlightLetter = acrossWordStarts.get(puzzle.getAcrossCluesLookup()[clueIndex]);
-                this.across = across;
+                cursorPosition = acrossWordStarts.get(puzzle.getAcrossCluesLookup()[clueIndex]);
+                isCursorAcross = across;
             }
         } else {
             if (clueIndex >= 0 && clueIndex < puzzle.getDownCluesLookup().length) {
-                highlightLetter = downWordStarts.get(puzzle.getDownCluesLookup()[clueIndex]);
-                this.across = across;
+                cursorPosition = downWordStarts.get(puzzle.getDownCluesLookup()[clueIndex]);
+                isCursorAcross = across;
             }
         }
     }
@@ -391,33 +426,11 @@ public class Playboard {
     }
 
     public Word moveLeft(boolean skipCompleted) {
-        Word w = getCurrentWord();
-
-        Position newPos = moveLeft(getHighlightLetter(), skipCompleted);
-        this.setHighlightLetter(newPos);
-
-        return w;
+        return moveCursor(0, -1, skipCompleted, false);
     }
 
-    private Position moveLeft(Position original, boolean skipCompleted) {
-        Position lastValid = original;
-        Position current = original;
-        while (true) {
-            if (current.across <= 0) {
-                return lastValid;
-            }
-
-            current = new Position(current.across - 1, current.down);
-            Box box = boxes[current.down][current.across];
-
-            if (box != null) {
-                if (!skipCurrentBox(box, skipCompleted)) {
-                    return current;
-                }
-
-                lastValid = current;
-            }
-        }
+    public Word moveLeftStopAtEndOfWord(boolean skipCompleted) {
+        return moveCursor(0, -1, skipCompleted, true);
     }
 
     public Word moveRight() {
@@ -425,33 +438,11 @@ public class Playboard {
     }
 
     public Word moveRight(boolean skipCompleted) {
-        Word w = getCurrentWord();
-
-        Position newPos = moveRight(getHighlightLetter(), skipCompleted);
-        setHighlightLetter(newPos);
-
-        return w;
+        return moveCursor(0, 1, skipCompleted, false);
     }
 
-    private Position moveRight(Position original, boolean skipCompleted) {
-        Position lastValid = original;
-        Position current = original;
-        while (true) {
-            if (current.across >= boxes[current.down].length - 1) {
-                return lastValid;
-            }
-
-            current = new Position(current.across + 1, current.down);
-            Box box = boxes[current.down][current.across];
-
-            if (box != null) {
-                if (!skipCurrentBox(box, skipCompleted)) {
-                    return current;
-                }
-
-                lastValid = current;
-            }
-        }
+    public Word moveRightStopAtEndOfWord(boolean skipCompleted) {
+        return moveCursor(0, 1, skipCompleted, true);
     }
 
     public Word moveUp() {
@@ -459,33 +450,11 @@ public class Playboard {
     }
 
     public Word moveUp(boolean skipCompleted) {
-        Word w = getCurrentWord();
-
-        Position newPos = moveUp(getHighlightLetter(), skipCompleted);
-        setHighlightLetter(newPos);
-
-        return w;
+        return moveCursor(-1, 0, skipCompleted, false);
     }
 
-    private Position moveUp(Position original, boolean skipCompleted) {
-        Position lastValid = original;
-        Position current = original;
-        while (true) {
-            if (current.down <= 0) {
-                return lastValid;
-            }
-
-            current = new Position(current.across, current.down - 1);
-            Box box = boxes[current.down][current.across];
-
-            if (box != null) {
-                if (!skipCurrentBox(box, skipCompleted)) {
-                    return current;
-                }
-
-                lastValid = current;
-            }
-        }
+    public Word moveUpStopAtEndOfWord(boolean skipCompleted) {
+        return moveCursor(-1, 0, skipCompleted, true);
     }
 
     public Word moveDown() {
@@ -493,70 +462,335 @@ public class Playboard {
     }
 
     public Word moveDown(boolean skipCompleted) {
+        return moveCursor(1, 0, skipCompleted, false);
+    }
+
+    public Word moveDownStopAtEndOfWord(boolean skipCompleted) {
+        return moveCursor(1, 0, skipCompleted, true);
+    }
+
+    public Word moveToPreviousLetterStopAtEndOfWord() {
+        if (isCursorAcross) {
+            return moveLeftStopAtEndOfWord(false);
+        } else {
+            return moveUpStopAtEndOfWord(false);
+        }
+    }
+
+    private Word moveCursor(int dirRows, int dirCols, boolean skipCompleted, boolean stopAtEndOfWord) {
         Word w = getCurrentWord();
 
-        Position newPos = moveDown(getHighlightLetter(), skipCompleted);
-        setHighlightLetter(newPos);
+        Position newPos = getNextLetterInDirection(cursorPosition, dirRows, dirCols, skipCompleted, stopAtEndOfWord);
+        setCursorPosition(newPos);
 
         return w;
     }
 
-    private Position moveDown(Position original, boolean skipCompleted) {
-        Position lastValid = original;
-        Position current = original;
+    /**
+     * Returns the coordinates of the next cell in the given direction from the
+     * given cell, optionally skipping over completed cells.  If we hit an edge
+     * of the puzzle, the last non-empty cell we hit before then will be
+     * returned (which might be completed, even if skipCompleted is true).
+     */
+    private Position getNextLetterInDirection(Position pos, int dirRows, int dirCols, boolean skipCompleted, boolean stopAtEndOfWord) {
+        int lastValidRow = pos.down;
+        int lastValidCol = pos.across;
+        int row = lastValidRow;
+        int col = lastValidCol;
+        int width = getWidth();
+        int height = getHeight();
+
         while (true) {
-            if (current.down >= boxes.length - 1) {
-                return lastValid;
+            row += dirRows;
+            col += dirCols;
+            if (row < 0 || row >= height || col < 0 || col >= width) {
+                break;
             }
 
-            current = new Position(current.across, current.down + 1);
-            Box box = boxes[current.down][current.across];
-
+            Box box = boxes[row][col];
             if (box != null) {
-                if (!skipCurrentBox(box, skipCompleted)) {
-                    return current;
+                if (!shouldSkipLetter(box, skipCompleted)) {
+                    return new Position(col, row);
                 }
 
-                lastValid = current;
+                lastValidRow = row;
+                lastValidCol = col;
+            } else if (stopAtEndOfWord) {
+                break;
+            }
+        }
+
+        return new Position(lastValidCol, lastValidRow);
+    }
+
+    public Word moveToNextLetter() {
+        return moveToNextLetter(skipCompletedLetters);
+    }
+
+    public Word moveToNextLetter(boolean skipCompletedLetters) {
+        return moveToNextLetter(skipCompletedLetters, movementStrategy);
+    }
+
+    public Word moveToNextLetterStopAtEndOfWord() {
+        return moveToNextLetter(skipCompletedLetters, MovementStrategy.STOP_ON_END);
+    }
+
+    private Word moveToNextLetter(boolean skipCompletedLetters, MovementStrategy strategy) {
+        Word previous = getCurrentWord();
+
+        PositionAndOrientation newCursor = getNextLetterFromStrategy(cursorPosition, skipCompletedLetters, strategy);
+        setCursorPosition(newCursor);
+
+        return previous;
+    }
+
+    private PositionAndOrientation getNextLetterFromStrategy(Position pos, boolean skipCompletedLetters, MovementStrategy strategy) {
+        switch (strategy) {
+        case MOVE_NEXT_ON_AXIS:
+            return getNextLetterMoveOnAxis(pos, skipCompletedLetters);
+
+        case STOP_ON_END:
+            return getNextLetterStopOnEnd(pos, skipCompletedLetters);
+
+        case MOVE_NEXT_CLUE:
+            return getNextLetterMoveNextClue(pos, skipCompletedLetters);
+
+        case MOVE_PARALLEL_WORD:
+            return getNextLetterMoveParallelWord(pos, skipCompletedLetters);
+        }
+
+        throw new RuntimeException("Unhandled MovementStrategy!");
+    }
+
+    private PositionAndOrientation getNextLetterMoveOnAxis(Position pos, boolean skipCompletedLetters) {
+        Position newPos;
+
+        if (isCursorAcross) {
+            newPos = getNextLetterInDirection(pos, 0, 1, skipCompletedLetters, false);
+            if (shouldSkipLetter(newPos, skipCompletedLetters)) {
+                newPos = getNextLetterInDirection(pos, 0, 1, false, false);
+            }
+        } else {
+            newPos = getNextLetterInDirection(pos, 1, 0, skipCompletedLetters, false);
+            if (shouldSkipLetter(newPos, skipCompletedLetters)) {
+                newPos = getNextLetterInDirection(pos, 1, 0, false, false);
+            }
+        }
+
+        return new PositionAndOrientation(newPos, isCursorAcross);
+    }
+
+    private PositionAndOrientation getNextLetterStopOnEnd(Position pos, boolean skipCompletedLetters) {
+        Position newPos;
+
+        if (isCursorAcross) {
+            newPos = getNextLetterInDirection(pos, 0, 1, skipCompletedLetters, true);
+            if (shouldSkipLetter(newPos, skipCompletedLetters)) {
+                newPos = getNextLetterInDirection(pos, 0, 1, false, true);
+            }
+        } else {
+            newPos = getNextLetterInDirection(pos, 1, 0, skipCompletedLetters, true);
+            if (shouldSkipLetter(newPos, skipCompletedLetters)) {
+                newPos = getNextLetterInDirection(pos, 1, 0, false, true);
+            }
+        }
+
+        return new PositionAndOrientation(newPos, isCursorAcross);
+    }
+
+    private PositionAndOrientation getNextLetterMoveNextClue(Position pos, boolean skipCompletedLetters) {
+        int row = pos.down;
+        int col = pos.across;
+        int width = getWidth();
+        int height = getHeight();
+        boolean isAcross = isCursorAcross;
+
+        while (true) {
+            // Try advancing to the next letter within the current clue, if
+            // any.  If we're at the end of the word, find the next clue.  If
+            // we're at the end of the puzzle, switch directions.
+            if (isAcross) {
+                if (col + 1 < width && boxes[row][col + 1] != null) {
+                    col++;
+                } else {
+                    int clue = getClueNumberForWordAtPos(row, col, isAcross);
+                    int clueIndex = acrossWordStarts.indexOfKey(clue);
+                    if (clueIndex < acrossWordStarts.size() - 1) {
+                        Position nextClue = acrossWordStarts.valueAt(clueIndex + 1);
+                        row = nextClue.down;
+                        col = nextClue.across;
+                    } else {
+                        Position nextClue = downWordStarts.valueAt(0);
+                        row = nextClue.down;
+                        col = nextClue.across;
+                        isAcross = !isAcross;
+                    }
+                }
+            } else {
+                if (row + 1 < height && boxes[row + 1][col] != null) {
+                    row++;
+                } else {
+                    int clue = getClueNumberForWordAtPos(row, col, isAcross);
+                    int clueIndex = downWordStarts.indexOfKey(clue);
+                    if (clueIndex < downWordStarts.size() - 1) {
+                        Position nextClue = downWordStarts.valueAt(clueIndex + 1);
+                        row = nextClue.down;
+                        col = nextClue.across;
+                    } else {
+                        Position nextClue = acrossWordStarts.valueAt(0);
+                        row = nextClue.down;
+                        col = nextClue.across;
+                        isAcross = !isAcross;
+                    }
+                }
+            }
+
+            if (!shouldSkipLetter(boxes[row][col], skipCompletedLetters)) {
+                return new PositionAndOrientation(row, col, isAcross);
+            }
+
+            // If we wrapped all the way around without finding an empty cell
+            // (which can only happen if the puzzle has been filled and
+            // skipCompletedLetters is true), just advance to the next letter
+            // without skipping completed letters.
+            if (row == pos.down && col == pos.across && isAcross == isCursorAcross) {
+                return getNextLetterMoveNextClue(pos, false);
             }
         }
     }
 
-    public Word nextLetter(boolean skipCompletedLetters) {
-        return movementStrategy.move(this, skipCompletedLetters);
+    private PositionAndOrientation getNextLetterMoveParallelWord(Position pos, boolean skipCompletedLetters) {
+        int row = pos.down;
+        int col = pos.across;
+        int width = getWidth();
+        int height = getHeight();
+
+        // First, try to move to the next letter within the current word
+        while (true) {
+            if (isCursorAcross) {
+                if (col + 1 < width && boxes[row][col + 1] != null) {
+                    col++;
+                } else {
+                    break;
+                }
+            } else {
+                if (row + 1 < height && boxes[row + 1][col] != null) {
+                    row++;
+                } else {
+                    break;
+                }
+            }
+
+            if (!shouldSkipLetter(boxes[row][col], skipCompletedLetters)) {
+                return new PositionAndOrientation(row, col, isCursorAcross);
+            }
+        }
+
+        // Now, advance one row or column at a time, find the closest-matching
+        // clue, and see if that clue has any candidate letters.
+        Position initialWordStart = getWordStart(pos, isCursorAcross);
+        Position initialWordEnd = getWordEnd(pos, isCursorAcross);
+        int wordLength = (isCursorAcross ? initialWordEnd.across - initialWordStart.across + 1 : initialWordEnd.down - initialWordStart.down + 1);
+        row = initialWordStart.down;
+        col = initialWordStart.across;
+
+        while (true) {
+            // Advance to the next row or column.  If we're back to where we
+            // started, then all of the candidate words we examined were full.
+            // We could try finding a different, less-proper word, but it makes
+            // more sense just to advance instead without skipping over filled
+            // in letters.
+            if (isCursorAcross) {
+                row = (row + 1) % height;
+                if (row == initialWordStart.down) {
+                    return getNextLetterMoveParallelWord(pos, false);
+                }
+            } else {
+                col = (col + 1) % width;
+                if (col == initialWordStart.across) {
+                    return getNextLetterMoveParallelWord(pos, false);
+                }
+            }
+
+            // Find the best-fitting word in this row or column, where "best"
+            // is defined as the one that has the most letters in common;
+            // ties are broken by whichever word is closer to the start.
+            int bestRowStart = -1;
+            int bestColStart = -1;
+            int bestRowEnd = -1;
+            int bestColEnd = -1;
+            int bestInCommon = -99999;
+            if (isCursorAcross) {
+                for (col = 0; col < width; col++) {
+                    if (boxes[row][col] != null && (col == 0 || boxes[row][col - 1] == null)) {
+                        Position wordEnd = getWordEnd(row, col, isCursorAcross);
+                        int inCommon = Math.min(initialWordEnd.across - col, wordEnd.across - initialWordStart.across);
+                        if (inCommon > bestInCommon ||
+                            inCommon == bestInCommon && Math.abs(col - initialWordStart.across) < Math.abs(bestColStart - initialWordStart.across)) {
+                            bestRowStart = row;
+                            bestColStart = col;
+                            bestRowEnd = row;
+                            bestColEnd = wordEnd.across;
+                            bestInCommon = inCommon;
+                        }
+                    }
+                }
+            } else {
+                for (row = 0; row < height; row++) {
+                    if (boxes[row][col] != null && (row == 0 || boxes[row - 1][col] == null)) {
+                        Position wordEnd = getWordEnd(row, col, isCursorAcross);
+                        int inCommon = Math.min(initialWordEnd.down - row, wordEnd.down - initialWordStart.down);
+                        if (inCommon > bestInCommon ||
+                            inCommon == bestInCommon && Math.abs(row - initialWordStart.down) < Math.abs(bestRowStart - initialWordStart.down)) {
+                            bestRowStart = row;
+                            bestColStart = col;
+                            bestRowEnd = wordEnd.down;;
+                            bestColEnd = col;
+                            bestInCommon = inCommon;
+                        }
+                    }
+                }
+            }
+
+            // Check the candidate word for a letter we can go to
+            if (isCursorAcross) {
+                for (col = bestColStart; col <= bestColEnd; col++) {
+                    if (!shouldSkipLetter(boxes[row][col], skipCompletedLetters)) {
+                        return new PositionAndOrientation(row, col, isCursorAcross);
+                    }
+                }
+            } else {
+                for (row = bestRowStart; row <= bestRowEnd; row++) {
+                    if (!shouldSkipLetter(boxes[row][col], skipCompletedLetters)) {
+                        return new PositionAndOrientation(row, col, isCursorAcross);
+                    }
+                }
+            }
+        }
     }
 
-    public Word nextLetter() {
-        return nextLetter(skipCompletedLetters);
-    }
-
-    public Word nextWord() {
+    public Word moveToNextWord(MovementStrategy strategy) {
         Word previous = getCurrentWord();
 
-        Position p = getHighlightLetter();
-
-        int newAcross = p.across;
-        int newDown = p.down;
+        int endOfWordRow = cursorPosition.down;
+        int endOfWordCol = cursorPosition.across;
 
         if (previous.across) {
-            newAcross = (previous.start.across + previous.length) - 1;
+            endOfWordCol = previous.start.across + previous.length - 1;
         } else {
-            newDown = (previous.start.down + previous.length) - 1;
+            endOfWordRow = previous.start.down + previous.length - 1;
         }
 
-        Position newPos = new Position(newAcross, newDown);
+        Position endOfWord = new Position(endOfWordCol, endOfWordRow);
+        PositionAndOrientation nextWordPos = getNextLetterFromStrategy(endOfWord, skipCompletedLetters, strategy);
 
-        if (!newPos.equals(p)) {
-            setHighlightLetter(newPos);
-        }
-
-        nextLetter();
+        setCursorPosition(nextWordPos);
 
         return previous;
     }
 
     public Word playLetter(char letter) {
-        Box b = boxes[highlightLetter.down][highlightLetter.across];
+        Box b = boxes[cursorPosition.down][cursorPosition.across];
 
         if (b == null) {
             return null;
@@ -565,45 +799,19 @@ public class Playboard {
         b.setResponse(letter);
         onBoardChanged();
 
-        return nextLetter();
-    }
-
-    public Word previousLetter() {
-        return movementStrategy.back(this);
-    }
-
-    public Word previousWord() {
-        Word previous = getCurrentWord();
-
-        Position p = getHighlightLetter();
-
-        int newAcross = p.across;
-        int newDown = p.down;
-
-        if (previous.across) {
-            newAcross = previous.start.across - 1;
-        } else {
-            newDown = previous.start.down - 1;
-        }
-
-        setHighlightLetter(new Position(newAcross, newDown));
-        previousLetter();
-
-        Word current = getCurrentWord();
-        setHighlightLetter(new Position(current.start.across, current.start.down));
-
-        return previous;
+        boolean skipCompleted = (skipCompletedLetters && letter != ' ');
+        return moveToNextLetter(skipCompleted);
     }
 
     public Position revealLetter() {
-        Box b = boxes[highlightLetter.down][highlightLetter.across];
+        Box b = boxes[cursorPosition.down][cursorPosition.across];
 
         if ((b != null) && (b.getSolution() != b.getResponse())) {
             b.setCheated(true);
             b.setResponse(b.getSolution());
             onBoardChanged();
 
-            return highlightLetter;
+            return cursorPosition;
         }
 
         return null;
@@ -612,8 +820,10 @@ public class Playboard {
     public List<Position> revealPuzzle() {
         ArrayList<Position> changes = new ArrayList<>();
 
-        for (int r = 0; r < boxes.length; r++) {
-            for (int c = 0; c < boxes[r].length; c++) {
+        int width = getWidth();
+        int height = getHeight();
+        for (int r = 0; r < height; r++) {
+            for (int c = 0; c < width; c++) {
                 Box b = boxes[r][c];
 
                 if ((b != null) && (b.getSolution() != b.getResponse())) {
@@ -631,9 +841,9 @@ public class Playboard {
 
     public List<Position> revealWord() {
         ArrayList<Position> changes = new ArrayList<>();
-        Position oldHighlight = this.highlightLetter;
+        Position oldCursor = cursorPosition;
         Word w = getCurrentWord();
-        this.highlightLetter = w.start;
+        cursorPosition = w.start;
 
         for (int i = 0; i < w.length; i++) {
             Position p = revealLetter();
@@ -642,32 +852,29 @@ public class Playboard {
                 changes.add(p);
             }
 
-            nextLetter(false);
+            moveToNextLetter(false);
         }
 
-        this.highlightLetter = oldHighlight;
+        cursorPosition = oldCursor;
 
         onBoardChanged();
 
         return changes;
     }
 
-    public boolean skipCurrentBox(Position p, boolean skipCompleted) {
+    private boolean shouldSkipLetter(Position p, boolean skipCompleted) {
         Box box = boxes[p.down][p.across];
-        return (box == null || skipCurrentBox(box, skipCompleted));
+        return (box == null || shouldSkipLetter(box, skipCompleted));
     }
 
-    public boolean skipCurrentBox(Box b, boolean skipCompleted) {
+    private boolean shouldSkipLetter(Box b, boolean skipCompleted) {
         return skipCompleted &&
                (b.getResponse() != ' ') &&
                (!isShowErrors() || b.getResponse() == b.getSolution());
     }
 
-    public Word toggleDirection() {
-        Word w = getCurrentWord();
-        across = !across;
-
-        return w;
+    public void toggleDirection() {
+        isCursorAcross = !isCursorAcross;
     }
 
     private void onBoardChanged() {
@@ -790,6 +997,21 @@ public class Playboard {
             hash = (29 * hash) + this.length;
 
             return hash;
+        }
+    }
+
+    private static class PositionAndOrientation {
+        public final Position pos;
+        public final boolean isAcross;
+
+        public PositionAndOrientation(Position pos, boolean isAcross) {
+            this.pos = pos;
+            this.isAcross = isAcross;
+        }
+
+        public PositionAndOrientation(int row, int col, boolean isAcross) {
+            this.pos = new Position(col, row);
+            this.isAcross = isAcross;
         }
     }
 

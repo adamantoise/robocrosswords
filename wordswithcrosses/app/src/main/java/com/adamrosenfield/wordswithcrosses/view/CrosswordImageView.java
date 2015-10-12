@@ -87,7 +87,7 @@ public class CrosswordImageView extends TouchImageView
     public float setRenderScale(float newScale)
     {
         float oldBoxSize = PlayboardRenderer.BOX_SIZE * renderScale;
-        Position highlight = board.getHighlightLetter();
+        Position highlight = board.getCursorPosition();
         float pivotX = ((float)highlight.across + 0.5f) * oldBoxSize;
         float pivotY = ((float)highlight.down + 0.5f) * oldBoxSize;
 

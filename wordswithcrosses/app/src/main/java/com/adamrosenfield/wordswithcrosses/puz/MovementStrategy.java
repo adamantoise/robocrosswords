@@ -20,40 +20,13 @@
 
 package com.adamrosenfield.wordswithcrosses.puz;
 
-import java.util.Arrays;
+public enum MovementStrategy {
 
-import com.adamrosenfield.wordswithcrosses.puz.Playboard.Position;
-import com.adamrosenfield.wordswithcrosses.puz.Playboard.Word;
+    // NOTE: These names must exactly match the strings in the
+    // "movementStrategyValues" array in res/values/array.xml .
+    MOVE_NEXT_ON_AXIS,
+    STOP_ON_END,
+    MOVE_NEXT_CLUE,
+    MOVE_PARALLEL_WORD;
 
-public abstract class MovementStrategy {
-
-    public static final MovementStrategy MOVE_NEXT_ON_AXIS = new MovementStrategyNextOnAxis();
-    public static final MovementStrategy STOP_ON_END = new MovementStrategyStopOnEnd();
-    public static final MovementStrategy MOVE_NEXT_CLUE = new MovementStrategyNextClue();
-    public static final MovementStrategy MOVE_PARALLEL_WORD = new MovementStrategyParallelWord();
-
-    public abstract Word move(Playboard board, boolean skipCompletedLetters);
-
-    public abstract Word back(Playboard board);
-
-    // Common helper methods for MovementStrategy implementations
-    protected static boolean isLastWordInDirection(Playboard board, Word w) {
-        return isLastWordInDirection(board.getBoxes(), w);
-    }
-
-    protected static boolean isLastWordInDirection(Box[][] boxes, Word w) {
-        if (w.across) {
-            return (w.start.down >= boxes.length - 1);
-        } else {
-            return (w.start.across >= boxes[w.start.down].length - 1);
-        }
-    }
-
-    protected static boolean isWordEnd(Position p, Word w) {
-        if (w.across) {
-            return (p.across == w.start.across + w.length - 1);
-        } else {
-            return (p.down == w.start.down + w.length - 1);
-        }
-    }
 }

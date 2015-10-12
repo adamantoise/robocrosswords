@@ -345,41 +345,26 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
         boardView.setClickListener(new ClickListener() {
             public void onClick(Position pos) {
-                Word prevWord = null;
-                if (pos != null) {
-                    prevWord = BOARD.setHighlightLetter(pos);
-                }
-                render(prevWord);
+                setCursorPositionAndRender(pos);
             }
 
             public void onDoubleClick(Position pos) {
                 if (prefs.getBoolean("doubleTap",  false)) {
                     if (fitToScreen) {
                         boardView.setRenderScale(lastBoardScale);
-
-                        Word prevWord = null;
-                        if (pos != null) {
-                            prevWord = BOARD.setHighlightLetter(pos);
-                        }
-                        render(prevWord);
                     } else {
                         lastBoardScale = boardView.getRenderScale();
                         boardView.fitToScreen();
-                        render();
                     }
 
                     fitToScreen = !fitToScreen;
-                } else {
-                    onClick(pos);
                 }
+
+                setCursorPositionAndRender(pos);
             }
 
             public void onLongClick(Position pos) {
-                Word prevWord = null;
-                if (pos != null) {
-                    prevWord = BOARD.setHighlightLetter(pos);
-                }
-                boardView.render(prevWord);
+                setCursorPositionAndRender(pos);
                 openContextMenu(boardView);
             }
         });
@@ -389,6 +374,23 @@ public class PlayActivity extends WordsWithCrossesActivity {
                 fitToScreen = false;
             }
         });
+    }
+
+    private void setCursorPositionAndRender(Position pos) {
+        Word prevWord = null;
+
+        if (pos != null) {
+            prevWord = BOARD.getCurrentWord();
+
+            boolean toggleDirection = (BOARD.getCursorPosition().equals(pos));
+            BOARD.setCursorPosition(pos);
+
+            if (toggleDirection) {
+                BOARD.toggleDirection();
+            }
+        }
+
+        render(prevWord);
     }
 
     private void initKeyboard() {
@@ -518,7 +520,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
             });
             across.setOnItemSelectedListener(new OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    if (!BOARD.isAcross() || (BOARD.getCurrentClueIndex() != position)) {
+                    if (!BOARD.isCursorAcross() || (BOARD.getCurrentClueIndex() != position)) {
                         BOARD.jumpTo(position, true);
                         render();
                     }
@@ -537,7 +539,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
             down.setOnItemSelectedListener(new OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    if (BOARD.isAcross() || (BOARD.getCurrentClueIndex() != position)) {
+                    if (BOARD.isCursorAcross() || (BOARD.getCurrentClueIndex() != position)) {
                         BOARD.jumpTo(position, false);
                         render();
                     }
@@ -583,7 +585,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
                         if(index > BOARD.getAcrossClues().length ){
                             index = index - BOARD.getAcrossClues().length - 1;
                         }
-                            if(!BOARD.isAcross() == across && BOARD.getCurrentClueIndex() != index){
+                            if(!BOARD.isCursorAcross() == across && BOARD.getCurrentClueIndex() != index){
                             arg0.setSelected(true);
                             BOARD.jumpTo(index, across);
                             render();
@@ -694,9 +696,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
         switch (keyCode) {
         case KeyEvent.KEYCODE_SEARCH:
-            BOARD.setMovementStrategy(MovementStrategy.MOVE_NEXT_CLUE);
-            previous = BOARD.nextWord();
-            BOARD.setMovementStrategy(getMovementStrategy());
+            previous = BOARD.moveToNextWord(MovementStrategy.MOVE_NEXT_CLUE);
             render(previous);
 
             return true;
@@ -730,13 +730,15 @@ public class PlayActivity extends WordsWithCrossesActivity {
             return true;
 
         case KeyEvent.KEYCODE_DPAD_CENTER:
-            previous = BOARD.toggleDirection();
+            previous = BOARD.getCurrentWord();
+            BOARD.toggleDirection();
             render(previous);
             return true;
 
         case KeyEvent.KEYCODE_SPACE:
             if (prefs.getBoolean("spaceChangesDirection", true)) {
-                previous = BOARD.toggleDirection();
+                previous = BOARD.getCurrentWord();
+                BOARD.toggleDirection();
                 render(previous);
             } else {
                 previous = BOARD.playLetter(' ');
@@ -747,10 +749,11 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
         case KeyEvent.KEYCODE_ENTER:
             if (prefs.getBoolean("enterChangesDirection", true)) {
-                previous = BOARD.toggleDirection();
+                previous = BOARD.getCurrentWord();
+                BOARD.toggleDirection();
                 render(previous);
             } else {
-                previous = BOARD.nextWord();
+                previous = BOARD.moveToNextWord(MovementStrategy.MOVE_NEXT_CLUE);
                 render(previous);
             }
 
@@ -1092,18 +1095,12 @@ public class PlayActivity extends WordsWithCrossesActivity {
     }
 
     private MovementStrategy getMovementStrategy() {
-        String stratName = prefs.getString("movementStrategy", "MOVE_NEXT_ON_AXIS");
+        String strategyName = prefs.getString("movementStrategy", MovementStrategy.MOVE_NEXT_ON_AXIS.toString());
 
-        if (stratName.equals("MOVE_NEXT_ON_AXIS")) {
-            return MovementStrategy.MOVE_NEXT_ON_AXIS;
-        } else if (stratName.equals("STOP_ON_END")) {
-            return MovementStrategy.STOP_ON_END;
-        } else if (stratName.equals("MOVE_NEXT_CLUE")) {
-            return MovementStrategy.MOVE_NEXT_CLUE;
-        } else if (stratName.equals("MOVE_PARALLEL_WORD")) {
-            return MovementStrategy.MOVE_PARALLEL_WORD;
-        } else {
-            LOG.warning("Invalid movement strategy: " + stratName);
+        try {
+            return MovementStrategy.valueOf(strategyName);
+        } catch (IllegalArgumentException e) {
+            LOG.warning("Invalid movement strategy: " + strategyName);
             return MovementStrategy.MOVE_NEXT_ON_AXIS;
         }
     }
@@ -1173,13 +1170,13 @@ public class PlayActivity extends WordsWithCrossesActivity {
         // if the cursor is currently off screen.
         if (this.prefs.getBoolean("ensureVisible", true)) {
             if ((previous != null) && previous.equals(BOARD.getCurrentWord())) {
-                boardView.ensureVisible(BOARD.getHighlightLetter());
+                boardView.ensureVisible(BOARD.getCursorPosition());
             } else {
                 boardView.ensureVisible(BOARD.getCurrentWordStart());
             }
         }
 
-        String dirStr = getResources().getString(BOARD.isAcross() ? R.string.across : R.string.down);
+        String dirStr = getResources().getString(BOARD.isCursorAcross() ? R.string.across : R.string.down);
         StringBuilder clueText = new StringBuilder();
         clueText.append("(")
                 .append(dirStr)
@@ -1196,10 +1193,10 @@ public class PlayActivity extends WordsWithCrossesActivity {
         clue.setText(clueText.toString());
 
         if (this.allClues != null) {
-            if (BOARD.isAcross()) {
+            if (BOARD.isCursorAcross()) {
                 ClueListAdapter cla = (ClueListAdapter) this.allCluesAdapter.sections
                         .get(0);
-                cla.setActiveDirection(BOARD.isAcross());
+                cla.setActiveDirection(BOARD.isCursorAcross());
                 cla.setHighlightClue(c);
                 this.allCluesAdapter.notifyDataSetChanged();
                 this.allClues.setSelectionFromTop(cla.indexOf(c) + 1,
@@ -1207,7 +1204,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
             } else {
                 ClueListAdapter cla = (ClueListAdapter) this.allCluesAdapter.sections
                         .get(1);
-                cla.setActiveDirection(!BOARD.isAcross());
+                cla.setActiveDirection(!BOARD.isCursorAcross());
                 cla.setHighlightClue(c);
                 this.allCluesAdapter.notifyDataSetChanged();
                 this.allClues.setSelectionFromTop(
@@ -1218,10 +1215,10 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
         if (this.down != null) {
             this.downAdapter.setHighlightClue(c);
-            this.downAdapter.setActiveDirection(!BOARD.isAcross());
+            this.downAdapter.setActiveDirection(!BOARD.isCursorAcross());
             this.downAdapter.notifyDataSetChanged();
 
-            if (!BOARD.isAcross() && !c.equals(this.down.getSelectedItem())) {
+            if (!BOARD.isCursorAcross() && !c.equals(this.down.getSelectedItem())) {
                 if (this.down instanceof ListView) {
                     ((ListView) this.down).setSelectionFromTop(
                             this.downAdapter.indexOf(c),
@@ -1235,10 +1232,10 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
         if (this.across != null) {
             this.acrossAdapter.setHighlightClue(c);
-            this.acrossAdapter.setActiveDirection(BOARD.isAcross());
+            this.acrossAdapter.setActiveDirection(BOARD.isCursorAcross());
             this.acrossAdapter.notifyDataSetChanged();
 
-            if (BOARD.isAcross() && !c.equals(this.across.getSelectedItem())) {
+            if (BOARD.isCursorAcross() && !c.equals(this.across.getSelectedItem())) {
                 if (across instanceof ListView) {
                     ((ListView) this.across).setSelectionFromTop(
                             this.acrossAdapter.indexOf(c),

@@ -277,34 +277,13 @@ public class Puzzle {
     public boolean isSolved() {
         for (int r = 0; r < boxes.length; r++) {
             for (int c = 0; c < boxes[r].length; c++) {
-                if (boxes[r][c] != null) {
-                    if (boxes[r][c].getResponse() != boxes[r][c].getSolution()) {
+                if (boxes[r][c] != null && boxes[r][c].getResponse() != boxes[r][c].getSolution()) {
                         return false;
-                    }
                 }
             }
         }
 
         return true;
-    }
-
-    public int getPercentFilled() {
-        int total = 0;
-        int filled = 0;
-
-        for (int r = 0; r < boxes.length; r++) {
-            for (int c = 0; c < boxes[r].length; c++) {
-                if (boxes[r][c] != null) {
-                    total++;
-
-                    if (boxes[r][c].getResponse() != ' ') {
-                        filled++;
-                    }
-                }
-            }
-        }
-
-        return (filled * 100) / (total);
     }
 
     public void setRawClues(String[] rawClues) {
