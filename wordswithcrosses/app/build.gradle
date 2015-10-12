@@ -17,6 +17,13 @@ android {
         testInstrumentationRunner "android.test.InstrumentationTestRunner"
     }
 
+    signingConfigs {
+        release {
+            storeFile file("~/.gnupg/wordswithcrosses.keystore")
+            keyAlias("wwc")
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
