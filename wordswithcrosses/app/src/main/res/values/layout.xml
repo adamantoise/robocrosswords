@@ -1,0 +1,3 @@
+<resources>
+  <item name="download_dialog" type="layout">@layout/download_dialog_normal</item>
+</resources>
