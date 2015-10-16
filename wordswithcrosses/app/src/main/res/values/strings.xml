@@ -38,6 +38,7 @@
     <string name="pref_password">Password</string>
     <string name="pref_password_summary_nyt">NYT Password</string>
     <string name="pref_get_subscription">Get a Subscription</string>
+    <string name="pref_updates_mon_to_fri">Updates Monday–Friday</string>
     <string name="pref_updates_mon_to_sat">Updates Monday–Saturday</string>
     <string name="pref_updates_thu">Updates Thursdays</string>
     <string name="pref_updates_sun">Updates Sundays</string>
