@@ -692,76 +692,87 @@ public class PlayActivity extends WordsWithCrossesActivity {
         }
         lastKey = now;
 
-        Word previous;
+        Position prevCursorPos;
+        Word prevWord;
 
         switch (keyCode) {
         case KeyEvent.KEYCODE_SEARCH:
-            previous = BOARD.moveToNextWord(MovementStrategy.MOVE_NEXT_CLUE);
-            render(previous);
-
+            prevWord = BOARD.moveToNextWord(MovementStrategy.MOVE_NEXT_CLUE);
+            render(prevWord);
             return true;
 
         case KeyEvent.KEYCODE_BACK:
-            this.finish();
-
+            finish();
             return true;
 
         case KeyEvent.KEYCODE_MENU:
             return false;
 
         case KeyEvent.KEYCODE_DPAD_DOWN:
-            previous = BOARD.moveDown();
-            render(previous);
+            prevCursorPos = BOARD.getCursorPosition();
+            prevWord = BOARD.moveDown();
+            toggleDirectionIfCursorDidNotMove(prevCursorPos);
+
+            render(prevWord);
             return true;
 
         case KeyEvent.KEYCODE_DPAD_UP:
-            previous = BOARD.moveUp();
-            render(previous);
+            prevCursorPos = BOARD.getCursorPosition();
+            prevWord = BOARD.moveUp();
+            toggleDirectionIfCursorDidNotMove(prevCursorPos);
+
+            render(prevWord);
             return true;
 
         case KeyEvent.KEYCODE_DPAD_LEFT:
-            previous = BOARD.moveLeft();
-            render(previous);
+            prevCursorPos = BOARD.getCursorPosition();
+            prevWord = BOARD.moveLeft();
+            toggleDirectionIfCursorDidNotMove(prevCursorPos);
+
+            render(prevWord);
             return true;
 
         case KeyEvent.KEYCODE_DPAD_RIGHT:
-            previous = BOARD.moveRight();
-            render(previous);
+            prevCursorPos = BOARD.getCursorPosition();
+            prevWord = BOARD.moveRight();
+            toggleDirectionIfCursorDidNotMove(prevCursorPos);
+
+            render(prevWord);
             return true;
 
         case KeyEvent.KEYCODE_DPAD_CENTER:
-            previous = BOARD.getCurrentWord();
+            prevWord = BOARD.getCurrentWord();
             BOARD.toggleDirection();
-            render(previous);
+            render(prevWord);
             return true;
 
         case KeyEvent.KEYCODE_SPACE:
             if (prefs.getBoolean("spaceChangesDirection", true)) {
-                previous = BOARD.getCurrentWord();
+                prevWord = BOARD.getCurrentWord();
                 BOARD.toggleDirection();
-                render(previous);
+                render(prevWord);
             } else {
-                previous = BOARD.playLetter(' ');
-                render(previous);
+                prevWord = BOARD.playLetter(' ');
+                render(prevWord);
             }
 
             return true;
 
         case KeyEvent.KEYCODE_ENTER:
             if (prefs.getBoolean("enterChangesDirection", true)) {
-                previous = BOARD.getCurrentWord();
+                prevWord = BOARD.getCurrentWord();
                 BOARD.toggleDirection();
-                render(previous);
+                render(prevWord);
             } else {
-                previous = BOARD.moveToNextWord(MovementStrategy.MOVE_NEXT_CLUE);
-                render(previous);
+                prevWord = BOARD.moveToNextWord(MovementStrategy.MOVE_NEXT_CLUE);
+                render(prevWord);
             }
 
             return true;
 
         case KeyEvent.KEYCODE_DEL:
-            previous = BOARD.deleteLetter();
-            render(previous);
+            prevWord = BOARD.deleteLetter();
+            render(prevWord);
             return true;
         }
 
@@ -770,13 +781,19 @@ public class PlayActivity extends WordsWithCrossesActivity {
                         .getDisplayLabel() : ((char) keyCode));
 
         if (PLAYABLE_CHARS.indexOf(c) != -1) {
-            previous = BOARD.playLetter(c);
-            this.render(previous);
+            prevWord = BOARD.playLetter(c);
+            this.render(prevWord);
 
             return true;
         }
 
         return super.onKeyUp(keyCode, event);
+    }
+
+    private void toggleDirectionIfCursorDidNotMove(Position prevCursorPos) {
+        if (BOARD.getCursorPosition().equals(prevCursorPos)) {
+            BOARD.toggleDirection();
+        }
     }
 
     @Override
