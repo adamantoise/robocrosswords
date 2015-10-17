@@ -23,7 +23,7 @@ import java.util.Calendar;
 
 /**
  * Joseph Crosswords
- * URL: http://puzzles.kingdigital.com/javacontent/clues/YYYYMMDD.txt
+ * URL: http://puzzles.kingdigital.com/javacontent/clues/joseph/YYYYMMDD.txt
  * Date: Monday-Saturday
  */
 public class JosephDownloader extends KFSDownloader

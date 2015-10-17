@@ -23,7 +23,7 @@ import java.util.Calendar;
 
 /**
  * Premier Crosswords
- * URL: http://puzzles.kingdigital.com/javacontent/clues/YYYYMMDD.txt
+ * URL: http://puzzles.kingdigital.com/javacontent/clues/premier/YYYYMMDD.txt
  * Date: Sunday
  */
 public class PremierDownloader extends KFSDownloader

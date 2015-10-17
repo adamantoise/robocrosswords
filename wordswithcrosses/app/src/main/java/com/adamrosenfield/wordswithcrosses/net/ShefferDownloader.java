@@ -23,7 +23,7 @@ import java.util.Calendar;
 
 /**
  * Sheffer Crosswords
- * URL: http://puzzles.kingdigital.com/javacontent/clues/YYYYMMDD.txt
+ * URL: http://puzzles.kingdigital.com/javacontent/clues/sheffer/YYYYMMDD.txt
  * Date: Monday-Saturday
  */
 public class ShefferDownloader extends KFSDownloader
