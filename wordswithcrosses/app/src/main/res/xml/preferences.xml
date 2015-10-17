@@ -223,11 +223,13 @@
             android:summary="@string/pref_nevillefogarty_summary"
             android:defaultValue="true"
             android:key="downloadNevilleFogarty" />
+        <!-- People Magazine stopped publishing new puzzles a while back
         <CheckBoxPreference
             android:title="People Magazine"
             android:summary="@string/pref_people_summary"
             android:defaultValue="true"
             android:key="downloadPeople" />
+        -->
         <CheckBoxPreference
             android:title="Premier Crosswords"
             android:summary="@string/pref_updates_sun"

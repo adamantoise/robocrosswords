@@ -184,9 +184,10 @@ public class Downloaders {
             downloaders.add(new PatrickBlindauerDownloader());
         }
 
-        if (includeAll || prefs.getBoolean("downloadPeople", true)) {
-            downloaders.add(new PeopleScraper());
-        }
+        // People Magazine stopped publishing new puzzles a while back
+        //if (includeAll || prefs.getBoolean("downloadPeople", true)) {
+        //    downloaders.add(new PeopleScraper());
+        //}
 
         if (includeAll || prefs.getBoolean("downloadPremier", true)) {
             downloaders.add(new PremierDownloader());
