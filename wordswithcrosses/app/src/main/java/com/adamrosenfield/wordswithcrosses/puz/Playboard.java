@@ -391,12 +391,16 @@ public class Playboard {
      * -If current box is empty, move back one character.  If not, stay still.
      * -Delete the letter in the current box.
      */
-    public Word deleteLetter() {
+    public Word deleteLetter(boolean deleteCrossesBoundaries) {
         Box currentBox = boxes[cursorPosition.down][cursorPosition.across];
         Word wordToReturn = getCurrentWord();
 
         if (currentBox.getResponse() == ' ') {
-            wordToReturn = moveToPreviousLetterStopAtEndOfWord();
+            if (deleteCrossesBoundaries) {
+                wordToReturn = moveToPreviousLetter();
+            } else {
+                wordToReturn = moveToPreviousLetterStopAtEndOfWord();
+            }
             currentBox = boxes[cursorPosition.down][cursorPosition.across];
         }
 
@@ -467,6 +471,14 @@ public class Playboard {
 
     public Word moveDownStopAtEndOfWord(boolean skipCompleted) {
         return moveCursor(1, 0, skipCompleted, true);
+    }
+
+    public Word moveToPreviousLetter() {
+        if (isCursorAcross) {
+            return moveLeft(false);
+        } else {
+            return moveUp(false);
+        }
     }
 
     public Word moveToPreviousLetterStopAtEndOfWord() {

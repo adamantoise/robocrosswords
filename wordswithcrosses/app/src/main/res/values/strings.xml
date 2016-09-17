@@ -78,7 +78,7 @@
     <string name="pref_delete_on_cleanup">Delete on Cleanup</string>
     <string name="pref_delete_on_cleanup_summary">Delete rather than archive old puzzles</string>
     <string name="pref_cleanup_unfinished">Cleanup Unfinished</string>
-    <string name="pref_cleanup_unfinished_summary">Determines how old an unfinished puzzle must be before it is archvied/deleted</string>
+    <string name="pref_cleanup_unfinished_summary">Determines how old an unfinished puzzle must be before it is archived/deleted</string>
     <string name="pref_snap_to_current_word">Snap to Current Word</string>
     <string name="pref_snap_to_current_word_summary">Toggles the auto-scrolling of the playboard to the current play position</string>
     <string name="pref_show_length">Show Length</string>
@@ -87,6 +87,8 @@
     <string name="pref_scroll_to_clue_summary">Toggles the auto-scrolling to the selected clue in the clues list mode. (Works like Shortyz 1)</string>
     <string name="pref_movement_style">Movement Style</string>
     <string name="pref_movement_style_summary">Select what happens when you type past the end of a word</string>
+    <string name="pref_delete_crosses_boundaries">Delete Crosses Boundaries</string>
+    <string name="pref_delete_crosses_boundaries_summary">Select whether delete continues past the beginning of a word</string>
     <string name="pref_skip_filled_boxes">Skip Filled Boxes</string>
     <string name="pref_skip_filled_boxes_summary">Toggles the skipping of filled boxes when you enter a new letter</string>
     <string name="pref_space_changes_direction">Space Changes Direction</string>

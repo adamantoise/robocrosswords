@@ -760,7 +760,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
             return true;
 
         case KeyEvent.KEYCODE_DEL:
-            previous = BOARD.deleteLetter();
+            previous = BOARD.deleteLetter(prefs.getBoolean("deleteCrossesBoundaries", false));
             render(previous);
             return true;
         }
