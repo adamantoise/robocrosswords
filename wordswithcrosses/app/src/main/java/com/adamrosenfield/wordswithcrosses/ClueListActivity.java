@@ -384,7 +384,7 @@ public class ClueListActivity extends WordsWithCrossesActivity {
 
         case KeyEvent.KEYCODE_DEL:
             w = board.getCurrentWord();
-            board.deleteLetter();
+            board.deleteLetter(false));
 
             Position p = board.getCursorPosition();
 
