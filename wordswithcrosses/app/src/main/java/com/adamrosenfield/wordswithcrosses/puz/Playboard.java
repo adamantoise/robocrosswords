@@ -954,12 +954,12 @@ public class Playboard {
 
         @Override
         public int hashCode() {
-            return this.across ^ this.down;
+            return (across * 65537 + down);
         }
 
         @Override
         public String toString() {
-            return "[" + this.across + " x " + this.down + "]";
+            return "[" + across + " x " + down + "]";
         }
     }
 
