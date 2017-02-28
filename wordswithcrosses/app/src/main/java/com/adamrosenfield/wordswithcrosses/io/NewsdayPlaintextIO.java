@@ -85,6 +85,10 @@ public class NewsdayPlaintextIO
             // correct order
             int width = scanner.nextInt();
             int height = scanner.nextInt();
+            if (width <= 0 || height <= 0) {
+                throw new IOException("Invalid dimensions: width=" + width + " height=" + height);
+            }
+
             puzzle.setWidth(width);
             puzzle.setHeight(height);
 
