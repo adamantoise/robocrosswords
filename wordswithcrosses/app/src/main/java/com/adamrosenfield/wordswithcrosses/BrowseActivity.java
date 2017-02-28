@@ -775,7 +775,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
             final SourceListAdapter adapter = new SourceListAdapter(this, this.sourceList);
             this.sources.setAdapter(adapter);
             this.sources.setOnItemClickListener(new OnItemClickListener() {
-                    public void onItemClick(AdapterView<?> list, View view, int arg2, long arg3) {
+                    public void onItemClick(AdapterView<?> list, View view, int position, long id) {
                         String selected = (String) view.getTag();
                         adapter.current = selected;
                         adapter.notifyDataSetInvalidated();

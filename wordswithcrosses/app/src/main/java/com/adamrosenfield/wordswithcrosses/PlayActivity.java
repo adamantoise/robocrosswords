@@ -567,31 +567,31 @@ public class PlayActivity extends WordsWithCrossesActivity {
             allClues.setAdapter(this.allCluesAdapter);
 
             allClues.setOnItemClickListener(new OnItemClickListener() {
-                public void onItemClick(AdapterView<?> arg0, View arg1,
-                        int clickIndex, long arg3) {
-                    boolean across = clickIndex <= BOARD.getAcrossClues().length +1;
-                    int index = clickIndex -1;
-                    if(index > BOARD.getAcrossClues().length ){
+                public void onItemClick(AdapterView<?> parent, View view,
+                        int position, long id) {
+                    boolean across = position <= BOARD.getAcrossClues().length +1;
+                    int index = position - 1;
+                    if (index > BOARD.getAcrossClues().length) {
                         index = index - BOARD.getAcrossClues().length - 1;
                     }
-                    arg0.setSelected(true);
+                    parent.setSelected(true);
                     BOARD.jumpTo(index, across);
                     render();
                 }
             });
             allClues.setOnItemSelectedListener(new OnItemSelectedListener() {
-                public void onItemSelected(AdapterView<?> arg0, View arg1,
-                        int clickIndex, long arg3) {
-                        boolean across = clickIndex <= BOARD.getAcrossClues().length +1;
-                        int index = clickIndex -1;
-                        if(index > BOARD.getAcrossClues().length ){
-                            index = index - BOARD.getAcrossClues().length - 1;
-                        }
-                            if(!BOARD.isCursorAcross() == across && BOARD.getCurrentClueIndex() != index){
-                            arg0.setSelected(true);
-                            BOARD.jumpTo(index, across);
-                            render();
-                        }
+                public void onItemSelected(AdapterView<?> parent, View view,
+                        int position, long id) {
+                    boolean across = position <= BOARD.getAcrossClues().length +1;
+                    int index = position - 1;
+                    if (index > BOARD.getAcrossClues().length) {
+                        index = index - BOARD.getAcrossClues().length - 1;
+                    }
+                    if (!BOARD.isCursorAcross() == across && BOARD.getCurrentClueIndex() != index) {
+                        parent.setSelected(true);
+                        BOARD.jumpTo(index, across);
+                        render();
+                    }
                 }
 
                 public void onNothingSelected(AdapterView<?> view) {

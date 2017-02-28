@@ -45,7 +45,7 @@ public class HoneycombUtil extends GingerbreadUtil {
         View home = a.findViewById(android.R.id.home);
         if (home != null) {
             home.setOnClickListener(new OnClickListener() {
-                    public void onClick(View arg0) {
+                    public void onClick(View view) {
                         a.finish();
                     }
                 });
