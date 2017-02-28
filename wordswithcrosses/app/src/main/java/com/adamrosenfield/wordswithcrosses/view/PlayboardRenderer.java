@@ -206,7 +206,7 @@ public class PlayboardRenderer {
                 canvas.drawRect(boxRect, this.white);
             }
 
-            if (box.isAcross() | box.isDown()) {
+            if (box.isAcross() || box.isDown()) {
                 canvas.drawText(Integer.toString(box.getClueNumber()), x + 2, y + numberTextSize + 2, this.numberText);
             }
 
