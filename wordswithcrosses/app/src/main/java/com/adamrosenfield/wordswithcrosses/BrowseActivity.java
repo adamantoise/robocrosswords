@@ -136,6 +136,8 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, view, menuInfo);
+
         AdapterView.AdapterContextMenuInfo info;
 
         try {
@@ -274,6 +276,8 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
         if ((resultCode == RESULT_OK) && (mDownloadDialog != null) && mDownloadDialog.isShowing()) {
             // If the user hit close in the browser download activity, we close the dialog.
             mDownloadDialog.dismiss();
@@ -438,6 +442,8 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
     @Override
     protected void onPrepareDialog(int id, Dialog dialog) {
+        super.onPrepareDialog(id, dialog);
+
         switch (id) {
         case DOWNLOAD_DIALOG_ID:
             downloadPickerDialogBuilder.updatePuzzleSelect(null);

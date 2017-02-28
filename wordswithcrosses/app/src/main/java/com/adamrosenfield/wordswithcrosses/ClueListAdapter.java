@@ -129,8 +129,8 @@ public class ClueListAdapter extends BaseAdapter {
     public int indexOf(Clue clue) {
         return Arrays.binarySearch(clues, clue,
             new Comparator<Clue>() {
-                public int compare(Clue arg0, Clue arg1) {
-                    return ((Integer) arg0.number).compareTo(arg1.number);
+                public int compare(Clue clue1, Clue clue2) {
+                    return Integer.valueOf(clue1.number).compareTo(clue2.number);
                 }
             });
     }

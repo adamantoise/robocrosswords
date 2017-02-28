@@ -69,6 +69,8 @@ public class ClueListActivity extends WordsWithCrossesActivity {
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
         this.configuration = newConfig;
         try {
             if (this.prefs.getBoolean("forceKeyboard", false)
@@ -86,8 +88,9 @@ public class ClueListActivity extends WordsWithCrossesActivity {
     }
 
     @Override
-    public void onCreate(Bundle icicle) {
-        super.onCreate(icicle);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
         utils.holographic(this);
         utils.finishOnHomeButton(this);
         try {
@@ -340,6 +343,8 @@ public class ClueListActivity extends WordsWithCrossesActivity {
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+
         if (!hasSetInitialZoom) {
             imageView.fitToHeight();
             hasSetInitialZoom = true;

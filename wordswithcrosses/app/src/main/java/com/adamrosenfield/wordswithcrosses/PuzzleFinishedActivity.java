@@ -44,6 +44,7 @@ public class PuzzleFinishedActivity extends WordsWithCrossesActivity{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         utils.holographic(this);
         setContentView(R.layout.completed);
         this.getWindow().setLayout(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);

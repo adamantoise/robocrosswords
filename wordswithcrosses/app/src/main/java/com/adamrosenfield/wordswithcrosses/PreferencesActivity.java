@@ -33,6 +33,7 @@ public class PreferencesActivity extends PreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         deprecatedAddPreferencesFromResource(R.xml.preferences);
 
         setUsernameAndPasswordChangeListeners("nytUsername", "nytPassword", "downloadNYT");

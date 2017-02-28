@@ -150,6 +150,8 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
         this.configuration = newConfig;
 
         if (shouldShowKeyboard(configuration)) {
@@ -601,6 +603,8 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+
         if (!hasSetInitialZoom) {
             float zoom;
             String zoomStr = prefs.getString("initialZoom", "0");
@@ -633,6 +637,8 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
         mOptionsMenu = menu;
 
         int showItemStr = (showErrors ? R.string.menu_hide_errors : R.string.menu_show_errors);
@@ -869,7 +875,7 @@ public class PlayActivity extends WordsWithCrossesActivity {
             return true;
 
         default:
-            return false;
+            return super.onMenuItemSelected(featureId, item);
         }
     }
 
@@ -880,6 +886,8 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
         this.render();
     }
 
@@ -911,6 +919,8 @@ public class PlayActivity extends WordsWithCrossesActivity {
 
     @Override
     protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
+        super.onPrepareDialog(id, dialog, args);
+
         if (id == INFO_DIALOG) {
             if (timer != null) {
                 timer.stop();
