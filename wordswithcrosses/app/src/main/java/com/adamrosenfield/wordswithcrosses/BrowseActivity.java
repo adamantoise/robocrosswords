@@ -143,7 +143,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         try {
             info = (AdapterView.AdapterContextMenuInfo)menuInfo;
         } catch (ClassCastException e) {
-            Log.e("com.adamrosenfield.wordswithcrosses", "bad menuInfo", e);
+            Log.e("wordswithcrosses", "bad menuInfo", e);
             return;
         }
 

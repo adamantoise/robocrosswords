@@ -115,7 +115,7 @@ public class PuzzleParsingHandler extends DefaultHandler {
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
             if (inQuestItem && inQuestItemText) {
-                questItemText.append("<" + localName + ">");
+                questItemText.append("<").append(localName).append(">");
             } else if (localName.equals("div")) {
                 if (hasClass(attributes, "hquest")) {
                     current = horizontal;
@@ -205,7 +205,7 @@ public class PuzzleParsingHandler extends DefaultHandler {
             } else if (inQuestItem && !inQuestItemText && "em".equals(localName)) {
                 inQuestItemText = true;
             } else if (inQuestItem && inQuestItemText) {
-                questItemText.append("</" + localName + ">");
+                questItemText.append("</").append(localName).append(">");
             }
         }
 

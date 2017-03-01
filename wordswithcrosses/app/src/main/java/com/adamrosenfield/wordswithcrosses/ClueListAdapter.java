@@ -114,7 +114,7 @@ public class ClueListAdapter extends BaseAdapter {
               .append(' ');
         }
 
-        sb.append(" [" + boxes.length + "]");
+        sb.append(" [").append(boxes.length).append("]");
         word.setText(sb);
 
         if (this.isActive && c.equals(this.highlightClue)) {
