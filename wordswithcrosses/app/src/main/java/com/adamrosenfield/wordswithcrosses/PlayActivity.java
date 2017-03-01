@@ -188,11 +188,14 @@ public class PlayActivity extends WordsWithCrossesActivity {
             showingProgressBar = true;
         }
 
-        // Must happen after all calls to requestWindowFeature()
-        setContentView(R.layout.play);
-
+        // Must be called before any views are instantiated in the Context (for
+        // example, before calling setContentView(View) or inflate(int,
+        // ViewGroup)).
         utils.holographic(this);
         utils.finishOnHomeButton(this);
+
+        // Must be called after all calls to requestWindowFeature()
+        setContentView(R.layout.play);
 
         setDefaultKeyMode(Activity.DEFAULT_KEYS_DISABLE);
 
