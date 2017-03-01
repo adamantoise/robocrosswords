@@ -77,10 +77,6 @@ public class Downloaders {
 
         downloaders.add(new BEQDownloader());
 
-        if (includeAll || prefs.getBoolean("downloadBuzzFeed", true)) {
-            downloaders.add(new BuzzFeedDownloader());
-        }
-
         if (includeAll || prefs.getBoolean("downloadCHE", true)) {
             downloaders.add(new CHEDownloader());
         }

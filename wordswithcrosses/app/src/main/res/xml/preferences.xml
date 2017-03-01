@@ -11,11 +11,6 @@
         android:summary="@string/pref_daily_crosswords_summary"
         android:key="selectDaily"
         >
-        <CheckBoxPreference
-            android:title="BuzzFeed"
-            android:summary="@string/pref_updates_mon_to_fri"
-            android:defaultValue="true"
-            android:key="downloadBuzzFeed" />
         <!-- CrosSynergy is subscription-only as of 2015-xx-xx
         <CheckBoxPreference
             android:title="CrosSynergy/Washington Post"
