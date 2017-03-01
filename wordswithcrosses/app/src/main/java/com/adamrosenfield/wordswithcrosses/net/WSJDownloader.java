@@ -36,12 +36,15 @@ import com.adamrosenfield.wordswithcrosses.puz.Puzzle;
 
 /**
  * Wall Street Journal
- * URL: http://blogs.wsj.com/applets/[gny|wsj]xwdYYYYMMDD.dat
+ * URL: http://herbach.dnsalias.com/wsj/wsjYYMMDD.puz
  * Date: Monday-Saturday
  */
 public class WSJDownloader extends AbstractDownloader {
 
     private static final String NAME = "Wall Street Journal";
+
+    private static final String V1_BASE_URL = "http://blogs.wsj.com/applets/";
+    private static final String V2_BASE_URL = "http://herbach.dnsalias.com/wsj/wsj";
 
     /**
      * Up through 2015-09-11, the WSJ was weekly on Fridays.  From 2015-09-19
@@ -49,8 +52,15 @@ public class WSJDownloader extends AbstractDownloader {
      */
     private static final Calendar DAILY_START_DATE = CalendarUtil.createDate(2015, 9, 19);
 
+    /**
+     * Prior to this date, the puzzles were at:
+     *   http://blogs.wsj.com/applets/gnyxwdYYYYMMDD.dat (Monday-Friday)
+     *   http://blogs.wsj.com/applets/wsjxwdYYYYMMDD.dat (Saturday)
+     */
+    private static final Calendar V2_START_DATE = CalendarUtil.createDate(2017, 2, 13);
+
     public WSJDownloader() {
-        super("http://blogs.wsj.com/applets/", NAME);
+        super("", NAME);
     }
 
     public boolean isPuzzleAvailable(Calendar date) {
@@ -63,14 +73,18 @@ public class WSJDownloader extends AbstractDownloader {
 
     @Override
     public void download(Calendar date) throws IOException {
-        String url = baseUrl + createUrlSuffix(date);
-        String puzzleData = downloadUrlToString(url);
+        if (date.before(V2_START_DATE)) {
+            String url = baseUrl + createUrlSuffix(date);
+            String puzzleData = downloadUrlToString(url);
 
-        Puzzle puzzle = convertPuzzle(puzzleData, date);
+            Puzzle puzzle = convertPuzzle(puzzleData, date);
 
-        String destFilename = getFilename(date);
-        File destFile = new File(WordsWithCrossesApplication.CROSSWORDS_DIR, destFilename);
-        IO.save(puzzle, destFile);
+            String destFilename = getFilename(date);
+            File destFile = new File(WordsWithCrossesApplication.CROSSWORDS_DIR, destFilename);
+            IO.save(puzzle, destFile);
+        } else {
+            super.download(date);
+        }
     }
 
     private Puzzle convertPuzzle(String puzzleData, Calendar date) throws IOException {
@@ -148,16 +162,25 @@ public class WSJDownloader extends AbstractDownloader {
     @Override
     protected String createUrlSuffix(Calendar date) {
         String prefix;
-        if (date.before(DAILY_START_DATE) || date.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
-            prefix = "wsjxwd";
-        } else {
-            prefix = "gnyxwd";
-        }
+        if (date.before(V2_START_DATE)) {
+            if (date.before(DAILY_START_DATE) || date.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
+                prefix = "wsjxwd";
+            } else {
+                prefix = "gnyxwd";
+            }
 
-        return (prefix +
-                date.get(Calendar.YEAR) +
-                DEFAULT_NF.format(date.get(Calendar.MONTH) + 1) +
-                DEFAULT_NF.format(date.get(Calendar.DAY_OF_MONTH)) +
-                ".dat");
+            return (V1_BASE_URL +
+                    prefix +
+                    date.get(Calendar.YEAR) +
+                    DEFAULT_NF.format(date.get(Calendar.MONTH) + 1) +
+                    DEFAULT_NF.format(date.get(Calendar.DAY_OF_MONTH)) +
+                    ".dat");
+        } else {
+            return (V2_BASE_URL +
+                    DEFAULT_NF.format(date.get(Calendar.YEAR) % 100) +
+                    DEFAULT_NF.format(date.get(Calendar.MONTH) + 1) +
+                    DEFAULT_NF.format(date.get(Calendar.DAY_OF_MONTH)) +
+                    ".puz");
+        }
     }
 }
