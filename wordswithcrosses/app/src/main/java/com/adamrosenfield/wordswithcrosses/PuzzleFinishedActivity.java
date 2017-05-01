@@ -114,7 +114,7 @@ public class PuzzleFinishedActivity extends WordsWithCrossesActivity{
             public void onClick(View v) {
                 Intent sendIntent = new Intent(Intent.ACTION_SEND);
 //              sendIntent.putExtra(Intent.EXTRA_SUBJECT,
-//                      "I finished a puzzle in Words With Crosses!");
+//                      "I finished a puzzle in Robo Crosswords!");
                 sendIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
                 sendIntent.setType("text/plain");
                 startActivity(Intent.createChooser(sendIntent, "Share your time"));

@@ -1,13 +1,15 @@
-Words With Crosses
-==================
+Robo Crosswords
+===============
 
-*Words With Crosses* is a free, open-source crossword puzzle app for Android.  It was forked from [*Shortyz Crosswords*](http://code.google.com/p/shortyz/) by Robert Cooper.
+*Robo Crosswords* is a free, open-source crossword puzzle app for Android.  It was forked from [*Shortyz Crosswords*](http://code.google.com/p/shortyz/) by Robert Cooper.
 
-*Words With Crosses* is licensed under the GNU General Public License, Version 3.  See the file `COPYING.html` for the license text.
+*Robo Crosswords* is licensed under the GNU General Public License, Version 3.  See the file `COPYING.html` for the license text.
 
-If you'd like to support the continued development of *Words With Crosses*, [please donate](http://adamrosenfield.com/donate).  This is a side project of mine done in my spare time, outside of my day job.
+*Robo Crosswords* was formerly known as *Words With Crosses*, until in 2017, I was demanded by Zynga to change the name.  This app has never been associated with or related to Zynga or its app *Words With Friends*.
 
-[Downloadd *Words With Crosses* on Google Play](https://play.google.com/store/apps/details?id=com.adamrosenfield.wordswithcrosses)
+If you'd like to support the continued development of *Robo Crosswords*, [please donate](http://adamrosenfield.com/donate).  This is a side project of mine done in my spare time, outside of my day job.
+
+[Download *Robo Crosswords* on Google Play](https://play.google.com/store/apps/details?id=com.adamrosenfield.wordswithcrosses)
 
 Features
 --------
@@ -49,7 +51,7 @@ Puzzle sources
 License
 -------
 
-*Words With Crosses* is licensed under the terms of the [GNU General Public License Verion 3](http://www.gnu.org/copyleft/gpl.html).
+*Robo Crosswords* is licensed under the terms of the [GNU General Public License Verion 3](http://www.gnu.org/copyleft/gpl.html).
 
 Third-party libraries
 ---------------------

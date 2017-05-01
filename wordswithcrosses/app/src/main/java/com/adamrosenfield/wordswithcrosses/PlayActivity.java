@@ -997,7 +997,13 @@ public class PlayActivity extends WordsWithCrossesActivity {
     }
 
     private void handleOnResume() {
-        setTitle("Words With Crosses - " + puz.getTitle() + " - " + puz.getAuthor() + " -  " + puz.getCopyright());
+        setTitle(getResources().getString(R.string.app_name) +
+                 " - " +
+                 puz.getTitle() +
+                 " - " +
+                 puz.getAuthor() +
+                 " - " +
+                 puz.getCopyright());
 
         BOARD.setSkipCompletedLetters(prefs.getBoolean("skipFilled", false));
         BOARD.setMovementStrategy(getMovementStrategy());

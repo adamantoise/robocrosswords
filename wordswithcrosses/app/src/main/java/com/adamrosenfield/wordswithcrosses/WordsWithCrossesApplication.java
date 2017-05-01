@@ -55,7 +55,7 @@ public class WordsWithCrossesApplication extends Application {
 
     private static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
 
-    public static final String DEVELOPER_EMAIL = "wordswithcrosses@adamrosenfield.com";
+    public static final String DEVELOPER_EMAIL = "robocrosswords@adamrosenfield.com";
 
     private static final String PREFERENCES_VERSION_PREF = "preferencesVersion";
     private static final int PREFERENCES_VERSION = 5;
@@ -200,7 +200,7 @@ public class WordsWithCrossesApplication extends Application {
             Intent sendIntent = new Intent(Intent.ACTION_SEND);
             sendIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             sendIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[] { DEVELOPER_EMAIL });
-            sendIntent.putExtra(Intent.EXTRA_SUBJECT, "Words With Crosses Debug Package");
+            sendIntent.putExtra(Intent.EXTRA_SUBJECT, "Robo Crosswords Debug Package");
             Uri uri = Uri.fromFile(zipFile);
             sendIntent.putExtra(Intent.EXTRA_STREAM, uri);
             LOG.info("Sending debug info: " + uri);

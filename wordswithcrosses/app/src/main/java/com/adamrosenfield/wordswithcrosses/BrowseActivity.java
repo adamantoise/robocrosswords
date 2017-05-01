@@ -304,7 +304,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
         MENU_SETTINGS = getResources().getString(R.string.menu_settings);
         PREF_SENDDEBUGPACKAGE = getResources().getString(R.string.pref_send_debug_package);
 
-        this.setTitle("Puzzles - Words With Crosses");
+        this.setTitle("Puzzles - " + getResources().getString(R.string.app_name));
         setDefaultKeyMode(DEFAULT_KEYS_SHORTCUT);
         this.setContentView(R.layout.browse);
         this.fastScrollView = (CustomFastScrollView)this.findViewById(R.id.fastScrollView);
