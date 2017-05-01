@@ -179,11 +179,13 @@
                 android:title="@string/pref_get_subscription"
                 custom:url="http://www.xwordnation.com/"/>
         </PreferenceScreen>
+        <!-- Devil Cross is no longer published as of 2016-04-01
         <CheckBoxPreference
             android:title="Devil Cross"
             android:summary="@string/pref_devilcross_summary"
             android:defaultValue="true"
             android:key="downloadDevilCross" />
+        -->
         <CheckBoxPreference
             android:title="Erik Agard"
             android:summary="@string/pref_erikagard_summary"
@@ -213,11 +215,13 @@
             android:defaultValue="true"
             android:key="downloadMerlReagle" />
         -->
+        <!-- Nevile Fogarty is no longer published as of 2015-06-05
         <CheckBoxPreference
             android:title="Neville Fogarty"
             android:summary="@string/pref_nevillefogarty_summary"
             android:defaultValue="true"
             android:key="downloadNevilleFogarty" />
+        -->
         <!-- People Magazine stopped publishing new puzzles a while back
         <CheckBoxPreference
             android:title="People Magazine"
@@ -245,11 +249,13 @@
             android:summary="@string/pref_mmmm_summary"
             android:defaultValue="true"
             android:key="downloadMMMM" />
+        <!-- Patrick Blindauer's free monthly puzzle is no longer published as of 2016-10-01
         <CheckBoxPreference
             android:title="Patrick Blindauer's Free Monthly Puzzle"
             android:summary="@string/pref_blindauer_summary"
             android:defaultValue="true"
             android:key="downloadPatrickBlindauer" />
+        -->
     </PreferenceScreen>
     <com.adamrosenfield.wordswithcrosses.OpenURLPreference
         android:title="@string/pref_about_puzzles"

@@ -101,15 +101,16 @@ public class Downloaders {
           downloaders.add(new DerStandardDownloader());
         }
 
-        if (includeAll || prefs.getBoolean("downloadDevilCross", true)) {
-            downloaders.add(new DevilCrossDownloader());
-        }
+        // Devil Cross is no longer published as of 2016-04-01
+        //if (includeAll || prefs.getBoolean("downloadDevilCross", true)) {
+        //    downloaders.add(new DevilCrossDownloader());
+        //}
 
         if (includeAll || prefs.getBoolean("downloadErikAgard", true)) {
             downloaders.add(new ErikAgardDownloader());
         }
 
-        // "I Swear" crossword is no longer being published as of 1/1/2014
+        // "I Swear" crossword is no longer being published as of 2014-01-01
         // TODO: Archives
         //if (includeAll || prefs.getBoolean("downloadISwear", true)) {
         //    downloaders.add(new ISwearDownloader());
@@ -136,7 +137,8 @@ public class Downloaders {
         //    downloaders.add(new MerlReagleDownloader());
         //}
 
-        downloaders.add(new MGDCDownloader());
+        // MGDC is subscription-only as of 2015-11-12
+        //downloaders.add(new MGDCDownloader());
 
         // MGWCC is subscription-only as of 2015-01-01
         //if (includeAll || prefs.getBoolean("downloadMGWCC", true)) {
@@ -147,9 +149,10 @@ public class Downloaders {
             downloaders.add(new MMMMDownloader());
         }
 
-        if (includeAll || prefs.getBoolean("downloadNevilleFogarty",  true)) {
-            downloaders.add(new NevilleFogartyDownloader());
-        }
+        // Neville Fogarty is no longer published as of 2015-06-05
+        //if (includeAll || prefs.getBoolean("downloadNevilleFogarty",  true)) {
+        //    downloaders.add(new NevilleFogartyDownloader());
+        //}
 
         String nytUsername = prefs.getString("nytUsername", "");
         String nytPassword = prefs.getString("nytPassword", "");
@@ -176,9 +179,11 @@ public class Downloaders {
             downloaders.add(new NewsdayDownloader());
         }
 
-        if (includeAll || prefs.getBoolean("downloadPatrickBlindauer",  true)) {
-            downloaders.add(new PatrickBlindauerDownloader());
-        }
+        // Patrick Blindauer's free monthly puzzle is no longer published
+        // as of 2016-10-01
+        //if (includeAll || prefs.getBoolean("downloadPatrickBlindauer",  true)) {
+        //    downloaders.add(new PatrickBlindauerDownloader());
+        //}
 
         // People Magazine stopped publishing new puzzles a while back
         //if (includeAll || prefs.getBoolean("downloadPeople", true)) {
