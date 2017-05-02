@@ -1,9 +1,9 @@
 Robo Crosswords
 ===============
 
-*Robo Crosswords* is a free, open-source crossword puzzle app for Android.  It was forked from [*Shortyz Crosswords*](http://code.google.com/p/shortyz/) by Robert Cooper.
+*Robo Crosswords* is a free, open-source crossword puzzle app for Android.  It was forked from [*Shortyz Crosswords*](https://github.com/kebernet/shortyz) by Robert Cooper.
 
-*Robo Crosswords* is licensed under the GNU General Public License, Version 3.  See the file `COPYING.html` for the license text.
+*Robo Crosswords* is licensed under the GNU General Public License Version 3.  See the file `COPYING.html` for the license text.
 
 *Robo Crosswords* was formerly known as *Words With Crosses*, until in 2017, I was demanded by Zynga to change the name.  This app has never been associated with or related to Zynga or its app *Words With Friends*.
 
