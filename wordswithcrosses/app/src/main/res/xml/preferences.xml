@@ -467,7 +467,7 @@
     <com.adamrosenfield.wordswithcrosses.OpenURLPreference
         android:title="@string/pref_source_code"
         android:key="sourceCode"
-        custom:url="http://github.com/adamantoise/wordswithcrosses" />
+        custom:url="http://github.com/adamantoise/robocrosswords" />
 
      <Preference
         android:title="@string/pref_send_debug_package"
