@@ -609,12 +609,14 @@ public class PlayActivity extends WordsWithCrossesActivity {
         super.onWindowFocusChanged(hasFocus);
 
         if (!hasSetInitialZoom) {
-            float zoom;
+            float zoom = 0.0f;
             String zoomStr = prefs.getString("initialZoom", "0");
-            try {
-                zoom = Float.parseFloat(zoomStr);
-            } catch (NumberFormatException e) {
-                zoom = 0.0f;
+            if (zoomStr != null) {
+                try {
+                    zoom = Float.parseFloat(zoomStr);
+                } catch (NumberFormatException e) {
+                    // Ignore
+                }
             }
 
             if (Math.abs(zoom) < 0.01f) {
