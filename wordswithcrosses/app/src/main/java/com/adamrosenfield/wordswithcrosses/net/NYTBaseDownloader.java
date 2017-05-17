@@ -49,6 +49,8 @@ public abstract class NYTBaseDownloader extends AbstractDownloader {
     private static final String BASE_URL = "http://www.nytimes.com/svc/crosswords/v2/puzzle/";
     private static final String LOGIN_URL = "https://myaccount.nytimes.com/auth/login?URI=http://select.nytimes.com/premium/xword/puzzles.html";
 
+    private static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:53.0) Gecko/20100101 Firefox/53.0";
+
     private HashMap<String, String> params = new HashMap<>();
 
     protected NYTBaseDownloader(String name, String username, String password) {
@@ -70,6 +72,8 @@ public abstract class NYTBaseDownloader extends AbstractDownloader {
         LOG.info("NYT: Downloading " + url);
 
         HttpGet get = new HttpGet(url.toString());
+        get.setHeader("User-Agent", USER_AGENT);
+
         HttpResponse response = utils.getHttpClient().execute(get);
 
         int status = response.getStatusLine().getStatusCode();
@@ -96,6 +100,7 @@ public abstract class NYTBaseDownloader extends AbstractDownloader {
         HttpClient httpClient = utils.getHttpClient();
 
         HttpGet httpget = new HttpGet(LOGIN_URL);
+        httpget.setHeader("User-Agent", USER_AGENT);
 
         LOG.info("NYT: Logging in");
         HttpResponse response = httpClient.execute(httpget);
@@ -134,6 +139,7 @@ public abstract class NYTBaseDownloader extends AbstractDownloader {
         }
 
         HttpPost httpPost = new HttpPost(LOGIN_URL);
+        httpPost.setHeader("User-Agent", USER_AGENT);
 
         List<NameValuePair> nvps = new ArrayList<>();
 
