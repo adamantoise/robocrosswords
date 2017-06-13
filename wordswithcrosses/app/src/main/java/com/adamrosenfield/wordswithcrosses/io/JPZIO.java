@@ -30,6 +30,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
+import java.util.Locale;
 import java.util.Scanner;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -182,6 +183,7 @@ public class JPZIO {
             DataOutputStream dos = new DataOutputStream(new FileOutputStream(destFile));
             try {
                 if (!convertJPZPuzzle(fis, dos, metadataSetter)) {
+                    destFile.delete();
                     throw new IOException("Failed to convert JPZ file: " + jpzFile);
                 }
             } finally {
@@ -260,11 +262,11 @@ public class JPZIO {
                 inDown = false;
             } else if (inClues) {
                 if (name.equalsIgnoreCase("title")) {
-                    String title = curBuffer.toString();
+                    String title = curBuffer.toString().toLowerCase(Locale.US);
 
-                    if (title.contains("Across")) {
+                    if (title.contains("across")) {
                         inAcross = true;
-                    } else if (title.contains("Down")) {
+                    } else if (title.contains("down")) {
                         inDown = true;
                     } else {
                         throw new SAXException("Clue list is neither across nor down.");
