@@ -28,22 +28,8 @@ public class DownloadReceiver extends BroadcastReceiver {
 
     private BroadcastReceiver impl;
 
-    public DownloadReceiver()
-    {
-        int version = android.os.Build.VERSION.SDK_INT;
-        if (version >= 9) {
-            String receiverClass = "DownloadReceiverGinger";
-            try {
-                impl = (BroadcastReceiver)
-                    Class.forName("com.adamrosenfield.wordswithcrosses.net." + receiverClass)
-                    .newInstance();
-            } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-                e.printStackTrace();
-            }
-        }
-        if (impl == null) {
-            impl = new DownloadReceiverNoop();
-        }
+    public DownloadReceiver() {
+        impl = new DownloadReceiverGinger();
     }
 
     @Override

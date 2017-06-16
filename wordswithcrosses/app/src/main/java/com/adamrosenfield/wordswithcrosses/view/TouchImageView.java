@@ -37,7 +37,6 @@ package com.adamrosenfield.wordswithcrosses.view;
 
 import java.util.logging.Logger;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.PointF;
@@ -49,7 +48,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.ImageView;
 
-public class TouchImageView extends ImageView {
+public class TouchImageView extends ImageView implements ScaleGestureDetector.OnScaleGestureListener {
 
     protected static Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
 
@@ -82,7 +81,7 @@ public class TouchImageView extends ImageView {
 
     private long lastClickTime = -1;
 
-    private ScaleGestureDetectorProxy mScaleDetector;
+    private ScaleGestureDetector mScaleDetector;
 
     private boolean couldBeLongClick;
     private LongClickDetector lastLongClickDetector;
@@ -99,7 +98,7 @@ public class TouchImageView extends ImageView {
 
     private void sharedConstructing(Context context) {
         super.setClickable(true);
-        mScaleDetector = ScaleGestureDetectorProxy.create(context, this);
+        mScaleDetector = new ScaleGestureDetector(context, this);
         matrix = new Matrix();
         m = new float[9];
         setImageMatrix(matrix);
@@ -240,42 +239,42 @@ public class TouchImageView extends ImageView {
         // No-op by default, can be overridden by subclasses
     }
 
-    @TargetApi(8)
-    public class ScaleListener implements ScaleGestureDetector.OnScaleGestureListener {
-        public boolean onScaleBegin(ScaleGestureDetector detector) {
-            if (!canScale) {
-                return false;
-            }
-            mode = Mode.ZOOM;
-            endLongClickDetection();
-            return true;
+    @Override
+    public boolean onScaleBegin(ScaleGestureDetector detector) {
+        if (!canScale) {
+            return false;
+        }
+        mode = Mode.ZOOM;
+        endLongClickDetection();
+        return true;
+    }
+
+    @Override
+    public boolean onScale(ScaleGestureDetector detector) {
+        float scaleFactor = detector.getScaleFactor();
+        float origScale = scale;
+        scale *= scaleFactor;
+        if (scale > maxScale) {
+            scale = maxScale;
+            scaleFactor = maxScale / origScale;
+        } else if (scale < minScale) {
+            scale = minScale;
+            scaleFactor = minScale / origScale;
         }
 
-        public boolean onScale(ScaleGestureDetector detector) {
-            float scaleFactor = detector.getScaleFactor();
-            float origScale = scale;
-            scale *= scaleFactor;
-            if (scale > maxScale) {
-                scale = maxScale;
-                scaleFactor = maxScale / origScale;
-            } else if (scale < minScale) {
-                scale = minScale;
-                scaleFactor = minScale / origScale;
-            }
-
-            if (origWidth * scale <= viewWidth || origHeight * scale <= viewHeight) {
-                matrix.postScale(scaleFactor, scaleFactor, viewWidth / 2.0f, viewHeight / 2.0f);
-            } else {
-                matrix.postScale(scaleFactor, scaleFactor, detector.getFocusX(), detector.getFocusY());
-            }
-
-            onMatrixChanged();
-            return true;
+        if (origWidth * scale <= viewWidth || origHeight * scale <= viewHeight) {
+            matrix.postScale(scaleFactor, scaleFactor, viewWidth / 2.0f, viewHeight / 2.0f);
+        } else {
+            matrix.postScale(scaleFactor, scaleFactor, detector.getFocusX(), detector.getFocusY());
         }
 
-        public void onScaleEnd(ScaleGestureDetector detector) {
-            TouchImageView.this.onScaleEnd(scale);
-        }
+        onMatrixChanged();
+        return true;
+    }
+
+    @Override
+    public void onScaleEnd(ScaleGestureDetector detector) {
+        onScaleEnd(scale);
     }
 
     private void onMatrixChanged() {

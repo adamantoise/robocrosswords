@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+/*
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -40,18 +41,19 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
+*/
 
 import com.adamrosenfield.wordswithcrosses.R;
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.io.IO;
 
 public abstract class NYTBaseDownloader extends AbstractDownloader {
-    private static final String BASE_URL = "http://www.nytimes.com/svc/crosswords/v2/puzzle/";
-    private static final String LOGIN_URL = "https://myaccount.nytimes.com/auth/login?URI=http://select.nytimes.com/premium/xword/puzzles.html";
+    private static final String BASE_URL = "https://www.nytimes.com/svc/crosswords/v2/puzzle/";
+    private static final String LOGIN_URL = "https://myaccount.nytimes.com/auth/login?URI=https://www.nytimes.com/crosswords/index.html";
 
-    private static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:53.0) Gecko/20100101 Firefox/53.0";
+    //private static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:53.0) Gecko/20100101 Firefox/53.0";
 
-    private HashMap<String, String> params = new HashMap<>();
+    //private HashMap<String, String> params = new HashMap<>();
 
     protected NYTBaseDownloader(String name, String username, String password) {
         this(BASE_URL, name, username, password);
@@ -59,13 +61,14 @@ public abstract class NYTBaseDownloader extends AbstractDownloader {
 
     protected NYTBaseDownloader(String baseUrl, String name, String username, String password) {
         super(baseUrl, name);
-        params.put("is_continue", "false");
-        params.put("userid", username);
-        params.put("password", password);
+        //params.put("is_continue", "false");
+        //params.put("userid", username);
+        //params.put("password", password);
     }
 
     @Override
     protected void download(Calendar date, String urlSuffix) throws IOException {
+        /*
         login();
 
         URL url = new URL(this.baseUrl + urlSuffix);
@@ -79,6 +82,16 @@ public abstract class NYTBaseDownloader extends AbstractDownloader {
         int status = response.getStatusLine().getStatusCode();
         if (status != 200) {
             LOG.warning("NYT: Download failed: " + response.getStatusLine());
+
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                entity.writeTo(baos);
+
+                String resp = new String(baos.toByteArray());
+                LOG.warning(resp);
+            }
+
             throw new IOException("Download failed: status " + status);
         }
 
@@ -94,9 +107,12 @@ public abstract class NYTBaseDownloader extends AbstractDownloader {
         if (!tempFile.renameTo(destFile)) {
             throw new IOException("Failed to rename " + tempFile + " to " + destFile);
         }
+        */
+        throw new IOException("not implemented");
     }
 
     protected void login() throws IOException {
+    /*
         HttpClient httpClient = utils.getHttpClient();
 
         HttpGet httpget = new HttpGet(LOGIN_URL);
@@ -159,12 +175,14 @@ public abstract class NYTBaseDownloader extends AbstractDownloader {
 
             String resp = new String(baos.toByteArray());
 
-            if (resp.contains("We couldn't find that combination of email and password. Please try again.")) {
+            if (resp.contains("The email address and password you entered don't match an NYTimes account. Please try again.")) {
                 LOG.warning("NYT: Password error");
                 throw new DownloadException(R.string.login_failed);
             }
         }
 
         LOG.info("NYT: Logged in");
+    */
+        throw new IOException("Not implemented");
     }
 }

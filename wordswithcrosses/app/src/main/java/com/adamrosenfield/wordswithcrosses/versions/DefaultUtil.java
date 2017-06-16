@@ -30,6 +30,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
@@ -48,16 +49,10 @@ import com.adamrosenfield.wordswithcrosses.io.IO;
 import com.adamrosenfield.wordswithcrosses.net.AbstractDownloader;
 import com.adamrosenfield.wordswithcrosses.net.HTTPException;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.protocol.HttpContext;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 public class DefaultUtil implements AndroidVersionUtils {
 
@@ -66,16 +61,15 @@ public class DefaultUtil implements AndroidVersionUtils {
     protected Context context;
     protected SharedPreferences prefs;
 
-    protected HttpParams mHttpParams;
-    protected DefaultHttpClient mHttpClient;
+    protected OkHttpClient mHttpClient;
 
     public DefaultUtil() {
         // Set default connect and recv timeouts to 30 seconds
-        mHttpParams = new BasicHttpParams();
-        HttpConnectionParams.setConnectionTimeout(mHttpParams, 30000);
-        HttpConnectionParams.setSoTimeout(mHttpParams, 30000);
-
-        mHttpClient = new DefaultHttpClient(mHttpParams);
+        mHttpClient = new OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .build();
     }
 
     public void setContext(Context context) {
@@ -83,21 +77,17 @@ public class DefaultUtil implements AndroidVersionUtils {
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-    public HttpClient getHttpClient() {
+    public OkHttpClient getHttpClient() {
         return mHttpClient;
     }
 
     public void downloadFile(URL url, Map<String, String> headers, File destination, boolean notification, String title) throws IOException {
-        downloadFile(url, headers, destination, notification, title, null);
-    }
-
-    public void downloadFile(URL url, Map<String, String> headers, File destination, boolean notification, String title, HttpContext httpContext) throws IOException {
         String scrubbedUrl = AbstractDownloader.scrubUrl(url);
         File tempFile = new File(WordsWithCrossesApplication.TEMP_DIR, destination.getName());
         LOG.info("DefaultUtil: Downloading " + scrubbedUrl + " ==> " + tempFile);
         FileOutputStream fos = new FileOutputStream(tempFile);
         try {
-            downloadHelper(url, scrubbedUrl, headers, httpContext, fos);
+            downloadHelper(url, scrubbedUrl, headers, fos);
         } finally {
             fos.close();
         }
@@ -110,63 +100,41 @@ public class DefaultUtil implements AndroidVersionUtils {
     }
 
     public String downloadToString(URL url, Map<String, String> headers) throws IOException {
-        return downloadToString(url, headers, null);
-    }
-
-    public String downloadToString(URL url, Map<String, String> headers, HttpContext httpContext) throws IOException {
         String scrubbedUrl = AbstractDownloader.scrubUrl(url);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        downloadHelper(url, scrubbedUrl, headers, httpContext, baos);
+        downloadHelper(url, scrubbedUrl, headers, baos);
 
         return new String(baos.toByteArray());
     }
 
-    private void downloadHelper(URL url, String scrubbedUrl, Map<String, String> headers, HttpContext httpContext, OutputStream output) throws IOException {
-        HttpGet httpget;
-        try {
-            httpget = new HttpGet(url.toURI());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            throw new IOException("Invalid URL: " + url);
-        }
+    private void downloadHelper(URL url, String scrubbedUrl, Map<String, String> headers, OutputStream output) throws IOException {
+        Request.Builder requestBuilder = new Request.Builder()
+            .url(url)
+            .header("Accept-Encoding", "gzip, deflate");
 
-        httpget.setHeader("Accept-Encoding", "gzip, deflate");
         for (Entry<String, String> e : headers.entrySet()) {
-            httpget.setHeader(e.getKey(), e.getValue());
+            requestBuilder.header(e.getKey(), e.getValue());
         }
 
-        HttpResponse response = mHttpClient.execute(httpget, httpContext);
-
-        int status = response.getStatusLine().getStatusCode();
-        HttpEntity entity = response.getEntity();
-
-        if (status != 200) {
-            LOG.warning("Download failed: " + scrubbedUrl + " status=" + status);
-            if (entity != null) {
-                entity.consumeContent();
+        try (Response response = mHttpClient.newCall(requestBuilder.build()).execute()) {
+            int status = response.code();
+            if (status != 200) {
+                LOG.warning("Download failed: " + scrubbedUrl + " status=" + status);          throw new HTTPException(status);
             }
 
-            throw new HTTPException(status);
-        }
+            ResponseBody body = response.body();
 
-        if (entity != null) {
             // If we got a compressed entity, create the proper decompression
             // stream wrapper
-            InputStream content = entity.getContent();
-            Header contentEncoding = entity.getContentEncoding();
-            if (contentEncoding != null) {
-                if ("gzip".equals(contentEncoding.getValue())) {
-                    content = new GZIPInputStream(content);
-                } else if ("deflate".equals(contentEncoding.getValue())) {
-                    content = new InflaterInputStream(content, new Inflater(true));
-                }
+            InputStream content = body.byteStream();
+            String contentEncoding = response.header("Content-Encoding");
+            if ("gzip".equals(contentEncoding)) {
+                content = new GZIPInputStream(content);
+            } else if ("deflate".equals(contentEncoding)) {
+                content = new InflaterInputStream(content, new Inflater(true));
             }
 
-            try {
-                IO.copyStream(content, output);
-            } finally {
-                entity.consumeContent();
-            }
+            IO.copyStream(content, output);
         }
     }
 

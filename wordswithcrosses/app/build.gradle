@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.adamrosenfield.wordswithcrosses"
-        minSdkVersion 4
+        minSdkVersion 9
         targetSdkVersion 17
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_7
@@ -33,6 +33,7 @@ android {
 }
 
 dependencies {
+    compile 'com.squareup.okhttp3:okhttp:3.8.0'
     compile 'org.ccil.cowan.tagsoup:tagsoup:1.2'
     androidTestCompile 'junit:junit:4.12'
 }

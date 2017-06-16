@@ -31,22 +31,17 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.protocol.HttpContext;
+import okhttp3.OkHttpClient;
 
 public interface AndroidVersionUtils {
 
     public void setContext(Context context);
 
-    public HttpClient getHttpClient();
+    public OkHttpClient getHttpClient();
 
     public void downloadFile(URL url, Map<String, String> headers, File destination, boolean notification, String title) throws IOException;
 
-    public void downloadFile(URL url, Map<String, String> headers, File destination, boolean notification, String title, HttpContext httpContext) throws IOException;
-
     public String downloadToString(URL url, Map<String, String> headers) throws IOException;
-
-    public String downloadToString(URL url, Map<String, String> headers, HttpContext httpContext) throws IOException;
 
     public void onFileDownloaded(long id, boolean successful, int status);
 

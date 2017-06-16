@@ -39,8 +39,6 @@ import android.text.TextUtils;
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.versions.AndroidVersionUtils;
 
-import org.apache.http.protocol.HttpContext;
-
 public abstract class AbstractDownloader implements Downloader {
 
     protected static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
@@ -136,17 +134,13 @@ public abstract class AbstractDownloader implements Downloader {
     }
 
     protected void download(Calendar date, String urlSuffix, Map<String, String> headers) throws IOException {
-        download(date, urlSuffix, headers, null);
-    }
-
-    protected void download(Calendar date, String urlSuffix, Map<String, String> headers, HttpContext httpContext) throws IOException {
         URL url = new URL(this.baseUrl + urlSuffix);
 
         LOG.info("Downloading " + scrubUrl(url));
 
         String filename = getFilename(date);
         File destFile = new File(WordsWithCrossesApplication.CROSSWORDS_DIR, filename);
-        utils.downloadFile(url, headers, destFile, true, getName(), httpContext);
+        utils.downloadFile(url, headers, destFile, true, getName());
     }
 
     protected String downloadUrlToString(String url) throws IOException {
@@ -154,13 +148,9 @@ public abstract class AbstractDownloader implements Downloader {
     }
 
     protected String downloadUrlToString(String url, Map<String, String> headers) throws IOException {
-        return downloadUrlToString(url, headers, null);
-    }
-
-    protected String downloadUrlToString(String url, Map<String, String> headers, HttpContext httpContext) throws IOException {
         LOG.info("Downloading to string: " + url);
 
-        return utils.downloadToString(new URL(url), headers, httpContext);
+        return utils.downloadToString(new URL(url), headers);
     }
 
     /**

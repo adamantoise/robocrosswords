@@ -40,7 +40,6 @@ import org.json.JSONException;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import android.annotation.TargetApi;
 import android.os.Build;
 
 import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
@@ -57,7 +56,6 @@ import com.adamrosenfield.wordswithcrosses.net.derstandard.DerStandardPuzzleMeta
  * easily broken if the web app changes - stuff done to actually produce PUZ files.
  *
  **/
-@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class DerStandardDownloader extends AbstractDownloader {
     private static final String NAME = "DerStandard.at";
     private static final String BASE_URL = "http://derstandard.at";

@@ -29,7 +29,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-import android.annotation.TargetApi;
 import android.app.DownloadManager;
 import android.app.DownloadManager.Request;
 import android.content.Context;
@@ -39,9 +38,6 @@ import com.adamrosenfield.wordswithcrosses.WordsWithCrossesApplication;
 import com.adamrosenfield.wordswithcrosses.net.AbstractDownloader;
 import com.adamrosenfield.wordswithcrosses.net.HTTPException;
 
-import org.apache.http.protocol.HttpContext;
-
-@TargetApi(9)
 public class GingerbreadUtil extends DefaultUtil {
 
     private static final boolean USE_DOWNLOAD_MANAGER = false;
@@ -59,7 +55,7 @@ public class GingerbreadUtil extends DefaultUtil {
 
     @Override
     @SuppressWarnings("unused")  // Ignore dead code warning
-    public void downloadFile(URL url, Map<String, String> headers, File destination, boolean notification, String title, HttpContext httpContext) throws IOException {
+    public void downloadFile(URL url, Map<String, String> headers, File destination, boolean notification, String title) throws IOException {
         // The DownloadManager can sometimes be buggy and can cause spurious
         // errors, see
         // http://code.google.com/p/android/issues/detail?id=18462
@@ -72,7 +68,7 @@ public class GingerbreadUtil extends DefaultUtil {
         // Also, pre-ICS download managers don't support HTTPS.
         if (!USE_DOWNLOAD_MANAGER ||
             "https".equals(url.getProtocol()) && android.os.Build.VERSION.SDK_INT < 15) {
-            super.downloadFile(url, headers, destination, notification, title, httpContext);
+            super.downloadFile(url, headers, destination, notification, title);
             return;
         }
 

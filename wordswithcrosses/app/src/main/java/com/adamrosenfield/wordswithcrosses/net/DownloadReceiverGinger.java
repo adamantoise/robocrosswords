@@ -22,7 +22,6 @@ package com.adamrosenfield.wordswithcrosses.net;
 
 import java.util.logging.Logger;
 
-import android.annotation.TargetApi;
 import android.app.DownloadManager;
 import android.app.DownloadManager.Query;
 import android.content.BroadcastReceiver;
@@ -32,7 +31,6 @@ import android.database.Cursor;
 
 import com.adamrosenfield.wordswithcrosses.versions.AndroidVersionUtils;
 
-@TargetApi(9)
 public class DownloadReceiverGinger extends BroadcastReceiver {
 
     protected static final Logger LOG = Logger.getLogger("com.adamrosenfield.wordswithcrosses");
