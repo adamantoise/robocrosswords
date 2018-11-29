@@ -91,7 +91,6 @@ public class ClueListActivity extends WordsWithCrossesActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        utils.holographic(this);
         utils.finishOnHomeButton(this);
         try {
             configuration = getBaseContext().getResources().getConfiguration();

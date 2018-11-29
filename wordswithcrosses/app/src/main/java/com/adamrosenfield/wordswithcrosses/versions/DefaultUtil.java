@@ -144,9 +144,6 @@ public class DefaultUtil implements AndroidVersionUtils {
     public void finishOnHomeButton(Activity a) {
     }
 
-    public void holographic(Activity playActivity) {
-    }
-
     public void onActionBarWithText(MenuItem a) {
     }
 

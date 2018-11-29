@@ -23,7 +23,7 @@ package com.adamrosenfield.wordswithcrosses;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import android.content.Context;
+import android.app.Activity;
 import android.graphics.Color;
 import android.util.SparseArray;
 import android.util.TypedValue;
@@ -44,15 +44,15 @@ public class ClueListAdapter extends BaseAdapter {
     private int textSize = DEFAULT_TEXT_SIZE;
 
     private Clue highlightClue;
-    private final Context context;
+    private final Activity activity;
     private final SparseArray<Box[]> cache = new SparseArray<>();
     private final Clue[] clues;
     private final boolean across;
     private boolean isActive = false;
 
-    public ClueListAdapter(Context context, Clue[] clues, boolean across) {
+    public ClueListAdapter(Activity activity, Clue[] clues, boolean across) {
+        this.activity = activity;
         this.clues = clues;
-        this.context = context;
         this.across = across;
     }
 
@@ -82,8 +82,7 @@ public class ClueListAdapter extends BaseAdapter {
 
     public View getView(int position, View view, ViewGroup parent) {
         if (view == null) {
-            LayoutInflater inflater = (LayoutInflater) context.getApplicationContext()
-                                                              .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = activity.getLayoutInflater();
             view = inflater.inflate(R.layout.clue_detail_item, null);
         }
 

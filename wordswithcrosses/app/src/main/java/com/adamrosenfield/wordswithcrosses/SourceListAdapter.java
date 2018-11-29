@@ -22,7 +22,7 @@ package com.adamrosenfield.wordswithcrosses;
 
 import java.util.List;
 
-import android.content.Context;
+import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,12 +32,12 @@ import android.widget.TextView;
 public class SourceListAdapter extends BaseAdapter {
     static final String ALL_SOURCES = "All Sources";
     public String current = ALL_SOURCES;
-    private final Context context;
+    private final Activity activity;
     private List<String> sources;
 
-    public SourceListAdapter(Context context, List<String> sources) {
+    public SourceListAdapter(Activity activity, List<String> sources) {
+        this.activity = activity;
         this.sources = sources;
-        this.context = context;
     }
 
     public int getCount() {
@@ -58,8 +58,7 @@ public class SourceListAdapter extends BaseAdapter {
 
     public View getView(int index, View view, ViewGroup group) {
         String value = (index == 0) ? ALL_SOURCES : sources.get(index - 1);
-        LayoutInflater inflater = (LayoutInflater) context.getApplicationContext()
-                                                          .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = activity.getLayoutInflater();
         view = inflater.inflate(value.equals(this.current) ? R.layout.source_item_highlight : R.layout.source_item, null);
 
         TextView text = (TextView) view;

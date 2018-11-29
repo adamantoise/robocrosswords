@@ -47,8 +47,6 @@ public interface AndroidVersionUtils {
 
     public void finishOnHomeButton(Activity a);
 
-    public void holographic(Activity playActivity);
-
     public void onActionBarWithText(MenuItem a);
 
     public void onActionBarWithText(SubMenu reveal);

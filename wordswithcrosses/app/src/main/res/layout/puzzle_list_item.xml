@@ -37,7 +37,6 @@
             android:paddingTop="2dp"
             android:singleLine="true"
             android:text="New York Times"
-            android:textColor="#FFFFFF"
             android:textSize="25sp"
             tools:ignore="HardcodedText" />
 

@@ -53,19 +53,6 @@ public class HoneycombUtil extends GingerbreadUtil {
     }
 
     @Override
-    public void holographic(Activity a) {
-        if (a instanceof PuzzleFinishedActivity) {
-            a.setTheme(android.R.style.Theme_Holo_Dialog);
-        } else {
-            a.setTheme(android.R.style.Theme_Holo);
-        }
-        ActionBar bar = a.getActionBar();
-        if (bar != null) {
-            bar.setDisplayHomeAsUpEnabled(true);
-        }
-    }
-
-    @Override
     public void onActionBarWithText(MenuItem a) {
         a.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT + MenuItem.SHOW_AS_ACTION_IF_ROOM);
     }

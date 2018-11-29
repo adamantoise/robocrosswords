@@ -46,7 +46,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -941,9 +940,7 @@ public class BrowseActivity extends WordsWithCrossesActivity implements OnItemCl
 
         public View getView(int i, View view, ViewGroup group) {
             if (view == null) {
-                LayoutInflater inflater = (LayoutInflater)BrowseActivity.this.getApplicationContext()
-                                                                             .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.puzzle_list_item, null);
+                view = getLayoutInflater().inflate(R.layout.puzzle_list_item, null);
             }
 
             PuzzleMeta puzzle = puzzles.get(i);

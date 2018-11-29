@@ -70,7 +70,7 @@ public class DownloadPickerDialogBuilder {
         mMonthOfYear = monthOfYear;
         mDayOfMonth = dayOfMonth;
 
-        LayoutInflater inflater = (LayoutInflater)mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = mActivity.getLayoutInflater();
         ScrollView layout = (ScrollView)inflater.inflate(R.layout.download_dialog, (ViewGroup)mActivity.findViewById(R.id.download_root));
 
         mDateLabel = (TextView)layout.findViewById(R.id.dateLabel);

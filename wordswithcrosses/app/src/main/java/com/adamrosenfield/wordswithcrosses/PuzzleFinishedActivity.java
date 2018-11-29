@@ -45,9 +45,8 @@ public class PuzzleFinishedActivity extends WordsWithCrossesActivity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        utils.holographic(this);
         setContentView(R.layout.completed);
-        this.getWindow().setLayout(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        getWindow().setLayout(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 
         long puzzleId = WordsWithCrossesApplication.BOARD.getPuzzleID();
         Puzzle puz = WordsWithCrossesApplication.BOARD.getPuzzle();
@@ -75,7 +74,7 @@ public class PuzzleFinishedActivity extends WordsWithCrossesActivity{
             if (b == null) {
                 continue;
             }
-            if(b.isCheated()) {
+            if (b.isCheated()) {
                 cheatedBoxes++;
             }
             totalBoxes++;
@@ -96,21 +95,20 @@ public class PuzzleFinishedActivity extends WordsWithCrossesActivity{
                 R.plurals.share_text_hinted, cheatedBoxes, source, dateStr, elapsedString, cheatedBoxes, cheatedStr);
         }
 
-        TextView elapsedTime = (TextView)this.findViewById(R.id.elapsed);
+        TextView elapsedTime = (TextView)findViewById(R.id.elapsed);
         elapsedTime.setText(elapsedString);
 
-        TextView totalCluesView = (TextView)this.findViewById(R.id.totalClues);
+        TextView totalCluesView = (TextView)findViewById(R.id.totalClues);
         totalCluesView.setText(Integer.toString(totalClues));
 
-        TextView totalBoxesView = (TextView)this.findViewById(R.id.totalBoxes);
+        TextView totalBoxesView = (TextView)findViewById(R.id.totalBoxes);
         totalBoxesView.setText(Integer.toString(totalBoxes));
 
-        TextView cheatedBoxesView = (TextView)this.findViewById(R.id.cheatedBoxes);
+        TextView cheatedBoxesView = (TextView)findViewById(R.id.cheatedBoxes);
         cheatedBoxesView.setText(fullCheatedStr);
 
-        Button share = (Button) this.findViewById(R.id.share);
+        Button share = (Button) findViewById(R.id.share);
         share.setOnClickListener(new OnClickListener() {
-
             public void onClick(View v) {
                 Intent sendIntent = new Intent(Intent.ACTION_SEND);
 //              sendIntent.putExtra(Intent.EXTRA_SUBJECT,
@@ -119,16 +117,13 @@ public class PuzzleFinishedActivity extends WordsWithCrossesActivity{
                 sendIntent.setType("text/plain");
                 startActivity(Intent.createChooser(sendIntent, "Share your time"));
             }
-
         });
 
-        Button done = (Button) this.findViewById(R.id.done);
-        done.setOnClickListener(new OnClickListener(){
-
+        Button done = (Button) findViewById(R.id.done);
+        done.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 finish();
             }
-
         });
 
     }
