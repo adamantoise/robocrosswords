@@ -27,6 +27,7 @@
             android:title="Los Angeles Times"
             android:defaultValue="true"
             android:key="downloadLAT" />
+        <!-- FIXME: NYT temporarily removed until login via a WebView is implemented
         <PreferenceScreen
             android:title="New York Times"
             android:summary="@string/pref_requires_subscription"
@@ -45,21 +46,17 @@
                 android:summary="@string/pref_nyt_bonus_summary"
                 android:defaultValue="false"
                 android:key="downloadNYTBonus" />
-            <EditTextPreference
-                android:title="@string/pref_username"
-                android:summary="@string/pref_username_summary_nyt"
-                android:inputType="textEmailAddress"
-                android:key="nytUsername" />
-            <EditTextPreference
-                android:title="@string/pref_password"
-                android:summary="@string/pref_password_summary_nyt"
-                android:key="nytPassword"
-                android:password="true"
-                android:inputType="textPassword" />
+            <Preference
+                android:title="@string/pref_log_in"
+                android:key="nytLogIn" />
+            <Preference
+                android:title="@string/pref_log_out"
+                android:key="nytLogOut" />
             <com.adamrosenfield.wordswithcrosses.OpenURLPreference
                 android:title="@string/pref_get_subscription"
                 custom:url="http://www.nytimes.com/puzzle"/>
         </PreferenceScreen>
+        -->
         <CheckBoxPreference
             android:title="Newsday"
             android:defaultValue="true"

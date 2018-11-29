@@ -154,21 +154,22 @@ public class Downloaders {
         //    downloaders.add(new NevilleFogartyDownloader());
         //}
 
-        String nytUsername = prefs.getString("nytUsername", "");
-        String nytPassword = prefs.getString("nytPassword", "");
-        if (!TextUtils.isEmpty(nytUsername) && !TextUtils.isEmpty(nytPassword)) {
-            if (includeAll || prefs.getBoolean("downloadNYT", false)) {
-                downloaders.add(new NYTDownloader(nytUsername, nytPassword));
-            }
-
-            if (includeAll || prefs.getBoolean("downloadNYTMini", false)) {
-                downloaders.add(new NYTMiniDownloader(nytUsername, nytPassword));
-            }
-
-            if (includeAll || prefs.getBoolean("downloadNYTBonus", false)) {
-                downloaders.add(new NYTBonusDownloader(nytUsername, nytPassword));
-            }
-        }
+        // FIXME: NYT temporarily removed until login via a WebView is implemented
+        //String nytUsername = prefs.getString("nytUsername", "");
+        //String nytPassword = prefs.getString("nytPassword", "");
+        //if (!TextUtils.isEmpty(nytUsername) && !TextUtils.isEmpty(nytPassword)) {
+        //    if (includeAll || prefs.getBoolean("downloadNYT", false)) {
+        //        downloaders.add(new NYTDownloader(nytUsername, nytPassword));
+        //    }
+        //
+        //    if (includeAll || prefs.getBoolean("downloadNYTMini", false)) {
+        //        downloaders.add(new NYTMiniDownloader(nytUsername, nytPassword));
+        //    }
+        //
+        //    if (includeAll || prefs.getBoolean("downloadNYTBonus", false)) {
+        //        downloaders.add(new NYTBonusDownloader(nytUsername, nytPassword));
+        //    }
+        //}
 
         // NYT classic is no longer updating with new puzzles
         //if (includeAll || prefs.getBoolean("downloadNYTClassic", true)) {

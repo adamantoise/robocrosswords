@@ -36,7 +36,23 @@ public class PreferencesActivity extends PreferenceActivity {
 
         deprecatedAddPreferencesFromResource(R.xml.preferences);
 
-        setUsernameAndPasswordChangeListeners("nytUsername", "nytPassword", "downloadNYT");
+        // FIXME: NYT temporarily removed until login via a WebView is implemented
+        //deprecatedFindPreference("nytLogIn").setOnPreferenceClickListener(
+        //    new OnPreferenceClickListener() {
+        //        public boolean onPreferenceClick(Preference preference) {
+        //            // TODO
+        //            return true;
+        //        }
+        //    });
+        //
+        //deprecatedFindPreference("nytLogOut").setOnPreferenceClickListener(
+        //    new OnPreferenceClickListener() {
+        //        public boolean onPreferenceClick(Preference preference) {
+        //            // TODO
+        //            return true;
+        //        }
+        //    });
+
         setUsernameAndPasswordChangeListeners("avxwUsername", "avxwPassword", "downloadAVXW");
         setUsernameAndPasswordChangeListeners("crookedUsername", "crookedPassword", "downloadCrooked");
         setUsernameAndPasswordChangeListeners("crosswordNationUsername", "crosswordNationPassword", "downloadCrosswordNation");
