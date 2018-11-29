@@ -23,18 +23,23 @@ import java.util.Calendar;
 
 /**
  * Premier Crosswords
- * URL: http://puzzles.kingdigital.com/javacontent/clues/premier/YYYYMMDD.txt
+ * URL: https://puzzles.kingdigital.com/jpz/Premier/YYYYMMDD.jpz
  * Date: Sunday
  */
-public class PremierDownloader extends KFSDownloader
-{
-    public PremierDownloader()
-    {
-        super("premier", "Premier Crosswords", "Frank Longo");
+public class PremierDownloader extends AbstractJPZDownloader {
+    public PremierDownloader() {
+        super("https://puzzles.kingdigital.com/jpz/Premier/", "Premier Crosswords");
     }
 
-    public boolean isPuzzleAvailable(Calendar date)
-    {
+    public boolean isPuzzleAvailable(Calendar date) {
         return (date.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY);
+    }
+
+    @Override
+    protected String createUrlSuffix(Calendar date) {
+        return (date.get(Calendar.YEAR) +
+                DEFAULT_NF.format(date.get(Calendar.MONTH) + 1) +
+                DEFAULT_NF.format(date.get(Calendar.DAY_OF_MONTH)) +
+                ".jpz");
     }
 }

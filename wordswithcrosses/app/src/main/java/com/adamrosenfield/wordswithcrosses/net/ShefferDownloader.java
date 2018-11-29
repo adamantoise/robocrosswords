@@ -23,18 +23,23 @@ import java.util.Calendar;
 
 /**
  * Sheffer Crosswords
- * URL: http://puzzles.kingdigital.com/javacontent/clues/sheffer/YYYYMMDD.txt
+ * URL: https://puzzles.kingdigital.com/jpz/Sheffer/YYYYMMDD.jpz
  * Date: Monday-Saturday
  */
-public class ShefferDownloader extends KFSDownloader
-{
-    public ShefferDownloader()
-    {
-        super("sheffer", "Sheffer Crosswords", "Eugene Sheffer");
+public class ShefferDownloader extends AbstractJPZDownloader {
+    public ShefferDownloader() {
+        super("https://puzzles.kingdigital.com/jpz/Sheffer/", "Sheffer Crosswords");
     }
 
-    public boolean isPuzzleAvailable(Calendar date)
-    {
+    public boolean isPuzzleAvailable(Calendar date) {
         return (date.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY);
+    }
+
+    @Override
+    protected String createUrlSuffix(Calendar date) {
+        return (date.get(Calendar.YEAR) +
+                DEFAULT_NF.format(date.get(Calendar.MONTH) + 1) +
+                DEFAULT_NF.format(date.get(Calendar.DAY_OF_MONTH)) +
+                ".jpz");
     }
 }
