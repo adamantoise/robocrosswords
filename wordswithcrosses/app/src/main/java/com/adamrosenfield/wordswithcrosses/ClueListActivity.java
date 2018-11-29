@@ -41,6 +41,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
+import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
 
@@ -53,6 +54,10 @@ import com.adamrosenfield.wordswithcrosses.view.ClueImageView;
 import com.adamrosenfield.wordswithcrosses.view.CrosswordImageView.ClickListener;
 
 public class ClueListActivity extends WordsWithCrossesActivity {
+
+    private static final String TAB_ACROSS = "across";
+    private static final String TAB_DOWN = "down";
+
     private Configuration configuration;
     private File baseFile;
     private ImaginaryTimer timer;
@@ -71,11 +76,11 @@ public class ClueListActivity extends WordsWithCrossesActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-        this.configuration = newConfig;
+        configuration = newConfig;
         try {
-            if (this.prefs.getBoolean("forceKeyboard", false)
-                    || (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
-                    || (this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
+            if (prefs.getBoolean("forceKeyboard", false)
+                    || (configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
+                    || (configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_UNDEFINED)) {
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 
                 if (imm != null) {
@@ -109,9 +114,9 @@ public class ClueListActivity extends WordsWithCrossesActivity {
             return;
         }
 
-        this.timer = new ImaginaryTimer(board.getPuzzle().getTime());
+        timer = new ImaginaryTimer(board.getPuzzle().getTime());
 
-        Uri u = this.getIntent().getData();
+        Uri u = getIntent().getData();
 
         if (u != null) {
             if (u.getScheme().equals("file")) {
@@ -125,7 +130,7 @@ public class ClueListActivity extends WordsWithCrossesActivity {
 
         int keyboardType = getKeyboardTypePreference();
         useNativeKeyboard = (keyboardType == -1);
-        keyboardView = (KeyboardView)this.findViewById(R.id.clueKeyboard);
+        keyboardView = (KeyboardView)findViewById(R.id.clueKeyboard);
 
         if (!useNativeKeyboard) {
             Keyboard keyboard = new Keyboard(this, keyboardType);
@@ -152,51 +157,55 @@ public class ClueListActivity extends WordsWithCrossesActivity {
                 ClueListActivity.this.onKeyDown(primaryCode, event);
             }
 
-                @Override
-                public void onPress(int primaryCode) {}
+            @Override
+            public void onPress(int primaryCode) {
+            }
 
-                @Override
-                public void onRelease(int primaryCode) {}
+            @Override
+            public void onRelease(int primaryCode) {
+            }
 
-                @Override
-                public void onText(CharSequence text) {}
+            @Override
+            public void onText(CharSequence text) {
+            }
 
-                @Override
-                public void swipeDown() {}
+            @Override
+            public void swipeDown() {
+            }
 
-                @Override
-                public void swipeLeft() {
-                    long eventTime = System.currentTimeMillis();
-                    lastSwipe = eventTime;
+            @Override
+            public void swipeLeft() {
+                long eventTime = System.currentTimeMillis();
+                lastSwipe = eventTime;
 
-                    KeyEvent event = new KeyEvent(
-                        eventTime, eventTime,
-                        KeyEvent.ACTION_DOWN,
-                        KeyEvent.KEYCODE_DPAD_LEFT, 0, 0, 0, 0,
-                        KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE);
-                    ClueListActivity.this.onKeyDown(KeyEvent.KEYCODE_DPAD_LEFT, event);
-                }
+                KeyEvent event = new KeyEvent(
+                    eventTime, eventTime,
+                    KeyEvent.ACTION_DOWN,
+                    KeyEvent.KEYCODE_DPAD_LEFT, 0, 0, 0, 0,
+                    KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE);
+                ClueListActivity.this.onKeyDown(KeyEvent.KEYCODE_DPAD_LEFT, event);
+            }
 
-                @Override
-                public void swipeRight() {
-                    long eventTime = System.currentTimeMillis();
-                    lastSwipe = eventTime;
+            @Override
+            public void swipeRight() {
+                long eventTime = System.currentTimeMillis();
+                lastSwipe = eventTime;
 
-                    KeyEvent event = new KeyEvent(
-                        eventTime, eventTime,
-                        KeyEvent.ACTION_DOWN,
-                        KeyEvent.KEYCODE_DPAD_RIGHT, 0, 0, 0, 0,
-                        KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE);
-                    ClueListActivity.this.onKeyDown(
-                        KeyEvent.KEYCODE_DPAD_RIGHT, event);
-                }
+                KeyEvent event = new KeyEvent(
+                    eventTime, eventTime,
+                    KeyEvent.ACTION_DOWN,
+                    KeyEvent.KEYCODE_DPAD_RIGHT, 0, 0, 0, 0,
+                    KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE);
+                ClueListActivity.this.onKeyDown(
+                    KeyEvent.KEYCODE_DPAD_RIGHT, event);
+            }
 
-                @Override
-                public void swipeUp() {
-                }
-            });
+            @Override
+            public void swipeUp() {
+            }
+        });
 
-        imageView = (ClueImageView)this.findViewById(R.id.miniboard);
+        imageView = (ClueImageView)findViewById(R.id.miniboard);
         imageView.setUseNativeKeyboard(useNativeKeyboard);
 
         imageView.setClickListener(new ClickListener() {
@@ -239,64 +248,70 @@ public class ClueListActivity extends WordsWithCrossesActivity {
             }
         });
 
-        this.tabHost = (TabHost)this.findViewById(R.id.tabhost);
-        this.tabHost.setup();
+        tabHost = (TabHost)findViewById(R.id.tabhost);
+        tabHost.setup();
 
-        TabSpec ts = tabHost.newTabSpec("TAB1");
+        TabSpec ts = tabHost.newTabSpec(TAB_ACROSS);
 
         ts.setIndicator(getResources().getString(R.string.across),
             getResources().getDrawable(R.drawable.across));
 
         ts.setContent(R.id.acrossList);
 
-        this.tabHost.addTab(ts);
+        tabHost.addTab(ts);
 
-        ts = this.tabHost.newTabSpec("TAB2");
+        ts = tabHost.newTabSpec(TAB_DOWN);
 
         ts.setIndicator(getResources().getString(R.string.down),
             getResources().getDrawable(R.drawable.down));
 
         ts.setContent(R.id.downList);
-        this.tabHost.addTab(ts);
+        tabHost.addTab(ts);
 
-        this.tabHost.setCurrentTab(board.isCursorAcross() ? 0 : 1);
+        tabHost.setCurrentTab(board.isCursorAcross() ? 0 : 1);
 
-        this.across = (ListView) this.findViewById(R.id.acrossList);
-        this.down = (ListView) this.findViewById(R.id.downList);
+        tabHost.setOnTabChangedListener(new OnTabChangeListener() {
+            @Override
+            public void onTabChanged(String tabId) {
+                if (tabId.equals(TAB_ACROSS)) {
+                    int clueIndex = across.getCheckedItemPosition();
+                    onClueSelected(board, /*isAcross=*/true, clueIndex);
+                } else {
+                    int clueIndex = down.getCheckedItemPosition();
+                    onClueSelected(board, /*isAcross=*/false, clueIndex);
+                }
+            }
+        });
 
-        across.setAdapter(new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1, board
-                        .getAcrossClues()));
-        across.setFocusableInTouchMode(true);
-        down.setAdapter(new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1, board
-                        .getDownClues()));
+        across = (ListView) findViewById(R.id.acrossList);
+        down = (ListView) findViewById(R.id.downList);
+
+        across.setAdapter(new ArrayAdapter<>(this, R.layout.clue_list_item, board.getAcrossClues()));
+
+        down.setAdapter(new ArrayAdapter<>(this, R.layout.clue_list_item, board.getDownClues()));
+
+        int currentClueIndex = board.getCurrentClueIndex();
+        if (board.isCursorAcross()) {
+            across.setSelectionFromTop(currentClueIndex, 5);
+            across.setItemChecked(currentClueIndex, true);
+            down.setItemChecked(0, true);
+        } else {
+            down.setSelectionFromTop(currentClueIndex, 5);
+            down.setItemChecked(currentClueIndex, true);
+            across.setItemChecked(0, true);
+        }
+
         across.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                parent.setSelected(true);
-                board.jumpTo(position, true);
-                imageView.setTranslate(0.0f, 0.0f);
-                render();
-
-                if (prefs.getBoolean("snapClue", false)) {
-                    across.setSelectionFromTop(position, 5);
-                    across.setSelection(position);
-                }
+                onClueSelected(board, /*isAcross=*/true, position);
             }
         });
         across.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (!board.isCursorAcross() || (board.getCurrentClueIndex() != position)) {
-                    board.jumpTo(position, true);
-                    imageView.setTranslate(0.0f, 0.0f);
-                    render();
-
-                    if (prefs.getBoolean("snapClue", false)) {
-                        across.setSelectionFromTop(position, 5);
-                        across.setSelection(position);
-                    }
+                    onClueSelected(board, /*isAcross=*/true, position);
                 }
             }
 
@@ -304,32 +319,18 @@ public class ClueListActivity extends WordsWithCrossesActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
         down.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                board.jumpTo(position, false);
-                imageView.setTranslate(0.0f, 0.0f);
-                render();
-
-                if (prefs.getBoolean("snapClue", false)) {
-                    down.setSelectionFromTop(position, 5);
-                    down.setSelection(position);
-                }
+                onClueSelected(board, /*isAcross=*/false, position);
             }
         });
-
         down.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (board.isCursorAcross() || (board.getCurrentClueIndex() != position)) {
-                    board.jumpTo(position, false);
-                    imageView.setTranslate(0.0f, 0.0f);
-                    render();
-
-                    if (prefs.getBoolean("snapClue", false)) {
-                        down.setSelectionFromTop(position, 5);
-                        down.setSelection(position);
-                    }
+                    onClueSelected(board, /*isAcross=*/false, position);
                 }
             }
 
@@ -337,7 +338,7 @@ public class ClueListActivity extends WordsWithCrossesActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-        this.render();
+        render();
     }
 
     @Override
@@ -363,7 +364,7 @@ public class ClueListActivity extends WordsWithCrossesActivity {
             return false;
 
         case KeyEvent.KEYCODE_BACK:
-            this.setResult(0);
+            setResult(0);
 
             return true;
 
@@ -372,7 +373,7 @@ public class ClueListActivity extends WordsWithCrossesActivity {
             if (!board.getCursorPosition().equals(w.start)) {
                 board.moveToPreviousLetterStopAtEndOfWord();
 
-                this.render();
+                render();
             }
 
             return true;
@@ -381,7 +382,7 @@ public class ClueListActivity extends WordsWithCrossesActivity {
 
             if (!board.getCursorPosition().equals(last)) {
                 board.moveToNextLetterStopAtEndOfWord();
-                this.render();
+                render();
             }
 
             return true;
@@ -396,12 +397,11 @@ public class ClueListActivity extends WordsWithCrossesActivity {
                 board.setCursorPosition(w.start);
             }
 
-            this.render();
+            render();
 
             return true;
 
         case KeyEvent.KEYCODE_SPACE:
-
             if (!prefs.getBoolean("spaceChangesDirection", true)) {
                 board.playLetter(' ');
 
@@ -411,15 +411,16 @@ public class ClueListActivity extends WordsWithCrossesActivity {
                     board.setCursorPosition(last);
                 }
 
-                this.render();
+                render();
+            } // else ignore; switching directions in this activity isn't really intuitive
 
-                return true;
-            }
+            return true;
+
+        default:
+            break;
         }
 
-        char c = Character
-                .toUpperCase(((this.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) || this.useNativeKeyboard) ? event
-                        .getDisplayLabel() : ((char) keyCode));
+        char c = Character.toUpperCase(((configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) || useNativeKeyboard) ? event.getDisplayLabel() : ((char) keyCode));
 
         if (PlayActivity.PLAYABLE_CHARS.indexOf(c) != -1) {
             board.playLetter(c);
@@ -430,28 +431,28 @@ public class ClueListActivity extends WordsWithCrossesActivity {
                 board.setCursorPosition(last);
             }
 
-            this.render();
+            render();
 
             if (puz.isSolved() && (timer != null)) {
                 timer.stop();
                 puz.setTime(timer.getElapsed());
-                this.timer = null;
+                timer = null;
                 Intent i = new Intent(ClueListActivity.this, PuzzleFinishedActivity.class);
-                this.startActivity(i);
+                startActivity(i);
 
             }
 
             return true;
         }
 
-        return super.onKeyUp(keyCode, event);
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         switch (keyCode) {
         case KeyEvent.KEYCODE_BACK:
-            this.finish();
+            finish();
 
             return true;
         }
@@ -481,6 +482,20 @@ public class ClueListActivity extends WordsWithCrossesActivity {
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             if (imm != null) {
                 imm.hideSoftInputFromWindow(imageView.getWindowToken(), 0);
+            }
+        }
+    }
+
+    private void onClueSelected(Playboard board, boolean isAcross, int position) {
+        board.jumpTo(position, isAcross);
+        imageView.setTranslate(0.0f, 0.0f);
+        render();
+
+        if (prefs.getBoolean("snapClue", false)) {
+            if (isAcross) {
+                across.setSelectionFromTop(position, 5);
+            } else {
+                down.setSelectionFromTop(position, 5);
             }
         }
     }

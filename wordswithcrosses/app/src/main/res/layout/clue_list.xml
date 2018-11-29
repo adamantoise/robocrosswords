@@ -37,14 +37,18 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
       <ListView
-          android:id="@+id/downList"
-          android:layout_width="fill_parent"
-          android:layout_height="fill_parent"
-          />
-      <ListView
           android:id="@+id/acrossList"
           android:layout_width="fill_parent"
           android:layout_height="fill_parent"
+          android:focusableInTouchMode="true"
+          android:choiceMode="singleChoice"
+          />
+      <ListView
+          android:id="@+id/downList"
+          android:layout_width="fill_parent"
+          android:layout_height="fill_parent"
+          android:focusableInTouchMode="true"
+          android:choiceMode="singleChoice"
           />
     </FrameLayout>
   </com.adamrosenfield.wordswithcrosses.view.CrosswordRelativeLayout>
