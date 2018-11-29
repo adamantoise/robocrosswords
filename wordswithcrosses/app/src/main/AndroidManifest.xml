@@ -3,9 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:installLocation="auto"
-    package="com.adamrosenfield.wordswithcrosses"
-    android:versionCode="20502"
-    android:versionName="2.5.2">
+    package="com.adamrosenfield.wordswithcrosses">
 
     <supports-screens
         android:anyDensity="true"
@@ -13,8 +11,6 @@
         android:normalScreens="true"
         android:largeScreens="true"
         android:xlargeScreens="true" />
-
-    <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="17"/>
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />

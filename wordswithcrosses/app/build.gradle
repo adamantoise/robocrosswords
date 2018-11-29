@@ -2,10 +2,12 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 22
-    buildToolsVersion '25.0.0'
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         applicationId "com.adamrosenfield.wordswithcrosses"
+        versionCode 20502
+        versionName '2.5.2'
         minSdkVersion 9
         targetSdkVersion 17
         compileOptions {
@@ -33,7 +35,7 @@ android {
 }
 
 dependencies {
-    compile 'com.squareup.okhttp3:okhttp:3.8.0'
-    compile 'org.ccil.cowan.tagsoup:tagsoup:1.2'
-    androidTestCompile 'junit:junit:4.12'
+    implementation 'com.squareup.okhttp3:okhttp:3.8.0'
+    implementation 'org.ccil.cowan.tagsoup:tagsoup:1.2'
+    androidTestImplementation 'junit:junit:4.12'
 }
