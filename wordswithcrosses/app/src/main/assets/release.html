@@ -22,14 +22,30 @@ body { background: black; height: 100%;}
 </div>
 <!-- end Paypal -->
 
-<h2><em>Robo Crosswords</em> v2.5.2</h2>
+<h2><em>Robo Crosswords</em> v2.5.3</h2>
 <hr>
 
-<p>A small little bug fix update here.  Thanks to everyone who wrote in about the NYT puzzle downloader no longer working.  They changed their site, as they're wont to do from time to time, which broke the old downloader.</p>
+<p>Hi all.  Thanks to everyone who wrote in about the Joseph, Sheffer, and Premier puzzles failing to download (as well as the NYT from way back when).  The publisher of those puzzles has moved them to a new download location.</p>
+
+<p>The NYT added a CAPTCHA to their login page a while back, so the app is no longer able to automatically log in.  Support for that is still a work in progress, and when finished will require you to log in via an in-app web view.  Thanks for your continued patience on that.</p>
+
+<p>This release raised the minimum supported Android version from 1.6 (Donut) to 2.3 (Gingerbread).  I'll likely raise it to 4.0.3 (Ice Cream Sandwich) in the future, which is currently the oldest version that has any active installs.  This release also raised the <i>target</i> SDK version from 4.2 (Jelly Bean) to 8.0 (Oreo), as required by Google Play, which may have caused some unintended behavior changes, so please be on the lookout for anything unexpected.</p>
 
 <p>As always, if you enjoy using <em>Robo Crosswords</em>, please consider <a href="market://details?id=com.adamrosenfield.wordswithcrosses">rating it in the Play Store</a>.</p>
+
 <p><em>Robo Crosswords</em> is a free and open-source project.  You can obtain the source code, submit issues, and submit pull requests from the <a href="https://github.com/adamantoise/robocrosswords">project page on GitHub</a>.  You can also email me at &lt;<a href="mailto:robocrosswords@adamrosenfield.com">robocrosswords@adamrosenfield.com</a>&gt; if you'd like to provide any feedback, bug reports, feature requests, or new puzzle sources, etc.</p>
+
 <p>Keep circulating the tapes.</p>
+<hr>
+
+<h3>Changes in v2.5.3:</h3>
+<ul>
+  <li>Fixed Joseph Crosswords, Sheffer Crosswords, and Premier Crosswords downloaders</li>
+  <li>Fixed errors when downloading certain JPZ files</li>
+  <li>Temporarily disabled NYT downloader</li>
+  <li>Improved the clues list view</li>
+  <li>Raised minimum SDK version to 2.3 (Gingerbread) and target SDK version to 8.0 (Oreo)</li>
+</ul>
 <hr>
 
 <h3>Changes in v2.5.2:</h3>

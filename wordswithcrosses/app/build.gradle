@@ -6,8 +6,8 @@ android {
 
     defaultConfig {
         applicationId "com.adamrosenfield.wordswithcrosses"
-        versionCode 20502
-        versionName '2.5.2'
+        versionCode 20503
+        versionName '2.5.3'
         minSdkVersion 9
         targetSdkVersion 26
         compileOptions {
